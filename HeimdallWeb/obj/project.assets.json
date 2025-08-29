@@ -2896,25 +2896,26 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Microsoft.CodeAnalysis.Analyzers >= 3.3.4",
       "Microsoft.EntityFrameworkCore >= 9.0.8",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.8",
       "Pomelo.EntityFrameworkCore.MySql >= 9.0.0"
     ]
   },
   "packageFolders": {
-    "/home/floppydisk/.nuget/packages/": {}
+    "/home/gekki/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/floppydisk/websites/HeimdallWeb/HeimdallWeb/HeimdallWeb.csproj",
+      "projectUniqueName": "/home/gekki/Documentos/TCC FATEC/HeimdallWeb/HeimdallWeb/HeimdallWeb.csproj",
       "projectName": "HeimdallWeb",
-      "projectPath": "/home/floppydisk/websites/HeimdallWeb/HeimdallWeb/HeimdallWeb.csproj",
-      "packagesPath": "/home/floppydisk/.nuget/packages/",
-      "outputPath": "/home/floppydisk/websites/HeimdallWeb/HeimdallWeb/obj/",
+      "projectPath": "/home/gekki/Documentos/TCC FATEC/HeimdallWeb/HeimdallWeb/HeimdallWeb.csproj",
+      "packagesPath": "/home/gekki/.nuget/packages/",
+      "outputPath": "/home/gekki/Documentos/TCC FATEC/HeimdallWeb/HeimdallWeb/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/floppydisk/.nuget/NuGet/NuGet.Config"
+        "/home/gekki/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -2944,6 +2945,12 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "Microsoft.CodeAnalysis.Analyzers": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[3.3.4, )"
+          },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",
             "version": "[9.0.8, )"
@@ -2973,15 +2980,11 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.18, 8.0.18]"
+            "version": "[8.0.19, 8.0.19]"
           },
           {
             "name": "Microsoft.NETCore.App.Host.linux-x64",
-            "version": "[8.0.18, 8.0.18]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.18, 8.0.18]"
+            "version": "[8.0.19, 8.0.19]"
           }
         ],
         "frameworkReferences": {
@@ -2992,7 +2995,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.108/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.109/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
