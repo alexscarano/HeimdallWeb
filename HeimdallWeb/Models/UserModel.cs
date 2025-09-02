@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HeimdallWeb.Models
 {
+    [Table("tb_user")]
     public class UserModel
     {
         [Key]

@@ -7,7 +7,7 @@ namespace HeimdallWeb.Models.Map
     {
         public void Configure(EntityTypeBuilder<IASummaryModel> builder)
         {
-            builder.ToTable("IASummary");
+            builder.Property(t => t.category).HasMaxLength(100);
 
             builder.HasKey(t => t.ia_summary_id);
 

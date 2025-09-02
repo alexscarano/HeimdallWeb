@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HeimdallWeb.Models.Map
@@ -7,13 +8,14 @@ namespace HeimdallWeb.Models.Map
     {
         public void Configure(EntityTypeBuilder<HistoryModel> builder) 
         {
-            builder.ToTable("History");
-
             builder.HasKey(h => h.history_id);
 
             builder.Property(h => h.target)
             .IsRequired()
             .HasMaxLength(75);
+
+            builder.Property(h => h.raw_json_result)
+            .HasColumnType("json");
 
             builder.HasMany(h => h.IASummaries)
             .WithOne(ia => ia.History)

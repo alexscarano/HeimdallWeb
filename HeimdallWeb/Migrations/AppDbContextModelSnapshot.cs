@@ -34,7 +34,7 @@ namespace HeimdallWeb.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("raw_json_result")
-                        .HasColumnType("longtext");
+                        .HasColumnType("json");
 
                     b.Property<string>("summary")
                         .HasColumnType("longtext");
@@ -51,7 +51,7 @@ namespace HeimdallWeb.Migrations
 
                     b.HasIndex("user_id");
 
-                    b.ToTable("History", (string)null);
+                    b.ToTable("tb_history");
                 });
 
             modelBuilder.Entity("HeimdallWeb.Models.IASummaryModel", b =>
@@ -63,7 +63,8 @@ namespace HeimdallWeb.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ia_summary_id"));
 
                     b.Property<string>("category")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("created_date")
                         .HasColumnType("datetime(6)");
@@ -81,7 +82,7 @@ namespace HeimdallWeb.Migrations
 
                     b.HasIndex("history_id");
 
-                    b.ToTable("IASummary", (string)null);
+                    b.ToTable("tb_ia_summary");
                 });
 
             modelBuilder.Entity("HeimdallWeb.Models.TechnologyModel", b =>
@@ -104,13 +105,14 @@ namespace HeimdallWeb.Migrations
                         .HasColumnType("varchar(35)");
 
                     b.Property<string>("version")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
 
                     b.HasKey("technology_id");
 
                     b.HasIndex("history_id");
 
-                    b.ToTable("Technology", (string)null);
+                    b.ToTable("tb_technology");
                 });
 
             modelBuilder.Entity("HeimdallWeb.Models.UserModel", b =>
@@ -131,7 +133,8 @@ namespace HeimdallWeb.Migrations
 
                     b.Property<string>("password")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime(6)");
@@ -146,7 +149,7 @@ namespace HeimdallWeb.Migrations
 
                     b.HasKey("user_id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("tb_user");
                 });
 
             modelBuilder.Entity("HeimdallWeb.Models.HistoryModel", b =>

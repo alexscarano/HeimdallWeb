@@ -7,9 +7,9 @@ namespace HeimdallWeb.Models.Map
     {
         public void Configure(EntityTypeBuilder<TechnologyModel> builder)
         {
-            builder.ToTable("Technology");
-
             builder.HasKey(t => t.technology_id);
+
+            builder.Property(t => t.version).HasMaxLength(30);
 
             builder.Property(t => t.technology_name)
             .IsRequired()

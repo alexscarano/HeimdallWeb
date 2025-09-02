@@ -7,8 +7,6 @@ namespace HeimdallWeb.Models.Map
     {
         public void Configure(EntityTypeBuilder<UserModel> builder)
         {
-            builder.ToTable("Users");
-
             builder.HasKey(x => x.user_id);
 
             builder.Property(u => u.username)
@@ -20,8 +18,9 @@ namespace HeimdallWeb.Models.Map
             .HasMaxLength(75);
 
             builder.Property(u => u.password)
-            .IsRequired();
-
+            .IsRequired()
+            .HasMaxLength(255);
+            
             builder.Property(u => u.created_at)
             .IsRequired();
 
