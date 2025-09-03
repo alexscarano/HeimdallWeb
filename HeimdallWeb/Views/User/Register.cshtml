@@ -1,11 +1,22 @@
+@model UserModel
 @{
     ViewData["Title"] = "Registrar";
 }
 
+@if (TempData["OkMsg"] != null)
+{
+    <h3>@TempData["OkMsg"]</h3>
+}
 
-<form action="#" method="get">
-    <label for="user">Nome de usuário:</label>
-    <input type="text" name="user" id="user"> <br>
+@if (TempData["ErrorMsg"] != null)
+{
+    <h3>@TempData["ErrorMsg"]</h3>
+}
+
+
+<form asp-controller="User" asp-action="RegisterAction" method="post">
+    <label for="username">Nome de usuário:</label>
+    <input type="text" name="username" id="username"> <br>
 
     <label for="email">Email:</label>
     <input type="email" name="email" id="email"> <br>
@@ -13,5 +24,5 @@
     <label for="password">Senha:</label>
     <input type="password" name="password" id="password">
 
-    <input type="button" value="Entrar">
+    <button type="submit">Enviar</button>
 </form>

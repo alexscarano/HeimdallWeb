@@ -2,7 +2,7 @@
 
 namespace HeimdallWeb.Repository
 {
-    public interface IUserInterface
+    public interface IUserRepository
     {
         List<UserModel> getAllUsers();
 

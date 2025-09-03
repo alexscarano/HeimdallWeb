@@ -3,11 +3,11 @@ using HeimdallWeb.Models;
 
 namespace HeimdallWeb.Repository
 {
-    public class UserInterface : IUserInterface
+    public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _appDbContext;
 
-        public UserInterface(AppDbContext appDbContext)
+        public UserRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
         }
@@ -24,7 +24,7 @@ namespace HeimdallWeb.Repository
 
         public UserModel insertUser(UserModel user)
         {
-            user.hashUserPassword();  
+            user.password = user.hashUserPassword();  
             user.created_at = DateTime.Now;
             _appDbContext.User.Add(user);
             _appDbContext.SaveChanges();
@@ -35,6 +35,8 @@ namespace HeimdallWeb.Repository
         public UserModel updateUser(UserModel user)
         {
             UserModel userDB = getUserById(user.user_id);
+
+            if (userDB == null) throw new Exception("Houve um erro ao tentar atualizar o usuário")
 
             userDB.username = user.username;
             userDB.password = user.password;
@@ -52,7 +54,7 @@ namespace HeimdallWeb.Repository
         {
             UserModel userDB = getUserById(id);
 
-            if (userDB == null) throw new Exception("Error on deleting the user");
+            if (userDB == null) throw new Exception("Houve um erro ao deletar o usuário");
 
             _appDbContext.User.Remove(userDB);
             _appDbContext.SaveChanges();
