@@ -1,19 +1,28 @@
+@model List<UserModel>
 @{
     ViewData["Title"] = "Histórico";
 }
 
-<table>
+<table class="table table-striped-columns">
     <tr>
-        <th>Nome</th>
-        <th>Data que foi criado</em></th>
-        <th>Ações</th>
+        <th scope="col">ID do usuário</th>
+        <th scope="col">Login</th>
+        <th scope="col">Email</th>
     </tr>
-    <tr>
-        <td>Exemplo nome</td>
-        <td>00/00/0000</td>
-        <td>
-            <button>JSON puro</button>
-            <button>Rever formulario</button>
-        </td>
-    </tr>
+
+    @if (Model.Any() && Model != null)
+    {
+        foreach (UserModel? user in Model)
+        {   
+            <tr>
+                <th scope="row">@user.user_id</th>
+                <td>@user.username</td>
+                <td>@user.email</td>
+            </tr>
+        }  
+    }
+    else
+    {
+        <p>Nenhum registro no historico</p>
+    }
 </table>

@@ -14,7 +14,17 @@ namespace HeimdallWeb.Repository
 
         public List<UserModel> getAllUsers()
         {
-            return _appDbContext.User.ToList();
+            List<UserModel> users;
+            try
+            {
+              users = _appDbContext.User.ToList();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return users;
         }
 
         public UserModel getUserById(int id)
@@ -62,5 +72,15 @@ namespace HeimdallWeb.Repository
             return true;
         }
 
+        public UserModel? getUserByEmailOrLogin(string emailOrUsername)
+        {
+            return _appDbContext.User.FirstOrDefault(x => x.email == emailOrUsername || x.username == emailOrUsername); 
+        }
+
+        public bool verifyIfUserExists(UserModel user)
+        {
+            return _appDbContext.User.
+                Any(x => x.username == user.username || x.email == user.email); 
+        }
     }
 }

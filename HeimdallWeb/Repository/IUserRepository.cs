@@ -13,5 +13,9 @@ namespace HeimdallWeb.Repository
         UserModel updateUser(UserModel user);
 
         bool deleteUser(int id);
+
+        UserModel? getUserByEmailOrLogin(string emailOrUsername);
+
+        public bool verifyIfUserExists(UserModel user);
     }
 }

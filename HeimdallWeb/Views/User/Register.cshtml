@@ -3,26 +3,49 @@
     ViewData["Title"] = "Registrar";
 }
 
+@* Mensagem de validação (teste) de conclusão de registro, mudar para algo mais bonito depois *@
 @if (TempData["OkMsg"] != null)
 {
-    <h3>@TempData["OkMsg"]</h3>
+      <div class="alert alert-success" role="alert">  
+            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+            @TempData["OkMsg"]
+     </div>
 }
 
 @if (TempData["ErrorMsg"] != null)
 {
-    <h3>@TempData["ErrorMsg"]</h3>
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+         @TempData["ErrorMsg"]
+    </div>
 }
 
 
 <form asp-controller="User" asp-action="RegisterAction" method="post">
-    <label for="username">Nome de usuário:</label>
-    <input type="text" name="username" id="username"> <br>
+    <div class="mb-3">
+        <label for="username">Nome de usuário:</label>
+        <input type="text" name="username" id="username"> <br>
+         @Html.ValidationMessageFor(x => x.username)
+        @* Mensagem de validação (teste) do model, mudar para algo mais bonito depois *@
+   </div>
 
-    <label for="email">Email:</label>
-    <input type="email" name="email" id="email"> <br>
-    
-    <label for="password">Senha:</label>
-    <input type="password" name="password" id="password">
+    <div class="mb-3">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email"> <br>
+        @Html.ValidationMessageFor(x => x.email)
+    </div>
+
+    <div class="mb-3">
+        <label for="password">Senha:</label>
+        <input type="password" name="password" id="password">
+        @Html.ValidationMessageFor(x => x.password)
+    </div>
+
+    <div class="mb-3">
+        <label for="confirm_password">Confirmar senha:</label>
+        <input type="password" name="confirm_password" id="confirm_password">
+        @Html.ValidationMessageFor(x => x.confirm_password)
+    </div>
 
     <button type="submit">Enviar</button>
 </form>

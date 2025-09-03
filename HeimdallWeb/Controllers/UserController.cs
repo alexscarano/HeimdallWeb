@@ -25,7 +25,11 @@ public class UserController : Controller
 
     public IActionResult History()
     {
-        return View();
+        var users = _userRepository.getAllUsers();
+
+        if (users == null) throw new Exception("Ocorreu um erro ao consultar os usuários");
+
+        return View(users);
     }
 
     public IActionResult Login()
@@ -43,13 +47,17 @@ public class UserController : Controller
     {
         try
         {
-            //if (ModelState.IsValid)
-            //{
-                _userRepository.insertUser(user);
-                TempData["OkMsg"] = "O usuário foi cadastrado com sucesso";
-                //return RedirectToAction("Index", "Home");
-                return View("Register", user);
-            //}
+            if (ModelState.IsValid)
+            {
+                if (!_userRepository.verifyIfUserExists(user))
+                {
+                    _userRepository.insertUser(user);
+                    TempData["OkMsg"] = "O usuário foi cadastrado com sucesso";
+                    //return RedirectToAction("Index", "Home");
+                    return View("Register", user);
+                }
+                TempData["ErrorMsg"] = "Este usuário já está cadastrado, verique o seu email/nome de usuário";
+            }
         }
         catch (Exception)
         {
