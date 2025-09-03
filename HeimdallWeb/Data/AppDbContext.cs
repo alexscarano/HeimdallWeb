@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HeimdallWeb.Data
 {
-    class AppDbContext : DbContext
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         public DbSet<UserModel> User { get; set; }

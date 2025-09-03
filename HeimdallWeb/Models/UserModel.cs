@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using HeimdallWeb.Helpers;
 
 namespace HeimdallWeb.Models
 {
@@ -28,5 +29,10 @@ namespace HeimdallWeb.Models
         public DateTime? updated_at { get; set; }
 
         public virtual List<HistoryModel> ?Histories { get; set; }
+
+        public string hashUserPassword()
+        {
+            return password = password.hashPassword();
+        }
     }
 }
