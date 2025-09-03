@@ -1,14 +1,16 @@
+using HeimdallWeb.Models;
+using HeimdallWeb.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeimdallWeb.Controllers;
 
 public class UserController : Controller
 {
-    private readonly ILogger<UserController> _logger;
+    private readonly IUserRepository _userRepository;
 
-    public UserController(ILogger<UserController> logger)
+    public UserController(IUserRepository userRepository)
     {
-        _logger = logger;
+        _userRepository = userRepository;
     }
 
     public IActionResult Dashboard()
@@ -34,6 +36,26 @@ public class UserController : Controller
     public IActionResult Register()
     {
         return View();
+    }
+
+    [HttpPost]
+    public IActionResult RegisterAction(UserModel user)
+    {
+        try
+        {
+            //if (ModelState.IsValid)
+            //{
+                _userRepository.insertUser(user);
+                TempData["OkMsg"] = "O usuário foi cadastrado com sucesso";
+                //return RedirectToAction("Index", "Home");
+                return View("Register", user);
+            //}
+        }
+        catch (Exception)
+        {
+            TempData["ErrorMsg"] = "Ocorreu um erro no cadastro do usuário";
+        }
+        return View("Register", user);
     }
 
     public IActionResult AlterUser()

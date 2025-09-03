@@ -20,10 +20,8 @@ namespace HeimdallWeb.Models
         [Required]
         public required string password { get; set; }
 
-        [Required]
         public required int user_type { get; set; } = (int)Enums.UserType.Default;
 
-        [Required]
         public required DateTime created_at { get; set; } = DateTime.Now;
 
         public DateTime? updated_at { get; set; }

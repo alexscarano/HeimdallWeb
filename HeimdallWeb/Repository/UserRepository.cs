@@ -36,7 +36,7 @@ namespace HeimdallWeb.Repository
         {
             UserModel userDB = getUserById(user.user_id);
 
-            if (userDB == null) throw new Exception("Houve um erro ao tentar atualizar o usuário")
+            if (userDB == null) throw new Exception("Houve um erro ao tentar atualizar o usuário");
 
             userDB.username = user.username;
             userDB.password = user.password;
