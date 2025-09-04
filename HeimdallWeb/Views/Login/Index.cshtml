@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+@if (TempData["OkMsg"] != null)
+{
+      <div class="alert alert-success" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+            @TempData["OkMsg"]
+     </div>
+}
+
+<form asp-action="Enter" asp-controller="Login" method="post">
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email">
+    
+    <label for="password">Senha:</label>
+    <input type="password" name="password" id="password">
+    
+    <button type="submit">Enviar</button>
+</form>
