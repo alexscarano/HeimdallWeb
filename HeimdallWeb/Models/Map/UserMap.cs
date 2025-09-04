@@ -28,7 +28,9 @@ namespace HeimdallWeb.Models.Map
            .WithOne(h => h.User)
            .HasForeignKey(h => h.user_id)
            .OnDelete(DeleteBehavior.Cascade);
-        }
 
+            builder.HasIndex(u => u.username).IsUnique();
+            builder.HasIndex(u => u.email).IsUnique();
+        }
     }
 }
