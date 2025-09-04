@@ -18,16 +18,14 @@ public class UserController : Controller
         return View();
     }
 
-    public IActionResult DeleteUser()
+    public IActionResult Delete()
     {
         return View();
     }
 
     public IActionResult History()
     {
-        var users = _userRepository.getAllUsers();
-
-        if (users == null) throw new Exception("Ocorreu um erro ao consultar os usuários");
+        var users = _userRepository.getAllUsers() ?? throw new Exception("Ocorreu um erro ao consultar os usuários");
 
         return View(users);
     }
@@ -42,6 +40,10 @@ public class UserController : Controller
         return View();
     }
 
+    public IActionResult Edit()
+    {
+        return View();
+    }    
     [HttpPost]
     public IActionResult RegisterAction(UserModel user)
     {
@@ -66,8 +68,4 @@ public class UserController : Controller
         return View("Register", user);
     }
 
-    public IActionResult AlterUser()
-    {
-        return View();
-    }    
 }

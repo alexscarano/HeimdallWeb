@@ -4,11 +4,11 @@ namespace HeimdallWeb.Repository
 {
     public interface IUserRepository
     {
-        List<UserModel> getAllUsers();
+        List<UserModel>? getAllUsers();
 
         UserModel insertUser(UserModel user);
 
-        UserModel getUserById(int id);
+        UserModel? getUserById(int id);
 
         UserModel updateUser(UserModel user);
 

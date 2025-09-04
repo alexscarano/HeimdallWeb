@@ -12,7 +12,7 @@ namespace HeimdallWeb.Repository
             _appDbContext = appDbContext;
         }
 
-        public List<UserModel> getAllUsers()
+        public List<UserModel>? getAllUsers()
         {
             List<UserModel> users;
             try
@@ -27,7 +27,7 @@ namespace HeimdallWeb.Repository
             return users;
         }
 
-        public UserModel getUserById(int id)
+        public UserModel? getUserById(int id)
         {
             return _appDbContext.User.FirstOrDefault(x => x.user_id == id);
         }
@@ -44,9 +44,7 @@ namespace HeimdallWeb.Repository
 
         public UserModel updateUser(UserModel user)
         {
-            UserModel userDB = getUserById(user.user_id);
-
-            if (userDB == null) throw new Exception("Houve um erro ao tentar atualizar o usuário");
+            UserModel userDB = getUserById(user.user_id) ?? throw new Exception("Houve um erro ao atualizar o usuário");
 
             userDB.username = user.username;
             userDB.password = user.password;
@@ -62,9 +60,7 @@ namespace HeimdallWeb.Repository
 
         public bool deleteUser(int id)
         {
-            UserModel userDB = getUserById(id);
-
-            if (userDB == null) throw new Exception("Houve um erro ao deletar o usuário");
+            UserModel userDB = getUserById(id) ?? throw new Exception("Houve um erro ao deletar o usuário");
 
             _appDbContext.User.Remove(userDB);
             _appDbContext.SaveChanges();
