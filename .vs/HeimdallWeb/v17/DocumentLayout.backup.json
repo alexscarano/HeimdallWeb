@@ -3,6 +3,18 @@
   "WorkspaceRootPath": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\views\\user\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\views\\user\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\helpers\\passwordutils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\helpers\\passwordutils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -11,32 +23,16 @@
       "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\repository\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\views\\user\\history.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\views\\user\\history.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\views\\user\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\views\\user\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\models\\map\\usermap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\models\\map\\usermap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\views\\user\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\views\\user\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\views\\user\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\views\\user\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\helpers\\passwordutils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\helpers\\passwordutils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,8 +42,22 @@
       "DocumentGroups": [
         {
           "DockedWidth": 60,
-          "SelectedChildIndex": 16,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Register.cshtml",
+              "RelativeDocumentMoniker": "HeimdallWeb\\Views\\User\\Register.cshtml",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Register.cshtml",
+              "RelativeToolTip": "HeimdallWeb\\Views\\User\\Register.cshtml",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAkwDgAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-03T00:36:19.31Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:1:0:{57d563b6-44a5-47df-85be-f4199ad6b651}"
@@ -93,57 +103,48 @@
               "Name": "ST:0:0:{57d563b6-44a5-47df-85be-f4199ad6b651}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "History.cshtml",
-              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\History.cshtml",
-              "RelativeDocumentMoniker": "HeimdallWeb\\Views\\User\\History.cshtml",
-              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\History.cshtml",
-              "RelativeToolTip": "HeimdallWeb\\Views\\User\\History.cshtml",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABEAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-03T18:56:44.679Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "UserMap.cs",
-              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Models\\Map\\UserMap.cs",
-              "RelativeDocumentMoniker": "HeimdallWeb\\Models\\Map\\UserMap.cs",
-              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Models\\Map\\UserMap.cs",
-              "RelativeToolTip": "HeimdallWeb\\Models\\Map\\UserMap.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAgwCAAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-03T01:22:31.129Z"
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Program.cs",
-              "RelativeDocumentMoniker": "HeimdallWeb\\Program.cs",
-              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Program.cs",
-              "RelativeToolTip": "HeimdallWeb\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-03T00:41:52.395Z"
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Delete.cshtml",
+              "RelativeDocumentMoniker": "HeimdallWeb\\Views\\User\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Delete.cshtml",
+              "RelativeToolTip": "HeimdallWeb\\Views\\User\\Delete.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-04T00:31:21.898Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 6,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Edit.cshtml",
+              "RelativeDocumentMoniker": "HeimdallWeb\\Views\\User\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Edit.cshtml",
+              "RelativeToolTip": "HeimdallWeb\\Views\\User\\Edit.cshtml",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAABUAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-04T00:22:29.687Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "PasswordUtils.cs",
               "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Helpers\\PasswordUtils.cs",
               "RelativeDocumentMoniker": "HeimdallWeb\\Helpers\\PasswordUtils.cs",
               "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Helpers\\PasswordUtils.cs",
               "RelativeToolTip": "HeimdallWeb\\Helpers\\PasswordUtils.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAgwB8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-02T23:48:23.019Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "HeimdallWeb\\Data\\AppDbContext.cs",
@@ -155,53 +156,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "UserRepository.cs",
               "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\UserRepository.cs",
               "RelativeDocumentMoniker": "HeimdallWeb\\Repository\\UserRepository.cs",
               "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\UserRepository.cs",
               "RelativeToolTip": "HeimdallWeb\\Repository\\UserRepository.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAowC4AAABrAAAAAAAAAA==",
+              "ViewState": "AgIAABwAAAAAAAAAAAAowCIAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T23:37:39.319Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T23:37:39.319Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "IUserRepository.cs",
               "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\IUserRepository.cs",
               "RelativeDocumentMoniker": "HeimdallWeb\\Repository\\IUserRepository.cs",
               "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\IUserRepository.cs",
               "RelativeToolTip": "HeimdallWeb\\Repository\\IUserRepository.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAqwAoAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAYAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T23:37:20.849Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T23:37:20.849Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 2,
               "Title": "UserController.cs",
               "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Controllers\\UserController.cs",
               "RelativeDocumentMoniker": "HeimdallWeb\\Controllers\\UserController.cs",
               "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Controllers\\UserController.cs",
               "RelativeToolTip": "HeimdallWeb\\Controllers\\UserController.cs",
-              "ViewState": "AgIAAC4AAAAAAAAAAAAuwDoAAAAiAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-02T23:35:25.927Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Register.cshtml",
-              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Register.cshtml",
-              "RelativeDocumentMoniker": "HeimdallWeb\\Views\\User\\Register.cshtml",
-              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Register.cshtml",
-              "RelativeToolTip": "HeimdallWeb\\Views\\User\\Register.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-03T00:36:19.31Z"
             }
           ]
         }

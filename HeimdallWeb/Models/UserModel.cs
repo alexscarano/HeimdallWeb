@@ -13,7 +13,6 @@ namespace HeimdallWeb.Models
         [Key]
         public int user_id { get; set; }
 
-
         /// <summary>
         /// O login/username do usuario
         /// </summary>

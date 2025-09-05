@@ -1,4 +1,4 @@
-﻿using HeimdallWeb.Models;
+using HeimdallWeb.Models;
 
 namespace HeimdallWeb.Repository
 {

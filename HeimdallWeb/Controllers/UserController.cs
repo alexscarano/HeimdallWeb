@@ -1,3 +1,5 @@
+using HeimdallWeb.DTO;
+using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
 using HeimdallWeb.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,11 @@ public class UserController : Controller
         _userRepository = userRepository;
     }
 
+    public IActionResult Index()
+    {
+        return View();  
+    }
+
     public IActionResult Dashboard()
     {
         return View();
@@ -25,7 +32,7 @@ public class UserController : Controller
 
     public IActionResult History()
     {
-        var users = _userRepository.getAllUsers() ?? throw new Exception("Ocorreu um erro ao consultar os usuários");
+        var users = _userRepository.getAllUsers() ?? throw new Exception("Ocorreu um erro ao consultar os usuï¿½rios");
 
         return View(users);
     }
@@ -44,6 +51,7 @@ public class UserController : Controller
     {
         return View();
     }    
+
     [HttpPost]
     public IActionResult RegisterAction(UserModel user)
     {
@@ -54,18 +62,66 @@ public class UserController : Controller
                 if (!_userRepository.verifyIfUserExists(user))
                 {
                     _userRepository.insertUser(user);
-                    TempData["OkMsg"] = "O usuário foi cadastrado com sucesso";
-                    //return RedirectToAction("Index", "Home");
-                    return View("Register", user);
+                    TempData["OkMsg"] = "O usuï¿½rio foi cadastrado com sucesso";
+                    return RedirectToAction("Index", "Home");
                 }
-                TempData["ErrorMsg"] = "Este usuário já está cadastrado, verique o seu email/nome de usuário";
+                TempData["ErrorMsg"] = "Este usuï¿½rio jï¿½ estï¿½ cadastrado, verique o seu email/nome de usuï¿½rio";
             }
         }
         catch (Exception)
         {
-            TempData["ErrorMsg"] = "Ocorreu um erro no cadastro do usuário";
+            TempData["ErrorMsg"] = "Ocorreu um erro no cadastro do usuï¿½rio";
         }
         return View("Register", user);
+    }
+
+    [HttpPost]
+    public IActionResult EditAction(UserModel user)
+    {
+        try
+        {
+            ModelState.Remove(nameof(user.user_id));
+
+            if (ModelState.IsValid)
+            {
+                 //user.user_id = 1;
+                _userRepository.updateUser(user);
+                TempData["OkMsg"] = "Usuï¿½rio atualizado com sucesso";
+                return View("Edit", user);
+            }
+        }
+        catch (Exception)
+        {
+            TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuï¿½rio";
+        }
+        return View("Edit", user); 
+    }
+
+    public IActionResult DeleteAction(int id, DeleteUserDTO userToDelete)
+    {
+        try
+        {
+            id = 16; // colocar sessï¿½o
+
+            var userDB = _userRepository.getUserById(id) ?? throw new Exception("Nï¿½o foi possï¿½vel fazer a consulta do usuï¿½rio");
+
+            if (PasswordUtils.VerifyPassword(userToDelete.password, userDB.password))
+            {
+                bool deleted = _userRepository.deleteUser(id);
+
+                if (deleted)
+                {
+                    TempData["OkMsg"] = "Usuï¿½rio deletado com sucesso, volte sempre.";
+                }
+            }
+        }
+        catch (Exception)
+        {
+            TempData["ErrorMsg"] = "Ocorreu um erro ao tentar deletar o usuï¿½rio, tente novamente.";
+            return View("Delete");
+        }
+
+        return RedirectToAction("Index", "Login");
     }
 
 }

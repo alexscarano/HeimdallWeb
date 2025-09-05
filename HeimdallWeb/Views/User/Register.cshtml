@@ -11,7 +11,6 @@
             @TempData["OkMsg"]
      </div>
 }
-
 @if (TempData["ErrorMsg"] != null)
 {
     <div class="alert alert-danger" role="alert">
@@ -21,10 +20,16 @@
 }
 
 
+<div class="text-center">
+
+    <h1 class="display-4">Registrar Usuário</h1>
+
+</div>
+
 <form asp-controller="User" asp-action="RegisterAction" method="post">
     <div class="mb-3">
         <label for="username">Nome de usuário:</label>
-        <input type="text" name="username" id="username"> <br>
+        <input type="text" asp-for="username" id="username" class="form-control"> 
          @Html.ValidationMessageFor(x => x.username)
         @* Mensagem de validação (teste) do model, mudar para algo mais bonito depois *@
    </div>
@@ -32,12 +37,14 @@
     <div class="mb-3">
         <label for="email">Email:</label>
         <input type="email" name="email" id="email"> <br>
+        <input type="email" asp-for="email" id="email" class="form-control"/>
         @Html.ValidationMessageFor(x => x.email)
     </div>
 
     <div class="mb-3">
         <label for="password">Senha:</label>
         <input type="password" name="password" id="password">
+        <input type="password" asp-for="password" id="password" class="form-control">
         @Html.ValidationMessageFor(x => x.password)
     </div>
 
@@ -47,5 +54,13 @@
         @Html.ValidationMessageFor(x => x.confirm_password)
     </div>
 
+    <div>
     <button type="submit">Enviar</button>
+        <input type="password" asp-for="confirm_password" id="confirm_password" class="form-control">
+        @Html.ValidationMessageFor(x => x.confirm_password)
+    </div>
+
+    <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
 </form>

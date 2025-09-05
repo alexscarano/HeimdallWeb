@@ -1,19 +1,60 @@
 @{
     ViewData["Title"] = "Alterar Usuário";
 }
+@model UserModel
+@{
+    ViewData["Title"] = "Editar Usuário";
+}
 
-<form action="#" method="get">
-    <label for="user">Alterar nome de usuário:</label>
-    <input type="text" name="user" id="user">
+@if (TempData["OkMsg"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+        @TempData["OkMsg"]
+    </div>
+}
 
-    <label for="email">Alterar email:</label>
-    <input type="email" name="email" id="email">
+@if (TempData["ErrorMsg"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+        @TempData["ErrorMsg"]
+    </div>
+}
 
-    <label for="password">Alterar senha:</label>
-    <input type="password" name="password" id="password">
-    
-    <label for="conf-password">Confirmar senha:</label>
-    <input type="conf-password" name="conf-password" id="conf-password">
 
-    <button type="submit">Alterar</button>
+<div class="text-center">
+
+    <h1 class="display-4">Editar Usuário</h1>
+
+</div>
+
+<form asp-controller="User" asp-action="EditAction" method="post">
+
+    <input type="hidden" asp-for="user_id" />
+    <div class="mb-3">
+        <label for="nome">Login</label>
+        <input type="text" asp-for="username" class="form-control" placeholder="Digite o nome do Usuário">
+        @Html.ValidationMessageFor(x => x.username)
+    </div>
+    <div class="mb-3">
+        <label for="email">E-mail</label>
+        <input type="email" asp-for="email" class="form-control" placeholder="Digite o email do Usuário">
+        @Html.ValidationMessageFor(x => x.email)
+    </div>
+    <div class="mb-3">
+        <label for="login">Senha</label>
+        <input type="text" asp-for="password" class="form-control" placeholder="Digite a senha do Usuário">
+        @Html.ValidationMessageFor(x => x.password)
+    </div>
+    <div class="mb-3">
+        <label for="login">Confirmar senha</label>
+        <input type="text" asp-for="confirm_password" class="form-control" placeholder="Digite a senha do Usuário">
+        @Html.ValidationMessageFor(x => x.confirm_password)
+    </div>
+
+    <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">Editar</button>
+        <a class="btn btn-secondary" asp-controller="User" asp-action="Index" role="button">Voltar</a>
+    </div>
 </form>

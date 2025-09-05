@@ -52,23 +52,10 @@
               "RelativeDocumentMoniker": "HeimdallWeb\\Views\\User\\Register.cshtml",
               "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Register.cshtml",
               "RelativeToolTip": "HeimdallWeb\\Views\\User\\Register.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAkwDgAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-09-03T00:36:19.31Z",
               "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Delete.cshtml",
-              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Delete.cshtml",
-              "RelativeDocumentMoniker": "HeimdallWeb\\Views\\User\\Delete.cshtml",
-              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Delete.cshtml",
-              "RelativeToolTip": "HeimdallWeb\\Views\\User\\Delete.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-04T00:31:21.898Z",
               "EditorCaption": ""
             },
             {
@@ -116,17 +103,32 @@
               "Name": "ST:0:0:{57d563b6-44a5-47df-85be-f4199ad6b651}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Delete.cshtml",
+              "RelativeDocumentMoniker": "HeimdallWeb\\Views\\User\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Delete.cshtml",
+              "RelativeToolTip": "HeimdallWeb\\Views\\User\\Delete.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-04T00:31:21.898Z"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 6,
               "Title": "Edit.cshtml",
               "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Edit.cshtml",
               "RelativeDocumentMoniker": "HeimdallWeb\\Views\\User\\Edit.cshtml",
-              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Edit.cshtml*",
-              "RelativeToolTip": "HeimdallWeb\\Views\\User\\Edit.cshtml*",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Views\\User\\Edit.cshtml",
+              "RelativeToolTip": "HeimdallWeb\\Views\\User\\Edit.cshtml",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAABUAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-04T00:22:29.687Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-04T00:22:29.687Z"
             },
             {
               "$type": "Document",
@@ -138,8 +140,7 @@
               "RelativeToolTip": "HeimdallWeb\\Helpers\\PasswordUtils.cs",
               "ViewState": "AgIAAAoAAAAAAAAAAAAgwB8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T23:48:23.019Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T23:48:23.019Z"
             },
             {
               "$type": "Document",
@@ -163,8 +164,7 @@
               "RelativeToolTip": "HeimdallWeb\\Repository\\UserRepository.cs",
               "ViewState": "AgIAABwAAAAAAAAAAAAowCIAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T23:37:39.319Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T23:37:39.319Z"
             },
             {
               "$type": "Document",
@@ -176,8 +176,7 @@
               "RelativeToolTip": "HeimdallWeb\\Repository\\IUserRepository.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAAYAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T23:37:20.849Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T23:37:20.849Z"
             },
             {
               "$type": "Document",
@@ -185,12 +184,11 @@
               "Title": "UserController.cs",
               "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Controllers\\UserController.cs",
               "RelativeDocumentMoniker": "HeimdallWeb\\Controllers\\UserController.cs",
-              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Controllers\\UserController.cs*",
-              "RelativeToolTip": "HeimdallWeb\\Controllers\\UserController.cs*",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Controllers\\UserController.cs",
+              "RelativeToolTip": "HeimdallWeb\\Controllers\\UserController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T23:35:25.927Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T23:35:25.927Z"
             }
           ]
         }

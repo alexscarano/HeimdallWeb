@@ -1,4 +1,5 @@
 ﻿using HeimdallWeb.Data;
+using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
 
 namespace HeimdallWeb.Repository
@@ -46,13 +47,14 @@ namespace HeimdallWeb.Repository
         {
             UserModel userDB = getUserById(user.user_id) ?? throw new Exception("Houve um erro ao atualizar o usuário");
 
+            if (userDB.user_id != user.user_id) throw new Exception("Houve um erro ao atualizar o usuário");
+
             userDB.username = user.username;
-            userDB.password = user.password;
+            userDB.password = user.password.hashPassword();
             userDB.email = user.email;  
             userDB.user_type = user.user_type;
             userDB.updated_at = DateTime.Now;
 
-            _appDbContext.User.Add(user);
             _appDbContext.SaveChanges();
 
             return user;
