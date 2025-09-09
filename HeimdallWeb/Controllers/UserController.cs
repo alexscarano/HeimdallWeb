@@ -32,7 +32,7 @@ public class UserController : Controller
 
     public IActionResult History()
     {
-        var users = _userRepository.getAllUsers() ?? throw new Exception("Ocorreu um erro ao consultar os usu�rios");
+        var users = _userRepository.getAllUsers() ?? throw new Exception("Ocorreu um erro ao consultar os usuários");
 
         return View(users);
     }
@@ -62,15 +62,15 @@ public class UserController : Controller
                 if (!_userRepository.verifyIfUserExists(user))
                 {
                     _userRepository.insertUser(user);
-                    TempData["OkMsg"] = "O usu�rio foi cadastrado com sucesso";
+                    TempData["OkMsg"] = "O usuário foi cadastrado com sucesso";
                     return RedirectToAction("Index", "Home");
                 }
-                TempData["ErrorMsg"] = "Este usu�rio j� est� cadastrado, verique o seu email/nome de usu�rio";
+                TempData["ErrorMsg"] = "Este usuário já está cadastrado, verique o seu email/nome de usuário";
             }
         }
         catch (Exception)
         {
-            TempData["ErrorMsg"] = "Ocorreu um erro no cadastro do usu�rio";
+            TempData["ErrorMsg"] = "Ocorreu um erro no cadastro do usuário";
         }
         return View("Register", user);
     }
@@ -84,15 +84,15 @@ public class UserController : Controller
 
             if (ModelState.IsValid)
             {
-                 //user.user_id = 1;
+                 user.user_id = 17;
                 _userRepository.updateUser(user);
-                TempData["OkMsg"] = "Usu�rio atualizado com sucesso";
+                TempData["OkMsg"] = "Usuário atualizado com sucesso";
                 return View("Edit", user);
             }
         }
         catch (Exception)
         {
-            TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usu�rio";
+            TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário";
         }
         return View("Edit", user); 
     }
@@ -101,9 +101,9 @@ public class UserController : Controller
     {
         try
         {
-            id = 16; // colocar sess�o
+            id = 17; // colocar sessáo
 
-            var userDB = _userRepository.getUserById(id) ?? throw new Exception("N�o foi poss�vel fazer a consulta do usu�rio");
+            var userDB = _userRepository.getUserById(id) ?? throw new Exception("Náo foi possável fazer a consulta do usuário");
 
             if (PasswordUtils.VerifyPassword(userToDelete.password, userDB.password))
             {
@@ -111,13 +111,13 @@ public class UserController : Controller
 
                 if (deleted)
                 {
-                    TempData["OkMsg"] = "Usu�rio deletado com sucesso, volte sempre.";
+                    TempData["OkMsg"] = "Usuário deletado com sucesso, volte sempre.";
                 }
             }
         }
         catch (Exception)
         {
-            TempData["ErrorMsg"] = "Ocorreu um erro ao tentar deletar o usu�rio, tente novamente.";
+            TempData["ErrorMsg"] = "Ocorreu um erro ao tentar deletar o usuário, tente novamente.";
             return View("Delete");
         }
 

@@ -36,26 +36,18 @@
 
     <div class="mb-3">
         <label for="email">Email:</label>
-        <input type="email" name="email" id="email"> <br>
         <input type="email" asp-for="email" id="email" class="form-control"/>
         @Html.ValidationMessageFor(x => x.email)
     </div>
 
     <div class="mb-3">
         <label for="password">Senha:</label>
-        <input type="password" name="password" id="password">
         <input type="password" asp-for="password" id="password" class="form-control">
         @Html.ValidationMessageFor(x => x.password)
     </div>
 
     <div class="mb-3">
         <label for="confirm_password">Confirmar senha:</label>
-        <input type="password" name="confirm_password" id="confirm_password">
-        @Html.ValidationMessageFor(x => x.confirm_password)
-    </div>
-
-    <div>
-    <button type="submit">Enviar</button>
         <input type="password" asp-for="confirm_password" id="confirm_password" class="form-control">
         @Html.ValidationMessageFor(x => x.confirm_password)
     </div>

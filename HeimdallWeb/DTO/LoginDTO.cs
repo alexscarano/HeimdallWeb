@@ -11,7 +11,6 @@ namespace HeimdallWeb.DTO
 
         [Required(ErrorMessage = "O campo senha não pode estar vazio")]
         [MaxLength(50, ErrorMessage = "A senha passou o limite máximo de caracteres")]
-        [MinLength(8, ErrorMessage = "A senha precisa ter no mínimo 8 caracteres")]
         [DataType(DataType.Password)]
         public required string password { get; set; }
     }
