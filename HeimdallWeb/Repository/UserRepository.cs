@@ -1,6 +1,7 @@
 ﻿using HeimdallWeb.Data;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HeimdallWeb.Repository
 {
@@ -13,12 +14,12 @@ namespace HeimdallWeb.Repository
             _appDbContext = appDbContext;
         }
 
-        public List<UserModel>? getAllUsers()
+        public async Task<List<UserModel>?> getAllUsers()
         {
             List<UserModel> users;
             try
             {
-              users = _appDbContext.User.ToList();
+              users = await _appDbContext.User.ToListAsync();
             }
             catch (Exception)
             {
@@ -28,24 +29,24 @@ namespace HeimdallWeb.Repository
             return users;
         }
 
-        public UserModel? getUserById(int id)
+        public async Task<UserModel?> getUserById(int id)
         {
-            return _appDbContext.User.FirstOrDefault(x => x.user_id == id);
+            return await _appDbContext.User.FirstOrDefaultAsync(x => x.user_id == id);
         }
 
-        public UserModel insertUser(UserModel user)
+        public async Task<UserModel> insertUser(UserModel user)
         {
             user.password = user.hashUserPassword();  
             user.created_at = DateTime.Now;
-            _appDbContext.User.Add(user);
-            _appDbContext.SaveChanges();
+            await _appDbContext.User.AddAsync(user);
+            await _appDbContext.SaveChangesAsync();
 
             return user;
         }
 
-        public UserModel updateUser(UserModel user)
+        public async Task<UserModel> updateUser(UserModel user)
         {
-            UserModel userDB = getUserById(user.user_id) ?? throw new Exception("Houve um erro ao atualizar o usuário");
+            UserModel userDB = await getUserById(user.user_id) ?? throw new Exception("Houve um erro ao atualizar o usuário");
 
             if (userDB.user_id != user.user_id) throw new Exception("Houve um erro ao atualizar o usuário");
 
@@ -55,14 +56,14 @@ namespace HeimdallWeb.Repository
             userDB.user_type = user.user_type;
             userDB.updated_at = DateTime.Now;
 
-            _appDbContext.SaveChanges();
+            await _appDbContext.SaveChangesAsync();
 
             return user;
         }
 
-        public bool deleteUser(int id)
+        public async Task<bool> deleteUser(int id)
         {
-            UserModel userDB = getUserById(id) ?? throw new Exception("Houve um erro ao deletar o usuário");
+            UserModel userDB = await getUserById(id) ?? throw new Exception("Houve um erro ao deletar o usuário");
 
             _appDbContext.User.Remove(userDB);
             _appDbContext.SaveChanges();
@@ -70,15 +71,25 @@ namespace HeimdallWeb.Repository
             return true;
         }
 
-        public UserModel? getUserByEmailOrLogin(string emailOrUsername)
+        public async Task<UserModel?> getUserByEmailOrLogin(string emailOrUsername)
         {
-            return _appDbContext.User.FirstOrDefault(x => x.email == emailOrUsername || x.username == emailOrUsername); 
+            return await _appDbContext.User.FirstOrDefaultAsync(x => x.email == emailOrUsername || x.username == emailOrUsername); 
         }
 
-        public bool verifyIfUserExists(UserModel user)
+        public async Task<bool> verifyIfUserExists(UserModel user)
         {
-            return _appDbContext.User.
-                Any(x => x.username == user.username || x.email == user.email); 
+            return await _appDbContext.User.
+                AnyAsync(x => x.username == user.username || x.email == user.email); 
+        }
+
+        public async Task<bool> verifyIfUserExistsWithLogin(UserModel user)
+        {
+            return await _appDbContext.User.AnyAsync(x => x.username == user.username);
+        }
+
+        public async Task<bool> verifyIfUserExistsWithEmail(UserModel user)
+        {
+            return await _appDbContext.User.AnyAsync(x => x.email == user.email);
         }
     }
 }

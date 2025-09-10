@@ -169,3 +169,11 @@ C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\obj\Debug\net8.
 C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\obj\Debug\net8.0\HeimdallWeb.pdb
 C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\obj\Debug\net8.0\HeimdallWeb.genruntimeconfig.cache
 C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\obj\Debug\net8.0\ref\HeimdallWeb.dll
+C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll

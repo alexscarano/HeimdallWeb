@@ -1,7 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using HeimdallWeb.DTO;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
 using HeimdallWeb.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeimdallWeb.Controllers;
@@ -9,30 +12,36 @@ namespace HeimdallWeb.Controllers;
 public class UserController : Controller
 {
     private readonly IUserRepository _userRepository;
+    private readonly IConfiguration _config;
 
-    public UserController(IUserRepository userRepository)
+    public UserController(IUserRepository userRepository, IConfiguration config)
     {
         _userRepository = userRepository;
+        _config = config;
     }
 
+    [Authorize]
     public IActionResult Index()
     {
         return View();  
     }
 
+    [Authorize]
     public IActionResult Dashboard()
     {
         return View();
     }
 
+    [Authorize]
     public IActionResult Delete()
     {
         return View();
     }
 
-    public IActionResult History()
+    [Authorize]
+    public async Task<IActionResult> History()
     {
-        var users = _userRepository.getAllUsers() ?? throw new Exception("Ocorreu um erro ao consultar os usuários");
+        var users = await _userRepository.getAllUsers() ?? throw new Exception("Ocorreu um erro ao consultar os usuários");
 
         return View(users);
     }
@@ -47,21 +56,25 @@ public class UserController : Controller
         return View();
     }
 
+    [Authorize]
     public IActionResult Edit()
     {
         return View();
     }    
 
     [HttpPost]
-    public IActionResult RegisterAction(UserModel user)
+    public async Task<IActionResult> RegisterAction(UserModel user)
     {
         try
         {
             if (ModelState.IsValid)
             {
-                if (!_userRepository.verifyIfUserExists(user))
+
+                if (!await _userRepository.verifyIfUserExists(user))
                 {
-                    _userRepository.insertUser(user);
+                    await _userRepository.insertUser(user);
+                    string token = TokenService.generateToken(user, _config);
+                    CookiesHelper.generateAuthCookie(Response, token);  
                     TempData["OkMsg"] = "O usuário foi cadastrado com sucesso";
                     return RedirectToAction("Index", "Home");
                 }
@@ -76,42 +89,82 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    public IActionResult EditAction(UserModel user)
+    [Authorize]
+    public async Task<IActionResult> EditAction(UserModel model)
     {
         try
         {
-            ModelState.Remove(nameof(user.user_id));
+            ModelState.Remove(nameof(model.user_id));
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View("Edit", model);
+
+            // Pega o user_id dos claims validados pelo middleware (preferível)
+            int? userId = TokenService.GetUserIdFromClaims(User);
+            if (userId == null)
             {
-                 user.user_id = 17;
-                _userRepository.updateUser(user);
-                TempData["OkMsg"] = "Usuário atualizado com sucesso";
-                return View("Edit", user);
+                return View("Edit", model);
             }
+
+            model.user_id = userId.Value;
+
+            if (await _userRepository.verifyIfUserExistsWithLogin(model))
+            {
+                TempData["ErrorMsg"] = "Já existe um usuário com este login, tente outro.";
+                return View("Edit", model);
+            }
+
+            if (await _userRepository.verifyIfUserExistsWithEmail(model))
+            {
+                TempData["ErrorMsg"] = "Já existe um usuário com este email, tente outro.";
+                return View("Edit", model);
+            }
+
+            // buscar usuário e atualizar campos permitidos
+            var userDb = await _userRepository.getUserById(model.user_id);
+            if (userDb == null)
+            {
+                TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário.";
+                return View("Edit", model);
+            }
+
+            await _userRepository.updateUser(model);
+
+            TempData["OkMsg"] = "Usuário atualizado com sucesso";
         }
         catch (Exception)
         {
-            TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário";
+            TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário.";
         }
-        return View("Edit", user); 
+
+        return RedirectToAction("Index", "Home");
     }
 
-    public IActionResult DeleteAction(int id, DeleteUserDTO userToDelete)
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> DeleteAction(int id, DeleteUserDTO userToDelete)
     {
         try
         {
-            id = 17; // colocar sessáo
+            int? userId = TokenService.GetUserIdFromClaims(User);
+            if (userId == null)
+            {
+                return View("Edit", userToDelete);
+            }
 
-            var userDB = _userRepository.getUserById(id) ?? throw new Exception("Náo foi possável fazer a consulta do usuário");
+            id = userId.Value;
+
+            var userDB = await _userRepository.getUserById(id) ?? throw new Exception("Náo foi possável fazer a consulta do usuário");
 
             if (PasswordUtils.VerifyPassword(userToDelete.password, userDB.password))
             {
-                bool deleted = _userRepository.deleteUser(id);
+                bool deleted = await _userRepository.deleteUser(id);
 
                 if (deleted)
                 {
+                    CookiesHelper.deleteAuthCookie(Response);
                     TempData["OkMsg"] = "Usuário deletado com sucesso, volte sempre.";
+                    return RedirectToAction("Index", "Login");
                 }
             }
         }
@@ -121,7 +174,8 @@ public class UserController : Controller
             return View("Delete");
         }
 
-        return RedirectToAction("Index", "Login");
+        TempData["ErrorMsg"] = "Ocorreu um erro ao tentar deletar o usuário, tente novamente.";
+        return View("Delete", userToDelete);
     }
 
 }

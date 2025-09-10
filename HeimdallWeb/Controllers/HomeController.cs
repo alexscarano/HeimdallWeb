@@ -18,17 +18,7 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult UserPage()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    public IActionResult Form()
+    public IActionResult AcessoRestrito()
     {
         return View();
     }

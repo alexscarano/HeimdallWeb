@@ -1,5 +1,5 @@
-@{
-    ViewData["Title"] = "Home Page";
+﻿@{
+    ViewData["Title"] = "HeimdallWeb - Home";
 }
 
 @if (TempData["ErrorMsg"] != null)
@@ -19,11 +19,65 @@
 }
 
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <form action="" method="get">
-        <input type="text" name="relatorio" id="relatorio">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Form"><input type="button" value="Gerar"></a>
-    </form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 text-center">
+            <h1 class="display-4 mb-3 fw-bold">🔍 HeimdallWeb</h1>
+            <p class="lead text-muted">Verifique rapidamente a segurança de sites e aplicações web</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h4 class="mb-3">Iniciar Análise</h4>
+                    <form id="scanForm">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control form-control-lg" id="domainInput"
+                                   placeholder="Digite um domínio ou IP ex: example.com" required>
+                            <button class="btn btn-primary btn-lg" type="submit">Analisar</button>
+                        </div>
+                    </form>
+
+                    <div id="loading" class="text-center my-3 d-none">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2">Analisando... aguarde</p>
+                    </div>
+
+                    <div id="result" class="mt-4 d-none">
+                        <h5 class="fw-bold">Resultado da análise</h5>
+                        <pre class="bg-light p-3 rounded text-start" id="resultContent"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row text-center mt-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <h5>🔐 Segurança HTTP</h5>
+                    <p class="text-muted">Detecta headers de segurança ausentes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <h5>📜 Certificados</h5>
+                    <p class="text-muted">Verifica validade do SSL/TLS</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <h5>⚡ Tecnologias</h5>
+                    <p class="text-muted">Identifica frameworks e libs usadas</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

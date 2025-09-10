@@ -4,18 +4,22 @@ namespace HeimdallWeb.Repository
 {
     public interface IUserRepository
     {
-        List<UserModel>? getAllUsers();
+        Task<List<UserModel>?> getAllUsers();
 
-        UserModel insertUser(UserModel user);
+        Task<UserModel> insertUser(UserModel user);
 
-        UserModel? getUserById(int id);
+        Task<UserModel?> getUserById(int id);
 
-        UserModel updateUser(UserModel user);
+        Task<UserModel> updateUser(UserModel user);
 
-        bool deleteUser(int id);
+        Task<bool> deleteUser(int id);
 
-        UserModel? getUserByEmailOrLogin(string emailOrUsername);
+        Task<UserModel?> getUserByEmailOrLogin(string emailOrUsername);
 
-        public bool verifyIfUserExists(UserModel user);
+        Task<bool> verifyIfUserExists(UserModel user);
+
+        Task<bool> verifyIfUserExistsWithLogin(UserModel user);
+
+        Task<bool> verifyIfUserExistsWithEmail(UserModel user);
     }
 }
