@@ -1,0 +1,35 @@
+.acme {
+    font-family: "Acme", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.roboto {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 1.0rem;
+    text-align: center;
+}
+
+.btn-warning {
+    background-color: var(--cor_secundaria);
+    border-color: darkblue;
+}
+
+.btn-warning:hover, .btn-warning:active, .btn-warning:visited {
+    background-color: darkblue;
+    color: whitesmoke;
+    box-shadow: none;
+}
+
+input::placeholder{
+    font-family: "Roboto",sans-serif
+}
+
+.regras {
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 0.79rem;
+    margin-top: 0.3rem;
+}

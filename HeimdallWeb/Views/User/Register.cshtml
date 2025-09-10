@@ -1,3 +1,8 @@
+<head>
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
+
+
 @model UserModel
 @{
     ViewData["Title"] = "Registrar";
@@ -20,39 +25,63 @@
 }
 
 
-<div class="text-center">
 
-    <h1 class="display-4">Registrar Usuário</h1>
+<div class="container d-flex justify-content-center align-items-center flex-grow-1">
+    <div class="card shadow-lg p-4" style="max-width: 450px; width: 100vh;">
+    <div class="text-center mb-4">
+        <h2 class="mt-2 acme">Crie sua conta</h2>
+    </div>
 
-</div>
-
-<form asp-controller="User" asp-action="RegisterAction" method="post">
-    <div class="mb-3">
-        <label for="username">Nome de usuário:</label>
-        <input type="text" asp-for="username" id="username" class="form-control"> 
-         @Html.ValidationMessageFor(x => x.username)
+    <form asp-controller="User" asp-action="RegisterAction" method="post">
+        <div class="mb-3">
+        <label for="username" class="form-label roboto">
+            <i class="fa-solid fa-user"></i> Usuário
+        </label>
+        @Html.ValidationMessageFor(x => x.username)
         @* Mensagem de validação (teste) do model, mudar para algo mais bonito depois *@
-   </div>
+        <input type="text" class="form-control" name="username" asp-for="username" id="username" placeholder="Escolha um nome de usuário" required>
+        <ul class="regras">
+            <li>Sem espaço</li>
+            <li>Entre 6 e 30 caracteres</li>
+        </ul>
+        </div>
 
-    <div class="mb-3">
-        <label for="email">Email:</label>
-        <input type="email" asp-for="email" id="email" class="form-control"/>
+        <div class="mb-3">
+        <label for="email" class="form-label roboto">
+            <i class="fa-solid fa-envelope"></i> Email
+        </label>
+        <input type="email" class="form-control" asp-for="email" id="email" name="email" placeholder="Digite seu email" required>
         @Html.ValidationMessageFor(x => x.email)
-    </div>
+        </div>
 
-    <div class="mb-3">
-        <label for="password">Senha:</label>
-        <input type="password" asp-for="password" id="password" class="form-control">
+        <div class="mb-3">
+        <label for="password" class="form-label roboto">
+            <i class="fa-solid fa-lock"></i> Senha
+        </label>
+        <input type="password" class="form-control" asp-for="password" id="password" name="password" placeholder="Crie uma senha válida" required>
         @Html.ValidationMessageFor(x => x.password)
-    </div>
+        </div>
 
-    <div class="mb-3">
-        <label for="confirm_password">Confirmar senha:</label>
-        <input type="password" asp-for="confirm_password" id="confirm_password" class="form-control">
+        <div class="mb-3">
+        <label for="confirmPassword" class="form-label roboto">
+            <i class="fa-solid fa-lock"></i> Confirmar Senha
+        </label>
+        <input type="password" class="form-control" asp-for="confirm_password" id="confirm_password" name="confirm_password" placeholder="Confirme sua senha" required>
         @Html.ValidationMessageFor(x => x.confirm_password)
-    </div>
+        <ul class="regras">
+            <li>Entre 8 e 50 caracteres</li>
+        </ul>
+        </div>
 
-    <div class="d-grid gap-2">
-        <button type="submit" class="btn btn-primary">Enviar</button>
+        <div class="d-grid mb-3">
+        <button class="btn btn-success btn-warning roboto" type="submit">
+            Cadastrar
+        </button>
+        </div>
+
+        <div class="text-center">
+            <small class="roboto">Já tem uma conta? <a asp-area="" asp-controller="Login" asp-action="Index" class="roboto">Faça login</a></small>
+        </div>
+    </form>
     </div>
-</form>
+</div>
