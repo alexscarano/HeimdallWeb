@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HeimdallWeb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+67be5f076c845fc82d90a29696debf058a1fa4e6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+df8e717c9dbb215e78b663086a8ca7e37d6c6a1a")]
 [assembly: System.Reflection.AssemblyProductAttribute("HeimdallWeb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HeimdallWeb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
