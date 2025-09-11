@@ -50,4 +50,23 @@ public class LoginController : Controller
         }
         return View("Index");
     }
+
+    public IActionResult Logout()
+    {
+        try
+        {
+            var cookieString = CookiesHelper.getAuthCookie(Request);
+
+            if (!string.IsNullOrEmpty(cookieString))
+            {
+                CookiesHelper.deleteAuthCookie(Response);
+                TempData["OkMsg"] = "Logout concluido com sucesso, volte em breve!";
+            }
+        }
+        catch (Exception)
+        {
+            TempData["ErrorMsg"] = "Ocorreu um erro ao fazer o logout";
+        }
+        return RedirectToAction("Index", "Home");
+    }
 }

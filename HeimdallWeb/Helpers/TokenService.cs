@@ -21,6 +21,7 @@ namespace HeimdallWeb.Helpers
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, user.user_id.ToString()),
+                    new Claim(ClaimTypes.Name, user.username),
                     new Claim(ClaimTypes.Email, user.email),
                     new Claim(ClaimTypes.Role, user.user_type.ToString()) // admin ou default
                 }),
