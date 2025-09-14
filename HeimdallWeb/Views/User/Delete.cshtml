@@ -4,20 +4,26 @@
     ViewData["Title"] = "Deletar Usuário";
 }
 
+@if (TempData["ErrorMsg"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+        @TempData["ErrorMsg"]
+    </div>
+}
+
 <h2>@ViewData["Title"]</h2>
 
-<p class="text-danger">Essa ação é irreversível! Confirme sua senha para excluir sua conta.</p>
-
-<form asp-action="DeleteAction" asp-controller="User" method="post">
+<form id="deleteForm" asp-action="DeleteAction" asp-controller="User" method="post">
     <div class="form-group mb-3">
         <label asp-for="password" class="form-label">Senha</label>
-        <input asp-for="password" class="form-control" type="password"/>
+        <input asp-for="password" class="form-control" type="password" />
         @Html.ValidationMessageFor(x => x.password)
     </div>
 
     <div class="form-group mb-3">
         <label asp-for="confirm_password" class="form-label">Confirmar senha</label>
-        <input asp-for="confirm_password" class="form-control" type="password"/>
+        <input asp-for="confirm_password" class="form-control" type="password" />
         @Html.ValidationMessageFor(x => x.confirm_password)
     </div>
 
@@ -29,5 +35,33 @@
         @Html.ValidationMessageFor(x => x.confirm_delete)
     </div>
 
-    <button type="submit" class="btn btn-danger">Excluir Conta</button>
+    <button type="button" class="btn btn-danger" id="btn-delete">Excluir Conta</button>
 </form>
+
+@section Scripts {
+    <script>
+         $(document).on('click', '#btn-delete', function () {
+            // Verificação do checkbox
+            if (!$('#confirm_delete').is(':checked')) {
+                Swal.fire('Ops!', 'Você precisa confirmar que deseja excluir a conta.', 'error');
+                return;
+            }
+            // Exibe o SweetAlert
+            Swal.fire({
+                title: 'Tem certeza que deseja excluir?',
+                text: "Essa ação não poderá ser desfeita!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#2a9df4',
+                cancelButtonColor: '#ff0157',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Se o usuário confirmar, envia o formulário
+                    $('#deleteForm').submit();
+                }
+            });
+        });
+    </script>
+}

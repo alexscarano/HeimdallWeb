@@ -1,25 +1,30 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using HeimdallWeb.Models;
+using Microsoft.AspNetCore.Authorization;
+using HeimdallWeb.Scanners;
 
 namespace HeimdallWeb.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
-
     public IActionResult Index()
     {
         return View();
     }
 
-    public IActionResult AcessoRestrito()
+    public async Task<IActionResult> AcessoRestrito()
     {
         return View();
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Scan(string domainInput)
+    {
+        HeaderScanner scanner = new HeaderScanner();
+
+        var result = await scanner.scanAsync(domainInput);
+
+        return Content(result.ToString(), "application/json");
+    }
+
 }

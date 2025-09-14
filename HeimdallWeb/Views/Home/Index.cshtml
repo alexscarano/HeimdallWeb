@@ -32,10 +32,10 @@
             <div class="card shadow-lg border-0 rounded-4">
                 <div class="card-body p-4">
                     <h4 class="mb-3">Iniciar Análise</h4>
-                    <form id="scanForm">
+                    <form id="scanForm" asp-controller="Home" asp-action="Scan" method="post"> 
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control form-control-lg" id="domainInput"
-                                   placeholder="Digite um domínio ou IP ex: example.com" required>
+                            <input type="text" class="form-control form-control-lg" name="domainInput" id="domainInput"  
+                                   placeholder="Digite um domínio ou IP ex: example.com" required >
                             <button class="btn btn-primary btn-lg" type="submit">Analisar</button>
                         </div>
                     </form>

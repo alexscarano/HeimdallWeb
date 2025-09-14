@@ -167,6 +167,7 @@ public class UserController : Controller
                     return RedirectToAction("Index", "Login");
                 }
             }
+            TempData["ErrorMsg"] = "Senha incorreta, tente novamente.";
         }
         catch (Exception)
         {
@@ -174,7 +175,6 @@ public class UserController : Controller
             return View("Delete");
         }
 
-        TempData["ErrorMsg"] = "Ocorreu um erro ao tentar deletar o usuário, tente novamente.";
         return View("Delete", userToDelete);
     }
 

@@ -177,3 +177,4 @@ C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.
 C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
