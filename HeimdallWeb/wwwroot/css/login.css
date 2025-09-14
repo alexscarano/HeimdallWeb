@@ -11,17 +11,6 @@
     text-align: center;
 }
 
-.btn-warning {
-    background-color: var(--cor_secundaria);
-    border-color: darkblue;
-}
-
-.btn-warning:hover, .btn-warning:active, .btn-warning:visited {
-    background-color: darkblue;
-    color: whitesmoke;
-    box-shadow: none;
-}
-
 input::placeholder{
     font-family: "Roboto",sans-serif
 }
