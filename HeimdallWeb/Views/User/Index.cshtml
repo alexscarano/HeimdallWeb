@@ -1,12 +1,14 @@
+
 @{
     ViewData["Title"] = "Página de Usuário";
 }
 
 
 <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="History">Historico</a>
-
-<a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Dashboard">Dashboard</a>
+@if (User.IsInRole("2")){
+    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Dashboard</a>
+}
 
 <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
 
-<a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
+<a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="DeleteAction">Excluir Usuário</a>

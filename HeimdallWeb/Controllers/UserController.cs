@@ -26,11 +26,6 @@ public class UserController : Controller
         return View();  
     }
 
-    [Authorize]
-    public IActionResult Dashboard()
-    {
-        return View();
-    }
 
     [Authorize]
     public IActionResult Delete()

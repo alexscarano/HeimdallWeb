@@ -1,0 +1,80 @@
+@model List<UserModel>
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<table class="table table-striped-columns">
+    <tr>
+        <th scope="col">ID do usuário</th>
+        <th scope="col">Login</th>
+        <th scope="col">Email</th>
+        <th scope="col"></th>
+    </tr>
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (UserModel? user in Model)
+        {
+            <tr>
+                <th scope="row">@user.user_id</th>
+                <td>@user.username</td>
+                <td>@user.email</td>
+                <td>
+                    <div class="btn-group" role="group"  aria-label="Basic example">
+                        <button type="button" class="btn btn-danger"
+                                onclick="confirmDelete(@user.user_id)">
+                            Excluir
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <p>Nenhum registro no historico</p>
+    }
+</table>
+
+@* @section Scripts {
+    <script>
+        function confirmDelete(userId) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: 'Essa ação não pode ser desfeita!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sim, excluir'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteUser(userId);
+                }
+            });
+        }
+
+        function deleteUser(userId) {
+            fetch('@Url.Action("DeleteUserAsync", "Admin")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                body: JSON.stringify({ id: userId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Deletado!', data.message, 'success');
+                    // remove a linha da tabela sem recarregar a página
+                    document.getElementById('row-' + userId).remove();
+                } else {
+                    Swal.fire('Erro', data.message, 'error');
+                }
+            })
+            .catch(err => Swal.fire('Erro', err, 'error'));
+        }
+    </script>
+} *@
