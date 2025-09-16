@@ -1,10 +1,11 @@
 using HeimdallWeb.Models;
+using HeimdallWeb.Models.Map;
 
 namespace HeimdallWeb.Repository
 {
     public interface IUserRepository
     {
-        Task<List<UserModel>?> getAllUsers();
+        Task<PaginatedResult<UserModel>?> getUsers(string ?where, int page, int pageSize);
 
         Task<UserModel> insertUser(UserModel user);
 

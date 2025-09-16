@@ -33,13 +33,13 @@ public class UserController : Controller
         return View();
     }
 
-    [Authorize]
-    public async Task<IActionResult> History()
-    {
-        var users = await _userRepository.getAllUsers() ?? throw new Exception("Ocorreu um erro ao consultar os usuários");
+    //[Authorize]
+    //public async Task<IActionResult> History()
+    //{
+    // 
 
-        return View(users);
-    }
+    //    return View(users);
+    //}
 
     public IActionResult Login()
     {

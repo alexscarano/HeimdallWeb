@@ -20,7 +20,7 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> Scan(string domainInput)
     {
-        HeaderScanner scanner = new HeaderScanner();
+        SslScanner scanner = new();
 
         var result = await scanner.scanAsync(domainInput);
 

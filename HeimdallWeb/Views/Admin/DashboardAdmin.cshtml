@@ -1,32 +1,47 @@
-@model List<UserModel>
-
+@model HeimdallWeb.Models.Map.PaginatedResult<UserModel>
 @{
     ViewData["Title"] = "Dashboard";
 }
 
+<form method="get" class="mb-3">
+    <input type="text" name="where" placeholder="Pesquisar..." class="form-control" value="@ViewData["CurrentSearch"]" />
+    <button type="submit" class="btn btn-primary mt-2">Buscar</button>
+</form>
+
 <table class="table table-striped-columns">
     <tr>
-        <th scope="col">ID do usuário</th>
-        <th scope="col">Login</th>
-        <th scope="col">Email</th>
-        <th scope="col"></th>
+        <th scope="col" class="text-center">ID do usuário</th>
+        <th scope="col" class="text-center">Login</th>
+        <th scope="col" class="text-center">Email</th>
+        <th scope="col" class="text-center">Deletar</th>
+        <th scope="col" class="text-center">Administrador</th>
     </tr>
 
-    @if (Model != null && Model.Any())
+    @if (Model != null)
     {
-        foreach (UserModel? user in Model)
+        foreach (UserModel? user in Model.Items)
         {
-            <tr>
-                <th scope="row">@user.user_id</th>
-                <td>@user.username</td>
-                <td>@user.email</td>
-                <td>
-                    <div class="btn-group" role="group"  aria-label="Basic example">
-                        <button type="button" class="btn btn-danger"
-                                onclick="confirmDelete(@user.user_id)">
-                            Excluir
-                        </button>
-                    </div>
+            <tr id="row-@user.user_id" class="text-center">
+                <th id="row" class="text-center">@user.user_id</th>
+                <td class="text-center">@user.username</td>
+                <td class="text-center">@user.email</td>
+                <td class="text-center">
+                    @if (@user.user_type == 1)
+                    {   
+                        <div class="btn-group" role="group"  aria-label="Basic example">
+                                <button type="button" class="btn btn-danger"
+                                        onclick="confirmDelete(@user.user_id)">
+                                    Excluir
+                                </button>
+                        </div>
+                    }
+                </td>
+                <td class="text-center">
+                    @if (@user.user_type == 2)
+                    {
+
+                        <i style="color:green" class="bi bi-check-square-fill fa-xl"></i>
+                    }
                 </td>
             </tr>
         }
@@ -37,7 +52,32 @@
     }
 </table>
 
-@* @section Scripts {
+<nav>
+    <ul class="pagination">
+        @if (Model.HasPrevious)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Anterior</a>
+            </li>
+        }
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.Page ? "active" : "")">
+                <a class="page-link" href="?page=@i&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">@i</a>
+            </li>
+        }
+
+        @if (Model.HasNext)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Próxima</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@section Scripts {
     <script>
         function confirmDelete(userId) {
             Swal.fire({
@@ -50,31 +90,28 @@
                 confirmButtonText: 'Sim, excluir'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    deleteUser(userId);
+                    fetch(`@Url.Action("DeleteUser", "Admin")?id=${userId}`, {
+                    method: "POST", 
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire(`Usuário ${userId} Deletado!`, data.message, 'success');
+                            document.getElementById('row-' + userId).remove();
+                        } else {
+                            Swal.fire('Erro', data.message, 'error');
+                        }
+                    })
+                    .catch(err => {
+                        Swal.fire('Erro', 'Ocorreu um erro ao processar a requisição: ' + err.message, 'error');
+                    });
                 }
             });
         }
-
-        function deleteUser(userId) {
-            fetch('@Url.Action("DeleteUserAsync", "Admin")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                },
-                body: JSON.stringify({ id: userId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire('Deletado!', data.message, 'success');
-                    // remove a linha da tabela sem recarregar a página
-                    document.getElementById('row-' + userId).remove();
-                } else {
-                    Swal.fire('Erro', data.message, 'error');
-                }
-            })
-            .catch(err => Swal.fire('Erro', err, 'error'));
-        }
     </script>
-} *@
+} 

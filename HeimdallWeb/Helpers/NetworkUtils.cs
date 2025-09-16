@@ -28,7 +28,7 @@ namespace HeimdallWeb.Helpers
                 if (!IsValidUrl(url, out Uri? uriResult))
                     throw new ArgumentException("O alvo informado não é uma URL válida.");
 
-                 //Testa se é acessível, se não for tenta com http: 
+                //Testa se é acessível, se não for tenta com http: 
                 if (!await IsReachableAsync(url) && uriResult!.Scheme == Uri.UriSchemeHttps)
                 {
                     string fallback = url.Replace("https://", "http://");
@@ -43,7 +43,6 @@ namespace HeimdallWeb.Helpers
                 return string.Empty;
             }
         }
-
 
         /// <summary>
         /// Validação de formato (sintaxe)
@@ -94,6 +93,8 @@ namespace HeimdallWeb.Helpers
             {
                 throw new ArgumentException("A url não pode estar vazia");
             }
+
+            url = url.TrimEnd('/');
 
             if (url.StartsWith("http://"))
             {

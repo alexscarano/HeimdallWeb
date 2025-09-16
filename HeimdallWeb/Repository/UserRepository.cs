@@ -1,6 +1,7 @@
 ﻿using HeimdallWeb.Data;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
+using HeimdallWeb.Models.Map;
 using Microsoft.EntityFrameworkCore;
 
 namespace HeimdallWeb.Repository
@@ -14,19 +15,39 @@ namespace HeimdallWeb.Repository
             _appDbContext = appDbContext;
         }
 
-        public async Task<List<UserModel>?> getAllUsers()
+        public async Task<PaginatedResult<UserModel>?> getUsers(string? where, int page, int pageSize)
         {
-            List<UserModel> users;
             try
             {
-              users = await _appDbContext.User.ToListAsync();
+                var query = _appDbContext.User.AsQueryable();
+
+                if (!string.IsNullOrEmpty(where))
+                {
+                    query = query
+                        .Where(u => u.username.Contains(where) ||
+                               u.email.Contains(where)); 
+                }
+
+                var totalCount = await query.CountAsync();
+
+                var items = await query
+                 .OrderBy(u => u.user_id)
+                 .Skip((page - 1) * pageSize)
+                 .Take(pageSize)
+                 .ToListAsync();
+
+                return new PaginatedResult<UserModel>
+                {
+                    Items = items,
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize
+                };
             }
             catch (Exception)
             {
-                return null;
+                return new PaginatedResult<UserModel>();
             }
-
-            return users;
         }
 
         public async Task<UserModel?> getUserById(int id)
@@ -38,6 +59,7 @@ namespace HeimdallWeb.Repository
         {
             user.password = user.hashUserPassword();  
             user.created_at = DateTime.Now;
+            user.username = user.username.Trim();
             await _appDbContext.User.AddAsync(user);
             await _appDbContext.SaveChangesAsync();
 
@@ -73,23 +95,23 @@ namespace HeimdallWeb.Repository
 
         public async Task<UserModel?> getUserByEmailOrLogin(string emailOrUsername)
         {
-            return await _appDbContext.User.FirstOrDefaultAsync(x => x.email == emailOrUsername || x.username == emailOrUsername); 
+            return await _appDbContext.User.AsNoTracking().FirstOrDefaultAsync(x => x.email == emailOrUsername || x.username == emailOrUsername); 
         }
 
         public async Task<bool> verifyIfUserExists(UserModel user)
         {
-            return await _appDbContext.User.
+            return await _appDbContext.User.AsNoTracking().
                 AnyAsync(x => x.username == user.username || x.email == user.email); 
         }
 
         public async Task<bool> verifyIfUserExistsWithLogin(UserModel user)
         {
-            return await _appDbContext.User.AnyAsync(x => x.username == user.username);
+            return await _appDbContext.User.AsNoTracking().AnyAsync(x => x.username == user.username);
         }
 
         public async Task<bool> verifyIfUserExistsWithEmail(UserModel user)
         {
-            return await _appDbContext.User.AnyAsync(x => x.email == user.email);
+            return await _appDbContext.User.AsNoTracking().AnyAsync(x => x.email == user.email);
         }
     }
 }
