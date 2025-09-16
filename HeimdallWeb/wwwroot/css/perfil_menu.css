@@ -1,0 +1,11 @@
+:root {
+  --main-color: #519CAB;
+  --secondary-color: #C3E7F1;
+  --tertiary-color: #20373B;
+  --complementary-color: #FFC454;
+  --background-color: #EAEAEA;
+}
+
+.text-dark {
+    font-size: 1.2rem;
+}

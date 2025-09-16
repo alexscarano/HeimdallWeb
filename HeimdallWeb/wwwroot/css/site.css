@@ -24,6 +24,7 @@ html {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  font-size: 1.1rem;
 }
 
 .bar-item-link {
@@ -38,6 +39,10 @@ html {
   background-color: var(--tertiary-color);
   color: var(--secondary-color);
   border-radius: 1.3rem;
+}
+
+.bar-logo {
+  width: 33vh;
 }
 
 .bar-char {

@@ -1,14 +1,26 @@
-
 @{
     ViewData["Title"] = "Página de Usuário";
 }
 
+<head>
+    <link rel="stylesheet" href="~/css/perfil_menu.css" asp-append-version="true" />
+</head>
 
-<a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="History">Historico</a>
-@if (User.IsInRole("2")){
-    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Dashboard</a>
-}
-
-<a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
-
-<a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="DeleteAction">Excluir Usuário</a>
+<div class="container">
+    <div class="row justify-content-evenly align-items-center">
+        <div class="col">
+            <a class="nav-link text-center text-dark" asp-area="" asp-controller="User" asp-action="History">Historico</a>
+        </div>
+        @if (User.IsInRole("2")){
+            <div class="col">
+                <a class="nav-link text-center text-dark" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Dashboard</a>
+            </div>
+        }   
+        <div class="col">
+            <a class="nav-link text-center text-dark" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
+        </div>
+        <div class="col">
+            <a class="nav-link text-center text-dark" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
+        </div>
+    </div>
+</div>
