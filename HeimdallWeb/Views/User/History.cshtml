@@ -1,0 +1,57 @@
+@model List<UserModel>
+@{
+    ViewData["Title"] = "Histórico";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/historico.css" asp-append-version="true" />
+</head>
+
+<div class="container mt-5">
+    <table class="table table-striped-columns table-hover">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Site</th>
+                <th scope="col">Relatório IA</th>
+                <th scope="col">Ações</th>
+                <th scope="col">Data de criação</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            <tr>
+                <td>1</td>
+                <td>Google.com.br</td>
+                <td><a href="#">Link tabela</a></td>
+                <td class="justify-content-end">
+                    <button class="btn btn-success">JSON</button>
+                    <button class="btn btn-primary">Resumo</button>
+                    <button class="btn btn-danger">Excluir</button>
+                </td>
+                <td>16/09/2025</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Teams.com.br</td>
+                <td><a href="#">Link tabela</a></td>
+                <td class="justify-content-end">
+                    <button class="btn btn-success">JSON</button>
+                    <button class="btn btn-primary">Resumo</button>
+                    <button class="btn btn-danger">Excluir</button>
+                </td>
+                <td>24/09/2025</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Siga.com.br</td>
+                <td><a href="#">Link tabela</a></td>
+                <td class="justify-content-end">
+                    <button class="btn btn-success">JSON</button>
+                    <button class="btn btn-primary">Resumo</button>
+                    <button class="btn btn-danger">Excluir</button>
+                </td>
+                <td>01/10/2025</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
