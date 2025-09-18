@@ -11,13 +11,14 @@ namespace HeimdallWeb.Data
         public DbSet<HistoryModel> History { get; set; }
         public DbSet <TechnologyModel> Technology { get; set; }
         public DbSet <IASummaryModel> IASummary {  get; set; }
-
+        public DbSet <FindingModel> Finding { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserMap());
             modelBuilder.ApplyConfiguration(new HistoryMap());
             modelBuilder.ApplyConfiguration(new TechnologyMap());
             modelBuilder.ApplyConfiguration(new IASummaryMap());
+            modelBuilder.ApplyConfiguration(new FindingMap());  
         }
     }
 }

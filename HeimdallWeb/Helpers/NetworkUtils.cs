@@ -94,8 +94,6 @@ namespace HeimdallWeb.Helpers
                 throw new ArgumentException("A url não pode estar vazia");
             }
 
-            url = url.TrimEnd('/');
-
             if (url.StartsWith("http://"))
             {
                 url = url.Replace("http://", "");
@@ -103,6 +101,11 @@ namespace HeimdallWeb.Helpers
             else if (url.StartsWith("https://"))
             {
                 url = url.Replace("https://", "");
+            }
+            
+            if (url.Contains('/'))
+            {
+                url = url.Substring(0, url.IndexOf('/'));//Remove tudo após a primeira barra
             }
 
             return url;

@@ -1,6 +1,7 @@
 ﻿using HeimdallWeb.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace HeimdallWeb.Controllers
 {
@@ -34,23 +35,23 @@ namespace HeimdallWeb.Controllers
         [Authorize(Roles = "2")]
         [HttpPost]
         [ActionName("DeleteUser")]
-        public async Task<JsonResult> DeleteUser(int id)
+        public async Task<JObject> DeleteUser(int id)
         {
             try
             {
                 var userDB = await _userRepository.getUserById(id);
                 if (userDB == null)
-                    return Json(new { success = false, message = "Usuário não encontrado." });
+                    return JObject.FromObject(new { success = false, message = "Usuário não encontrado." });
 
                 bool deleted = await _userRepository.deleteUser(id);
                 if (deleted)
-                    return Json(new { success = true, message = "Usuário deletado com sucesso." });
+                    return JObject.FromObject(new { success = true, message = "Usuário deletado com sucesso." });
 
-                return Json(new { success = false, message = "Falha ao deletar usuário." });
+                return JObject.FromObject(new { success = false, message = "Falha ao deletar usuário." });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Erro: " + ex.Message });
+                return JObject.FromObject(new { success = false, message = "Erro: " + ex.Message });
             }
         }
 

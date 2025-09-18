@@ -29,5 +29,7 @@ namespace HeimdallWeb.Models
         public virtual List<TechnologyModel> ?Technologies { get; set; }
 
         public virtual List<IASummaryModel>? IASummaries { get; set; }
+
+        public virtual List<FindingModel> ?Findings { get; set; }
     }
 }
