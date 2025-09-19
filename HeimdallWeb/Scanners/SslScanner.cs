@@ -66,8 +66,8 @@ namespace HeimdallWeb.Scanners
                             else if (ecdsa != null)
                                 keySize = ecdsa.KeySize;
 
-                            // Ensure sigAlg is not null before using .Contains
-                            var usesWeakSig = !string.IsNullOrEmpty(sigAlg) && (
+                        // Certificados com SHA-1 ou MD5 são considerados inseguros
+                        var usesWeakSig = !string.IsNullOrEmpty(sigAlg) && (
                                 sigAlg.Contains("sha1", StringComparison.OrdinalIgnoreCase) ||
                                 sigAlg.Contains("md5", StringComparison.OrdinalIgnoreCase)
                             );
@@ -101,15 +101,13 @@ namespace HeimdallWeb.Scanners
                             }));
                         }
 
-                        var output = new JObject
+                        return JObject.FromObject(new
                         {
-                            ["scanner"] = "SslScanner",
-                            ["target"] = target.ToString(),
-                            ["timestamp"] = DateTime.UtcNow,
-                            ["results"] = results
-                        };
-
-                        return output;
+                            scanner = "SslScanner",
+                            target = target.ToString(),
+                            scanTime = DateTime.UtcNow,
+                            results = results
+                        });
                     }
             }
             catch (Exception ex)

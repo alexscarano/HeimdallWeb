@@ -20,7 +20,7 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> Scan(string domainInput)
     {
-        SslScanner scanner = new();
+        HttpRedirectScanner scanner = new();
 
         var result = await scanner.scanAsync(domainInput);
 

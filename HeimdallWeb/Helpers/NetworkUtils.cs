@@ -117,8 +117,10 @@ namespace HeimdallWeb.Helpers
         /// <param name="rawHost"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public static IPAddress GetIPv4Addresses(string rawHost)
+        public static IPAddress[] GetIPv4Addresses(string rawHost)
         {
+            List<IPAddress> ipv4Addresses = new List<IPAddress>();
+
             try
             {
                 var host = removeHttpString(rawHost);
@@ -127,7 +129,8 @@ namespace HeimdallWeb.Helpers
                 {
                     if (addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                     {
-                        return addr;
+                        ipv4Addresses.Add(addr);
+                        return ipv4Addresses.ToArray();
                     }
                 }
                 throw new Exception("Nenhum ipv4 foi achado para esse host.");
