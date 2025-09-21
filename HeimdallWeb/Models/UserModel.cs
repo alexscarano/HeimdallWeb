@@ -29,12 +29,14 @@ namespace HeimdallWeb.Models
         [MaxLength(50, ErrorMessage = "A senha passou o limite máximo de caracteres")]
         [MinLength(8, ErrorMessage = "A senha precisa ter no mínimo 8 caracteres")]
         [DataType(DataType.Password)]
+        [RequireSpecialCharacter]
         public required string password { get; set; }
 
         [NotMapped]
         [Required(ErrorMessage = "O campo confirmar senha não pode estar vazio")]
         [DataType(DataType.Password)]
         [Compare("password", ErrorMessage = "As senhas precisam coincidir")]
+        [RequireSpecialCharacter]
         public required string confirm_password { get; set; }
 
         public required int user_type { get; set; } = (int)Enums.UserType.Default;
