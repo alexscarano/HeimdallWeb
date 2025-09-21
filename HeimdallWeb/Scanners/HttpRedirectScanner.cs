@@ -67,11 +67,10 @@ namespace HeimdallWeb.Scanners
 
                 return JObject.FromObject(new 
                 {
-                    scanner = "HttpRedirectScanner",
                     target = targetRaw,
                     ips = new JArray(target.Select(i => i.ToString())),
                     scanTime = DateTime.UtcNow,
-                    results = results
+                    resultsHttpRedirectScanner = results
                 });
             }
             catch (Exception ex)
@@ -79,7 +78,6 @@ namespace HeimdallWeb.Scanners
                 return JObject.FromObject(new
                 {
                     error = "failed_to_scan",
-                    scanner = "HttpRedirectScanner",
                     target = targetRaw,
                     scanTime = DateTime.UtcNow,
                     errorMessage = ex.Message
@@ -130,10 +128,18 @@ namespace HeimdallWeb.Scanners
                 var response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
                 // Analisa o tipo de resposta
-                if (response.Contains("301") || response.Contains("302"))
+                if (response.Contains("301") || 
+                    response.Contains("302") || 
+                    response.Contains("307") ||
+                    response.Contains("308")
+                    )
                 {
                     probe["redirect_detected"] = true;
-                    probe["redirect_type"] = response.Contains("301") ? "permanent" : "temporary";
+
+                    if (response.Contains("301") || response.Contains("308"))
+                        probe["redirect_type"] = "permanent";
+                    else if (response.Contains("302") || response.Contains("307"))
+                        probe["redirect_type"] = "temporary";
 
                     // Extrai a URL de destino se possível
                     var locationIndex = response.IndexOf("Location:");

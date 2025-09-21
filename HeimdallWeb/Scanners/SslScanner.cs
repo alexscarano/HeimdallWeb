@@ -103,10 +103,8 @@ namespace HeimdallWeb.Scanners
 
                         return JObject.FromObject(new
                         {
-                            scanner = "SslScanner",
-                            target = target.ToString(),
                             scanTime = DateTime.UtcNow,
-                            results = results
+                            resultsSslScanner = results
                         });
                     }
             }

@@ -9,6 +9,9 @@ namespace HeimdallWeb.Scanners
         public ScannerManager()
         {
             _scanners.Add(new HeaderScanner());
+            _scanners.Add(new SslScanner());
+            _scanners.Add(new PortScanner());
+            _scanners.Add(new HttpRedirectScanner());
         }
 
         public async Task<JObject> RunAllAsync(string target)

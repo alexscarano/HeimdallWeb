@@ -57,10 +57,9 @@ namespace HeimdallWeb.Scanners
 
                 return JObject.FromObject(new
                 {
-                    scanner = "HeaderScanner",
-                    statusCode = (int)response.StatusCode,
+                    statusCodeHttpRequest = (int)response.StatusCode,
                     headers = allHeaders,
-                    securityFindings = new
+                    securityHeaders = new
                     {
                         present,
                         weak,

@@ -20,9 +20,9 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> Scan(string domainInput)
     {
-        HttpRedirectScanner scanner = new();
+        ScannerManager scanner = new();
 
-        var result = await scanner.scanAsync(domainInput);
+        var result = await scanner.RunAllAsync(domainInput);
 
         return Content(result.ToString(), "application/json");
     }

@@ -116,11 +116,10 @@ namespace HeimdallWeb.Scanners
 
                 var output = new JObject
                 {
-                    ["scanner"] = "PortScanner",
                     ["target"] = targetRaw,
                     ["ips"] = new JArray(target.Select(i => i.ToString())),
                     ["scanTime"] = DateTime.UtcNow,
-                    ["results"] = results
+                    ["resultsPortScanner"] = results
                 };
 
                 return output;
@@ -134,7 +133,7 @@ namespace HeimdallWeb.Scanners
                     ["scanner"] = "PortScanner",
                     ["target"] = targetRaw,
                     ["scanTime"] = DateTime.UtcNow,
-                    ["results"] = results_error
+                    ["resultsPortScanner"] = results_error
                 };
 
                 return output_error;
