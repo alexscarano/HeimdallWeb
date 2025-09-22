@@ -33,26 +33,48 @@ namespace HeimdallWeb.Scanners
         /// </summary>
         private readonly List<int> _defaultPorts = new List<int>
         {
-            21,   // FTP
-            22,   // SSH
-            23,   // Telnet
-            25,   // SMTP
-            53,   // DNS
-            80,   // HTTP
-            110,  // POP3
-            143,  // IMAP
-            443,  // HTTPS
-            465,  // SMTPS
-            587,  // SMTP submission
-            993,  // IMAP SSL
-            995,  // POP3 SSL
-            3306, // MySQL
-            5432, // PostgreSQL
-            6379, // Redis
-            27017,// MongoDB
-            8080, // HTTP-alt
-            8443, // HTTPS-alt
-            3389  // RDP
+            // Web
+            80,    // HTTP
+            443,   // HTTPS
+            8080,  // HTTP-alt / apps
+            8443,  // HTTPS-alt / admin panels
+
+            // FTP / SFTP (upload sites / deploy)
+            20,    // FTP-data (opcional, mas relacionado)
+            21,    // FTP
+            22,    // SSH / SFTP
+
+            // Email (servidores que sites frequentemente interagem)
+            25,    // SMTP
+            465,   // SMTPS
+            587,   // SMTP submission
+            110,   // POP3
+            995,   // POP3S
+            143,   // IMAP
+            993,   // IMAPS
+
+            // DNS (importante para sites)
+            53,    // DNS
+
+            // Bancos de dados comuns em hosting de sites
+            3306,  // MySQL / MariaDB
+            5432,  // PostgreSQL
+            27017, // MongoDB (alguns sites/serviços)
+            1433, // SQL Server
+            1521, // Oracle DB
+
+            // Cache / session / auxiliar web
+            6379,  // Redis
+            11211, // Memcached
+
+            // Painéis e webmail / painéis de hospedagem (comuns em hosts compartilhados)
+            2082,  // cPanel (non-SSL)
+            2083,  // cPanel (SSL)
+            2095,  // Webmail
+            2096,  // Webmail (SSL)
+
+            // RDP (às vezes exposto em servidores windows)
+            3389   // RDP
         };
 
 
@@ -63,7 +85,7 @@ namespace HeimdallWeb.Scanners
         /// <param name="readTimeout"></param>
         /// <param name="maxParallel"></param>
         /// <param name="tryBanner"></param>
-        public PortScanner(TimeSpan? connectTimeout = null, TimeSpan? readTimeout = null, int maxParallel = 20, bool tryBanner = true)
+        public PortScanner(TimeSpan? connectTimeout = null, TimeSpan? readTimeout = null, int maxParallel = 30, bool tryBanner = true)
         {
             _connectTimeout = connectTimeout ?? TimeSpan.FromSeconds(3);
             _readTimeout = readTimeout ?? TimeSpan.FromSeconds(2);
@@ -90,7 +112,7 @@ namespace HeimdallWeb.Scanners
 
                 foreach (var ip in target)
                 {
-                    foreach (var port in _defaultPorts)
+                    foreach (var port in _defaultPorts.Distinct())
                     {
                         probeTasks.Add(Task.Run(async () =>
                         {

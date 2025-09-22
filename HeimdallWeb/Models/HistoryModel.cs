@@ -10,14 +10,16 @@ namespace HeimdallWeb.Models
         public required int history_id { get; set; }
 
         [Required]
-        // Url ou IP do website
+        /// <summary>
+        /// Target escaneado (domínio)
+        /// </summary>
         public required string target { get; set; }
 
-        // Resumo de alertas críticos
-        public string ?summary { get; set; }
-
-        // resultado bruto
-        public string ?raw_json_result { get; set; }
+        /// <summary>
+        /// Resultado bruto do scan em formato JSON
+        /// </summary>
+        [Required]
+        public required string raw_json_result { get; set; }
 
         [Required]
         public required DateTime created_date { get; set; } = DateTime.Now;

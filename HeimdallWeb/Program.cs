@@ -16,8 +16,11 @@ var jwtKey = Encoding.ASCII.GetBytes(jwtSettings["Key"] ?? "Key não informada");
 
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
 
+builder.Services.AddHttpContextAccessor();
+
 // injeção de dependencia
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
 
 // capturar string de conexão sql
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));

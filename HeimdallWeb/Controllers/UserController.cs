@@ -33,13 +33,13 @@ public class UserController : Controller
         return View();
     }
 
-    //[Authorize]
-    //public async Task<IActionResult> History()
-    //{
-    // 
 
-    //    return View(users);
-    //}
+    // View de histórico de acessos
+    [Authorize]
+    public async Task<IActionResult> History()
+    {
+        return View();
+    }
 
     public IActionResult Login()
     {

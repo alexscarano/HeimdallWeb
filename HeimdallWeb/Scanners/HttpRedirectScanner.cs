@@ -150,6 +150,7 @@ namespace HeimdallWeb.Scanners
                         {
                             var redirectUrl = response.Substring(locationIndex + 10, locationEnd - locationIndex - 10).Trim();
                             probe["redirect_url"] = redirectUrl;
+                            probe["status"] = "redirect_found";
                             /*
                                  Os primeiros 10 caracteres são "Location: "
                                  A URL de redirecionamento começa no índice 10

@@ -140,5 +140,15 @@ namespace HeimdallWeb.Helpers
                 throw new Exception($"Erro em resolver o '{rawHost}': {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Verifica se a string é um endereço IP válido
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsIPAddress(string input)
+        {
+            return IPAddress.TryParse(input, out _);
+        }
     }
 }
