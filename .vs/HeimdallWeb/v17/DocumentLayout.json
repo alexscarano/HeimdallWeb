@@ -1,22 +1,30 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\HeimdallWeb\\",
+  "WorkspaceRootPath": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\gabri\\onedrive\\documentos\\github\\heimdallweb\\heimdallweb\\helpers\\requirespecialcharacterattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\helpers\\requirespecialcharacterattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\gabri\\onedrive\\documentos\\github\\heimdallweb\\heimdallweb\\models\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\models\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\helpers\\paginationhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\helpers\\paginationhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\gabri\\onedrive\\documentos\\github\\heimdallweb\\heimdallweb\\dto\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\dto\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\repository\\historyrespository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\repository\\historyrespository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\gabri\\onedrive\\documentos\\github\\heimdallweb\\heimdallweb\\helpers\\passwordutils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\helpers\\passwordutils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\repository\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\repository\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\repository\\ihistoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\repository\\ihistoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|c:\\users\\alexa\\onedrive\\documents\\dotnet\\heimdallweb\\heimdallweb\\models\\findingmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{74533712-1FFE-47D4-A370-5D87553FA3D2}|HeimdallWeb\\HeimdallWeb.csproj|solutionrelative:heimdallweb\\models\\findingmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 60,
-          "SelectedChildIndex": 14,
+          "SelectedChildIndex": 12,
           "Children": [
             {
               "$type": "Bookmark",
@@ -73,60 +81,78 @@
               "Name": "ST:0:0:{57d563b6-44a5-47df-85be-f4199ad6b651}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
-            {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "UserModel.cs",
-              "DocumentMoniker": "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\HeimdallWeb\\HeimdallWeb\\Models\\UserModel.cs",
-              "RelativeDocumentMoniker": "HeimdallWeb\\Models\\UserModel.cs",
-              "ToolTip": "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\HeimdallWeb\\HeimdallWeb\\Models\\UserModel.cs",
-              "RelativeToolTip": "HeimdallWeb\\Models\\UserModel.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAgwCAAAAAqAAAAAAAAAA==",
+              "Title": "PaginationHelper.cs",
+              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Helpers\\PaginationHelper.cs",
+              "RelativeDocumentMoniker": "HeimdallWeb\\Helpers\\PaginationHelper.cs",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Helpers\\PaginationHelper.cs",
+              "RelativeToolTip": "HeimdallWeb\\Helpers\\PaginationHelper.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-21T16:59:55.234Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "LoginDTO.cs",
-              "DocumentMoniker": "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\HeimdallWeb\\HeimdallWeb\\DTO\\LoginDTO.cs",
-              "RelativeDocumentMoniker": "HeimdallWeb\\DTO\\LoginDTO.cs",
-              "ToolTip": "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\HeimdallWeb\\HeimdallWeb\\DTO\\LoginDTO.cs",
-              "RelativeToolTip": "HeimdallWeb\\DTO\\LoginDTO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-21T15:59:52.565Z",
+              "WhenOpened": "2025-09-22T23:52:48.773Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "RequireSpecialCharacterAttribute.cs",
-              "DocumentMoniker": "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\HeimdallWeb\\HeimdallWeb\\Helpers\\RequireSpecialCharacterAttribute.cs",
-              "RelativeDocumentMoniker": "HeimdallWeb\\Helpers\\RequireSpecialCharacterAttribute.cs",
-              "ToolTip": "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\HeimdallWeb\\HeimdallWeb\\Helpers\\RequireSpecialCharacterAttribute.cs",
-              "RelativeToolTip": "HeimdallWeb\\Helpers\\RequireSpecialCharacterAttribute.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\UserRepository.cs",
+              "RelativeDocumentMoniker": "HeimdallWeb\\Repository\\UserRepository.cs",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\UserRepository.cs",
+              "RelativeToolTip": "HeimdallWeb\\Repository\\UserRepository.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAApwBAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-21T16:24:46.186Z",
+              "WhenOpened": "2025-09-22T21:46:38.392Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "PasswordUtils.cs",
-              "DocumentMoniker": "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\HeimdallWeb\\HeimdallWeb\\Helpers\\PasswordUtils.cs",
-              "RelativeDocumentMoniker": "HeimdallWeb\\Helpers\\PasswordUtils.cs",
-              "ToolTip": "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\HeimdallWeb\\HeimdallWeb\\Helpers\\PasswordUtils.cs",
-              "RelativeToolTip": "HeimdallWeb\\Helpers\\PasswordUtils.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAA3AAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "HistoryRespository.cs",
+              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\HistoryRespository.cs",
+              "RelativeDocumentMoniker": "HeimdallWeb\\Repository\\HistoryRespository.cs",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\HistoryRespository.cs",
+              "RelativeToolTip": "HeimdallWeb\\Repository\\HistoryRespository.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAowAcAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-21T15:56:21.421Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-22T21:45:56.774Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IUserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\IUserRepository.cs",
+              "RelativeDocumentMoniker": "HeimdallWeb\\Repository\\IUserRepository.cs",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\IUserRepository.cs",
+              "RelativeToolTip": "HeimdallWeb\\Repository\\IUserRepository.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAxwAcAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-22T21:38:29.992Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IHistoryRepository.cs",
+              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\IHistoryRepository.cs",
+              "RelativeDocumentMoniker": "HeimdallWeb\\Repository\\IHistoryRepository.cs",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Repository\\IHistoryRepository.cs",
+              "RelativeToolTip": "HeimdallWeb\\Repository\\IHistoryRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-22T21:37:27.744Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "FindingModel.cs",
+              "DocumentMoniker": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Models\\FindingModel.cs",
+              "RelativeDocumentMoniker": "HeimdallWeb\\Models\\FindingModel.cs",
+              "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Models\\FindingModel.cs",
+              "RelativeToolTip": "HeimdallWeb\\Models\\FindingModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-22T21:32:33.619Z"
             }
           ]
         }

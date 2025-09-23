@@ -7,7 +7,15 @@ namespace HeimdallWeb.Models.Map
     {
         public void Configure(EntityTypeBuilder<IASummaryModel> builder)
         {
-            builder.Property(t => t.category).HasMaxLength(100);
+            builder.Property(t => t.summary_text).HasMaxLength(1000);
+
+            builder.Property(t => t.main_category).HasMaxLength(100);
+
+            builder.Property(t => t.overall_risk)
+                .HasConversion<string>()
+                .HasColumnType("ENUM('Baixo','Medio','Alto','Critico')")
+                .HasMaxLength(10)
+                .HasDefaultValue("Baixo");
 
             builder.HasKey(t => t.ia_summary_id);
 

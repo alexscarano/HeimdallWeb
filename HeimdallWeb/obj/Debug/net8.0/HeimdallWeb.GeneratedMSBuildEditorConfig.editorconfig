@@ -17,69 +17,69 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = HeimdallWeb
 build_property.RootNamespace = HeimdallWeb
-build_property.ProjectDir = C:\Users\gabri\OneDrive\Documentos\GitHub\HeimdallWeb\HeimdallWeb\
+build_property.ProjectDir = C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\gabri\OneDrive\Documentos\GitHub\HeimdallWeb\HeimdallWeb
+build_property.MSBuildProjectDirectory = C:\Users\alexa\OneDrive\Documents\Dotnet\HeimdallWeb\HeimdallWeb
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/Admin/DashboardAdmin.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/Admin/DashboardAdmin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGFzaGJvYXJkQWRtaW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/Home/AcessoRestrito.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/History/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGlzdG9yeVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/Home/AcessoRestrito.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBY2Vzc29SZXN0cml0by5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/Home/Form.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/Home/Form.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxGb3JtLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/Home/Index.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/Login/Index.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/Login/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/Shared/Components/Menu/Default.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/Shared/Components/Menu/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcTWVudVxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/User/Delete.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/User/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/User/Edit.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/User/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/User/History.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxIaXN0b3J5LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/User/Index.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/User/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/User/Register.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/User/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/_ViewImports.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/_ViewStart.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/gabri/OneDrive/Documentos/GitHub/HeimdallWeb/HeimdallWeb/Views/Shared/_Layout.cshtml]
+[C:/Users/alexa/OneDrive/Documents/Dotnet/HeimdallWeb/HeimdallWeb/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-1sspaputmf

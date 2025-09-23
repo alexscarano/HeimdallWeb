@@ -20,7 +20,7 @@ namespace HeimdallWeb.Models.Map
             builder.Property(f => f.severity)
                 .HasConversion<string>()
                 .IsRequired()
-                .HasColumnType("ENUM('Low','Medium','High','Critical')")
+                .HasColumnType("ENUM('Baixo','Medio','Alto','Critico')")
                 .HasMaxLength(10);
 
             builder.Property(f => f.evidence)

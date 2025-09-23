@@ -1,6 +1,7 @@
 ﻿using HeimdallWeb.Data;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
+using HeimdallWeb.Models.Map;
 
 namespace HeimdallWeb.Repository
 {
@@ -20,7 +21,12 @@ namespace HeimdallWeb.Repository
             throw new NotImplementedException();
         }
 
-        public Task<List<HistoryModel>> getAllHistories()
+        public Task<PaginatedResult<HistoryModel>> getAllHistories(string? where, int page, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PaginatedResult<HistoryModel?>> getHistoriesByUserID(int id)
         {
             throw new NotImplementedException();
         }

@@ -4,6 +4,7 @@ using HeimdallWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HeimdallWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250922205317_UpdateEnum")]
+    partial class UpdateEnum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,28 +109,21 @@ namespace HeimdallWeb.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ia_summary_id"));
 
+                    b.Property<string>("category")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<DateTime>("created_date")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int?>("history_id")
                         .HasColumnType("int");
 
-                    b.Property<string>("main_category")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("notes")
+                    b.Property<string>("issue")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("overall_risk")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(10)
-                        .HasColumnType("ENUM('Baixo','Medio','Alto','Critico')")
-                        .HasDefaultValue("Baixo");
-
-                    b.Property<string>("summary_text")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                    b.Property<string>("recommendation")
+                        .HasColumnType("longtext");
 
                     b.HasKey("ia_summary_id");
 
