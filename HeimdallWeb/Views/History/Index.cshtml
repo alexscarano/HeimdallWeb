@@ -23,7 +23,7 @@
         @if (Model != null && Model.Items.Any())
         {
             <thead>
-                <tr>
+                <tr class="text-center">
                     <th scope="col">Site</th>
                     <th scope="col">Relatório IA</th>
                     <th scope="col">Ações</th>
@@ -42,7 +42,7 @@
         {
             @foreach (var history in Model.Items)
             {
-                <tr>
+                <tr class="text-center">
                     <td hidden id="row-@history.history_id">@history.history_id</td>
                     <td >@history.target</td>
                     <td>

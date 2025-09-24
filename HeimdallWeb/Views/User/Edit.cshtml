@@ -23,38 +23,40 @@
 }
 
 
-<div class="text-center">
+    
+    <div class="container editar-box" style="max-width: 680px; margin-top: 4rem;">
+       <div>
+           <div>
+               <div class="row text-center mb-5">
+                   <h2 class="mt-2 acme" style="color: #20373B; font-family: Acme, sans-serif;">Alterar Usuário</h2>
+               </div>
+                <form asp-controller="User" asp-action="EditAction" method="post">
 
-    <h1 class="display-4">Editar Usuário</h1>
+                    <input type="hidden" asp-for="user_id" />
+                    <div class="mb-4">
+                        <label for="nome" style="color: #20373B; font-weight: bold;">Login <i class="fa-solid fa-user"></i></label>
+                        <input type="text" asp-for="username" class="form-control" placeholder="Digite o nome do Usuário">
+                        @Html.ValidationMessageFor(x => x.username)
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" style="color: #20373B; font-weight: bold;">E-mail <i class="fa-solid fa-envelope"></i></label>
+                        <input type="email" asp-for="email" class="form-control" placeholder="Digite o email do Usuário">
+                        @Html.ValidationMessageFor(x => x.email)
+                    </div>
+                    <div class="mb-4">
+                        <label for="login" style="color: #20373B; font-weight: bold;">Senha <i class="fa-solid fa-lock"></i></label>
+                        <input type="text" asp-for="password" class="form-control" placeholder="Digite a senha do Usuário">
+                        @Html.ValidationMessageFor(x => x.password)
+                    </div>
+                    <div class="mb-4">
+                        <label for="login" style="color: #20373B; font-weight: bold;">Confirmar senha <i class="fa-solid fa-lock"></i></label>
+                        <input type="text" asp-for="confirm_password" class="form-control" placeholder="Digite a senha do Usuário">
+                        @Html.ValidationMessageFor(x => x.confirm_password)
+                    </div>
 
-</div>
-
-<form asp-controller="User" asp-action="EditAction" method="post">
-
-    <input type="hidden" asp-for="user_id" />
-    <div class="mb-3">
-        <label for="nome">Login</label>
-        <input type="text" asp-for="username" class="form-control" placeholder="Digite o nome do Usuário">
-        @Html.ValidationMessageFor(x => x.username)
+                        <button type="submit" class="btn btn" style="background-color: #20373B; color: #FFFFFF">Editar <i class="fa-solid fa-circle-info"></i></button>
+                        <a class="btn btn-outline-secondary" asp-controller="User" asp-action="Index" role="button">Voltar</a>
+                </form>
+          </div>
+       </div>
     </div>
-    <div class="mb-3">
-        <label for="email">E-mail</label>
-        <input type="email" asp-for="email" class="form-control" placeholder="Digite o email do Usuário">
-        @Html.ValidationMessageFor(x => x.email)
-    </div>
-    <div class="mb-3">
-        <label for="login">Senha</label>
-        <input type="text" asp-for="password" class="form-control" placeholder="Digite a senha do Usuário">
-        @Html.ValidationMessageFor(x => x.password)
-    </div>
-    <div class="mb-3">
-        <label for="login">Confirmar senha</label>
-        <input type="text" asp-for="confirm_password" class="form-control" placeholder="Digite a senha do Usuário">
-        @Html.ValidationMessageFor(x => x.confirm_password)
-    </div>
-
-    <div class="d-grid gap-2">
-        <button type="submit" class="btn btn-primary">Editar</button>
-        <a class="btn btn-secondary" asp-controller="User" asp-action="Index" role="button">Voltar</a>
-    </div>
-</form>
