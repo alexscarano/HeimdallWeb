@@ -6,6 +6,11 @@
   --background-color: #EAEAEA;
 }
 
-.text-dark {
-    font-size: 1.2rem;
+.cont-menu {
+  background-color: var(--main-color);
+  margin-top: -1rem;
+}
+
+.row-menu {
+  height: 5vh;
 }

@@ -1,12 +1,35 @@
 ﻿@model HeimdallWeb.Models.Map.PaginatedResult<HeimdallWeb.Models.HistoryModel>
 
+<head>
+    <link rel="stylesheet" href="~/css/delete.css" asp-append-version="true" />
+</head>
+
+<div class="container-fluid cont-menu mb-5">
+    <div class="row row-menu justify-content-evenly align-items-center">
+        <div class="col-2">
+            <a class="nav-link text-center text-white" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
+        </div>
+        @if (User.IsInRole("2")){
+            <div class="col-2">
+                <a class="nav-link text-center text-white" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Dashboard</a>
+            </div>
+        }   
+        <div class="col-2">
+            <a class="nav-link text-center text-white" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
+        </div>
+        <div class="col-2">
+            <a class="nav-link text-center text-white" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
+        </div>
+    </div>
+</div>
+
 <div class="container mt-5">
     <table class="table table-striped-columns table-hover">
         
         @if (Model != null && Model.Items.Any())
         {
             <thead>
-                <tr>
+                <tr class="text-center">
                     <th scope="col">Site</th>
                     <th scope="col">Relatório IA</th>
                     <th scope="col">Ações</th>
@@ -25,7 +48,7 @@
         {
             @foreach (var history in Model.Items)
             {
-                <tr>
+                <tr class="text-center">
                     <td hidden id="row-@history.history_id">@history.history_id</td>
                     <td >@history.target</td>
                     <td>
@@ -33,7 +56,7 @@
                             Ver Relatório
                         </a>
                     </td>
-                    <td class="justify-content-end">
+                    <td class="">
                         <a class="btn btn-success" href="#">JSON</a>
                         <a class="btn btn-primary" href="#">Resumo</a>
                         <div class="btn-group" role="group" aria-label="Basic example">
