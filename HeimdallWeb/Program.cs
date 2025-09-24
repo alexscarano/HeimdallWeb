@@ -23,7 +23,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
 
 // capturar string de conexão sql
-builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), o => o.CommandTimeout(90)));
 
 // config jwt auth
 builder.Services.AddAuthentication(options =>

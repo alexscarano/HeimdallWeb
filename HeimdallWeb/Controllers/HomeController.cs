@@ -47,9 +47,9 @@ public class HomeController : Controller
         GeminiService geminiService = new(_config);
         string iaResponse = await geminiService.GenerateTextAsyncFindings(formattedResult.ToString());
 
-        //historyModel.target = domainInput;
-        //historyModel.raw_json_result = formattedResult.ToString();
-        //await _historyRepository.insertHistory(historyModel);
+        historyModel.target = domainInput;
+        historyModel.raw_json_result = formattedResult.ToString();
+        await _historyRepository.insertHistory(historyModel);
 
         return Content(iaResponse, "application/json");
     }

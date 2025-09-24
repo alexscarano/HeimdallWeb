@@ -52,30 +52,35 @@
     }
 </table>
 
-<nav>
-    <ul class="pagination">
-        @if (Model.HasPrevious)
-        {
-            <li class="page-item">
-                <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Anterior</a>
-            </li>
-        }
 
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            <li class="page-item @(i == Model.Page ? "active" : "")">
-                <a class="page-link" href="?page=@i&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">@i</a>
-            </li>
-        }
+@if (Model.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @if (Model.HasPrevious)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Anterior</a>
+                </li>
+            }
 
-        @if (Model.HasNext)
-        {
-            <li class="page-item">
-                <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Próxima</a>
-            </li>
-        }
-    </ul>
-</nav>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.Page ? "active" : "")">
+                    <a class="page-link" href="?page=@i&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">@i</a>
+                </li>
+            }
+
+            @if (Model.HasNext)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Próxima</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
 
 @section Scripts {
     <script>

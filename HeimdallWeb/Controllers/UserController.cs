@@ -26,17 +26,8 @@ public class UserController : Controller
         return View();  
     }
 
-
     [Authorize]
     public IActionResult Delete()
-    {
-        return View();
-    }
-
-
-    // View de histórico de acessos
-    [Authorize]
-    public async Task<IActionResult> History()
     {
         return View();
     }

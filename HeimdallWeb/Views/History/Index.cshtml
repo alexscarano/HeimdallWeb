@@ -1,57 +1,122 @@
-﻿@model List<UserModel>
-@{
-    ViewData["Title"] = "Histórico";
-}
-
-<head>
-    <link rel="stylesheet" href="~/css/historico.css" asp-append-version="true" />
-</head>
+﻿@model HeimdallWeb.Models.Map.PaginatedResult<HeimdallWeb.Models.HistoryModel>
 
 <div class="container mt-5">
     <table class="table table-striped-columns table-hover">
-        <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Site</th>
-                <th scope="col">Relatório IA</th>
-                <th scope="col">Ações</th>
-                <th scope="col">Data de criação</th>
-            </tr>
-        </thead>
+        
+        @if (Model != null && Model.Items.Any())
+        {
+            <thead>
+                <tr>
+                    <th scope="col">Site</th>
+                    <th scope="col">Relatório IA</th>
+                    <th scope="col">Ações</th>
+                    <th scope="col">Data de criação</th>
+                </tr>
+            </thead>
+        }
+        else
+        {
+            <div class="alert alert-info text-center" role="alert">
+                Nenhum registro encontrado no histórico.
+            </div>
+        }
         <tbody class="table-group-divider">
-            <tr>
-                <td>1</td>
-                <td>Google.com.br</td>
-                <td><a href="#">Link tabela</a></td>
-                <td class="justify-content-end">
-                    <button class="btn btn-success">JSON</button>
-                    <button class="btn btn-primary">Resumo</button>
-                    <button class="btn btn-danger">Excluir</button>
-                </td>
-                <td>16/09/2025</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Teams.com.br</td>
-                <td><a href="#">Link tabela</a></td>
-                <td class="justify-content-end">
-                    <button class="btn btn-success">JSON</button>
-                    <button class="btn btn-primary">Resumo</button>
-                    <button class="btn btn-danger">Excluir</button>
-                </td>
-                <td>24/09/2025</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Siga.com.br</td>
-                <td><a href="#">Link tabela</a></td>
-                <td class="justify-content-end">
-                    <button class="btn btn-success">JSON</button>
-                    <button class="btn btn-primary">Resumo</button>
-                    <button class="btn btn-danger">Excluir</button>
-                </td>
-                <td>01/10/2025</td>
-            </tr>
+        @if (Model != null && Model.Items.Any())
+        {
+            @foreach (var history in Model.Items)
+            {
+                <tr>
+                    <td hidden id="row-@history.history_id">@history.history_id</td>
+                    <td >@history.target</td>
+                    <td>
+                        <a href="#">
+                            Ver Relatório
+                        </a>
+                    </td>
+                    <td class="justify-content-end">
+                        <a class="btn btn-success" href="#">JSON</a>
+                        <a class="btn btn-primary" href="#">Resumo</a>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-danger"
+                                    onclick="confirmDelete(@history.history_id)">
+                                Excluir
+                            </button>
+                        </div>
+                    </td>
+                    <td>@history.created_date.ToString("G")</td>
+                </tr>
+            }
+        }
         </tbody>
     </table>
+    @if (Model.TotalPages > 1)
+    {
+        <nav>
+            <ul class="pagination">
+                @if (Model.HasPrevious)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize">Anterior</a>
+                    </li>
+                }
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.Page ? "active" : "")">
+                            <a class="page-link" href="?page=@i&pageSize=@Model.PageSize">@i</a>
+                    </li>
+                }
+
+                @if (Model.HasNext)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize">Próxima</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
 </div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(historyId) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: 'Essa ação não pode ser desfeita!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sim, excluir'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`@Url.Action("DeleteHistory", "History")?id=${historyId}`, {
+                        method: "POST",
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire(`Item Deletado!`, data.message, 'success')
+                            .then(() => {
+                                document.getElementById('row-' + historyId).remove();
+                                window.location.href = '@Url.Action("Index", "History", new { page = 1, pageSize = 10})';
+                            });
+
+                        } else {
+                            Swal.fire('Erro', data.message, 'error');
+                        }
+                    })
+                    .catch(err => {
+                        Swal.fire('Erro', 'Ocorreu um erro ao processar a requisição: ' + err.message, 'error');
+                    });
+                }
+            });
+        }
+    </script>
+}
