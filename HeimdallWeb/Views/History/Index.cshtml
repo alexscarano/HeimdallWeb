@@ -1,5 +1,22 @@
 ﻿@model HeimdallWeb.Models.Map.PaginatedResult<HeimdallWeb.Models.HistoryModel>
 
+@if (TempData["OkMsg"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+        @TempData["OkMsg"]
+    </div>
+}
+
+@if (TempData["ErrorMsg"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+        @TempData["ErrorMsg"]
+    </div>
+}
+
+
 <div class="container mt-5">
     <table class="table table-striped-columns table-hover">
         
@@ -34,7 +51,7 @@
                         </a>
                     </td>
                     <td class="justify-content-end">
-                        <a class="btn btn-success" href="#">JSON</a>
+                        <a class="btn btn-success" asp-controller="History" asp-action="ViewJson" asp-route-id="@history.history_id">JSON</a>
                         <a class="btn btn-primary" href="#">Resumo</a>
                         <div class="btn-group" role="group" aria-label="Basic example">
                             <button type="button" class="btn btn-danger"

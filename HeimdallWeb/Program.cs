@@ -23,6 +23,8 @@ builder.Services.AddHttpContextAccessor();
 // injeção de dependencia
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
+builder.Services.AddScoped<IFindingRepository, FindingRepository>();
+
 
 // capturar string de conexão sql
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), o => o.CommandTimeout(90)));

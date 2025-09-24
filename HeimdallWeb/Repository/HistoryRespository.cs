@@ -3,6 +3,7 @@ using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
 using HeimdallWeb.Models.Map;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace HeimdallWeb.Repository
 {
@@ -96,6 +97,23 @@ namespace HeimdallWeb.Repository
             var history = await _appDbContext.History.FirstOrDefaultAsync(h => h.history_id == id);
 
             return history;
+        }
+
+        public async Task<JObject> getJsonByHistoryId(int id)
+        {
+            var history = getHistoryById(id).Result;
+            
+            var user_id = CookiesHelper.getUserIDFromCookie(CookiesHelper.getAuthCookie(_httpContextAccessor.HttpContext.Request));
+
+            if (history.user_id != user_id)
+                return JObject.Parse("{}");
+
+            var json = history.raw_json_result;
+
+            if (json is null)
+                return JObject.Parse("{}");
+
+            return JObject.Parse(json);
         }
 
         public async Task<HistoryModel> insertHistory(HistoryModel history)

@@ -4,6 +4,7 @@ using HeimdallWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HeimdallWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250924134156_EnumMap")]
+    partial class EnumMap
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,10 +84,6 @@ namespace HeimdallWeb.Migrations
                     b.Property<string>("raw_json_result")
                         .IsRequired()
                         .HasColumnType("json");
-
-                    b.Property<string>("summary")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("target")
                         .IsRequired()

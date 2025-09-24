@@ -1,5 +1,6 @@
 ﻿using HeimdallWeb.Models;
 using HeimdallWeb.Models.Map;
+using Newtonsoft.Json.Linq;
 
 namespace HeimdallWeb.Repository
 {
@@ -14,5 +15,7 @@ namespace HeimdallWeb.Repository
         Task<PaginatedResult<HistoryModel?>> getHistoriesByUserID(int id, int page = 1, int pageSize = 10);
 
         Task<bool> deleteHistory(int id);
+
+        Task<JObject> getJsonByHistoryId(int id);
     }
 }

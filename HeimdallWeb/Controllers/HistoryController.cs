@@ -1,4 +1,5 @@
-﻿using HeimdallWeb.Models;
+﻿using HeimdallWeb.Helpers;
+using HeimdallWeb.Models;
 using HeimdallWeb.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,25 @@ namespace HeimdallWeb.Controllers
             }
         }
 
+        [Authorize]
+        public async Task<IActionResult> ViewJson(int id)
+        {
+            var jsonResult = await _historyRepository.getJsonByHistoryId(id);
+            if (jsonResult == null)
+            {
+                TempData["ErrorMsg"] = "Falha ao carregar JSON do histórico.";
+                return RedirectToAction("Index", "Home");
+            }
+            
+            int user_id = CookiesHelper.getUserIDFromCookie(CookiesHelper.getAuthCookie(HttpContext.Request));
+
+            if (!jsonResult.HasValues)
+            {
+                return RedirectToAction("Index", "History");
+            }
+
+            return Content(jsonResult.ToString(), "application/json");
+        }
 
     }
 }

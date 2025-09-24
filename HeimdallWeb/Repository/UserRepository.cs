@@ -75,7 +75,6 @@ namespace HeimdallWeb.Repository
             userDB.username = user.username;
             userDB.password = user.password.hashPassword();
             userDB.email = user.email;  
-            userDB.user_type = user.user_type;
             userDB.updated_at = DateTime.Now;
 
             await _appDbContext.SaveChangesAsync();

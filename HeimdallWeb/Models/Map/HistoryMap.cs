@@ -13,6 +13,10 @@ namespace HeimdallWeb.Models.Map
             .IsRequired()
             .HasMaxLength(75);
 
+            builder.Property(h => h.summary)
+            .IsRequired()
+            .HasColumnType("text");
+
             builder.Property(h => h.raw_json_result)
             .HasColumnType("json");
 

@@ -21,6 +21,11 @@ namespace HeimdallWeb.Models
         [Required]
         public required string raw_json_result { get; set; }
 
+        /// <summary>
+        /// Resumo técnico gerado pela IA
+        /// </summary>
+        public required string summary { get; set; }
+
         [Required]
         public required DateTime created_date { get; set; } = DateTime.Now;
 
