@@ -102,7 +102,7 @@ namespace HeimdallWeb.Repository
         {
             int user_id = CookiesHelper.getUserIDFromCookie(CookiesHelper.getAuthCookie(_httpContextAccessor.HttpContext.Request));
 
-            history.created_date = DateTime.UtcNow;
+            history.created_date = DateTime.Now;
             history.user_id = user_id;
             await _appDbContext.History.AddAsync(history);
             await _appDbContext.SaveChangesAsync();

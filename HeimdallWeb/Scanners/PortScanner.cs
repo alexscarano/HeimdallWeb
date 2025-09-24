@@ -140,7 +140,7 @@ namespace HeimdallWeb.Scanners
                 {
                     ["target"] = targetRaw,
                     ["ips"] = new JArray(target.Select(i => i.ToString())),
-                    ["scanTime"] = DateTime.UtcNow,
+                    ["scanTime"] = DateTime.Now,
                     ["resultsPortScanner"] = results
                 };
 
@@ -154,7 +154,7 @@ namespace HeimdallWeb.Scanners
                     ["error"] = "failed_to_resolve_or_scan",
                     ["scanner"] = "PortScanner",
                     ["target"] = targetRaw,
-                    ["scanTime"] = DateTime.UtcNow,
+                    ["scanTime"] = DateTime.Now,
                     ["resultsPortScanner"] = results_error
                 };
 
@@ -175,7 +175,7 @@ namespace HeimdallWeb.Scanners
             {
                 ["ip"] = ip.ToString(),
                 ["port"] = port,
-                ["scanTime"] = DateTime.UtcNow
+                ["scanTime"] = DateTime.Now
             };
 
             using var cts = new CancellationTokenSource(_connectTimeout);

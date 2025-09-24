@@ -69,7 +69,7 @@ namespace HeimdallWeb.Scanners
                 {
                     target = targetRaw,
                     ips = new JArray(target.Select(i => i.ToString())),
-                    scanTime = DateTime.UtcNow,
+                    scanTime = DateTime.Now,
                     resultsHttpRedirectScanner = results
                 });
             }
@@ -79,7 +79,7 @@ namespace HeimdallWeb.Scanners
                 {
                     error = "failed_to_scan",
                     target = targetRaw,
-                    scanTime = DateTime.UtcNow,
+                    scanTime = DateTime.Now,
                     errorMessage = ex.Message
                 });
             }
@@ -93,7 +93,7 @@ namespace HeimdallWeb.Scanners
             var probe = new JObject
             {
                 ["ip"] = ip.ToString(),
-                ["scanTime"] = DateTime.UtcNow
+                ["scanTime"] = DateTime.Now
             };
 
             try

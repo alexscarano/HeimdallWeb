@@ -43,7 +43,7 @@ namespace HeimdallWeb.Models
         /// <summary>
         /// hora que foi criado o registro
         /// </summary>
-        public DateTime created_at { get; set; } = DateTime.UtcNow;
+        public DateTime created_at { get; set; } = DateTime.Now;
 
         /// <summary>
         /// recomendações para mitigar o achado

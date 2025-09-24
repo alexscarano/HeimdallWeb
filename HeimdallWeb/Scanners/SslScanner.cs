@@ -50,8 +50,8 @@ namespace HeimdallWeb.Scanners
                             chain2.ChainPolicy.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.Online;
                             var chainIsValid = chain2.Build(cert2);
 
-                            int daysToExpire = (cert2.NotAfter - DateTime.UtcNow).Days;
-                            bool expired = cert2.NotAfter < DateTime.UtcNow;
+                            int daysToExpire = (cert2.NotAfter - DateTime.Now).Days;
+                            bool expired = cert2.NotAfter < DateTime.Now;
                             
                             var sigAlg = cert2.SignatureAlgorithm.FriendlyName ?? cert2.SignatureAlgorithm.Value;
       
@@ -103,7 +103,7 @@ namespace HeimdallWeb.Scanners
 
                         return JObject.FromObject(new
                         {
-                            scanTime = DateTime.UtcNow,
+                            scanTime = DateTime.Now,
                             resultsSslScanner = results
                         });
                     }

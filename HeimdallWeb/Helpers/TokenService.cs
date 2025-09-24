@@ -25,7 +25,7 @@ namespace HeimdallWeb.Helpers
                     new Claim(ClaimTypes.Email, user.email),
                     new Claim(ClaimTypes.Role, user.user_type.ToString()) // admin ou default
                 }),
-                Expires = DateTime.UtcNow.AddHours(12),
+                Expires = DateTime.Now.AddHours(12),
                 SigningCredentials = new SigningCredentials(new
                         SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

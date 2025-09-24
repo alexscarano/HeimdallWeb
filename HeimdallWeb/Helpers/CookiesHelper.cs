@@ -14,7 +14,7 @@ namespace HeimdallWeb.Helpers
                 HttpOnly = true,
                 Secure = false, //trocar para true para producao
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddHours(hours)
+                Expires = DateTime.Now.AddHours(hours)
             });
         }
 
