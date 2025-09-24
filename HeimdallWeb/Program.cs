@@ -17,14 +17,7 @@ var jwtKey = Encoding.ASCII.GetBytes(jwtSettings["Key"] ?? "Key não informada");
 
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
 
-TimeZoneInfo tzBr = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
-AppContext.SetSwitch("System.Globalization.Invariant", false);
-CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
-CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("pt-BR");
-
 // Exemplo para pegar sempre em Brasília:
-DateTime brasiliaNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.Now, tzBr);
-
 builder.Services.AddHttpContextAccessor();
 
 // injeção de dependencia
