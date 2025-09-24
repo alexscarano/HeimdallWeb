@@ -90,8 +90,7 @@
               "RelativeToolTip": "HeimdallWeb\\Repository\\HistoryRespository.cs",
               "ViewState": "AgIAAD4AAAAAAAAAAAAwwG0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-24T15:31:51.619Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-24T15:31:51.619Z"
             },
             {
               "$type": "Document",
@@ -103,8 +102,7 @@
               "RelativeToolTip": "HeimdallWeb\\Views\\History\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-24T15:14:31.963Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-24T15:14:31.963Z"
             },
             {
               "$type": "Document",
@@ -114,7 +112,7 @@
               "RelativeDocumentMoniker": "HeimdallWeb\\Controllers\\HistoryController.cs",
               "ToolTip": "C:\\Users\\alexa\\OneDrive\\Documents\\Dotnet\\HeimdallWeb\\HeimdallWeb\\Controllers\\HistoryController.cs",
               "RelativeToolTip": "HeimdallWeb\\Controllers\\HistoryController.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAywEMAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADIAAAAAAAAAAAAiwD0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-24T15:13:02.73Z",
               "EditorCaption": ""
@@ -129,8 +127,7 @@
               "RelativeToolTip": "HeimdallWeb\\Repository\\IHistoryRepository.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAIA2wBIAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-24T15:07:19.758Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-24T15:07:19.758Z"
             },
             {
               "$type": "Document",
@@ -142,8 +139,7 @@
               "RelativeToolTip": "HeimdallWeb\\Controllers\\UserController.cs",
               "ViewState": "AgIAAJcAAAAAAAAAAAAYwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-24T14:30:03.255Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-24T14:30:03.255Z"
             }
           ]
         }

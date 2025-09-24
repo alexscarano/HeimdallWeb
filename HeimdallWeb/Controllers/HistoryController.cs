@@ -59,8 +59,6 @@ namespace HeimdallWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
             
-            int user_id = CookiesHelper.getUserIDFromCookie(CookiesHelper.getAuthCookie(HttpContext.Request));
-
             if (!jsonResult.HasValues)
             {
                 return RedirectToAction("Index", "History");
