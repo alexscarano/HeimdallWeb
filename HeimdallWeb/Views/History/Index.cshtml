@@ -1,23 +1,45 @@
 ﻿@model HeimdallWeb.Models.Map.PaginatedResult<HeimdallWeb.Models.HistoryModel>
 
-@if (TempData["OkMsg"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
-        @TempData["OkMsg"]
-    </div>
-}
+<head>
+    <link rel="stylesheet" href="~/css/delete.css" asp-append-version="true" />
+</head>
 
-@if (TempData["ErrorMsg"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
-        @TempData["ErrorMsg"]
+<div class="container-fluid cont-menu mb-5">
+    <div class="row row-menu justify-content-evenly align-items-center">
+        <div class="col-2">
+            <a class="nav-link text-center text-white" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
+        </div>
+        @if (User.IsInRole("2")){
+            <div class="col-2">
+                <a class="nav-link text-center text-white" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Dashboard</a>
+            </div>
+        }   
+        <div class="col-2">
+            <a class="nav-link text-center text-white" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
+        </div>
+        <div class="col-2">
+            <a class="nav-link text-center text-white" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
+        </div>
     </div>
-}
-
+</div>
 
 <div class="container mt-5">
+    @if (TempData["OkMsg"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+            @TempData["OkMsg"]
+        </div>
+    }
+
+    @if (TempData["ErrorMsg"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+            @TempData["ErrorMsg"]
+        </div>
+    }
+
     <table class="table table-striped-columns table-hover">
         
         @if (Model != null && Model.Items.Any())

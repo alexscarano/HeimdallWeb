@@ -41,11 +41,11 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> Scan(string domainInput, HistoryModel historyModel)
     {
-        #region Verificações de input
+        #region Verificaï¿½ï¿½es de input
 
         if (NetworkUtils.IsIPAddress(domainInput))
         {
-            TempData["ErrorMsg"] = "Por favor, insira um nome de domínio válido, não um endereço IP.";
+            TempData["ErrorMsg"] = "Por favor, insira um nome de domï¿½nio vï¿½lido, nï¿½o um endereï¿½o IP.";
             return View("Index", "Home");
         }
 
@@ -59,18 +59,18 @@ public class HomeController : Controller
             ScannerManager scanner = new();
             // realiza todos os scans com o ScannerManager 
             var result = await scanner.RunAllAsync(domainInput);
-            // pré-processa o JSON para facilitar a análise da IA
+            // prï¿½-processa o JSON para facilitar a anï¿½lise da IA
             var formattedResult = JsonPreprocessor.PreProcessScanResults(result.ToString());
 
             // envia para a IA
             GeminiService geminiService = new(_config);
             string iaResponse = await geminiService.GenerateTextAsyncFindings(formattedResult.ToString());
-            // caso seja necessário extrair algo especifico do JSON
+            // caso seja necessï¿½rio extrair algo especifico do JSON
             using var doc = JsonDocument.Parse(iaResponse);
             
             #endregion
 
-            #region Popula o modelo de histórico
+            #region Popula o modelo de histï¿½rico
 
             historyModel.target = domainInput;
             historyModel.raw_json_result = formattedResult.ToString();
@@ -79,13 +79,13 @@ public class HomeController : Controller
             #endregion
 
             #region Insere tecnologias detectadas
-            // inserir histórico no bd
+            // inserir histï¿½rico no bd
             await _historyRepository.insertHistory(historyModel);
 
-            // capturar chave primária do histórico inserido para inserir a fk do finding
+            // capturar chave primï¿½ria do histï¿½rico inserido para inserir a fk do finding
             int history_id = historyModel.history_id;
-            // método auxiliar que já insere no banco, ele é necessário pois o IA pode gerar vários findings
-            // e temos uma desserialização
+            // mï¿½todo auxiliar que jï¿½ insere no banco, ele ï¿½ necessï¿½rio pois o IA pode gerar vï¿½rios findings
+            // e temos uma desserializaï¿½ï¿½o
             await _findingRepository.SaveFindingsFromIAAsync(iaResponse, history_id);
 
             #endregion
@@ -97,7 +97,7 @@ public class HomeController : Controller
         catch (Exception)
         {
             TempData["ErrorMsg"] = "Houve um erro ao fazer o scan !";
-            return View(domainInput);
+            return View("Index");
         }
     }
 
