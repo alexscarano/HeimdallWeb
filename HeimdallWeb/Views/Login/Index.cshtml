@@ -7,23 +7,23 @@
     ViewData["Title"] = "Login";
 }
 
-@if (TempData["OkMsg"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
-        @TempData["OkMsg"]
-    </div>
-}
-
-@if (TempData["ErrorMsg"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
-        @TempData["ErrorMsg"]
-    </div>
-}
-
 <div class="container menu">
+    @if (TempData["OkMsg"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+            @TempData["OkMsg"]
+        </div>
+    }
+
+    @if (TempData["ErrorMsg"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+            @TempData["ErrorMsg"]
+        </div>
+    }
+    
     <div class="row align-items-center">
         <div class="col-6 mt-5">
             <img src="~/images/Heimdallr_by_Froelich.png" alt="Heimdallr">

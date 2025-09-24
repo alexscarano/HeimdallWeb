@@ -8,25 +8,24 @@
     ViewData["Title"] = "Registrar";
 }
 
-@* Mensagem de validação (teste) de conclusão de registro, mudar para algo mais bonito depois *@
-@if (TempData["OkMsg"] != null)
-{
-      <div class="alert alert-success" role="alert">  
-            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
-            @TempData["OkMsg"]
-     </div>
-}
-@if (TempData["ErrorMsg"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
-         @TempData["ErrorMsg"]
-    </div>
-}
-
-
 
 <div class="container card-color mt-5 d-flex justify-content-center align-items-center flex-grow-1">
+    @* Mensagem de validação (teste) de conclusão de registro, mudar para algo mais bonito depois *@
+    @if (TempData["OkMsg"] != null)
+    {
+        <div class="alert alert-success" role="alert">  
+                <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+                @TempData["OkMsg"]
+        </div>
+    }
+    @if (TempData["ErrorMsg"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+            @TempData["ErrorMsg"]
+        </div>
+    }
+
     <div class="card shadow-lg p-4" style="max-width: 450px; width: 100vh;">
     <div class="text-center mb-4">
         <h2 class="mt-2 acme">Crie sua conta</h2>
