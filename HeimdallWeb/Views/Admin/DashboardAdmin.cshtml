@@ -127,7 +127,7 @@
         function confirmDelete(userId) {
             Swal.fire({
                 title: 'Tem certeza?',
-                text: 'Essa a��o n�o pode ser desfeita!',
+                text: 'Essa ação não pode ser desfeita!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -146,14 +146,14 @@
                     })
                     .then(data => {
                         if (data.success) {
-                            Swal.fire(`Usu�rio ${userId} Deletado!`, data.message, 'success');
+                            Swal.fire(`Usuário ${userId} Deletado!`, data.message, 'success');
                             document.getElementById('row-' + userId).remove();
                         } else {
                             Swal.fire('Erro', data.message, 'error');
                         }
                     })
                     .catch(err => {
-                        Swal.fire('Erro', 'Ocorreu um erro ao processar a requisi��o: ' + err.message, 'error');
+                        Swal.fire('Erro', 'Ocorreu um erro ao processar a requisição: ' + err.message, 'error');
                     });
                 }
             });

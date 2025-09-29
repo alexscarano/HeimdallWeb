@@ -37,12 +37,15 @@ namespace HeimdallWeb.Repository
             {
                 var query = _appDbContext.History.AsQueryable();
 
-                var totalCount = await query.CountAsync();
+                var totalCount = await query.
+                    AsNoTracking().
+                    CountAsync();
 
                 var items = await query
                  .OrderByDescending(h => h.created_date)
                  .Skip((page - 1) * pageSize)
                  .Take(pageSize)
+                 .AsNoTracking()
                  .ToListAsync();
 
                 return new PaginatedResult<HistoryModel>
@@ -70,7 +73,9 @@ namespace HeimdallWeb.Repository
 
                 query = query.Where(h => h.user_id == id);
 
-                var totalCount = await query.CountAsync();
+                var totalCount = await query.
+                    AsNoTracking().
+                    CountAsync();
 
                 var items = await query
                  .OrderByDescending(h => h.created_date)
@@ -94,7 +99,9 @@ namespace HeimdallWeb.Repository
 
         public async Task<HistoryModel?> getHistoryById(int id)
         {
-            var history = await _appDbContext.History.FirstOrDefaultAsync(h => h.history_id == id);
+            var history = await _appDbContext.History
+                .AsNoTracking()
+                .FirstOrDefaultAsync(h => h.history_id == id);
 
             return history;
         }

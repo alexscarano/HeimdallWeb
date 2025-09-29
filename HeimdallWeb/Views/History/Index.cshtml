@@ -47,7 +47,7 @@
             <thead>
                 <tr class="text-center">
                     <th scope="col">Site</th>
-                    <th scope="col">Relatório IA</th>
+                    <th scope="col">Achados</th>
                     <th scope="col">Ações</th>
                     <th scope="col">Data de criação</th>
                 </tr>
@@ -68,8 +68,8 @@
                     <td hidden id="row-@history.history_id">@history.history_id</td>
                     <td >@history.target</td>
                     <td>
-                        <a href="#">
-                            Ver Relatório
+                        <a href="javascript:void(0);" onclick="loadFindings(@history.history_id)">
+                            Ver achados
                         </a>
                     </td>
                     <td class="justify-content-end">
@@ -88,6 +88,33 @@
         }
         </tbody>
     </table>
+
+    <div class="modal fade" id="findingsModal" tabindex="-1" aria-labelledby="findingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Descrição</th>
+                                <th>Risco</th>
+                                <th>Recomendação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="findingsTableBody">
+                            <!-- Vai ser preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aplicando lógica de paginação -->
     @if (Model.TotalPages > 1)
     {
         <nav>
@@ -157,5 +184,50 @@
                 }
             });
         }
+
+        function loadFindings(historyId) {
+            fetch(`/History/GetFindings?id=${historyId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error("Erro ao carregar achados");
+                    return response.json();
+                })
+                .then(data => {
+                    let tbody = document.getElementById("findingsTableBody");
+                    tbody.innerHTML = ""; // limpa tabela
+
+                    // puta que pariu eu odeio essa linguagem  
+                    if (data.length === 0) {
+                        const table = tbody.closest('table');
+                        const thead = table.querySelector('thead');
+
+                        if (thead) thead.remove();
+
+                        tbody.innerHTML = "<tr><td colspan='4' class='text-center'>Nenhum achado encontrado.</td></tr>";
+                        // abre o modal se não houver nenhum dado capturado do backend
+                        var findingsModal = new bootstrap.Modal(document.getElementById('findingsModal'));
+                        findingsModal.show();
+                    }
+                    else{
+                        data.forEach(finding => {
+                        let row = `
+                            <tr>
+                                <td>${finding.type}</td>
+                                <td>${finding.description}</td>
+                                <td>${finding.severity_string}</td>
+                                <td>${finding.recommendation}</td>
+                            </tr>`;
+                        tbody.innerHTML += row;
+                        });
+                    }
+
+                    // abre o modal
+                    var findingsModal = new bootstrap.Modal(document.getElementById('findingsModal'));
+                    findingsModal.show();
+                })
+                .catch(err => {
+                    Swal.fire("Erro", err.message, "error");
+                });
+        }
+
     </script>
 }

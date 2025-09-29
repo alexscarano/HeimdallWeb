@@ -55,6 +55,12 @@ namespace HeimdallWeb.Models
         /// </summary>
         public int ?history_id { get; set; }
 
+        /// <summary>
+        /// Campo extra só para retorno no JSON
+        /// </summary>
+        [NotMapped]
+        public string severity_string { get; set; } = string.Empty;
+
         // relacionamento
         public virtual HistoryModel? History { get; set; }
     }

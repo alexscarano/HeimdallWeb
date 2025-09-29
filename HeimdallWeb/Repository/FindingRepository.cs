@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
 using HeimdallWeb.Data;
 using HeimdallWeb.DTO;
+using HeimdallWeb.Enums;
 using HeimdallWeb.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HeimdallWeb.Repository
 {
@@ -11,6 +13,26 @@ namespace HeimdallWeb.Repository
         public FindingRepository(AppDbContext appDbContext)
         {
              _appDbContext = appDbContext;
+        }
+
+        public async Task<List<FindingModel>> getFindingsByHistoryId(int history_id)
+        {
+            var findings = await 
+                _appDbContext.Finding
+                                .Select(f =>
+                                    new FindingModel
+                                    {
+                                        type = f.type,
+                                        description = f.description,
+                                        severity_string = f.severity.MapStatus(),
+                                        recommendation = f.recommendation,
+                                        history_id = f.history_id,
+                                    })
+                                .Where(f => f.history_id == history_id)
+                                .AsNoTracking()
+                                .ToListAsync();
+
+            return findings;
         }
 
         public async Task<FindingModel> insertFinding(FindingModel finding)

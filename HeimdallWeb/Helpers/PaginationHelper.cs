@@ -11,7 +11,7 @@ namespace HeimdallWeb.Helpers
         int pageSize
         ) where T : class
         {
-            var totalCount = await query.CountAsync();
+            var totalCount = await query.AsNoTracking().CountAsync();
 
             var items = await query
                 .Skip((page - 1) * pageSize)

@@ -1,6 +1,4 @@
-﻿using HeimdallWeb.Helpers;
-using HeimdallWeb.Models;
-using HeimdallWeb.Repository;
+﻿using HeimdallWeb.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -10,9 +8,11 @@ namespace HeimdallWeb.Controllers
     public class HistoryController : Controller
     {
         private readonly IHistoryRepository _historyRepository;
-        public HistoryController(IHistoryRepository historyRepository)
+        private readonly IFindingRepository _findingRepository;
+        public HistoryController(IHistoryRepository historyRepository, IFindingRepository findingRepository)
         {
             _historyRepository = historyRepository;
+            _findingRepository = findingRepository;
         }
 
         [Authorize]
@@ -65,6 +65,24 @@ namespace HeimdallWeb.Controllers
             }
 
             return Content(jsonResult.ToString(), "application/json");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> GetFindings(int id)
+        {
+            try
+            {
+                var findings = await _findingRepository.getFindingsByHistoryId(id);
+
+                if (findings is null || findings.Count == 0)
+                    return Json(string.Empty);
+
+                return Json(findings);
+            }
+            catch (Exception) 
+            {
+                return BadRequest();
+            }
         }
 
     }

@@ -41,11 +41,11 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> Scan(string domainInput, HistoryModel historyModel)
     {
-        #region Verifica��es de input
+        #region Verificações de input
 
         if (NetworkUtils.IsIPAddress(domainInput))
         {
-            TempData["ErrorMsg"] = "Por favor, insira um nome de dom�nio v�lido, n�o um endere�o IP.";
+            TempData["ErrorMsg"] = "Por favor, insira um nome de domínio válido, não um endereço IP.";
             return View("Index", "Home");
         }
 
@@ -70,7 +70,7 @@ public class HomeController : Controller
             
             #endregion
 
-            #region Popula o modelo de hist�rico
+            #region Popula o modelo de histórico
 
             historyModel.target = domainInput;
             historyModel.raw_json_result = formattedResult.ToString();
@@ -79,12 +79,12 @@ public class HomeController : Controller
             #endregion
 
             #region Insere tecnologias detectadas
-            // inserir hist�rico no bd
+            // inserir histórico no bd
             await _historyRepository.insertHistory(historyModel);
 
             // capturar chave prim�ria do hist�rico inserido para inserir a fk do finding
             int history_id = historyModel.history_id;
-            // m�todo auxiliar que j� insere no banco, ele � necess�rio pois o IA pode gerar v�rios findings
+            // m�todo auxiliar que j� insere no banco, ele é necess�rio pois o IA pode gerar v�rios findings
             // e temos uma desserializa��o
             await _findingRepository.SaveFindingsFromIAAsync(iaResponse, history_id);
 
