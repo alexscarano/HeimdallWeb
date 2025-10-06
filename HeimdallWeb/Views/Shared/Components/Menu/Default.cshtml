@@ -1,40 +1,50 @@
 ﻿@model HeimdallWeb.DTO.MenuViewDTO
 
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-        aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-</button>
-<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-    <div class="bar flex-grow-1">
-        <div class="bar-item">
-            <a class="bar-item-logo" asp-area="" asp-controller="Home" asp-action="Index">
-                <img class="bar-logo" src="~/images/HeimdallWeb_logo.png" alt="Heimdallr">
-            </a>
-        </div>
+<nav class="navbar navbar-expand-md bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="ms-3 navbar-brand" asp-controller="Home" asp-action="Index">
+            <img src="~/images/HeimdallWeb_logo.png" alt="Logo" width="260">
+        </a>
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav-main" aria-controls="nav-main" aria-expanded="false" aria-label="Menu Mobile">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <div class="bar-item">
-            <a class="bar-item-link" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-search fa-lg"></i><div class="bar-char">Análise</div></a>
-        </div>
-
-        @if (Model.isAuthenticated)
-        {
-            <div class="bar-item">
-                <a class="bar-item-link" asp-area="" asp-controller="History" asp-action="Index"><i class="bi bi-person-circle fa-lg"></i><div class="bar-char">Perfil</div></a>
+        <div class="fs-5 navbar-nav nav-underline collapse navbar-collapse justify-content-lg-evenly justify-content-md-end mt-3 mt-md-0 gap-md-2" id="nav-main">
+            <div class="nav-item">
+                <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">Analisar</a>
             </div>
 
-            <div class="bar-item">
-                <a class="bar-item-link" role="button" asp-controller="Login" asp-action="Logout"><i class="bi bi-door-open fa-lg"></i><div class="bar-char">Sair</div></a>
-            </div>
-        }
-        else
-        {
-            <div class="bar-item">
-                <a class="bar-item-link" asp-area="" asp-controller="Login" asp-action="Index"><i class="bi bi-box-arrow-in-right fa-lg"></i><div class="bar-char">Login</div></a>
+            <div class="nav-item">
+                <a class="nav-link" href="#">Sobre Nós</a>
             </div>
             
-            <div class="bar-item">
-                <a class="bar-item-link" asp-area="" asp-controller="User" asp-action="Register"><i class="bi bi-person-plus fa-xl"></i><div class="bar-char">Cadastre-se</div></a>
-            </div>
-        }
+            @if (Model.isAuthenticated) {
+                <div class="nav-item dropdown">
+                <a href="#" role="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Perfil</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
+                        @if (User.IsInRole("2"))
+                        {
+                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Dashboard</a>
+                            }
+                        <a class="dropdown-item" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
+                        <a class="dropdown-item" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
+                    </div>
+                </div>
+
+                <div class="nav-item">
+                    <a class="nav-link" role="button" asp-controller="Login" asp-action="Logout">Sair</a>
+                </div>
+            }
+            else {
+                <div class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="Login" asp-action="Index">Login</a>
+                </div>
+
+                <div class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="User" asp-action="Register">Cadastro</a>
+                </div>
+            }
+        </div>
     </div>
-</div>
+</nav>

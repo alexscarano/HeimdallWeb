@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,21 +14,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                @await Component.InvokeAsync("Menu")
+    <style>
+        body {
+            background-color: 	#fff0db;
+            background-image: url('/images/skulls.png');
+        }
+    </style>
+
+    @await Component.InvokeAsync("Menu")
+
+    @RenderBody()
+
+    <footer class="navbar fixed-bottom bg-dark" data-bs-theme="dark">
+        <div class="ms-3 nav container-fluid d-flex flex-wrap justify-content-between py-lg-1 my-lg-1 my-0 py-0">
+            <div class="navbar-text col-md-4 d-flex align-items-center">
+                <span class="fs-5">&copy; @DateTime.Now.Year - HeimdallWeb</span>
             </div>
-        </nav>
-    </header>
-
-        @RenderBody()
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; @DateTime.Now.Year - HeimdallWeb
+            <div class="nav-item col-md-4 gap-2 justify-content-end d-flex align-items-center">
+                <a class="nav-link" href="http://"><i class="bi bi-envelope-at fa-2xl"></i></a>
+                <a class="nav-link" href="http://"><i class="bi bi-whatsapp fa-2xl"></i></a>
+            </div>
         </div>
     </footer>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
