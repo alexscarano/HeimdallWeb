@@ -58,7 +58,23 @@ public class HomeController : Controller
 
             ScannerManager scanner = new();
             // realiza todos os scans com o ScannerManager 
-            var result = await scanner.RunAllAsync(domainInput);
+            var scanTask = scanner.RunAllAsync(domainInput);
+
+            #region Configurando timeout para o scan
+
+            var timeOutTask = Task.Delay(TimeSpan.FromMinutes(1)); // 60 segundos de timeout
+            var completedTask = await Task.WhenAny(scanTask, timeOutTask); // espera qualquer uma das tasks estar completas
+
+            if (completedTask == timeOutTask)
+            {
+                TempData["ErrorMsg"] = "O scan demorou muito tempo e foi cancelado. Tente novamente.";
+                return View("Index", "Home");
+            }
+
+            var result = await scanTask;
+            
+            #endregion
+
             // pr�-processa o JSON para facilitar a an�lise da IA
             var formattedResult = JsonPreprocessor.PreProcessScanResults(result.ToString());
 
