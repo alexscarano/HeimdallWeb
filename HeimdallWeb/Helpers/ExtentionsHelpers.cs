@@ -3,7 +3,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HeimdallWeb.Helpers
 {
-    public static class LinqHelpers
+    public static class ExtentionsHelpers
     {
         /// <summary>
         /// método de extensão para "excluir propriedades" via reflexão
@@ -22,6 +22,21 @@ namespace HeimdallWeb.Helpers
                 .ToDictionary(p => p.Name, p => p.GetValue(obj));
 
             return dict;
+        }
+
+        /// <summary>
+        /// Transforma o objeto em JSON formatado (com indentação)
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>Objeto em forma de JSON</returns>
+        public static string ToJson(this object obj)
+        {
+            var options = new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            return System.Text.Json.JsonSerializer.Serialize(obj, options);
         }
     }
 }
