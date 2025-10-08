@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HeimdallWeb.Helpers
@@ -25,18 +26,35 @@ namespace HeimdallWeb.Helpers
         }
 
         /// <summary>
-        /// Transforma o objeto em JSON formatado (com indentação)
+        /// Transforma o objeto em JSON formatado
         /// </summary>
         /// <param name="obj"></param>
         /// <returns>Objeto em forma de JSON</returns>
-        public static string ToJson(this object obj)
+        public static JObject ToJson(this object? obj)
         {
-            var options = new System.Text.Json.JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
+            if (obj is null)
+                return new JObject();
 
-            return System.Text.Json.JsonSerializer.Serialize(obj, options);
+            // Se já for um JObject, retorna direto
+            if (obj is JObject jObj)
+                return jObj;
+
+            // Se for uma string, tenta interpretar como JSON
+            if (obj is string jsonString)
+            {
+                try
+                {
+                    return JObject.Parse(jsonString);
+                }
+                catch
+                {
+                    // Caso a string não seja JSON válido, cria um JObject com valor bruto
+                    return new JObject { ["value"] = jsonString };
+                }
+            }
+
+            // Se for qualquer outro tipo de objeto .NET
+            return JObject.FromObject(obj);
         }
     }
 }

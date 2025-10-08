@@ -72,15 +72,16 @@ public class HomeController : Controller
             }
 
             var result = await scanTask;
-            
+            string jsonString = result.ToString();
+
             #endregion
 
             // pr�-processa o JSON para facilitar a an�lise da IA
-            var formattedResult = JsonPreprocessor.PreProcessScanResults(result.ToString());
+            JsonPreprocessor.PreProcessScanResults(ref jsonString);
 
             // envia para a IA
             GeminiService geminiService = new(_config);
-            string iaResponse = await geminiService.GenerateTextAsyncFindings(formattedResult.ToString());
+            string iaResponse = await geminiService.GenerateTextAsyncFindings(jsonString);
             // caso seja necess�rio extrair algo especifico do JSON
             using var doc = JsonDocument.Parse(iaResponse);
             
@@ -89,7 +90,7 @@ public class HomeController : Controller
             #region Popula o modelo de histórico
 
             historyModel.target = domainInput;
-            historyModel.raw_json_result = formattedResult.ToString();
+            historyModel.raw_json_result = jsonString;
             historyModel.summary = doc.RootElement.GetProperty("resumo").GetString();
 
             #endregion

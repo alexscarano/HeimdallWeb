@@ -1,6 +1,6 @@
 ﻿namespace HeimdallWeb.Models.Map
 {
-    public class PaginatedResult<T>
+    public record PaginatedResult<T>
     {
         /// <summary>
         /// Itens da página atual

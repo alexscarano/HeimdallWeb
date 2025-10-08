@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using HeimdallWeb.Helpers;
 
 namespace HeimdallWeb.IA
 {
@@ -112,7 +113,7 @@ namespace HeimdallWeb.IA
                 response.EnsureSuccessStatusCode();
                 var result = await response.Content.ReadAsStringAsync();  
                 
-                var parsedResult = Newtonsoft.Json.Linq.JObject.Parse(result);
+                var parsedResult = result.ToJson();
 
                 return parsedResult["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.ToString().RemoveMarkdown()
                     ?? "Nenhuma resposta gerada.";

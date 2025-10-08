@@ -1,4 +1,5 @@
 ﻿using HeimdallWeb.Data;
+using HeimdallWeb.DTO;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
 using HeimdallWeb.Models.Map;
@@ -66,15 +67,19 @@ namespace HeimdallWeb.Repository
             return user;
         }
 
-        public async Task<UserModel> updateUser(UserModel user)
+        public async Task<UpdateUserDTO> updateUser(UpdateUserDTO user)
         {
             UserModel userDB = await getUserById(user.user_id) ?? throw new Exception("Houve um erro ao atualizar o usuário");
 
             if (userDB.user_id != user.user_id) throw new Exception("Houve um erro ao atualizar o usuário");
+            
+            if (user.username is not null)
+                userDB.username = user.username;
+            if (user.password is not null)
+                userDB.password = user.password.hashPassword();
+            if (user.email is not null)
+                userDB.email = user.email;  
 
-            userDB.username = user.username;
-            userDB.password = user.password.hashPassword();
-            userDB.email = user.email;  
             userDB.updated_at = DateTime.Now;
 
             await _appDbContext.SaveChangesAsync();
@@ -108,7 +113,17 @@ namespace HeimdallWeb.Repository
             return await _appDbContext.User.AsNoTracking().AnyAsync(x => x.username == user.username);
         }
 
+        public async Task<bool> verifyIfUserExistsWithLogin(UpdateUserDTO user)
+        {
+            return await _appDbContext.User.AsNoTracking().AnyAsync(x => x.username == user.username);
+        }
+
         public async Task<bool> verifyIfUserExistsWithEmail(UserModel user)
+        {
+            return await _appDbContext.User.AsNoTracking().AnyAsync(x => x.email == user.email);
+        }
+
+        public async Task<bool> verifyIfUserExistsWithEmail(UpdateUserDTO user)
         {
             return await _appDbContext.User.AsNoTracking().AnyAsync(x => x.email == user.email);
         }

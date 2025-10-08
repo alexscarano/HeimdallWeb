@@ -1,11 +1,12 @@
 ﻿using System.Text.RegularExpressions;
+using HeimdallWeb.Helpers;
 using Newtonsoft.Json.Linq;
 
 public static class JsonPreprocessor
 {
-    public static JObject PreProcessScanResults(string jsonString)
+    public static void PreProcessScanResults(ref string jsonString)
     {
-        var json = JObject.Parse(jsonString);
+        var json = jsonString.ToJson();
 
         // Normalizar timestamps
         NormalizeTimestamps(json);
@@ -21,8 +22,6 @@ public static class JsonPreprocessor
 
         // Processar redirecionamentos
         ProcessRedirectResults(json);
-
-        return json;
     }
 
     private static void NormalizeTimestamps(JObject json)

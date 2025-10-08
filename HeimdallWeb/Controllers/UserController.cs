@@ -49,7 +49,7 @@ public class UserController : Controller
     }    
 
     [HttpPost]
-    public async Task<IActionResult> RegisterAction(UserModel user)
+    public async Task<IActionResult> RegisterAction(Models.UserModel user)
     {
         try
         {
@@ -76,19 +76,23 @@ public class UserController : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> EditAction(UserModel model)
+    public async Task<IActionResult> EditAction(UpdateUserDTO model)
     {
         try
         {
             ModelState.Remove(nameof(model.user_id));
 
             if (!ModelState.IsValid)
+            {
+                TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário";
                 return View("Edit", model);
+            }
 
-            // Pega o user_id dos claims validados pelo middleware (preferível)
             int? userId = TokenService.GetUserIdFromClaims(User);
+            // Pega o user_id dos claims validados pelo middleware (preferível)
             if (userId == null)
             {
+                TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário";
                 return View("Edit", model);
             }
 
@@ -106,8 +110,8 @@ public class UserController : Controller
                 return View("Edit", model);
             }
 
-            // buscar usuário e atualizar campos permitidos
-            var userDb = await _userRepository.getUserById(model.user_id);
+            // buscar usuário e atualiza campos permitidos
+            var userDb = await _userRepository.getUserById(userId.Value);
             if (userDb == null)
             {
                 TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário.";
