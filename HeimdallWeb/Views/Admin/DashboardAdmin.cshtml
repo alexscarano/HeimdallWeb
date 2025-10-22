@@ -51,7 +51,7 @@
                                 {   
                                     <div class="btn-group" role="group"  aria-label="Basic example">
                                             <button type="button" class="btn btn-danger"
-                                                    onclick="confirmDelete(@user.user_id)">
+                                                    onclick="confirmDeleteUser(@user.user_id)">
                                                 Excluir
                                             </button>
                                     </div>
@@ -123,40 +123,5 @@
 </div>
 
 @section Scripts {
-    <script>
-        function confirmDelete(userId) {
-            Swal.fire({
-                title: 'Tem certeza?',
-                text: 'Essa ação não pode ser desfeita!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sim, excluir'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`@Url.Action("DeleteUser", "Admin")?id=${userId}`, {
-                    method: "POST", 
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire(`Usuário ${userId} Deletado!`, data.message, 'success');
-                            document.getElementById('row-' + userId).remove();
-                        } else {
-                            Swal.fire('Erro', data.message, 'error');
-                        }
-                    })
-                    .catch(err => {
-                        Swal.fire('Erro', 'Ocorreu um erro ao processar a requisição: ' + err.message, 'error');
-                    });
-                }
-            });
-        }
-    </script>
+    <script src="~/js/dashboard-admin.js" asp-append-version="true"></script>
 } 

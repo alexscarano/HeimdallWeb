@@ -7,25 +7,25 @@ namespace HeimdallWeb.Controllers
 {
     public class HistoryController : Controller
     {
-        private readonly IHistoryRepository _historyRepository;
-        private readonly IFindingRepository _findingRepository;
-        public HistoryController(IHistoryRepository historyRepository, IFindingRepository findingRepository)
-        {
-            _historyRepository = historyRepository;
-            _findingRepository = findingRepository;
-        }
+            private readonly IHistoryRepository _historyRepository;
+            private readonly IFindingRepository _findingRepository;
+            public HistoryController(IHistoryRepository historyRepository, IFindingRepository findingRepository)
+            {
+                _historyRepository = historyRepository;
+                _findingRepository = findingRepository;
+            }
 
-        [Authorize]
-        public async Task<IActionResult> Index(int userId, int page = 1, int pageSize = 10)
-        {
-            int maxPageSize = 10;
-            pageSize = Math.Min(pageSize, maxPageSize);
-            page = Math.Max(page, 1);
+            [Authorize]
+            public async Task<IActionResult> Index(int userId, int page = 1, int pageSize = 10)
+            {
+                int maxPageSize = 10;
+                pageSize = Math.Min(pageSize, maxPageSize);
+                page = Math.Max(page, 1);
 
-            var histories = await _historyRepository.getHistoriesByUserID(userId, page, pageSize);
+                var histories = await _historyRepository.getHistoriesByUserID(userId, page, pageSize);
 
-            return View(histories); 
-        }
+                return View(histories); 
+            }
 
         [HttpPost]
         [Authorize]
@@ -84,6 +84,5 @@ namespace HeimdallWeb.Controllers
                 return BadRequest();
             }
         }
-
     }
 }

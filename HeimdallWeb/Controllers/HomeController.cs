@@ -7,7 +7,6 @@ using HeimdallWeb.Repository;
 using HeimdallWeb.Scanners;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 
 namespace HeimdallWeb.Controllers;
 
@@ -53,7 +52,6 @@ public class HomeController : Controller
 
         try
         {
-
             #region Faz os scans e envia para a IA
 
             ScannerManager scanner = new();

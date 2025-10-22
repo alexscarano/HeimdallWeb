@@ -9,6 +9,8 @@
 
 .vs/*
 .vscode/*
+/nuget-packages/*
+!/nuget-packages/*.nupkg
 
 # Build results
 [Dd]ebug/

@@ -28,7 +28,7 @@ public class LoginController : Controller
         {
             if (ModelState.IsValid)
             {
-                UserModel userDB = await _userRepository.getUserByEmailOrLogin(user.emailOrLogin) ?? throw new Exception("Não foi possivel consultar");
+                UserModel userDB = await _userRepository.getUserByEmailOrLogin(user.emailOrLogin) ?? throw new Exception("Nï¿½o foi possivel consultar");
                
                 if (PasswordUtils.VerifyPassword(user.password, userDB.password))
                 {
@@ -42,11 +42,11 @@ public class LoginController : Controller
                     }
                 }
             }
-            TempData["ErrorMsg"] = "Credenciais inválidas";
+            TempData["ErrorMsg"] = "Credenciais invï¿½lidas";
         }
         catch (System.Exception)
         {
-            TempData["ErrorMsg"] = "Credenciais inválidas";
+            TempData["ErrorMsg"] = "Credenciais invï¿½lidas";
         }
         return View("Index");
     }

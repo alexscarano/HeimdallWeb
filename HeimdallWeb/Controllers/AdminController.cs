@@ -34,26 +34,24 @@ namespace HeimdallWeb.Controllers
 
         [Authorize(Roles = "2")]
         [HttpPost]
-        [ActionName("DeleteUser")]
         public async Task<JObject> DeleteUser(int id)
-        {
-            try
             {
-                var userDB = await _userRepository.getUserById(id);
-                if (userDB == null)
-                    return JObject.FromObject(new { success = false, message = "Usuário não encontrado." });
+                try
+                {
+                    var userDB = await _userRepository.getUserById(id);
+                    if (userDB == null)
+                        return JObject.FromObject(new { success = false, message = "Usuário não encontrado." });
 
-                bool deleted = await _userRepository.deleteUser(id);
-                if (deleted)
-                    return JObject.FromObject(new { success = true, message = "Usuário deletado com sucesso." });
+                    bool deleted = await _userRepository.deleteUser(id);
+                    if (deleted)
+                        return JObject.FromObject(new { success = true, message = "Usuário deletado com sucesso." });
 
-                return JObject.FromObject(new { success = false, message = "Falha ao deletar usuário." });
+                    return JObject.FromObject(new { success = false, message = "Falha ao deletar usuário." });
+                }
+                catch (Exception ex)
+                {
+                    return JObject.FromObject(new { success = false, message = "Erro: " + ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                return JObject.FromObject(new { success = false, message = "Erro: " + ex.Message });
-            }
-        }
-
     }
 }

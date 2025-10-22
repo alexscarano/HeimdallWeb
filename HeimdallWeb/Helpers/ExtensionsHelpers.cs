@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using Newtonsoft.Json.Linq;
 
 namespace HeimdallWeb.Helpers
 {
-    public static class ExtentionsHelpers
+    public static class ExtensionsHelpers
     {
         /// <summary>
         /// método de extensão para "excluir propriedades" via reflexão
@@ -26,7 +24,7 @@ namespace HeimdallWeb.Helpers
         }
 
         /// <summary>
-        /// Transforma o objeto em JSON formatado
+        /// Transforma o objeto em JSON formatado (NewtonSoft)
         /// </summary>
         /// <param name="obj"></param>
         /// <returns>Objeto em forma de JSON</returns>

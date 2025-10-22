@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace HeimdallWeb.Helpers
@@ -13,7 +12,7 @@ namespace HeimdallWeb.Helpers
             ErrorMessage = "A senha deve conter pelo menos um caractere especial, uma letra maiscula.";
         }
 
-        public override bool IsValid(object?  value) //sim
+        public override bool IsValid(object? value) //sim
         {
             if (value is null) return true; // Required é tratado separadamente
 

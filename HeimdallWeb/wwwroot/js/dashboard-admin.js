@@ -1,0 +1,34 @@
+"use strict";
+function confirmDeleteUser(userId) {
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: 'Essa ação não pode ser desfeita!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sim, excluir'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            axios.post(`/Admin/DeleteUser?id=${userId}`, { timeout: 5000 })
+                .then((response) => {
+                const data = response.data;
+                if (data.success) {
+                    Swal.fire(`Usuário ${userId} Deletado!`, data.message, 'success');
+                    const row = document.getElementById('row-' + userId);
+                    if (row)
+                        row.remove();
+                }
+                else {
+                    Swal.fire('Erro', data.message, 'error');
+                }
+            })
+                .catch((err) => {
+                Swal.fire('Erro', 'Ocorreu um erro ao processar a requisição: ' + err.message, 'error');
+            });
+        }
+    });
+}
+// Torna a função global para ser chamada pelo onclick do botão
+window.confirmDelete = confirmDelete;
+//# sourceMappingURL=dashboard-admin.js.map

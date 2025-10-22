@@ -6,22 +6,25 @@ public static class JsonPreprocessor
 {
     public static void PreProcessScanResults(ref string jsonString)
     {
-        var json = jsonString.ToJson();
+        try
+        {
+            var json = jsonString.ToJson();
+            // Normalizar timestamps
+            NormalizeTimestamps(json);
 
-        // Normalizar timestamps
-        NormalizeTimestamps(json);
+            // Processar headers HTTP
+            ProcessHttpHeaders(json);
 
-        // Processar headers HTTP
-        ProcessHttpHeaders(json);
+            // Processar resultados SSL
+            ProcessSslResults(json);
 
-        // Processar resultados SSL
-        ProcessSslResults(json);
+            // Processar portas
+            ProcessPortResults(json);
 
-        // Processar portas
-        ProcessPortResults(json);
-
-        // Processar redirecionamentos
-        ProcessRedirectResults(json);
+            // Processar redirecionamentos
+            ProcessRedirectResults(json);
+        }
+        catch (Exception){}
     }
 
     private static void NormalizeTimestamps(JObject json)
@@ -40,14 +43,14 @@ public static class JsonPreprocessor
     private static void ProcessHttpHeaders(JObject json)
     {
         var headers = json["headers"];
-        if (headers != null)
+        if (headers is not null)
         {
             var headersObject = headers.Value<JObject>();
             var processedHeaders = new JObject();
 
             foreach (JProperty property in headersObject.Properties())
             {
-                if (property.Value.Type == JTokenType.String)
+                if (property.Value.Type is JTokenType.String)
                 {
                     processedHeaders[property.Name] = property.Value.ToString().ToLower();
                 }
@@ -64,7 +67,7 @@ public static class JsonPreprocessor
     private static void ProcessSslResults(JObject json)
     {
         var sslResults = json["resultsSslScanner"];
-        if (sslResults != null)
+        if (sslResults is not null)
         {
             foreach (var result in sslResults)
             {
@@ -103,7 +106,7 @@ public static class JsonPreprocessor
     private static void ProcessRedirectResults(JObject json)
     {
         var redirectResults = json["resultsHttpRedirectScanner"];
-        if (redirectResults != null)
+        if (redirectResults is not null)
         {
             foreach (var result in redirectResults)
             {

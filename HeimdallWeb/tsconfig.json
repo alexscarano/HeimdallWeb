@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "none",
+        "outDir": "./wwwroot/js",
+        "rootDir": "./wwwroot/ts",
+        "strict": true,
+        "types": [ "jquery" ],
+        "sourceMap": true
+        ,"esModuleInterop": true
+    },
+    "include": [ "wwwroot/ts/**/*" ]
+}
