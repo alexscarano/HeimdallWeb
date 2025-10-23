@@ -11,7 +11,7 @@
 .vscode/*
 /nuget-packages/*
 !/nuget-packages/*.nupkg
-node_modules/*
+.node_modules/*
 /node_modules/*
 
 # Build results
