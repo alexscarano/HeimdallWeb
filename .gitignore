@@ -11,6 +11,7 @@
 .vscode/*
 /nuget-packages/*
 !/nuget-packages/*.nupkg
+node_modules/*
 
 # Build results
 [Dd]ebug/
