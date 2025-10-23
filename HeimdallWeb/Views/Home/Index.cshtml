@@ -2,53 +2,63 @@
     <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
 </head>
 
+<style>
+    body {
+        background-image: url('/images/skulls.png');
+    }
+
+    .drk:after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: black;
+        opacity: 0.6;
+    }
+</style>
+
 @{
     ViewData["Title"] = "HeimdallWeb - Home";
 }
 
-<div class="container mt-5">
-        @if (TempData["ErrorMsg"] != null)
+<div class="container d-flex justify-content-center" style="height: 90vh;">
+    @if (TempData["ErrorMsg"] != null)
     {
-        <div class="alert alert-danger" role="alert">
-            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close"><i class="bi bi-x-lg"></i></button>
+        <div class="alert alert-danger fade show" role="alert">
             @TempData["ErrorMsg"]
+            <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
         </div>
     }
 
     @if (TempData["OkMsg"] != null)
     {
-        <div class="alert alert-success" role="alert">
-            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close"><i class="bi bi-x-lg"></i></button>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
             @TempData["OkMsg"]
+            <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
         </div>
     }
-    
-    <div class="row g-4 align-items-center">
-        <div class="col-6">
-            <div class="col-12 mb-5 text-center">
+
+    <div class="row-cols-lg-2 d-flex justify-content-center align-self-center g-4">
+        <div>
+            <div class="mb-5 text-center text-white">
                 <h1 class="display-4 mb-3 fw-bold">Descubra o quão seguro é seu site!</h1>
-                <p class="lead text-muted mb-4">Basta inserir a URL do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais pontos fortes, pontos fracos e possíveis melhorias.</p>
+                <p class="lead mb-4">Basta inserir a URL do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais pontos fortes, pontos fracos e possíveis melhorias.</p>
             </div>
 
-            <div class="col-12">
-                <div class=" card shadow-lg border-0 rounded-4">
-                    <div class="card-body p-4">
-                        <p class="">Insira a URL do site aqui:</p>
-                        <form id="scanForm" asp-controller="Home" asp-action="Scan" method="post"> 
-                            <div class="input-group mb-5">
-                                <input type="text" class="form-control form-control-lg" name="domainInput" id="domainInput"  
-                                    placeholder="URL" required >
-                            </div>
-                            <div class="">
-                                <button class="btn btn-primary btn-lg" type="submit">Analisar</button>
-                            </div>
-                        </form>
-                    </div>
+            <div>
+                <div class="shadow-lg border-0 rounded-5">
+                    <form id="scanForm" asp-controller="Home" asp-action="Scan" method="post"> 
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-lg border-dark border-end-0 rounded-start-5" name="domainInput" id="domainInput"  
+                                placeholder="Insira a URL" required >
+                            <button class="btn btn-primary btn-lg rounded-end-5" type="submit">Analisar</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
-        <div class="col-5 offset-1">
-            <img src="~/images/Heimdallr_by_Froelich_Trans.png" alt="Heimdall">
         </div>
     </div>
 </div>
