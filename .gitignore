@@ -11,10 +11,13 @@
 .vscode/*
 /nuget-packages/*
 !/nuget-packages/*.nupkg
+<<<<<<< Updated upstream
 .node_modules/*
 /node_modules/*
 /node_modules
 /wwwroot/node_modules
+=======
+>>>>>>> Stashed changes
 
 # Build results
 [Dd]ebug/
@@ -62,3 +65,68 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 HeimdallWeb/appsettings.json
+
+# Build outputs
+bin/
+obj/
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+*.sln.iml
+
+# OS generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# NuGet
+*.nupkg
+packages/
+
+# Dotnet user secrets (they are stored outside the repo but ignore common local secret files)
+secrets.json
+appsettings.*.Local.json
+.env
+
+# EF Migrations artifacts (if created locally)
+*.db
+*.db-journal
+*.sqlite
+
+# Node
+node_modules/
+
+# TypeScript compile output (if generated locally in wwwroot)
+wwwroot/dist/
+
+# Ignore local dlls folder used by project reference
+dlls/
+
+# OneDrive temp files
+~$*
+
+# JetBrains Rider caches
+.idea/
+
+# Generated coverage files
+coverage*/
+
+# Visual Studio Code
+.vscode/
+
+# Ignore publish outputs
+publish/
+
+# Keep secrets out of repository. Use `dotnet user-secrets` for development and environment variables / Key Vault for production.

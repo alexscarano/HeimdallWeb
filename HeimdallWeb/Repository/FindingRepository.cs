@@ -19,6 +19,7 @@ namespace HeimdallWeb.Repository
         {
             var findings = await 
                 _appDbContext.Finding
+                                .Where(f => f.history_id == history_id)
                                 .Select(f =>
                                     new FindingModel
                                     {
@@ -28,35 +29,25 @@ namespace HeimdallWeb.Repository
                                         recommendation = f.recommendation,
                                         history_id = f.history_id,
                                     })
-                                .Where(f => f.history_id == history_id)
                                 .AsNoTracking()
                                 .ToListAsync();
 
             return findings;
         }
 
-        public async Task<FindingModel> insertFinding(FindingModel finding)
-        {
-            await _appDbContext.Finding.AddAsync(finding);
-            await _appDbContext.SaveChangesAsync();
-
-            return finding;
-        }
-
-        public async Task SaveFindingsFromIAAsync(string iaResponse, int historyId)
+        public async Task SaveFindingsFromIA(string iaResponse, int historyId)
         {
             // Parse do JSON retornado pela IA
             var wrapper = JsonSerializer.Deserialize<FindingsWrapper>(iaResponse);
-            var findingsDto = wrapper.achados;
+            var findingsDto = wrapper?.achados;
 
-            if (findingsDto == null) return;
+            if (findingsDto is null || findingsDto.Count == 0) 
+                return;
 
             var findings = findingsDto.Select(dto => FindingDTOMapper.ToModel(dto, historyId)).ToList();
 
-            foreach (var finding in findings)
-            {
-                await insertFinding(finding);
-            }
+            await _appDbContext.Finding.AddRangeAsync(findings);
+            await _appDbContext.SaveChangesAsync();
         }
     }
 }

@@ -1,11 +1,9 @@
-﻿using HeimdallWeb.Data;
-using HeimdallWeb.DTO;
+﻿using HeimdallWeb.DTO;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
 using HeimdallWeb.Models.Map;
-using Microsoft.EntityFrameworkCore;
 
-namespace HeimdallWeb.Repository
+namespace HeimdallWeb.Repository.Interfaces
 {
     public class UserRepository : IUserRepository
     {

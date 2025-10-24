@@ -1,4 +1,5 @@
-﻿using HeimdallWeb.Repository;
+﻿using ASHelpers.Extensions;
+using HeimdallWeb.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -34,18 +35,18 @@ namespace HeimdallWeb.Controllers
             try
             {
                 var historyDB = await _historyRepository.getHistoryById(id);
-                if (historyDB == null)
-                    return JObject.FromObject(new { success = false, message = "Item no histórico não encontrado." });
+                if (historyDB is null)
+                    return new { success = false, message = "Item no histórico não encontrado." }.ToJson();
 
                 bool deleted = await _historyRepository.deleteHistory(id);
                 if (deleted)
-                    return JObject.FromObject(new { success = true, message = "Item do histórico deletado com sucesso." });
+                    return new { success = true, message = "Item do histórico deletado com sucesso." }.ToJson();
 
-                return JObject.FromObject(new { success = false, message = "Falha ao deletar item do histórico." });
+                return new { success = false, message = "Falha ao deletar item do histórico." }.ToJson();
             }
             catch (Exception ex)
             {
-                return JObject.FromObject(new { success = false, message = "Erro: " + ex.Message });
+                return new { success = false, message = "Erro: " + ex.Message }.ToJson();
             }
         }
 
@@ -53,7 +54,7 @@ namespace HeimdallWeb.Controllers
         public async Task<IActionResult> ViewJson(int id)
         {
             var jsonResult = await _historyRepository.getJsonByHistoryId(id);
-            if (jsonResult == null)
+            if (jsonResult is null)
             {
                 TempData["ErrorMsg"] = "Falha ao carregar JSON do histórico.";
                 return RedirectToAction("Index", "Home");

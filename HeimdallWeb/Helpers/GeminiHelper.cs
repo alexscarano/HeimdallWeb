@@ -1,4 +1,4 @@
-﻿namespace HeimdallWeb.IA
+﻿namespace HeimdallWeb.Helpers
 {
     public static class GeminiHelper
     {

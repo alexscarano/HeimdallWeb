@@ -1,9 +1,10 @@
-﻿using System.Text;
+﻿using ASHelpers.Extensions;
 using HeimdallWeb.Helpers;
+using HeimdallWeb.Services.IA.Interfaces;
 
-namespace HeimdallWeb.IA
+namespace HeimdallWeb.Services.IA
 {
-    public class GeminiService
+    public class GeminiService : IGeminiService
     {
         private readonly string _apiKey;
 
@@ -20,8 +21,7 @@ namespace HeimdallWeb.IA
             };
         }
 
-
-        public async Task<string> GenerateTextAsyncFindings(string jsonInput)
+        public async Task<string> GeneratePrompt(string jsonInput)
         {
             /*
              * Prepara o payload da requisição, exemplo de uso:

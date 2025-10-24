@@ -1,7 +1,7 @@
 using HeimdallWeb.DTO;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
-using HeimdallWeb.Repository;
+using HeimdallWeb.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeimdallWeb.Controllers;

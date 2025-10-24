@@ -1,8 +1,8 @@
-﻿using HeimdallWeb.Data;
+﻿using ASHelpers.Extensions;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
 using HeimdallWeb.Models.Map;
-using Microsoft.EntityFrameworkCore;
+using HeimdallWeb.Repository.Interfaces;
 using Newtonsoft.Json.Linq;
 
 namespace HeimdallWeb.Repository
@@ -108,19 +108,22 @@ namespace HeimdallWeb.Repository
 
         public async Task<JObject> getJsonByHistoryId(int id)
         {
-            var history = getHistoryById(id).Result;
-            
+            var history = await getHistoryById(id);
+
+            if (history is null)
+                return "{}".ToJson();
+
             var user_id = CookiesHelper.getUserIDFromCookie(CookiesHelper.getAuthCookie(_httpContextAccessor.HttpContext.Request));
 
             if (history.user_id != user_id)
-                return JObject.Parse("{}");
+                return "{}".ToJson();
 
             var json = history.raw_json_result;
 
-            if (json is null)
-                return JObject.Parse("{}");
+            if (string.IsNullOrWhiteSpace(json))
+                return "{}".ToJson();
 
-            return JObject.Parse(json);
+            return json.ToJson();
         }
 
         public async Task<HistoryModel> insertHistory(HistoryModel history)

@@ -2,7 +2,7 @@ using HeimdallWeb.DTO;
 using HeimdallWeb.Models;
 using HeimdallWeb.Models.Map;
 
-namespace HeimdallWeb.Repository
+namespace HeimdallWeb.Repository.Interfaces
 {
     public interface IUserRepository
     {

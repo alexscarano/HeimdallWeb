@@ -1,19 +1,15 @@
-using System.Globalization;
-using System.Text;
-using HeimdallWeb.Data;
-using HeimdallWeb.Repository;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+using HeimdallWeb.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var jwtKey = Encoding.ASCII.GetBytes(jwtSettings["Key"] ?? "Key não informada");
+// Bind Jwt options
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+
+var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? new JwtOptions();
+var jwtKey = Encoding.ASCII.GetBytes(jwtOptions.Key ?? "Key não informada");
 
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
 
@@ -21,13 +17,11 @@ var connectionString = builder.Configuration.GetConnectionString("AppDbConnectio
 builder.Services.AddHttpContextAccessor();
 
 // injeção de dependencia
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
-builder.Services.AddScoped<IFindingRepository, FindingRepository>();
-
+builder.Services.AddRepositories();
+builder.Services.AddServices();
 
 // capturar string de conexão sql
-builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), o => o.CommandTimeout(90)));
+builder.Services.AddPersistence(connectionString);
 
 // config jwt auth
 builder.Services.AddAuthentication(options =>
@@ -37,7 +31,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true; // em prod
+    options.RequireHttpsMetadata = jwtOptions.RequireHttpsMetadata; // em prod
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -45,8 +39,8 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(jwtKey),
         ValidateIssuer = false,
         ValidateAudience = false,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"]
+        ValidIssuer = jwtOptions.Issuer,
+        ValidAudience = jwtOptions.Audience
     };
 
     options.Events = new JwtBearerEvents
@@ -75,7 +69,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -84,24 +77,6 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+app.ConfigurePipeline();
 
-app.UseHttpsRedirection();
-app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.UseStaticFiles();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-   
 app.Run();

@@ -1,9 +1,6 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using HeimdallWeb.DTO;
 using HeimdallWeb.Helpers;
-using HeimdallWeb.Models;
-using HeimdallWeb.Repository;
+using HeimdallWeb.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,12 +15,6 @@ public class UserController : Controller
     {
         _userRepository = userRepository;
         _config = config;
-    }
-
-    [Authorize]
-    public IActionResult Index()
-    {
-        return View();  
     }
 
     [Authorize]
@@ -90,7 +81,7 @@ public class UserController : Controller
 
             int? userId = TokenService.GetUserIdFromClaims(User);
             // Pega o user_id dos claims validados pelo middleware (preferível)
-            if (userId == null)
+            if (userId is null)
             {
                 TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário";
                 return View("Edit", model);
@@ -137,7 +128,7 @@ public class UserController : Controller
         try
         {
             int? userId = TokenService.GetUserIdFromClaims(User);
-            if (userId == null)
+            if (userId is null)
             {
                 return View("Edit", userToDelete);
             }

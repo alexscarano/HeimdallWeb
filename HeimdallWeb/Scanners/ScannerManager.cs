@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using HeimdallWeb.Scanners.Interfaces;
+using Newtonsoft.Json.Linq;
 
 namespace HeimdallWeb.Scanners
 {

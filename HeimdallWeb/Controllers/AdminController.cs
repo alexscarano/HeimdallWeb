@@ -1,4 +1,4 @@
-﻿using HeimdallWeb.Repository;
+﻿using HeimdallWeb.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -39,7 +39,7 @@ namespace HeimdallWeb.Controllers
                 try
                 {
                     var userDB = await _userRepository.getUserById(id);
-                    if (userDB == null)
+                    if (userDB is null)
                         return JObject.FromObject(new { success = false, message = "Usuário não encontrado." });
 
                     bool deleted = await _userRepository.deleteUser(id);

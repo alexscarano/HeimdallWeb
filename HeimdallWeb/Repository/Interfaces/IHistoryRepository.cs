@@ -2,7 +2,7 @@
 using HeimdallWeb.Models.Map;
 using Newtonsoft.Json.Linq;
 
-namespace HeimdallWeb.Repository
+namespace HeimdallWeb.Repository.Interfaces
 {
     public interface IHistoryRepository
     {
