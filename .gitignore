@@ -11,13 +11,10 @@
 .vscode/*
 /nuget-packages/*
 !/nuget-packages/*.nupkg
-<<<<<<< Updated upstream
 .node_modules/*
 /node_modules/*
 /node_modules
 /wwwroot/node_modules
-=======
->>>>>>> Stashed changes
 
 # Build results
 [Dd]ebug/
