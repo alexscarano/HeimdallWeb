@@ -13,8 +13,6 @@ namespace HeimdallWeb.Extensions
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mySqlOptions =>
                 {
                     mySqlOptions.CommandTimeout(90);
-                    // Enable retry on failure for transient faults
-                    mySqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
                 }));
 
             return services;
