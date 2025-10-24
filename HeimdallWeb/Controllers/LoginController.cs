@@ -17,6 +17,12 @@ public class LoginController : Controller
         _config = config;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        return View();
+    }
+
     [HttpPost]
     public async Task<IActionResult> Enter(LoginDTO user)
     {

@@ -57,7 +57,7 @@ builder.Services.AddAuthentication(options =>
         {
             // se não autenticado -> redireciona pro login
             context.HandleResponse();
-            context.Response.Redirect("/Login/Index");
+            context.Response.Redirect("/Login");
             return Task.CompletedTask;
         },
         OnForbidden = context =>
