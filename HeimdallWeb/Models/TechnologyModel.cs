@@ -7,7 +7,7 @@ namespace HeimdallWeb.Models
     public class TechnologyModel
     {
         [Key]
-        public required int technology_id { get; set; }
+        public int technology_id { get; set; }
 
         [Required]
         // nome da tecnologia detectada
@@ -17,7 +17,7 @@ namespace HeimdallWeb.Models
         public string ?version { get; set; }
 
         [Required]
-        public required DateTime created_at { get; set; } = DateTime.Now;
+        public DateTime created_at { get; set; } = DateTime.Now;
 
         public int ?history_id { get; set; }
 

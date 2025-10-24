@@ -1,5 +1,5 @@
 ﻿using ASHelpers.Extensions;
-using HeimdallWeb.Repository.Interfaces;
+using HeimdallWeb.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;

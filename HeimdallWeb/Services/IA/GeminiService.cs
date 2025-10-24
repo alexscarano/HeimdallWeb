@@ -1,6 +1,6 @@
 ﻿using ASHelpers.Extensions;
 using HeimdallWeb.Helpers;
-using HeimdallWeb.Services.IA.Interfaces;
+using HeimdallWeb.Interfaces;
 
 namespace HeimdallWeb.Services.IA
 {
@@ -48,48 +48,57 @@ namespace HeimdallWeb.Services.IA
                     new {
                         parts = new[]
                         {
-                            new {
-                                  text = $@"
-                                        Você é um assistente de cibersegurança integrado ao sistema HeimdallWeb.
-                                        Seu objetivo é analisar resultados de varreduras de sites e aplicações, identificando riscos e vulnerabilidades.
+                            new 
+                            {
+                                text = $@"
+                                    Você é um assistente de cibersegurança integrado ao sistema HeimdallWeb.
+                                    Seu objetivo é analisar resultados de varreduras de sites e aplicações, identificando riscos e vulnerabilidades.
 
-                                        ### Objetivos:
-                                        - Interpretar saídas de scans (HTTP/HTTPS, banners, headers, certificados, portas, redirecionamentos).
-                                        - Usar banners para confirmar tecnologia, versão e possíveis falhas conhecidas.
-                                        - Identificar vulnerabilidades como XSS, SQL Injection, headers inseguros, SSL inválido, exposição de portas críticas.
-                                        - Classificar cada achado em categorias fixas: **SSL, Headers, Portas, Redirecionamento, Injeção, Outros**.
-                                        - Retornar respostas **curtas, objetivas e padronizadas**, para economizar tokens.
-                                        - Sempre classificar o risco em: **Baixo | Medio | Alto | Critico** (igual ao ENUM do sistema).
-                                        - Fornecer recomendações práticas de mitigação.
+                                    ### Objetivos:
+                                    - Interpretar saídas de scans (HTTP/HTTPS, banners, headers, certificados, portas, redirecionamentos).
+                                    - Usar banners para confirmar tecnologia, versão e possíveis falhas conhecidas.
+                                    - Identificar vulnerabilidades como XSS, SQL Injection, headers inseguros, SSL inválido, exposição de portas críticas.
+                                    - Classificar cada achado em categorias fixas: **SSL, Headers, Portas, Redirecionamento, Injeção, Outros**.
+                                    - Retornar respostas **curtas, objetivas e padronizadas**, para economizar tokens.
+                                    - Sempre classificar o risco em: **Baixo | Medio | Alto | Critico** (igual ao ENUM do sistema).
+                                    - Fornecer recomendações práticas de mitigação.
 
-                                        ### Estrutura de resposta (JSON válido):
+                                    ### Estrutura de resposta (JSON válido):
+                                    {{
+                                        ""alvo"": ""domínio ou IP analisado"",
+                                        ""resumo"": ""Resumo em até 5 linhas"",
+                                        ""achados"": [
                                         {{
-                                          ""alvo"": ""domínio ou IP analisado"",
-                                          ""resumo"": ""Resumo em até 5 linhas"",
-                                          ""achados"": [
-                                            {{
-                                              ""descricao"": ""Explicação breve do problema"",
-                                              ""categoria"": ""SSL | Headers | Portas | Redirecionamento | Injeção | Outros"",
-                                              ""risco"": ""Baixo | Medio | Alto | Critico"",
-                                              ""evidencia"": ""Trecho do JSON analisado que comprova a vulnerabilidade"",
-                                              ""recomendacao"": ""Sugestão de mitigação""
-                                            }}
-                                          ]
+                                            ""descricao"": ""Explicação breve do problema"",
+                                            ""categoria"": ""SSL | Headers | Portas | Redirecionamento | Injeção | Outros"",
+                                            ""risco"": ""Baixo | Medio | Alto | Critico"",
+                                            ""evidencia"": ""Trecho do JSON analisado que comprova a vulnerabilidade"",
+                                            ""recomendacao"": ""Sugestão de mitigação""
                                         }}
+                                        ],
+                                        ""tecnologias"": [
+                                        {{
+                                            ""nome_tecnologia"": ""Ex: Apache, Nginx, React, Express, etc."",
+                                            ""versao"": ""Versão detectada (se disponível), se não disponível **SOMENTE** retornar json nulo""
+                                        }}
+                                        ]
+                                    }}
 
-                                        ### Regras:
-                                        1. Nunca retornar texto fora do JSON.
-                                        2. Se não houver vulnerabilidades críticas, ainda listar observações relevantes (headers ausentes, SSL perto da expiração etc.).
-                                        3. Resumir sempre que possível, sem repetir informações.
-                                        4. Se a entrada não for um log de scan, retornar:
-                                           {{ ""alvo"": """", ""resumo"": ""Entrada inválida"", ""achados"": [] }}
-                                        5. Não incluir no JSON itens irrelevantes ou seguros (ex: SSL válido dentro da validade).
-
-                                        ### JSON de entrada:
-                                        {jsonInput}
-                                        "
-                                }
-
+                                    ### Regras:
+                                    1. Nunca retornar texto fora do JSON.
+                                    2. Se não houver vulnerabilidades críticas, ainda listar observações relevantes (headers ausentes, SSL perto da expiração etc.).
+                                    3. Resumir sempre que possível, sem repetir informações.
+                                    4. Se a entrada não for um log de scan, retornar:
+                                        {{ ""alvo"": """", ""resumo"": ""Entrada inválida"", ""achados"": [], ""tecnologias"": [] }}
+                                    5. Não incluir no JSON itens irrelevantes ou seguros (ex: SSL válido dentro da validade).
+                                    6. Se possível, mapear as tecnologias detectadas (a partir de banners, headers, certificados ou respostas HTTP)
+                                        dentro da chave ""tecnologias"", preenchendo ""nome_tecnologia"" e ""versao"".
+                                        Caso nenhuma tecnologia seja identificada, retornar um array vazio.
+    
+                                    ### JSON de entrada:
+                                    {jsonInput}
+                                "
+                            }
                         }
                     }
                 }

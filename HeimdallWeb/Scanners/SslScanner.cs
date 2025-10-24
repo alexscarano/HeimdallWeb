@@ -3,7 +3,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using HeimdallWeb.Helpers;
-using HeimdallWeb.Scanners.Interfaces;
+using HeimdallWeb.Interfaces;
 using Newtonsoft.Json.Linq;
 
 namespace HeimdallWeb.Scanners

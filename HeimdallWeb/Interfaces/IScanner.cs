@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace HeimdallWeb.Scanners.Interfaces
+namespace HeimdallWeb.Interfaces
 {
     public interface IScanner
     {

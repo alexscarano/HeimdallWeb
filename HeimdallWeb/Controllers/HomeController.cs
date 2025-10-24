@@ -1,7 +1,6 @@
 using HeimdallWeb.Helpers;
+using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
-using HeimdallWeb.Repository.Interfaces;
-using HeimdallWeb.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,7 +51,7 @@ public class HomeController : Controller
 
         try
         {
-            var historyId = await _scanService.RunScanAndPersistAsync(domainInput, historyModel);
+            var historyId = await _scanService.RunScanAndPersist(domainInput, historyModel);
 
             TempData["OkMsg"] = "Scan feito com sucesso !";
 

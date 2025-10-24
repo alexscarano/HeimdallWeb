@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
-using HeimdallWeb.Data;
 using HeimdallWeb.DTO;
+using HeimdallWeb.DTO.Mappers;
 using HeimdallWeb.Enums;
+using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace HeimdallWeb.Repository
 {
@@ -35,10 +35,10 @@ namespace HeimdallWeb.Repository
             return findings;
         }
 
-        public async Task SaveFindingsFromIA(string iaResponse, int historyId)
+        public async Task SaveFindingsFromAI(string iaResponse, int historyId)
         {
             // Parse do JSON retornado pela IA
-            var wrapper = JsonSerializer.Deserialize<FindingsWrapper>(iaResponse);
+            var wrapper = JsonSerializer.Deserialize<AIResponseDTO>(iaResponse);
             var findingsDto = wrapper?.achados;
 
             if (findingsDto is null || findingsDto.Count == 0) 

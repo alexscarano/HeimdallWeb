@@ -1,6 +1,6 @@
 ﻿using HeimdallWeb.Models;
 
-namespace HeimdallWeb.DTO
+namespace HeimdallWeb.DTO.Mappers
 {
     public static class FindingDTOMapper
     {

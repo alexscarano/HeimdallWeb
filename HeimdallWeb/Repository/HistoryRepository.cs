@@ -1,8 +1,8 @@
 ﻿using ASHelpers.Extensions;
 using HeimdallWeb.Helpers;
+using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
 using HeimdallWeb.Models.Map;
-using HeimdallWeb.Repository.Interfaces;
 using Newtonsoft.Json.Linq;
 
 namespace HeimdallWeb.Repository

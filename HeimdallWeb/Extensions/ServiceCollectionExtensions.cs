@@ -1,6 +1,6 @@
-using HeimdallWeb.Repository.Interfaces;
+using HeimdallWeb.Interfaces;
+using HeimdallWeb.Repository;
 using HeimdallWeb.Services;
-using HeimdallWeb.Services.Interfaces;
 
 namespace HeimdallWeb.Extensions
 {
@@ -23,6 +23,7 @@ namespace HeimdallWeb.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IHistoryRepository, HistoryRepository>();
             services.AddScoped<IFindingRepository, FindingRepository>();
+            services.AddScoped<ITechnologyRepository, TechnologyRepository>();
 
             return services;
         }

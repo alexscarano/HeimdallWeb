@@ -1,9 +1,10 @@
 ﻿using HeimdallWeb.DTO;
 using HeimdallWeb.Helpers;
+using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
 using HeimdallWeb.Models.Map;
 
-namespace HeimdallWeb.Repository.Interfaces
+namespace HeimdallWeb.Repository
 {
     public class UserRepository : IUserRepository
     {

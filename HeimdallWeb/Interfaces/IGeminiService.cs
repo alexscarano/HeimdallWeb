@@ -1,4 +1,4 @@
-﻿namespace HeimdallWeb.Services.IA.Interfaces
+﻿namespace HeimdallWeb.Interfaces
 {
     public interface IGeminiService
     {

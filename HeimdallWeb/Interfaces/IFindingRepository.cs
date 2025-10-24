@@ -1,10 +1,10 @@
 ﻿using HeimdallWeb.Models;
 
-namespace HeimdallWeb.Repository
+namespace HeimdallWeb.Interfaces
 {
     public interface IFindingRepository
     {
-        public Task SaveFindingsFromIA(string iaResponse, int historyId);
+        public Task SaveFindingsFromAI(string iaResponse, int historyId);
         public Task<List<FindingModel>> getFindingsByHistoryId(int historyId);
     }
 }

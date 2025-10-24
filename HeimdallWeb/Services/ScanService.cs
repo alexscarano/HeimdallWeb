@@ -2,9 +2,8 @@ using System.Text.Json;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Models;
 using HeimdallWeb.Services.IA;
-using HeimdallWeb.Repository.Interfaces;
 using HeimdallWeb.Scanners;
-using HeimdallWeb.Services.Interfaces;
+using HeimdallWeb.Interfaces;
 
 namespace HeimdallWeb.Services;
 
@@ -12,18 +11,26 @@ public class ScanService : IScanService
 {
     private readonly IHistoryRepository _historyRepository;
     private readonly IFindingRepository _findingRepository;
+    private readonly ITechnologyRepository _technologyRepository;
     private readonly AppDbContext _db;
     private readonly IConfiguration _config;
 
-    public ScanService(IHistoryRepository historyRepository, IFindingRepository findingRepository, AppDbContext db, IConfiguration config)
+    public ScanService(
+        IHistoryRepository historyRepository, 
+        IFindingRepository findingRepository, 
+        ITechnologyRepository technologyRepository,
+        AppDbContext db, 
+        IConfiguration config
+    )
     {
         _historyRepository = historyRepository;
         _findingRepository = findingRepository;
+        _technologyRepository = technologyRepository;
         _db = db;
         _config = config;
     }
 
-    public async Task<int> RunScanAndPersistAsync(string domain, HistoryModel historyModel, CancellationToken cancellationToken = default)
+    public async Task<int> RunScanAndPersist(string domain, HistoryModel historyModel, CancellationToken cancellationToken = default)
     {
         if (NetworkUtils.IsIPAddress(domain))
             throw new ArgumentException("Por favor, insira um nome de domínio válido, não um endereço IP.");
@@ -52,7 +59,7 @@ public class ScanService : IScanService
         historyModel.target = domain;
         historyModel.raw_json_result = jsonString;
         historyModel.summary = doc.RootElement.GetProperty("resumo").GetString();
-        historyModel.created_date = DateTime.UtcNow;
+        historyModel.created_date = DateTime.Now;
 
         // Persist in a transaction
         await using var tx = await _db.Database.BeginTransactionAsync(cancellationToken);
@@ -61,7 +68,8 @@ public class ScanService : IScanService
             var createdHistory = await _historyRepository.insertHistory(historyModel);
             var historyId = createdHistory.history_id;
 
-            await _findingRepository.SaveFindingsFromIA(iaResponse, historyId);
+            await _findingRepository.SaveFindingsFromAI(iaResponse, historyId);
+            await _technologyRepository.SaveTechnologiesFromAI(iaResponse, historyId);
 
             await tx.CommitAsync(cancellationToken);
 

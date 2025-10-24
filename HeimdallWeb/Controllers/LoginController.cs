@@ -1,7 +1,8 @@
 using HeimdallWeb.DTO;
 using HeimdallWeb.Helpers;
+using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
-using HeimdallWeb.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeimdallWeb.Controllers;
@@ -14,11 +15,6 @@ public class LoginController : Controller
     {
         _userRepository = userRepository;
         _config = config;
-    }
-
-    public IActionResult Index()
-    {
-        return View();
     }
 
     [HttpPost]
@@ -42,15 +38,17 @@ public class LoginController : Controller
                     }
                 }
             }
-            TempData["ErrorMsg"] = "Credenciais inv�lidas";
+            TempData["ErrorMsg"] = "Credenciais inválidas";
+            return RedirectToAction("Index", "Home");
         }
         catch (System.Exception)
         {
-            TempData["ErrorMsg"] = "Credenciais inv�lidas";
+            TempData["ErrorMsg"] = "Credenciais inválidas";
         }
-        return View("Index");
+        return RedirectToAction("Index", "Home");
     }
 
+    [Authorize]
     public IActionResult Logout()
     {
         try

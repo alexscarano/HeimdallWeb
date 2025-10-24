@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 using HeimdallWeb.Helpers;
-using HeimdallWeb.Scanners.Interfaces;
+using HeimdallWeb.Interfaces;
 using Newtonsoft.Json.Linq;
 
 namespace HeimdallWeb.Scanners

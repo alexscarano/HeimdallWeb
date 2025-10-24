@@ -46,19 +46,19 @@
                             <th id="row" class="text-center">@user.user_id</th>
                             <td class="text-center">@user.username</td>
                             <td class="text-center">@user.email</td>
-                            <td class="text-center">
-                                @if (@user.user_type == 1)
-                                {   
-                                    <div class="btn-group" role="group"  aria-label="Basic example">
-                                            <button type="button" class="btn btn-danger"
-                                                    onclick="confirmDeleteUser(@user.user_id)">
-                                                Excluir
-                                            </button>
-                                    </div>
-                                }
-                                else {
-                                    <button type="button" class="btn btn-dark" disabled>Excluir</button>
-                                }
+                            <td class="text-center">       
+                            @if (@user.user_type == 1)
+                            {   
+                                <div class="btn-group" role="group"  aria-label="Basic example">
+                                        <button type="button" class="btn btn-danger"
+                                                onclick="confirmDeleteUser(@user.user_id)">
+                                            Excluir
+                                        </button>
+                                </div>
+                            }
+                            else {
+                                <button type="button" class="btn btn-dark" disabled>Excluir</button>
+                            }
                             </td>
                             <td class="text-center">
                                 @if (@user.user_type == 2)
