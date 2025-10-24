@@ -1,7 +1,7 @@
 using System.Text.Json;
 using HeimdallWeb.Helpers;
-using HeimdallWeb.IA;
 using HeimdallWeb.Models;
+using HeimdallWeb.Services.IA;
 using HeimdallWeb.Repository.Interfaces;
 using HeimdallWeb.Scanners;
 using HeimdallWeb.Services.Interfaces;
@@ -45,7 +45,7 @@ public class ScanService : IScanService
 
         // Call IA
         var gemini = new GeminiService(_config);
-        var iaResponse = await gemini.GenerateTextAsyncFindings(jsonString);
+        var iaResponse = await gemini.GeneratePrompt(jsonString);
 
         using var doc = JsonDocument.Parse(iaResponse);
 
