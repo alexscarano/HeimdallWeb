@@ -2,44 +2,28 @@
     <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
 </head>
 
-<style>
-    body {
-        background-image: url('/images/skulls.png');
-    }
-
-    .drk:after {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: black;
-        opacity: 0.6;
-    }
-</style>
 
 @{
     ViewData["Title"] = "HeimdallWeb - Home";
 }
 
-<div class="container d-flex justify-content-center" style="height: 90vh;">
-    @if (TempData["ErrorMsg"] != null)
-    {
-        <div class="alert alert-danger fade show" role="alert">
-            @TempData["ErrorMsg"]
-            <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
-        </div>
-    }
+@if (TempData["ErrorMsg"] != null)
+{
+    <div class="alert alert-danger fade show" role="alert">
+        @TempData["ErrorMsg"]
+        <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
+    </div>
+}
 
-    @if (TempData["OkMsg"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["OkMsg"]
-            <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
-        </div>
-    }
+@if (TempData["OkMsg"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["OkMsg"]
+        <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="container d-flex justify-content-center" style="height: 90vh;">
 
     <div class="row-cols-lg-2 d-flex justify-content-center align-self-center g-4">
         <div>
