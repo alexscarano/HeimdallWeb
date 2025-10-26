@@ -2,95 +2,96 @@
 
 <head>
     <link rel="stylesheet" href="~/css/delete.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/history-dark.css" asp-append-version="true" />
 </head>
 
-<div class="container-fluid cont-menu mb-5">
-    <div class="row row-menu justify-content-evenly align-items-center">
-        <div class="col-2">
-            <a class="nav-link text-center text-white" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
+<div class="container mb-4">
+    <div class="d-flex justify-content-between align-items-center py-3 bg-dark rounded-3 text-white history-header">
+        <div class="d-flex align-items-center gap-3">
+            <h4 class="m-0">Histórico</h4>
+
         </div>
-        @if (User.IsInRole("2")){
-            <div class="col-2">
-                <a class="nav-link text-center text-white" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Dashboard</a>
-            </div>
-        }   
-        <div class="col-2">
-            <a class="nav-link text-center text-white" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
-        </div>
-        <div class="col-2">
-            <a class="nav-link text-center text-white" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
+        <div class="d-flex align-items-center gap-2">
+            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
+            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
+            @if (User.IsInRole("2"))
+            {
+                <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Painel de Admin</a>
+            }
         </div>
     </div>
 </div>
 
-<div class="container mt-5">
-    @if (TempData["OkMsg"] != null)
-    {
-        <div class="alert alert-success" role="alert">
-            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
-            @TempData["OkMsg"]
-        </div>
-    }
 
-    @if (TempData["ErrorMsg"] != null)
-    {
-        <div class="alert alert-danger" role="alert">
-            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
-            @TempData["ErrorMsg"]
-        </div>
-    }
+@if (TempData["OkMsg"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["OkMsg"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
-    <table class="table table-striped-columns table-hover">
-        
-        @if (Model != null && Model.Items.Any())
-        {
-            <thead>
-                <tr class="text-center">
-                    <th scope="col">Site</th>
-                    <th scope="col">Achados</th>
-                    <th scope="col">Ações</th>
-                    <th scope="col">Data de criação</th>
-                </tr>
-            </thead>
-        }
-        else
-        {
-            <div class="alert alert-info text-center" role="alert">
-                Nenhum registro encontrado no histórico.
-            </div>
-        }
-        <tbody class="table-group-divider">
-        @if (Model != null && Model.Items.Any())
-        {
-            @foreach (var history in Model.Items)
+@if (TempData["ErrorMsg"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMsg"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container mt-3">
+    <!-- Use Bootstrap dark utilities for inner area -->
+    <div class="table-responsive shadow-sm rounded bg-dark text-light p-2">
+        <table class="table table-hover table-dark mb-0">
+            @if (Model != null && Model.Items.Any())
             {
-                <tr class="text-center">
-                    <td hidden id="row-@history.history_id">@history.history_id</td>
-                    <td >@history.target</td>
-                    <td>
-                        <a href="javascript:void(0);" onclick="loadFindings(@history.history_id)">
-                            Ver achados
-                        </a>
-                    </td>
-                    <td class="justify-content-end">
-                        <a class="btn btn-success" asp-controller="History" asp-action="ViewJson" asp-route-id="@history.history_id">JSON</a>
-                        <a class="btn btn-primary" href="#">Resumo</a>
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-danger"
-                                    onclick="confirmDelete(@history.history_id)">
-                                Excluir
-                            </button>
-                        </div>
-                    </td>
-                    <td>@history.created_date.ToString("G")</td>
-                </tr>
+                <thead class="table-dark">
+                    <tr class="text-center align-middle">
+                        <th scope="col">Site</th>
+                        <th scope="col">Achados</th>
+                        <th scope="col">Tecnologias</th>
+                        <th scope="col">Ações</th>
+                        <th scope="col">Data de criação</th>
+                    </tr>
+                </thead>
             }
-        }
-        </tbody>
-    </table>
+            else
+            {
+                <div class="alert alert-info text-center m-3" role="alert">
+                    Nenhum registro encontrado no histórico.
+                </div>
+            }
+            <tbody class="table-group-divider">
+            @if (Model != null && Model.Items.Any())
+            {
+                @foreach (var history in Model.Items)
+                {
+                    <tr class="text-center align-middle">
+                        <td hidden id="row-@history.history_id">@history.history_id</td>
+                        <td class="text-start text-light">@history.target</td>
+                        <td>
+                            <a class="btn btn-findings btn-sm" href="javascript:void(0);" onclick="loadFindings(@history.history_id)">Ver achados</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-tech btn-sm" href="javascript:void(0);" onclick="loadTechnologies(@history.history_id)">Ver tecnologias</a>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group" aria-label="Acoes">
+                                <a class="btn btn-sm btn-outline-success" asp-controller="History" asp-action="ViewJson" asp-route-id="@history.history_id">JSON</a>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="showSummary('@history.summary?.Replace("'", "\\'")')">Resumo</button>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete(@history.history_id)">Excluir</button>
+                            </div>
+                        </td>
+                        <td class="text-light">@history.created_date.ToString("g")</td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
 
     <div class="modal fade" id="findingsModal" tabindex="-1" aria-labelledby="findingsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -114,11 +115,35 @@
         </div>
     </div>
 
-    <!-- Aplicando lógica de paginação -->
+    <div class="modal fade" id="technologiesModal" tabindex="-1" aria-labelledby="technologiesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="technologiesModalLabel">Tecnologias detectadas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Tecnologia</th>
+                                <th>Versão</th>
+                            </tr>
+                        </thead>
+                        <tbody id="technologiesTableBody">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Paginação *@
     @if (Model.TotalPages > 1)
     {
-        <nav>
-            <ul class="pagination">
+        <nav class="mt-3">
+            <ul class="pagination justify-content-center">
                 @if (Model.HasPrevious)
                 {
                     <li class="page-item">
@@ -129,7 +154,7 @@
                 @for (int i = 1; i <= Model.TotalPages; i++)
                 {
                     <li class="page-item @(i == Model.Page ? "active" : "")">
-                            <a class="page-link" href="?page=@i&pageSize=@Model.PageSize">@i</a>
+                        <a class="page-link" href="?page=@i&pageSize=@Model.PageSize">@i</a>
                     </li>
                 }
 

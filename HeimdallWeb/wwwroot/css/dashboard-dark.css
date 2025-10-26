@@ -1,0 +1,516 @@
+:root {
+  --heimdall-dark: #1c3033;
+  --heimdall-dark-2: #163033;
+  --heimdall-accent: #2a6b6d;
+  --heimdall-muted: #9fb7b7;
+}
+
+.history-header {
+  padding-left: 1.25rem; /* move text away from left edge */
+  padding-right: 1.25rem; /* move controls away from right edge */
+  border-radius: 0.85rem; /* slightly more rounded than default rounded-3 */
+}
+
+.history-header, .history-header a, .history-header .nav-link {
+  color: #ffffff !important;
+}
+
+.history-header a.nav-link {
+  padding: 0.375rem 0.6rem;
+  border-radius: 0.35rem;
+}
+
+.history-header a.nav-link:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.03);
+  text-decoration: none;
+}
+
+.page-panel {
+  background: #050505; /* near pure black */
+  color: #ffffff;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+.page-panel .form-control {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.page-panel .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.page-panel .form-label,
+.page-panel .form-check-label {
+  color: #ffffff !important;
+}
+
+.page-panel .btn-primary {
+  background: #2a6b6d !important;
+  border-color: rgba(42, 107, 109, 0.9) !important;
+}
+
+.page-panel .btn-outline-secondary {
+  color: #eaf7f6 !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.table th, .table td {
+  font-size: 0.98rem; /* slightly larger */
+  vertical-align: middle;
+  text-align: center; /* default center for readability */
+  padding: 0.6rem 1rem; /* increase horizontal padding to keep text away from edges */
+}
+.table td.text-start {
+  text-align: left !important;
+}
+.table tbody td {
+  transition: background 0.15s ease, color 0.15s ease, transform 0.06s ease;
+}
+.table tbody td:hover {
+  background: rgba(42, 107, 109, 0.08); /* subtle accent background on cell hover */
+  color: #eaf7f6; /* lighter text on hover */
+  transform: translateY(-1px);
+}
+
+.table-responsive.shadow-sm.rounded {
+  background: rgba(16, 24, 25, 0.85);
+  padding: 1rem; /* more inner spacing so content is not tight against borders */
+  border-radius: 0.85rem; /* more rounded corners */
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+.table-responsive.shadow-sm.rounded .table thead th {
+  background: #1c3033 !important;
+  color: #f5fbfb !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+  padding: 0.85rem 1rem !important;
+  line-height: 1.2 !important;
+}
+.table-responsive.shadow-sm.rounded .table tbody tr {
+  background: linear-gradient(90deg, rgba(8, 12, 13, 0.35), rgba(12, 16, 17, 0.35));
+  color: #9fb7b7;
+  transition: background 0.15s ease;
+}
+.table-responsive.shadow-sm.rounded .table tbody tr:hover {
+  background: linear-gradient(90deg, rgba(12, 16, 17, 0.6), rgba(18, 22, 22, 0.6));
+  color: #e9fbfa;
+}
+.table-responsive.shadow-sm.rounded .table tbody td {
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  color: #9fb7b7;
+  padding: 0.75rem 1rem !important;
+}
+.table-responsive.shadow-sm.rounded .table a.btn-link {
+  color: #2a6b6d;
+  text-decoration: none;
+}
+
+.table tbody tr.text-center.align-middle {
+  background: rgba(14, 20, 21, 0.5);
+  color: #e8f6f5;
+}
+
+.btn-findings, .btn-tech {
+  background: #1c3033;
+  color: #fff;
+  border: 1px solid #163033;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.95rem;
+  border-radius: 0.35rem;
+  box-shadow: none;
+  white-space: nowrap;
+}
+.btn-findings:hover, .btn-tech:hover {
+  background: #2a6b6d;
+  color: #fff;
+}
+
+.btn-outline-success {
+  color: #2a6b6d;
+  border-color: rgba(42, 107, 109, 0.85);
+}
+.btn-outline-success:hover {
+  background: rgba(42, 107, 109, 0.12);
+  color: #fff;
+}
+
+.btn-outline-primary {
+  color: #2f6f8f;
+  border-color: rgba(47, 111, 143, 0.85);
+}
+.btn-outline-primary:hover {
+  background: rgba(47, 111, 143, 0.12);
+  color: #fff;
+}
+
+.btn-outline-danger {
+  color: #c94b56;
+  border-color: rgba(201, 75, 86, 0.85);
+}
+.btn-outline-danger:hover {
+  background: rgba(201, 75, 86, 0.12);
+  color: #fff;
+}
+
+.btn-group .btn-sm {
+  border-radius: 0.35rem;
+  padding: 0.35rem 0.55rem;
+  box-shadow: none;
+}
+
+.pagination .page-link {
+  background: rgba(34, 57, 58, 0.9);
+  color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.pagination .page-link:hover {
+  background: #2a6b6d;
+}
+.pagination .page-item.active .page-link {
+  background: #1c3033;
+  border-color: #163033;
+  color: #fff;
+}
+
+.modal-content {
+  background: rgba(18, 23, 24, 0.95);
+  color: #eaf7f6;
+}
+
+.modal-header, .modal-footer {
+  border-color: rgba(255, 255, 255, 0.03);
+}
+
+.modal-content .table {
+  color: #eaf7f6;
+  border-collapse: separate;
+}
+
+.modal-content .table thead th {
+  background: rgba(12, 16, 17, 0.95);
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.modal-content .table tbody tr {
+  background: rgba(10, 12, 13, 0.35);
+  color: #9fb7b7;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.modal-content .table tbody tr:hover {
+  background: rgba(14, 18, 18, 0.65);
+  color: #eaf7f6;
+}
+
+.modal-content .table tbody td {
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  color: #9fb7b7;
+}
+
+.modal-content .table tbody tr:nth-child(odd) {
+  background: rgba(12, 14, 15, 0.28);
+}
+
+.modal-content .table tbody tr:nth-child(even) {
+  background: rgba(8, 10, 11, 0.18);
+}
+
+#findingsModal .modal-content {
+  background: rgba(18, 23, 24, 0.95) !important; /* keep modal shell dark */
+  color: #eaf7f6 !important;
+}
+
+#findingsModal .modal-content .table {
+  background: transparent !important;
+  color: inherit !important;
+  border-collapse: separate !important;
+}
+
+#findingsModal .modal-content .table thead th {
+  background: #1c3033 !important;
+  color: #f5fbfb !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+#findingsModal .modal-content .table tbody tr {
+  background: linear-gradient(90deg, rgba(8, 12, 13, 0.35), rgba(12, 16, 17, 0.35)) !important;
+  color: #9fb7b7 !important;
+  transition: background 0.15s ease !important;
+}
+
+#findingsModal .modal-content .table tbody tr:hover {
+  background: linear-gradient(90deg, rgba(12, 16, 17, 0.6), rgba(18, 22, 22, 0.6)) !important;
+  color: #e9fbfa !important;
+}
+
+#findingsModal .modal-content .table tbody td,
+#findingsModal .modal-content .table tbody th {
+  border-top: 1px solid rgba(255, 255, 255, 0.03) !important;
+  color: #9fb7b7 !important;
+  background: rgba(10, 12, 13, 0.18) !important;
+}
+
+#findingsModal .modal-content .table.table-bordered td,
+#findingsModal .modal-content .table.table-bordered th {
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+#findingsModal .modal-content .table.table-striped tbody tr:nth-child(odd) {
+  background: rgba(12, 14, 15, 0.28) !important;
+}
+
+#findingsModal .modal-content .table.table-striped tbody tr:nth-child(even) {
+  background: rgba(8, 10, 11, 0.18) !important;
+}
+
+.editar-box .form-control,
+.deletar-box .form-control {
+  background: rgba(255, 255, 255, 0.06);
+  color: #eaf7f6;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.editar-box .form-label,
+.deletar-box label {
+  color: #eaf7f6;
+}
+
+.editar-box .btn-primary,
+.deletar-box .btn-danger {
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .table thead {
+    display: none;
+  }
+  .table tbody td {
+    display: block;
+    width: 100%;
+  }
+}
+.swal2-container {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.swal2-popup {
+  background: linear-gradient(180deg, rgba(12, 16, 17, 0.98), rgba(8, 12, 13, 0.98)) !important;
+  color: #eaf7f6 !important;
+  border-radius: 0.85rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7) !important;
+}
+
+.swal2-title {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.swal2-content {
+  color: #9fb7b7 !important;
+}
+
+.swal2-styled {
+  box-shadow: none !important;
+  border-radius: 0.35rem !important;
+  padding: 0.55rem 1rem !important;
+}
+
+.swal2-confirm {
+  background: transparent !important;
+  color: #2a6b6d !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.swal2-cancel {
+  background: transparent !important;
+  color: #c94b56 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.swal2-icon {
+  box-shadow: none !important;
+}
+
+.swal2-icon.swal2-warning {
+  color: #fff !important;
+}
+
+.swal2-input, .swal2-textarea {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #eaf7f6 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 0.35rem !important;
+}
+
+.swal2-footer {
+  color: #9fb7b7 !important;
+}
+
+.swal2-html-container a {
+  color: #2a6b6d !important;
+}
+
+@media (max-width: 576px) {
+  .swal2-popup {
+    width: 92% !important;
+  }
+}
+.table-responsive.dashboard-panel {
+  padding: 1rem;
+}
+
+.pagination .page-link {
+  padding: 0.4rem 0.6rem;
+}
+
+/* Alert override: valid selector and higher specificity so it overrides Bootstrap */
+.container .alert.alert-secondary.text-center.m-3,
+.alert.alert-secondary.text-center.m-3 {
+  background-color: rgba(255, 255, 255, 0.04) !important; /* nearly-black translucent */
+  color: #e9ecef !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding: 1rem !important;
+  margin: 1rem !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+  text-align: center;
+  transition: background-color 0.15s ease, transform 0.12s ease, box-shadow 0.12s ease;
+  line-height: 1.3;
+  font-size: 0.95rem;
+}
+
+.container .alert.alert-secondary.text-center.m-3 a,
+.alert.alert-secondary.text-center.m-3 a {
+  color: #cfe2ff !important;
+  text-decoration: underline !important;
+}
+
+.container .alert.alert-secondary.text-center.m-3:hover,
+.alert.alert-secondary.text-center.m-3:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.65) !important;
+}
+
+/* Responsive tweak */
+@media (max-width: 576px) {
+  .container .alert.alert-secondary.text-center.m-3,
+  .alert.alert-secondary.text-center.m-3 {
+    padding: 0.75rem !important;
+    font-size: 0.9rem !important;
+  }
+}
+.row.justify-content-between .row > .col-3.text-end {
+  margin-top: 1rem; /* space between table and controls */
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-left: 0.5rem;
+}
+
+/* make the form inside the right column look like the rest of the UI
+   -> changed to match the table container color (no transparency) */
+.row.justify-content-between .row > .col-3.text-end form {
+  min-width: 280px; /* prevents it from collapsing on wide screens */
+  background: rgba(16, 24, 25, 0.85) !important; /* same color as .table-responsive */
+  padding: 0.6rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+/* inputs and button inside the small form should match page controls */
+.row.justify-content-between .row > .col-3.text-end .form-control {
+  background: rgba(255, 255, 255, 0.06);
+  color: #eaf7f6 !important; /* ensure text is visible */
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 0.35rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.95rem;
+}
+
+/* stronger placeholder rules for cross-browser support */
+.row.justify-content-between .row > .col-3.text-end .form-control::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.row.justify-content-between .row > .col-3.text-end .form-control:-moz-placeholder {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.row.justify-content-between .row > .col-3.text-end .form-control::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.row.justify-content-between .row > .col-3.text-end .form-control:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.row.justify-content-between .row > .col-3.text-end .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+/* Make outline primary use Heimdall accent (green) for the right-side search control */
+.row.justify-content-between .row > .col-3.text-end .btn-outline-primary {
+  color: #2a6b6d !important;
+  border-color: rgba(42, 107, 109, 0.9) !important;
+  background: transparent !important;
+}
+
+.row.justify-content-between .row > .col-3.text-end .btn-outline-primary:hover,
+.row.justify-content-between .row > .col-3.text-end .btn-outline-primary:focus {
+  background: rgba(42, 107, 109, 0.12) !important;
+  color: #fff !important;
+  border-color: #2a6b6d !important;
+}
+
+.row.justify-content-between .row > .col-3.text-end .btn-primary {
+  background: #2a6b6d !important;
+  border-color: rgba(42, 107, 109, 0.9) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+/* Role badge styles */
+.role-badge {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.role-badge.role-admin {
+  background: #2a6b6d;
+  color: #fff;
+}
+
+.role-badge.role-user {
+  background: rgba(255, 255, 255, 0.04);
+  color: #9fb7b7;
+}
+
+/* responsive: on narrow screens make the control area full width and stacked */
+@media (max-width: 768px) {
+  .row.justify-content-between .row > .col-3.text-end {
+    width: 100%;
+    margin-top: 0.75rem;
+    justify-content: center;
+  }
+  .row.justify-content-between .row > .col-3.text-end form {
+    min-width: 100%;
+    max-width: 420px;
+  }
+}
+
+/*# sourceMappingURL=dashboard-dark.css.map */

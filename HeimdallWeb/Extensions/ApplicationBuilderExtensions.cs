@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-
 namespace HeimdallWeb.Extensions
 {
     public static class ApplicationBuilderExtensions

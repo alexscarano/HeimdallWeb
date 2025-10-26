@@ -5,89 +5,65 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/delete.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/history-dark.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/delete-dark.css" asp-append-version="true" />
 </head>
 
-<div class="container-fluid cont-menu mb-5">
-    <div class="row row-menu justify-content-evenly align-items-center">
-        <div class="col-2">
-            <a class="nav-link text-center text-white" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
+<div class="container mb-4">
+    <div class="d-flex justify-content-between align-items-center py-3 bg-dark rounded-3 text-white history-header">
+        <div class="d-flex align-items-center gap-3">
+            <h4 class="m-0">Deletar conta</h4>
+
         </div>
-        @if (User.IsInRole("2")){
-            <div class="col-2">
-                <a class="nav-link text-center text-white" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Dashboard</a>
-            </div>
-        }   
-        <div class="col-2">
-            <a class="nav-link text-center text-white" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
-        </div>
-        <div class="col-2">
-            <a class="nav-link text-center text-white" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
+        <div class="d-flex align-items-center gap-2">
+            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
+            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
+            @if (User.IsInRole("2"))
+            {
+                <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Painel de Admin</a>
+            }
         </div>
     </div>
 </div>
 
+@if (TempData["ErrorMsg"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMsg"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
-<div class="container deletar-box" style="max-width: 960px; margin-top: 1.5rem;">
-    @if (TempData["ErrorMsg"] != null)
-    {
-        <div class="alert alert-danger" role="alert">
-            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close"><i class="bi bi-x-lg"></i></button>
-            @TempData["ErrorMsg"]
+<div class="container deletar-box">
+    <div class="table-responsive delete-panel shadow-sm rounded bg-dark text-light p-3">
+        <div class="row mb-4"><h2>Excluir Usuário <i class="bi bi-exclamation-circle"></i></h2></div>
+        <div class="row"><p>Essa ação não pode ser desfeita. Coloque as informações da conta para continuar:</p></div>
+        <div class="row">
+            <form id="deleteForm" asp-action="DeleteAction" asp-controller="User" method="post">
+                <div class="form-group mb-4">
+                    <label asp-for="password" class="form-label">Senha</label>
+                    <input asp-for="password" class="form-control light-placeholder" placeholder="Senha da sua conta" type="password" required/>
+                    @Html.ValidationMessageFor(x => x.password)
+                </div>
+                <div class="form-group mb-4">
+                    <label asp-for="confirm_password" class="form-label">Confirmar senha</label>
+                    <input asp-for="confirm_password" class="form-control light-placeholder" placeholder="Confirme sua senha" type="password" required/>
+                    @Html.ValidationMessageFor(x => x.confirm_password)
+                </div>
+                <div class="form-check mb-5">
+                    <input asp-for="confirm_delete" class="form-check-input" type="checkbox" required/>
+                    <label asp-for="confirm_delete" class="form-check-label">
+                        Confirmo que desejo excluir minha conta permanentemente
+                    </label>
+                    @Html.ValidationMessageFor(x => x.confirm_delete)
+                </div>
+                <button type="button" class="btn btn-outline-danger" id="btn-delete">Excluir <i class="bi bi-x-circle"></i></button>
+            </form>
         </div>
-    }
-    <div class="row mb-5"><h2>@ViewData["Title"] <i class="bi bi-exclamation-circle"></i></h2></div>
-    <div class="row"><p>Essa ação não pode ser desfeita. Coloque as informações da conta para continuar:</p></div>
-    <div class="row">
-        <form id="deleteForm" asp-action="DeleteAction" asp-controller="User" method="post">
-            <div class="form-group mb-4">
-                <label asp-for="password" class="form-label">Senha</label>
-                <input asp-for="password" class="form-control" placeholder="Senha da sua conta" type="password" required/>
-                @Html.ValidationMessageFor(x => x.password)
-            </div>
-            <div class="form-group mb-4">
-                <label asp-for="confirm_password" class="form-label">Confirmar senha</label>
-                <input asp-for="confirm_password" class="form-control" placeholder="Confirme sua senha" type="password" required/>
-                @Html.ValidationMessageFor(x => x.confirm_password)
-            </div>
-            <div class="form-check mb-5">
-                <input asp-for="confirm_delete" class="form-check-input" type="checkbox" required/>
-                <label asp-for="confirm_delete" class="form-check-label">
-                    Confirmo que desejo excluir minha conta permanentemente
-                </label>
-                @Html.ValidationMessageFor(x => x.confirm_delete)
-            </div>
-            <button type="button" class="btn btn-danger" id="btn-delete">Excluir <i class="bi bi-x-circle"></i></button>
-        </form>
     </div>
 </div>
-
 
 
 @section Scripts {
-    <script>
-         $(document).on('click', '#btn-delete', function () {
-            // Verificação do checkbox
-            if (!$('#confirm_delete').is(':checked')) {
-                Swal.fire('Ops!', 'Você precisa confirmar que deseja excluir a conta.', 'error');
-                return;
-            }
-            // Exibe o SweetAlert
-            Swal.fire({
-                title: 'Tem certeza que deseja excluir?',
-                text: "Essa ação não poderá ser desfeita!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#2a9df4',
-                cancelButtonColor: '#ff0157',
-                confirmButtonText: 'Sim, excluir!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Se o usuário confirmar, envia o formulário
-                    $('#deleteForm').submit();
-                }
-            });
-        });
-    </script>
+    <script src="~/js/delete.js" asp-append-version="true"></script>
 }

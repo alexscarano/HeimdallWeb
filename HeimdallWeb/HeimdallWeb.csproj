@@ -8,8 +8,10 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\ts\dashboard-admin.ts" />
+    <Content Remove="wwwroot\ts\delete.ts" />
     <Content Remove="wwwroot\ts\history.ts" />
     <Content Remove="wwwroot\ts\types\Finding.ts" />
+    <Content Remove="wwwroot\ts\types\Tecnology.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,7 +41,9 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="wwwroot\ts\dashboard-admin.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\delete.ts" />
     <TypeScriptCompile Include="wwwroot\ts\history.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\types\Tecnology.ts" />
     <TypeScriptCompile Include="wwwroot\ts\types\Finding.ts" />
   </ItemGroup>
 

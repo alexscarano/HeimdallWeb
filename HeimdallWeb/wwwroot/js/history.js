@@ -1,6 +1,9 @@
 "use strict";
 // Torna a função global para ser chamada pelo onclick do botão
 window.confirmDelete = confirmDelete;
+window.loadFindings = loadFindings;
+window.loadTechnologies = loadTechnologies;
+window.showSummary = showSummary;
 function confirmDelete(historyId) {
     Swal.fire({
         title: 'Tem certeza?',
@@ -9,10 +12,11 @@ function confirmDelete(historyId) {
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sim, excluir'
+        confirmButtonText: 'Sim, excluir',
+        cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
-            axios.post(`/History/DeleteHistory?id=${historyId}`, { timeout: 5000 })
+            axios.post(`/history/deletehistory?id=${historyId}`, { timeout: 5000 })
                 .then((response) => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(`Erro HTTP! status: ${response.status}`);
@@ -27,7 +31,7 @@ function confirmDelete(historyId) {
                         if (rowElement) {
                             rowElement.remove();
                         }
-                        window.location.href = '/History?page=1&pageSize=10';
+                        window.location.href = '/history?page=1&pageSize=10';
                     });
                 }
                 else {
@@ -41,7 +45,7 @@ function confirmDelete(historyId) {
     });
 }
 function loadFindings(historyId) {
-    axios.get(`/History/GetFindings?id=${historyId}`, { timeout: 5000 })
+    axios.get(`/history/getfindings?id=${historyId}`, { timeout: 5000 })
         .then((response) => {
         const data = response.data;
         const tbody = document.getElementById("findingsTableBody");
@@ -78,6 +82,41 @@ function loadFindings(historyId) {
     })
         .catch((err) => {
         Swal.fire("Erro", err.message, "error");
+    });
+}
+function loadTechnologies(historyId) {
+    axios.get(`/history/gettechnologies?id=${historyId}`, { timeout: 5000 })
+        .then((response) => {
+        const data = response.data;
+        const tbody = document.getElementById("technologiesTableBody");
+        if (!tbody)
+            throw new Error("Corpo da tabela de tecnologias não encontrado");
+        tbody.innerHTML = "";
+        if (!data || data.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='2' class='text-center'>Nenhuma tecnologia encontrada.</td></tr>";
+        }
+        else {
+            data.forEach((tech) => {
+                var _a;
+                let row = `<tr>
+                                <td>${tech.technology_name}</td>
+                                <td>${(_a = tech.version) !== null && _a !== void 0 ? _a : ''}</td>
+                               </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+        var techModal = new bootstrap.Modal(document.getElementById('technologiesModal'));
+        techModal.show();
+    })
+        .catch((err) => {
+        Swal.fire("Erro", err.message, "error");
+    });
+}
+function showSummary(text) {
+    Swal.fire({
+        title: 'Resumo',
+        html: `<div style="text-align:left">${text}</div>`,
+        confirmButtonText: 'Fechar'
     });
 }
 //# sourceMappingURL=history.js.map

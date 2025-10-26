@@ -7,10 +7,11 @@ function confirmDeleteUser(userId) {
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sim, excluir'
+        confirmButtonText: 'Sim, excluir',
+        cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
-            axios.post(`/Admin/DeleteUser?id=${userId}`, { timeout: 5000 })
+            axios.post(`/admin/deleteUser?id=${userId}`, { timeout: 5000 })
                 .then((response) => {
                 const data = response.data;
                 if (data.success) {

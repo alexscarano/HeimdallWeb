@@ -11,6 +11,16 @@
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
   <ItemGroup>
+    <TypeScriptCompile Update="wwwroot\ts\delete.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Update="wwwroot\ts\types\Tecnology.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+  </ItemGroup>
+  <ItemGroup>
     <TypeScriptCompile Update="wwwroot\ts\types\Finding.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

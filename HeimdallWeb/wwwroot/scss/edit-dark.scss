@@ -1,0 +1,33 @@
+@import 'history-dark.scss';
+
+// Page-specific tweaks for Edit User (inherits everything from history-dark)
+.page-panel {
+    /* slightly tighter padding for edit form */
+    padding: 1rem;
+    background-color: #212529;
+}
+
+.page-panel .acme {
+  margin-bottom: 0.5rem;
+}
+
+/* Make primary and outline buttons on the edit page use the Heimdall accent color
+   to match the Buscar button on the dashboard admin. */
+.page-panel .btn-outline-primary {
+  color: $heimdall-accent !important;
+  border-color: rgba($heimdall-accent, 0.9) !important;
+  background: transparent !important;
+}
+.page-panel .btn-outline-primary:hover,
+.page-panel .btn-outline-primary:focus {
+  background: rgba($heimdall-accent, 0.12) !important;
+  color: #fff !important;
+  border-color: rgba($heimdall-accent, 1) !important;
+}
+
+.page-panel .btn-primary {
+  background: $heimdall-accent !important;
+  border-color: rgba($heimdall-accent, 0.9) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}

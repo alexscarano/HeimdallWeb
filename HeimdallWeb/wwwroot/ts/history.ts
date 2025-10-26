@@ -1,7 +1,12 @@
 ﻿// Torna a função global para ser chamada pelo onclick do botão
 (window as any).confirmDelete = confirmDelete;
+(window as any).loadFindings = loadFindings;
+(window as any).loadTechnologies = loadTechnologies;
+(window as any).showSummary = showSummary;
+
 declare var Swal: any;
 declare var bootstrap: any;
+
 
 function confirmDelete(historyId: number) {
     Swal.fire({
@@ -11,10 +16,11 @@ function confirmDelete(historyId: number) {
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sim, excluir'
+        confirmButtonText: 'Sim, excluir',
+        cancelButtonText: "Cancelar"
     }).then((result: any) => {
         if (result.isConfirmed) {
-            axios.post(`/History/DeleteHistory?id=${historyId}`, { timeout: 5000 })
+            axios.post(`/history/deletehistory?id=${historyId}`, { timeout: 5000 })
             .then((response: any) => {
                 if (response.status < 200 || response.status >= 300) {
                     throw new Error(`Erro HTTP! status: ${response.status}`);
@@ -29,7 +35,7 @@ function confirmDelete(historyId: number) {
                             if (rowElement) {
                                 rowElement.remove();
                             }
-                            window.location.href = '/History?page=1&pageSize=10';
+                            window.location.href = '/history?page=1&pageSize=10';
                         });
 
                 } else {
@@ -43,8 +49,9 @@ function confirmDelete(historyId: number) {
         }
     });
 }
+
 function loadFindings(historyId: number) {
-    axios.get(`/History/GetFindings?id=${historyId}`, { timeout: 5000 })
+    axios.get(`/history/getfindings?id=${historyId}`, { timeout: 5000 })
         .then((response: any) => {
 
             const data: Finding[] = response.data;
@@ -90,4 +97,39 @@ function loadFindings(historyId: number) {
         .catch((err: any) => {
             Swal.fire("Erro", err.message, "error");
         });
+}
+
+function loadTechnologies(historyId: number) {
+    axios.get(`/history/gettechnologies?id=${historyId}`, { timeout: 5000 })
+        .then((response: any) => {
+            const data: Technology[] = response.data;
+            const tbody = document.getElementById("technologiesTableBody");
+            if (!tbody) throw new Error("Corpo da tabela de tecnologias não encontrado");
+            tbody.innerHTML = "";
+            if (!data || data.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='2' class='text-center'>Nenhuma tecnologia encontrada.</td></tr>";
+            } else {
+                data.forEach((tech: Technology) => {
+                    let row = `<tr>
+                                <td>${tech.technology_name}</td>
+                                <td>${tech.version ?? ''}</td>
+                               </tr>`;
+
+                    tbody.innerHTML += row;
+                });
+            }
+            var techModal = new bootstrap.Modal(document.getElementById('technologiesModal'));
+            techModal.show();
+        })
+        .catch((err: any) => {
+            Swal.fire("Erro", err.message, "error");
+        });
+}
+
+function showSummary(text: string) {
+    Swal.fire({
+        title: 'Resumo',
+        html: `<div style="text-align:left">${text}</div>`,
+        confirmButtonText: 'Fechar'
+    });
 }

@@ -3,7 +3,7 @@ using HeimdallWeb.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.RoutesSettings();
 
 // Bind Jwt options
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
@@ -57,7 +57,7 @@ builder.Services.AddAuthentication(options =>
         {
             // se não autenticado -> redireciona pro login
             context.HandleResponse();
-            context.Response.Redirect("/Login");
+            context.Response.Redirect("/Login/Index");
             return Task.CompletedTask;
         },
         OnForbidden = context =>

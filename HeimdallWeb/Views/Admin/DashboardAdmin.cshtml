@@ -4,124 +4,129 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/historico.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dashboard-dark.css" asp-append-version="true" />
 </head>
 
-<div class="container-fluid cont-menu mb-5">
-    <div class="row row-menu justify-content-evenly align-items-center">
-        <div class="col-2">
-            <a class="nav-link text-center text-white" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
+<div class="container mb-4">
+    <div class="d-flex justify-content-between align-items-center py-3 bg-dark rounded-3 text-white history-header">
+        <div class="d-flex align-items-center gap-3">
+            <h4 class="m-0">Painel do Admin</h4>
+
         </div>
-        @if (User.IsInRole("2")){
-            <div class="col-2">
-                <a class="nav-link text-center text-white" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Dashboard</a>
-            </div>
-        }   
-        <div class="col-2">
-            <a class="nav-link text-center text-white" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
-        </div>
-        <div class="col-2">
-            <a class="nav-link text-center text-white" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
+        <div class="d-flex align-items-center gap-2">
+                <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
+            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
+            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
+            @if (User.IsInRole("2"))
+            {
+            }
         </div>
     </div>
 </div>
 
+
 <div class="container">
-    <table class="table table-striped-columns table-hover">
-        <thead>
-            <tr>
-                <th scope="col" class="text-center">ID do usuário</th>
-                <th scope="col" class="text-center">Login</th>
-                <th scope="col" class="text-center">Email</th>
-                <th scope="col" class="text-center">Deletar</th>
-                <th scope="col" class="text-center">Administrador</th>
-            </tr>
-        </thead>
-        <tbody class="table-group-divider">
-            @if (Model != null)
+    <div class="table-responsive shadow-sm rounded bg-dark text-light p-2">
+        <table class="table table-hover table-dark mb-0">
+            @if (Model != null && Model.Items.Any())
+            {
+                <thead class="table-dark">
+                    <tr class="text-center align-middle">
+                        <th scope="col">ID do usuário</th>
+                        <th scope="col">Login</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Deletar</th>
+                        <th scope="col">Administrador</th>
+                    </tr>
+                </thead>
+            }
+            else
+            {
+                <div class="alert alert-secondary text-center m-3" role="alert">
+                    Nenhum registro encontrado no painel.
+                </div>
+            }
+
+            <tbody class="table-group-divider">
+                @if (Model != null && Model.Items.Any())
                 {
                     foreach (UserModel? user in Model.Items)
                     {
-                        <tr id="row-@user.user_id" class="text-center">
-                            <th id="row" class="text-center">@user.user_id</th>
-                            <td class="text-center">@user.username</td>
-                            <td class="text-center">@user.email</td>
-                            <td class="text-center">       
-                            @if (@user.user_type == 1)
-                            {   
-                                <div class="btn-group" role="group"  aria-label="Basic example">
-                                        <button type="button" class="btn btn-danger"
-                                                onclick="confirmDeleteUser(@user.user_id)">
-                                            Excluir
-                                        </button>
-                                </div>
-                            }
-                            else {
-                                <button type="button" class="btn btn-dark" disabled>Excluir</button>
-                            }
+                        <tr id="row-@user.user_id" class="text-center align-middle">
+                            <td id="row">@user.user_id</td>
+                            <td class="text-start text-light">@user.username</td>
+                            <td class="text-start text-light">@user.email</td>
+                            <td class="text-center">
+                                @if (user.user_type == 1)
+                                {
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-outline-danger" onclick="confirmDeleteUser(@user.user_id)">Excluir</button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-outline-secondary" disabled>Excluir</button>
+                                }
                             </td>
                             <td class="text-center">
-                                @if (@user.user_type == 2)
+                                @if (user.user_type == 2)
                                 {
-
-                                    <i style="color:green" class="bi bi-check-square-fill fa-xl"></i>
+                                    <span class="role-badge role-admin" title="Administrador"><i class="bi bi-check-lg"></i> Administrador</span>
                                 }
-                                else {
-                                    <i style="color:black" class="bi bi-x-square-fill fa-xl"></i>
+                                else
+                                {
+                                    <span class="role-badge role-user" title="Usuário padrão"><i class="bi bi-person"></i> Usuário</span>
                                 }
                             </td>
                         </tr>
                     }
                 }
-                else
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row justify-content-between">
+        <div class="row">
+            <div class="col">
+                @if (Model.TotalPages > 1)
                 {
-                    <p>Nenhum registro no historico</p>
+                    <nav>
+                        <ul class="pagination">
+                            @if (Model.HasPrevious)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Anterior</a>
+                                </li>
+                            }
+
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == Model.Page ? "active" : "")">
+                                    <a class="page-link" href="?page=@i&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">@i</a>
+                                </li>
+                            }
+
+                            @if (Model.HasNext)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Próxima</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
                 }
-            </table>
-        </tbody>
+            </div>
 
-        <div class="row justify-content-between">
-            <div class="row">
-                <div class="col">
-                    @if (Model.TotalPages > 1)
-                    {
-                        <nav>
-                            <ul class="pagination">
-                                @if (Model.HasPrevious)
-                                {
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Anterior</a>
-                                    </li>
-                                }
-
-                                @for (int i = 1; i <= Model.TotalPages; i++)
-                                {
-                                    <li class="page-item @(i == Model.Page ? "active" : "")">
-                                        <a class="page-link" href="?page=@i&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">@i</a>
-                                    </li>
-                                }
-
-                                @if (Model.HasNext)
-                                {
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Próxima</a>
-                                    </li>
-                                }
-                            </ul>
-                        </nav>
-                    }
-                </div>
-
-                <div class="col-3 text-end">
-                    <form method="get" class="mb-3">
-                        <input type="text" name="where" placeholder="Pesquisar..." class="form-control" value="@ViewData["CurrentSearch"]" />
-                        <button type="submit" class="btn btn-primary mt-2">Buscar</button>
-                    </form>
-                </div>
+            <div class="col-3 text-end">
+                <form method="get" class="mb-3">
+                    <input type="text" name="where" placeholder="Pesquisar..." class="form-control" value="@ViewData["CurrentSearch"]" />
+                    <button type="submit" class="btn btn-outline-primary mt-2">Buscar</button>
+                </form>
             </div>
         </div>
+    </div>
 </div>
 
 @section Scripts {
     <script src="~/js/dashboard-admin.js" asp-append-version="true"></script>
-} 
+}
