@@ -139,3 +139,11 @@
         max-width: 420px;
     }
 }
+
+/* Center Login and Email columns (2nd and 3rd) in dashboard tables */
+.table thead th:nth-child(2),
+.table tbody td:nth-child(2),
+.table thead th:nth-child(3),
+.table tbody td:nth-child(3) {
+    text-align: center !important;
+}

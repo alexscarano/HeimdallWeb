@@ -10,10 +10,16 @@ namespace HeimdallWeb.Controllers
     {
             private readonly IHistoryRepository _historyRepository;
             private readonly IFindingRepository _findingRepository;
-            public HistoryController(IHistoryRepository historyRepository, IFindingRepository findingRepository)
+            private readonly ITechnologyRepository _technologyRepository;
+            public HistoryController(
+                IHistoryRepository historyRepository, 
+                IFindingRepository findingRepository,
+                ITechnologyRepository technologyRepository
+            )
             {
                 _historyRepository = historyRepository;
                 _findingRepository = findingRepository;
+                _technologyRepository = technologyRepository;
             }
 
             [Authorize]
@@ -81,6 +87,24 @@ namespace HeimdallWeb.Controllers
                 return Json(findings);
             }
             catch (Exception) 
+            {
+                return BadRequest();
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> GetTechnologies(int id)
+        {
+            try
+            {
+                var tecnologies = await _technologyRepository.getTechnologiesByHistoryId(id);
+
+                if (tecnologies is null || tecnologies.Count == 0)
+                    return Json(string.Empty);
+            
+                return Json(tecnologies);
+            }
+            catch (Exception)
             {
                 return BadRequest();
             }

@@ -205,7 +205,7 @@
 
 .modal-content .table tbody tr:hover {
   background: rgba(14, 18, 18, 0.65);
-  color: #eaf7f6;
+  color: #9fb7b7;
 }
 
 .modal-content .table tbody td {
@@ -221,51 +221,133 @@
   background: rgba(8, 10, 11, 0.18);
 }
 
-#findingsModal .modal-content {
+#findingsModal .modal-content,
+#technologiesModal .modal-content {
   background: rgba(18, 23, 24, 0.95) !important; /* keep modal shell dark */
   color: #eaf7f6 !important;
 }
 
-#findingsModal .modal-content .table {
+/* --- New rules to make technologies modal as wide as findings and improve column layout --- */
+/* Ensure both modals use the same wide dialog size */
+#findingsModal .modal-dialog,
+#technologiesModal .modal-dialog {
+  max-width: 1100px; /* wide like the findings modal in the screenshots */
+  width: 100%;
+  margin: 1.75rem auto;
+}
+
+/* Responsive fallback to avoid overflow on smaller screens */
+@media (max-width: 1200px) {
+  #findingsModal .modal-dialog,
+  #technologiesModal .modal-dialog {
+    max-width: 95%;
+  }
+}
+/* Keep modal content height constrained and allow table scrolling */
+#technologiesModal .modal-content {
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+/* If you wrap the table in a .table-responsive, constrain its scroll area */
+#technologiesModal .table-responsive {
+  max-height: calc(80vh - 140px); /* account for header/footer */
+  overflow-y: auto;
+}
+
+/* Force table to take full width and allocate description more space */
+#technologiesModal .modal-content .table {
+  width: 100%;
+  table-layout: fixed;
+  word-break: break-word;
+}
+
+/* Column width hints: Tech | Version | Category | Description (big) */
+#technologiesModal .modal-content .table thead th:nth-child(1),
+#technologiesModal .modal-content .table tbody td:nth-child(1) {
+  width: 14%;
+}
+
+#technologiesModal .modal-content .table thead th:nth-child(2),
+#technologiesModal .modal-content .table tbody td:nth-child(2) {
+  width: 12%;
+}
+
+#technologiesModal .modal-content .table thead th:nth-child(3),
+#technologiesModal .modal-content .table tbody td:nth-child(3) {
+  width: 16%;
+}
+
+#technologiesModal .modal-content .table thead th:nth-child(4),
+#technologiesModal .modal-content .table tbody td:nth-child(4) {
+  width: 58%;
+}
+
+/* Ensure vertical alignment and readable padding inside modal tables */
+#findingsModal .modal-content .table tbody td,
+#technologiesModal .modal-content .table tbody td {
+  vertical-align: middle;
+  padding: 0.9rem 1rem !important;
+}
+
+/* Links inside modal tables keep accent color */
+#findingsModal .modal-content .table a.btn-link,
+#technologiesModal .modal-content .table a.btn-link {
+  color: #2a6b6d;
+  text-decoration: none;
+}
+
+/* Modal-specific adjustments already below (kept as-is) */
+#findingsModal .modal-content .table,
+#technologiesModal .modal-content .table {
   background: transparent !important;
   color: inherit !important;
   border-collapse: separate !important;
 }
 
-#findingsModal .modal-content .table thead th {
+#findingsModal .modal-content .table thead th,
+#technologiesModal .modal-content .table thead th {
   background: #1c3033 !important;
   color: #f5fbfb !important;
   border-bottom: 2px solid rgba(255, 255, 255, 0.06) !important;
 }
 
-#findingsModal .modal-content .table tbody tr {
+#findingsModal .modal-content .table tbody tr,
+#technologiesModal .modal-content .table tbody tr {
   background: linear-gradient(90deg, rgba(8, 12, 13, 0.35), rgba(12, 16, 17, 0.35)) !important;
   color: #9fb7b7 !important;
   transition: background 0.15s ease !important;
 }
 
-#findingsModal .modal-content .table tbody tr:hover {
+#findingsModal .modal-content .table tbody tr:hover,
+#technologiesModal .modal-content .table tbody tr:hover {
   background: linear-gradient(90deg, rgba(12, 16, 17, 0.6), rgba(18, 22, 22, 0.6)) !important;
   color: #e9fbfa !important;
 }
 
 #findingsModal .modal-content .table tbody td,
-#findingsModal .modal-content .table tbody th {
+#findingsModal .modal-content .table tbody th,
+#technologiesModal .modal-content .table tbody td,
+#technologiesModal .modal-content .table tbody th {
   border-top: 1px solid rgba(255, 255, 255, 0.03) !important;
   color: #9fb7b7 !important;
   background: rgba(10, 12, 13, 0.18) !important;
 }
 
 #findingsModal .modal-content .table.table-bordered td,
-#findingsModal .modal-content .table.table-bordered th {
+#findingsModal .modal-content .table.table-bordered th,
+#technologiesModal .modal-content .table.table-bordered td,
+#technologiesModal .modal-content .table.table-bordered th {
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 
-#findingsModal .modal-content .table.table-striped tbody tr:nth-child(odd) {
+#findingsModal .modal-content .table.table-striped tbody tr:nth-child(odd),
+#technologiesModal .modal-content .table.table-striped tbody tr:nth-child(odd) {
   background: rgba(12, 14, 15, 0.28) !important;
 }
 
-#findingsModal .modal-content .table.table-striped tbody tr:nth-child(even) {
+#findingsModal .modal-content .table.table-striped tbody tr:nth-child(even),
+#technologiesModal .modal-content .table.table-striped tbody tr:nth-child(even) {
   background: rgba(8, 10, 11, 0.18) !important;
 }
 
@@ -362,6 +444,21 @@
     width: 92% !important;
   }
 }
+.container .alert.alert-secondary.text-center.m-3,
+.alert.alert-secondary.text-center.m-3 {
+  background-color: rgba(255, 255, 255, 0.04) !important; /* nearly-black translucent */
+  color: #e9ecef !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding: 1rem !important;
+  margin: 1rem !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+  text-align: center;
+  transition: background-color 0.15s ease, transform 0.12s ease, box-shadow 0.12s ease;
+  line-height: 1.3;
+  font-size: 0.95rem;
+}
+
 .page-panel {
   /* slightly tighter padding for edit form */
   padding: 1rem;

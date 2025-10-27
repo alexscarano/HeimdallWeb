@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HeimdallWeb.Models.Map
 {
@@ -14,6 +13,14 @@ namespace HeimdallWeb.Models.Map
             builder.Property(t => t.technology_name)
             .IsRequired()
             .HasMaxLength(35);
+
+            builder.Property(t => t.technology_category)
+            .IsRequired()
+            .HasMaxLength(50);
+
+            builder.Property(t => t.technology_description)
+            .IsRequired()
+            .HasMaxLength(1000);
 
             builder.HasOne(t => t.History)
             .WithMany(h => h.Technologies)

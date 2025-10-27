@@ -24,22 +24,26 @@
     </div>
 }
 
-<div class="container d-flex justify-content-center" style="height: 90vh;">
+<!-- main hero container: switched inline height to a controllable CSS class -->
+<div class="container d-flex justify-content-center hero">
 
     <div class="row-cols-lg-2 d-flex justify-content-center align-self-center g-4">
         <div>
             <div class="mb-5 text-center text-white">
-                <h1 class="display-4 mb-3 fw-bold">Descubra o quão seguro é seu site!</h1>
-                <p class="lead mb-4">Basta inserir a URL do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais pontos fortes, pontos fracos e possíveis melhorias.</p>
+                <h1 class="display-4 mb-3 fw-bold hero-title">Descubra o quão seguro é seu site!</h1>
+                <p class="lead mb-4 hero-lead">Basta inserir a URL do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais pontos fortes, pontos fracos e possíveis melhorias.</p>
             </div>
 
             <div>
                 <div class="shadow-lg border-0 rounded-5">
                     <form id="scanForm" asp-controller="Home" asp-action="Scan" method="post"> 
-                        <div class="input-group">
-                            <input type="text" class="form-control form-control-lg border-dark border-end-0 rounded-start-5" name="domainInput" id="domainInput"  
-                                placeholder="Insira a URL" required >
-                            <button class="btn btn-primary btn-lg rounded-end-5" type="submit">Analisar</button>
+                        <!-- new layout: input and button adjacent and flush -->
+                        <div class="hero-form d-flex align-items-center">
+                            <div class="input-button-group w-100 d-flex">
+                                <input type="text" class="form-control form-control-lg input-left" name="domainInput" id="domainInput"  
+                                    placeholder="Insira a URL" required />
+                                <button class="btn analyze-btn btn-lg input-right" type="submit">Analisar</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -47,3 +51,21 @@
         </div>
     </div>
 </div>
+
+<!-- Info boxes section -->
+<section class="info-boxes" aria-label="Informações">
+    <div class="info-box">
+        <h5><i class="bi bi-shield-check"></i> Confiabilidade</h5>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus euismod, nunc at pulvinar cursus, nisl urna dapibus justo, sit amet feugiat neque urna at lacus.</p>
+    </div>
+
+    <div class="info-box">
+        <h5><i class="bi bi-shield-lock"></i> Segurança</h5>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet lacus vel justo facilisis gravida. Integer vitae sem ut mauris placerat dictum.</p>
+    </div>
+
+    <div class="info-box">
+        <h5><i class="bi bi-speedometer2"></i> Performance</h5>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pretium, augue id pulvinar cursus, lectus urna pulvinar urna, a consequat lorem erat in nisl.</p>
+    </div>
+</section>

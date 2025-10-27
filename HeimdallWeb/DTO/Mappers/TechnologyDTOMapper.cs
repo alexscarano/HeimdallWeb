@@ -10,6 +10,8 @@ namespace HeimdallWeb.DTO.Mappers
             {
                 technology_name = dto.nome_tecnologia,
                 version = dto.versao,
+                technology_category = dto.categoria_tecnologia,
+                technology_description = dto.descricao_tecnologia,
                 history_id = history_id_param
             };
         }

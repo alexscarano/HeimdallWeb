@@ -30,7 +30,7 @@ public class LoginController : Controller
         {
             if (ModelState.IsValid)
             {
-                UserModel userDB = await _userRepository.getUserByEmailOrLogin(user.emailOrLogin) ?? throw new Exception("N�o foi possivel consultar");
+                UserModel userDB = await _userRepository.getUserByEmailOrLogin(user.emailOrLogin.ToLower()) ?? throw new Exception("Não foi possivel consultar");
                
                 if (PasswordUtils.VerifyPassword(user.password, userDB.password))
                 {

@@ -43,7 +43,7 @@ namespace HeimdallWeb.Repository
 
                 var items = await query
                  .OrderByDescending(h => h.created_date)
-                 .Skip((page - 1) * pageSize)
+                 .Skip(((page - 1) * pageSize))
                  .Take(pageSize)
                  .AsNoTracking()
                  .ToListAsync();
@@ -130,7 +130,6 @@ namespace HeimdallWeb.Repository
         {
             int user_id = CookiesHelper.getUserIDFromCookie(CookiesHelper.getAuthCookie(_httpContextAccessor.HttpContext.Request));
 
-            history.created_date = DateTime.Now;
             history.user_id = user_id;
             await _appDbContext.History.AddAsync(history);
             await _appDbContext.SaveChangesAsync();

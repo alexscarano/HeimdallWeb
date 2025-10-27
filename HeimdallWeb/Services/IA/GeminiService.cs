@@ -79,7 +79,9 @@ namespace HeimdallWeb.Services.IA
                                         ""tecnologias"": [
                                         {{
                                             ""nome_tecnologia"": ""Ex: Apache, Nginx, React, Express, etc."",
-                                            ""versao"": ""Versão detectada (se disponível), se não disponível **SOMENTE** retornar json nulo""
+                                            ""versao"": ""Versão detectada (se disponível)"",
+                                            ""categoria_tecnologia"": ""Web Server | CMS | Framework | Database | Language | Frontend | API | OS | Security | CDN | Reverse Proxy | Email | Analytics | Cloud | Cache | DevOps"",
+                                            ""descricao_tecnologia"": ""descrição **simples e objetiva** da tecnologia, com **no máximo 7 linhas**, incluindo seu uso principal e eventuais **fraquezas ou riscos comuns** (ex: vulnerabilidades conhecidas em versões antigas, má configuração, exposição de painéis administrativos, etc, se a versão for detectada tente se aprofundar nela.)""  
                                         }}
                                         ]
                                     }}
@@ -94,6 +96,8 @@ namespace HeimdallWeb.Services.IA
                                     6. Se possível, mapear as tecnologias detectadas (a partir de banners, headers, certificados ou respostas HTTP)
                                         dentro da chave ""tecnologias"", preenchendo ""nome_tecnologia"" e ""versao"".
                                         Caso nenhuma tecnologia seja identificada, retornar um array vazio.
+                                    7. Se o campo esperado não tiver valor disponível, retornar valor nulo no json (null), pois o valor deve ser tratado como nulo,
+                                        **nunca** as strings """"null"""", """"json null"""", """"undefined"""" ou qualquer texto fora do formato JSON.
     
                                     ### JSON de entrada:
                                     {jsonInput}
@@ -120,9 +124,9 @@ namespace HeimdallWeb.Services.IA
                 );
 
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadAsStringAsync();  
-                
-                var parsedResult = result.ToJson();
+                var result = await response.Content.ReadAsStringAsync();
+
+                var parsedResult = result.CorrectWrongNullValues().ToJson();
 
                 return parsedResult["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.ToString().RemoveMarkdown()
                     ?? "Nenhuma resposta gerada.";

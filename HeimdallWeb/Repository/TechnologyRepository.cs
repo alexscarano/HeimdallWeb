@@ -16,7 +16,22 @@ namespace HeimdallWeb.Repository
 
         public async Task<List<TechnologyModel>> getTechnologiesByHistoryId(int historyId)
         {
-            throw new NotImplementedException();
+            var technologies = await 
+                _appDbContext.Technology
+                                .Where(t => t.history_id == historyId)
+                                .Select(t =>
+                                    new TechnologyModel
+                                    {
+                                        technology_name = t.technology_name,
+                                        version = t.version,
+                                        technology_category = t.technology_category,
+                                        technology_description = t.technology_description,
+                                        history_id = t.history_id,
+                                    })
+                                .AsNoTracking()
+                                .ToListAsync();
+
+            return technologies;
         }
 
         public async Task SaveTechnologiesFromAI(string iaResponse, int historyId)
@@ -25,7 +40,7 @@ namespace HeimdallWeb.Repository
             var tecnologiasDto = wrapper?.tecnologias;
 
             if (tecnologiasDto is null || tecnologiasDto.Count == 0)
-                    return;
+                return;
 
             var tecnologias = tecnologiasDto.Select(dto => TechnologyDTOMapper
                 .ToModel(dto, historyId)).ToList();

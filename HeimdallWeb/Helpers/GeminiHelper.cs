@@ -22,5 +22,23 @@
             }
 
         }
+
+        public static string CorrectWrongNullValues(this string result)
+        {
+            try
+            {
+                if (result.Contains("\"json null\"") && !result.Contains("{}"))
+                {
+                    result = result.Replace("json null", "");
+                }
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return result;
+            }
+        }
+
     }
 }

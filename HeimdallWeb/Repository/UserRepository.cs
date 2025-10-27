@@ -58,8 +58,7 @@ namespace HeimdallWeb.Repository
         public async Task<UserModel> insertUser(UserModel user)
         {
             user.password = user.hashUserPassword();  
-            user.created_at = DateTime.Now;
-            user.username = user.username.Trim();
+            user.username = user.username.Trim().ToLower();
             await _appDbContext.User.AddAsync(user);
             await _appDbContext.SaveChangesAsync();
 

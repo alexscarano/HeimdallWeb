@@ -5,12 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Heimdall Web</title>
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Bootstrap CSS (local) -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HeimdallWeb.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/alerts.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome (local) -->
+    <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" asp-append-version="true" />
+
+    <!-- Bootstrap Icons (local) -->
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" asp-append-version="true" />
+
+    <!-- Google Fonts kept as CDN for now -->
     <link href="https://fonts.googleapis.com/css2?family=Acme&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
@@ -24,12 +33,18 @@
     @await Component.InvokeAsync("Menu")
 
     @RenderBody()
-    
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap JS (local) -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- SweetAlert2 (local) -->
+    <script src="~/lib/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
+    <!-- Axios (local) -->
+    <script src="~/lib/axios/dist/axios.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

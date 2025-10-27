@@ -108,11 +108,21 @@ function loadTechnologies(historyId: number) {
             tbody.innerHTML = "";
             if (!data || data.length === 0) {
                 tbody.innerHTML = "<tr><td colspan='2' class='text-center'>Nenhuma tecnologia encontrada.</td></tr>";
-            } else {
+
+                const table = tbody.closest('table');
+                if (!table)
+                    throw new Error("Tabela não encontrada")
+
+                const thead = table.querySelector('thead');
+                if (thead) thead.remove();
+            }
+            else {
                 data.forEach((tech: Technology) => {
                     let row = `<tr>
                                 <td>${tech.technology_name}</td>
-                                <td>${tech.version ?? ''}</td>
+                                <td>${tech.version ?? "Não detectada"}</td>
+                                <td>${tech.technology_category}</td>
+                                <td>${tech.technology_description}</td>
                                </tr>`;
 
                     tbody.innerHTML += row;

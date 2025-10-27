@@ -54,4 +54,18 @@ html {
   min-height: 100%;
 }
 
+/* Add spacing below the main navbar so content doesn't butt up to it.
+   Scoped to dark-themed navbars to avoid affecting other navbar variants. */
+.navbar[data-bs-theme=dark] {
+  padding-bottom: 0.75rem; /* extra inner space */
+  margin-bottom: 1.75rem; /* space between navbar and next elements */
+}
+
+@media (max-width: 768px) {
+  .navbar[data-bs-theme=dark] {
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
 /*# sourceMappingURL=site.css.map */

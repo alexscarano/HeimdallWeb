@@ -30,3 +30,174 @@
   color: #f5f5f5a4 !important;
   border: 5px !important;
 }
+
+/* Ensure hero input background and placeholder are set in source (moved from compiled css) */
+.input-button-group .input-left,
+.shadow-lg.border-0.rounded-5 .input-button-group .input-left {
+  background: #282c30 !important;
+  color: #e6e6e6 !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+.input-button-group .input-left::placeholder,
+.shadow-lg.border-0.rounded-5 .input-button-group .input-left::placeholder {
+  color: #cfcfcf !important;
+  opacity: 1 !important;
+}
+
+/* New input/button flush styles */
+.shadow-lg.border-0.rounded-5 {
+  padding: 0.5rem;
+  background: transparent;
+  border-radius: 1rem;
+  max-width: 760px;
+  width: 100%;
+}
+
+.input-button-group {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  gap: 0;
+}
+
+.input-left {
+  flex: 1 1 auto;
+  border-radius: 0.75rem 0 0 0.75rem; /* rounded left corners */
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 0.65rem 1rem;
+  font-size: 1.05rem;
+  height: 52px;
+  box-sizing: border-box;
+}
+
+.input-right {
+  flex: 0 0 auto;
+  border-radius: 0 0.75rem 0.75rem 0; /* rounded right corners */
+  padding: 0 1.2rem;
+  background: var(--tertiary-color);
+  color: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+}
+
+/* remove any default margin from button */
+.input-button-group .btn {
+  margin: 0;
+}
+
+.input-button-group .input-left:focus {
+  outline: none;
+  box-shadow: 0 8px 20px rgba(32, 55, 59, 0.06), 0 0 0 6px rgba(81,156,171,0.06);
+}
+
+.input-button-group .input-right:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 576px) {
+  .input-left, .input-right {
+    height: 46px;
+  }
+  .input-left {
+    font-size: 1rem;
+  }
+}
+
+/* Animation for hero lead: slide from up to down with fade */
+@keyframes slideDownFade {
+  0% {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-lead {
+  animation: slideDownFade 1000ms cubic-bezier(.2,.9,.2,1) both;
+  will-change: transform, opacity; /* hint for smoother animation */
+}
+
+/* Animate the hero title (h1) with similar motion but slightly slower and delayed */
+.hero-title {
+  animation: slideDownFade 1200ms cubic-bezier(.2,.9,.2,1) both;
+  animation-delay: 120ms;
+  will-change: transform, opacity;
+}
+
+/* Info boxes below hero */
+.info-boxes {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+.info-box {
+  flex: 1 1 0;
+  background: #282c30; /* solid background as requested */
+  color: #f5fbfb;
+  padding: 1.2rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+  cursor: default;
+}
+
+.info-box:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 48px rgba(0,0,0,0.5);
+}
+
+.info-box h5 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.05rem;
+  text-align: center; /* center title */
+}
+
+.info-box p {
+  margin: 0;
+  color: rgba(245,251,251,0.85);
+  line-height: 1.45;
+  text-align: left;
+}
+
+@media (max-width: 880px) {
+  .info-boxes {
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 0 0.75rem;
+  }
+}
+
+/* Hero section styling: smaller, centered main area (migrated from compiled css) */
+.hero {
+  min-height: 58vh; /* reduced height compared to previous 90vh */
+  max-height: 720px;
+  display: flex;
+  align-items: center; /* vertical centering */
+  justify-content: center;
+  padding: 2.5rem 1rem;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+    padding: 2rem 0.75rem;
+  }
+}

@@ -2,7 +2,6 @@
     <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
 </head>
 
-
 @model UserModel
 @{
     ViewData["Title"] = "Registrar";
@@ -12,15 +11,15 @@
 @if (TempData["OkMsg"] != null)
 {
     <div class="alert alert-success" role="alert">
-        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
         @TempData["OkMsg"]
+        <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
     </div>
 }
 @if (TempData["ErrorMsg"] != null)
 {
     <div class="alert alert-danger" role="alert">
-        <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
         @TempData["ErrorMsg"]
+        <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
     </div>
 }
 
