@@ -23,13 +23,25 @@ namespace HeimdallWeb.Controllers
             }
 
             [Authorize]
+<<<<<<< Updated upstream
             public async Task<IActionResult> Index(int userId, int page = 1, int pageSize = 10)
+=======
+            public async Task<IActionResult> Index(int userId, string? where, DateTime? startDate, DateTime? endDate, int page = 1, int pageSize = 10)
+>>>>>>> Stashed changes
             {
                 int maxPageSize = 10;
                 pageSize = Math.Min(pageSize, maxPageSize);
                 page = Math.Max(page, 1);
 
+<<<<<<< Updated upstream
                 var histories = await _historyRepository.getHistoriesByUserID(userId, page, pageSize);
+=======
+                ViewData["CurrentSearch"] = where;
+                ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
+                ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
+
+                var histories = await _historyRepository.getHistoriesByUserID(userId, where, startDate, endDate, page, pageSize);
+>>>>>>> Stashed changes
 
                 return View(histories); 
             }

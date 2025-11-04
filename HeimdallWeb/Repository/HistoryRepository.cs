@@ -31,7 +31,11 @@ namespace HeimdallWeb.Repository
             return true;
         }
 
+<<<<<<< Updated upstream
         public async Task<PaginatedResult<HistoryModel>?> getAllHistories(int page = 1 , int pageSize = 10)
+=======
+        public async Task<PaginatedResult<HistoryModel>?> getAllHistories( int page = 1 , int pageSize = 10)
+>>>>>>> Stashed changes
         {
             try
             {
@@ -63,11 +67,16 @@ namespace HeimdallWeb.Repository
             }
         }
 
+<<<<<<< Updated upstream
         public async Task<PaginatedResult<HistoryModel?>> getHistoriesByUserID(int id, int page = 1, int pageSize = 10)
+=======
+        public async Task<PaginatedResult<HistoryModel?>> getHistoriesByUserID( int id, string? where, DateTime? startDate, DateTime? endDate, int page = 1, int pageSize = 10)
+>>>>>>> Stashed changes
         {
             try
             {
                 var query = _appDbContext.History.AsQueryable();
+<<<<<<< Updated upstream
                 int user_id = CookiesHelper.getUserIDFromCookie(CookiesHelper.getAuthCookie(_httpContextAccessor.HttpContext.Request));
                 id = user_id;
 
@@ -83,6 +92,46 @@ namespace HeimdallWeb.Repository
                  .Take(pageSize)
                  .ToListAsync();
 
+=======
+
+                
+                if (!string.IsNullOrEmpty(where))
+                {
+                    query = query.Where(t => t.target.Contains(where));
+                }
+
+                
+                int user_id = CookiesHelper.getUserIDFromCookie(
+                    CookiesHelper.getAuthCookie(_httpContextAccessor.HttpContext.Request)
+                );
+                id = user_id;
+                query = query.Where(h => h.user_id == id);
+
+                //  Filtro de data (equivalente ao BETWEEN)
+                if (startDate.HasValue)
+                    query = query.Where(h => h.created_date >= startDate.Value);
+
+                if (endDate.HasValue)
+                {
+                   
+                    DateTime adjustedEnd = endDate.Value.Date.AddDays(1).AddTicks(-1);
+                    query = query.Where(h => h.created_date <= adjustedEnd);
+                }
+
+                
+                var totalCount = await query
+                    .AsNoTracking()
+                    .CountAsync();
+
+                
+                var items = await query
+                    .OrderByDescending(h => h.created_date)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+               
+>>>>>>> Stashed changes
                 return new PaginatedResult<HistoryModel?>
                 {
                     Items = items,
@@ -91,7 +140,11 @@ namespace HeimdallWeb.Repository
                     PageSize = pageSize
                 };
             }
+<<<<<<< Updated upstream
             catch (Exception) 
+=======
+            catch (Exception)
+>>>>>>> Stashed changes
             {
                 return new PaginatedResult<HistoryModel?>();
             }

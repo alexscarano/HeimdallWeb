@@ -148,21 +148,35 @@
                 @if (Model.HasPrevious)
                 {
                     <li class="page-item">
+<<<<<<< Updated upstream
                         <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize">Anterior</a>
+=======
+                        <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]&startDate=@ViewData["StartDate"]&endDate=@ViewData["EndDate"]">Anterior
+                        </a>
+
+>>>>>>> Stashed changes
                     </li>
                 }
 
                 @for (int i = 1; i <= Model.TotalPages; i++)
                 {
                     <li class="page-item @(i == Model.Page ? "active" : "")">
+<<<<<<< Updated upstream
                         <a class="page-link" href="?page=@i&pageSize=@Model.PageSize">@i</a>
+=======
+                        <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]&startDate=@ViewData["StartDate"]&endDate=@ViewData["EndDate"]">@i</a>
+>>>>>>> Stashed changes
                     </li>
                 }
 
                 @if (Model.HasNext)
                 {
                     <li class="page-item">
+<<<<<<< Updated upstream
                         <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize">Próxima</a>
+=======
+                        <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]&startDate=@ViewData["StartDate"]&endDate=@ViewData["EndDate"]" ">Próxima</a>
+>>>>>>> Stashed changes
                     </li>
                 }
             </ul>
@@ -170,6 +184,36 @@
     }
 </div>
 
+<<<<<<< Updated upstream
+=======
+<!-- 🔍 Filtros de pesquisa -->
+<form method="get" class="row g-2 mb-4 align-items-end">
+    <div class="col-md-4">
+        <label class="form-label text-light">Pesquisar por site</label>
+        <input type="text" name="where" placeholder="Ex: facebook.com"
+               class="form-control"
+               value="@ViewData["CurrentSearch"]" />
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label text-light">Data inicial</label>
+        <input type="date" name="startDate" class="form-control"
+               value="@ViewData["StartDate"]" />
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label text-light">Data final</label>
+        <input type="date" name="endDate" class="form-control"
+               value="@ViewData["EndDate"]" />
+    </div>
+
+    <div class="col-md-2 text-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+</form>
+
+
+>>>>>>> Stashed changes
 @section Scripts {
     <script src="~/js/history.js" asp-append-version="true"></script>
 }

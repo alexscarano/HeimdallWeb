@@ -54,6 +54,19 @@ $heimdall-primary: #2f6f8f;
     border: 1px solid rgba(255,255,255,0.06) !important;
 }
 
+<<<<<<< Updated upstream
+=======
+/* inputs and button inside the small form should match page controls */
+.row.justify-content-between .row > .col-3.text-end .form-control {
+    background: rgba(255,255,255,0.06);
+    color: #eaf7f6 !important; /* ensure text is visible */
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 0.35rem;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.95rem;
+}
+
+>>>>>>> Stashed changes
 .page-panel .form-control::placeholder {
     color: rgba(255,255,255,0.6) !important;
 }

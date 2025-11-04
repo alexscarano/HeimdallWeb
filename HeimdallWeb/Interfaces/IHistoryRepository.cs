@@ -12,7 +12,11 @@ namespace HeimdallWeb.Interfaces
 
         Task<HistoryModel?> getHistoryById(int id);
 
+<<<<<<< Updated upstream
         Task<PaginatedResult<HistoryModel?>> getHistoriesByUserID(int id, int page = 1, int pageSize = 10);
+=======
+        Task<PaginatedResult<HistoryModel?>> getHistoriesByUserID(int id, string? where, DateTime? startDate, DateTime? endDate, int page = 1, int pageSize = 10);
+>>>>>>> Stashed changes
 
         Task<bool> deleteHistory(int id);
 
