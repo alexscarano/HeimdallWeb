@@ -11,10 +11,6 @@
   border-radius: 0.85rem; /* slightly more rounded than default rounded-3 */
 }
 
-.history-header, .history-header a, .history-header .nav-link {
-  color: #ffffff !important;
-}
-
 .history-header a.nav-link {
   padding: 0.375rem 0.6rem;
   border-radius: 0.35rem;

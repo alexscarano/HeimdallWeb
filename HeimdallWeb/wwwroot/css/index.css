@@ -7,7 +7,7 @@
 }
 
 .btn {
-  background-color: var(--tertiary-color);
+  background-color: var(--tertiary-color) !important;
   border: 5px;
   border-radius: 0.5rem;
   color: whitesmoke;
@@ -29,6 +29,11 @@
   background-color: #1c3033 !important;
   color: rgba(245, 245, 245, 0.6431372549) !important;
   border: 5px !important;
+}
+
+.dropdown-item:active {
+  background-color: #FFC454 !important;
+  color: #282c30 !important;
 }
 
 /* Ensure hero input background and placeholder are set in source (moved from compiled css) */
@@ -95,7 +100,7 @@
 }
 
 .input-button-group .input-right:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1.5px);
 }
 
 @media (max-width: 576px) {
@@ -117,15 +122,22 @@
     transform: translateY(0);
   }
 }
+.hero-form {
+  animation: slideDownFade 1500ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: 700ms;
+  will-change: transform, opacity;
+}
+
 .hero-lead {
-  animation: slideDownFade 1000ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation: slideDownFade 1500ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: 400ms;
   will-change: transform, opacity; /* hint for smoother animation */
 }
 
 /* Animate the hero title (h1) with similar motion but slightly slower and delayed */
 .hero-title {
-  animation: slideDownFade 1200ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
-  animation-delay: 120ms;
+  animation: slideDownFade 1500ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: 200ms;
   will-change: transform, opacity;
 }
 
@@ -142,6 +154,24 @@
   margin-right: auto;
   padding: 0 1rem;
   box-sizing: border-box;
+}
+
+.info-animation-1 {
+  animation: slideDownFade 1500ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: 1150ms;
+  will-change: transform, opacity;
+}
+
+.info-animation-2 {
+  animation: slideDownFade 1500ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: 1250ms;
+  will-change: transform, opacity;
+}
+
+.info-animation-3 {
+  animation: slideDownFade 1500ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: 1350ms;
+  will-change: transform, opacity;
 }
 
 .info-box {

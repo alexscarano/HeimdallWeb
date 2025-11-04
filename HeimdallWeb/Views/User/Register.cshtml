@@ -23,9 +23,9 @@
     </div>
 }
 
-<div class="container card-color mt-5 d-flex justify-content-center align-items-center flex-grow-1">
+<div class="container card-color mt-5 d-flex justify-content-center align-items-center flex-grow-1" data-bs-theme="dark">
 
-    <div class="card shadow-lg p-4" style="max-width: 450px; width: 100vh;">
+    <div class="card shadow-lg p-4 rounded-4" style="max-width: 450px; width: 100vh;">
     <div class="text-center mb-4">
         <h2 class="mt-2 acme">Crie sua conta</h2>
     </div>
@@ -38,9 +38,9 @@
         @Html.ValidationMessageFor(x => x.username)
         @* Mensagem de validação (teste) do model, mudar para algo mais bonito depois *@
         <input type="text" class="form-control" name="username" asp-for="username" id="username" placeholder="Escolha um nome de usuário" required>
-        <ul class="regras">
-            <li>Sem espaço</li>
-            <li>Entre 6 e 30 caracteres</li>
+        <ul class="regras mt-2">
+            <li>Não pode ter espaço</li>
+            <li>No mínimo 6 caracteres, no máximo 30</li>
         </ul>
         </div>
 
@@ -56,18 +56,26 @@
         <label for="password" class="form-label roboto">
             <i class="fa-solid fa-lock"></i> Senha
         </label>
-        <input type="password" class="form-control" asp-for="password" id="password" name="password" placeholder="Crie uma senha válida" required>
-        @Html.ValidationMessageFor(x => x.password)
+            <div class="input-group">
+                <input type="password" class="form-control" asp-for="password" id="password" name="password" placeholder="Crie uma senha válida" required>
+                @Html.ValidationMessageFor(x => x.password)
+                <span class="input-group-text"><i class="bi bi-eye-slash-fill"></i></span>
+            </div>
         </div>
 
         <div class="mb-3">
         <label for="confirmPassword" class="form-label roboto">
             <i class="fa-solid fa-lock"></i> Confirmar Senha
         </label>
-        <input type="password" class="form-control" asp-for="confirm_password" id="confirm_password" name="confirm_password" placeholder="Confirme sua senha" required>
-        @Html.ValidationMessageFor(x => x.confirm_password)
-        <ul class="regras">
-            <li>Entre 8 e 50 caracteres</li>
+        <div class="input-group">
+            <input type="password" class="form-control" asp-for="confirm_password" id="confirm_password" name="confirm_password" placeholder="Confirme sua senha" required>
+            @Html.ValidationMessageFor(x => x.confirm_password)
+            <span class="input-group-text"><i class="bi bi-eye-slash-fill"></i></span>
+        </div>
+        <ul class="regras mt-2">
+            <li>No mínimo 8 caracteres</li>
+            <li>Pelo menos um caractere especial</li>
+            <li>Pelo menos um número</li>
         </ul>
         </div>
 
