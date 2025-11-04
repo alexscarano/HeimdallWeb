@@ -23,20 +23,15 @@
 </div>
 
 
+@* TempData para toasts - elementos ocultos processados pelo JavaScript *@
 @if (TempData["OkMsg"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["OkMsg"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    <div class="tempdata-container" data-tempdata-ok="@TempData["OkMsg"]"></div>
 }
 
 @if (TempData["ErrorMsg"] != null)
 {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["ErrorMsg"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    <div class="tempdata-container" data-tempdata-error="@TempData["ErrorMsg"]"></div>
 }
 
 <div class="container mt-3">

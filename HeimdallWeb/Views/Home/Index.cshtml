@@ -8,20 +8,15 @@
     ViewData["Title"] = "HeimdallWeb - Home";
 }
 
+@* TempData para toasts - elementos ocultos processados pelo JavaScript *@
 @if (TempData["ErrorMsg"] != null)
 {
-    <div class="alert alert-danger fade show" role="alert">
-        @TempData["ErrorMsg"]
-        <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
-    </div>
+    <div class="tempdata-container" data-tempdata-error="@TempData["ErrorMsg"]"></div>
 }
 
 @if (TempData["OkMsg"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["OkMsg"]
-        <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
-    </div>
+    <div class="tempdata-container" data-tempdata-ok="@TempData["OkMsg"]"></div>
 }
 
 <!-- main hero container: switched inline height to a controllable CSS class -->

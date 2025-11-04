@@ -8,20 +8,14 @@
     ViewData["Title"] = "Login";
 }
 
-@* Mensagem de validação (teste) de conclusão de registro, mudar para algo mais bonito depois *@
+@* TempData para toasts - elementos ocultos processados pelo JavaScript *@
 @if (TempData["OkMsg"] != null)
 {
-    <div class="alert alert-success" role="alert">
-        @TempData["OkMsg"]
-        <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
-    </div>
+    <div class="tempdata-container" data-tempdata-ok="@TempData["OkMsg"]"></div>
 }
 @if (TempData["ErrorMsg"] != null)
 {
-    <div class="alert alert-danger" role="alert">
-        @TempData["ErrorMsg"]
-        <button class="btn-close" aria-label="fechar" data-bs-dismiss="alert"></button>
-    </div>
+    <div class="tempdata-container" data-tempdata-error="@TempData["ErrorMsg"]"></div>
 }
 
 <div class="container menu" data-bs-theme="dark">
