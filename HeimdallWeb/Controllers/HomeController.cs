@@ -3,6 +3,8 @@ using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading;
 
 namespace HeimdallWeb.Controllers;
 
@@ -25,8 +27,12 @@ public class HomeController : Controller
         _scanService = scanService;
     }
 
-    public IActionResult Index()
+    public IActionResult Index([FromQuery] int? rateLimited = null)
     {
+        if (rateLimited == 1)
+        {
+            TempData["ErrorMsg"] = "Aguarde 1 minuto para fazer outro scan.";
+        }
         return View();
     }
 
@@ -37,6 +43,7 @@ public class HomeController : Controller
 
     [HttpPost]
     [Authorize]
+    [EnableRateLimiting("ScanPolicy")]
     public async Task<IActionResult> Scan(string domainInput, HistoryModel historyModel)
     {
         #region Verificações de input
@@ -46,12 +53,17 @@ public class HomeController : Controller
             TempData["ErrorMsg"] = "Por favor, insira um nome de domínio válido, não um endereço IP.";
             return View("Index", "Home");
         }
+        else if (!NetworkUtils.IsValidUrl(domainInput, out Uri? uriResult))
+        {
+            TempData["ErrorMsg"] = "Por favor, insira um URL válido.";
+            return View("Index", "Home");
+        }
 
         #endregion
 
         try
         {
-            var historyId = await _scanService.RunScanAndPersist(domainInput, historyModel);
+            var historyId = await _scanService.RunScanAndPersist(domainInput, historyModel, HttpContext.RequestAborted);
 
             TempData["OkMsg"] = "Scan feito com sucesso !";
 
@@ -60,12 +72,17 @@ public class HomeController : Controller
         catch (TimeoutException)
         {
             TempData["ErrorMsg"] = "O scan demorou muito tempo e foi cancelado. Tente novamente.";
-            return View("Index", "Home");
+            return View("Index");
         }
         catch (ArgumentException ex)
         {
             TempData["ErrorMsg"] = ex.Message;
-            return View("Index", "Home");
+            return View("Index");
+        }
+        catch (OperationCanceledException)
+        {
+            TempData["ErrorMsg"] = "A operação foi cancelada pelo usuário.";
+            return View("Index");
         }
         catch (Exception)
         {

@@ -1,6 +1,8 @@
 ﻿using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
 using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Net.Http;
 
 namespace HeimdallWeb.Scanners
 {
@@ -18,14 +20,14 @@ namespace HeimdallWeb.Scanners
             { "Cache-Control", v => v.Contains("no-store") || v.Contains("no-cache") },
         };
 
-        public async Task<JObject> scanAsync(string targetRaw)
+        public async Task<JObject> scanAsync(string targetRaw, CancellationToken cancellationToken = default)
         {
             try
             {
                 using var client = new HttpClient();
                 string target = await NetworkUtils.NormalizeUrl(targetRaw);
 
-                var response = await client.GetAsync(target);
+                var response = await client.GetAsync(target, cancellationToken);
      
                 var headers = response.Headers
                     .ToDictionary(h => h.Key, h => string.Join(";", h.Value));
@@ -69,6 +71,10 @@ namespace HeimdallWeb.Scanners
                     scanTime = DateTime.Now
                 });
 
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception)
             {

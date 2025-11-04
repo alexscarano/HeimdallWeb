@@ -4,6 +4,7 @@ using System.Text;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 
 namespace HeimdallWeb.Scanners
 {
@@ -34,7 +35,7 @@ namespace HeimdallWeb.Scanners
         /// </summary>
         /// <param name="targetRaw">Alvo a ser escaneado (domínio ou IP)</param>
         /// <returns>Resultado do scan em formato JSON</returns>
-        public async Task<JObject> scanAsync(string targetRaw)
+        public async Task<JObject> scanAsync(string targetRaw, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -48,10 +49,11 @@ namespace HeimdallWeb.Scanners
                 {
                     probeTasks.Add(Task.Run(async () =>
                     {
-                        await sem.WaitAsync();
+                        await sem.WaitAsync(cancellationToken);
                         try
                         {
-                            var probeResult = await ProbeHttpRedirectAsync(ip);
+                            cancellationToken.ThrowIfCancellationRequested();
+                            var probeResult = await ProbeHttpRedirectAsync(ip, cancellationToken);
                             lock (results)
                             {
                                 results.Add(probeResult);
@@ -61,7 +63,7 @@ namespace HeimdallWeb.Scanners
                         {
                             sem.Release();
                         }
-                    }));
+                    }, cancellationToken));
                 }
 
                 await Task.WhenAll(probeTasks);
@@ -73,6 +75,10 @@ namespace HeimdallWeb.Scanners
                     scanTime = DateTime.Now,
                     resultsHttpRedirectScanner = results
                 });
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -89,7 +95,7 @@ namespace HeimdallWeb.Scanners
         /// <summary>
         /// Verifica se existe redirecionamento HTTP->HTTPS para um determinado IP
         /// </summary>
-        private async Task<JObject> ProbeHttpRedirectAsync(IPAddress ip)
+        private async Task<JObject> ProbeHttpRedirectAsync(IPAddress ip, CancellationToken cancellationToken = default)
         {
             var probe = new JObject
             {
@@ -100,7 +106,8 @@ namespace HeimdallWeb.Scanners
             try
             {
                 using var tcpClient = new TcpClient(ip.AddressFamily);
-                using var cts = new CancellationTokenSource(_connectTimeout);
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                cts.CancelAfter(_connectTimeout);
 
                 // Conecta na porta 80 (HTTP)
                 var connectTask = tcpClient.ConnectAsync(ip, 80);
@@ -121,11 +128,11 @@ namespace HeimdallWeb.Scanners
 
                 var request = $"GET / HTTP/1.1\r\nHost: {ip}\r\nConnection: close\r\n\r\n";
                 var requestBytes = Encoding.ASCII.GetBytes(request);
-                await stream.WriteAsync(requestBytes, 0, requestBytes.Length);
+                await stream.WriteAsync(requestBytes, 0, requestBytes.Length, cancellationToken);
 
                 // Lê a resposta até encontrar os headers
                 var buffer = new byte[1024];
-                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
                 var response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
                 // Analisa o tipo de resposta
@@ -172,6 +179,10 @@ namespace HeimdallWeb.Scanners
                 }
 
                 return probe;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

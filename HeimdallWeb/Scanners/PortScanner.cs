@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
 using Newtonsoft.Json.Linq;
@@ -99,7 +98,7 @@ namespace HeimdallWeb.Scanners
         /// </summary>
         /// <param name="targetRaw"></param>
         /// <returns>Retorna o json com dados do scan</returns>
-        public async Task<JObject> scanAsync(string targetRaw/*,List<int>? ports = null*/)
+        public async Task<JObject> scanAsync(string targetRaw, CancellationToken cancellationToken = default/*,List<int>? ports = null*/)
         {
             try
             {
@@ -117,21 +116,26 @@ namespace HeimdallWeb.Scanners
                     {
                         probeTasks.Add(Task.Run(async () =>
                         {
-                            await sem.WaitAsync();
+                            await sem.WaitAsync(cancellationToken);
                             try
                             {
-                                var probe = await ProbeIpPortAsync(ip, port);
+                                cancellationToken.ThrowIfCancellationRequested();
+                                var probe = await ProbeIpPortAsync(ip, port, cancellationToken);
                                 lock (results)
                                 {
                                     results.Add(probe);
                                 }
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                throw;
                             }
                             catch { /* Ignorar erros de conexão */ }
                             finally
                             {
                                 sem.Release();
                             }
-                        }));
+                        }, cancellationToken));
                     }
                 }
 
@@ -146,6 +150,10 @@ namespace HeimdallWeb.Scanners
                 };
 
                 return output;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -170,7 +178,7 @@ namespace HeimdallWeb.Scanners
         /// <param name="ip"></param>
         /// <param name="port"></param>
         /// <returns></returns>
-        private async Task<JObject> ProbeIpPortAsync(IPAddress ip, int port)
+        private async Task<JObject> ProbeIpPortAsync(IPAddress ip, int port, CancellationToken cancellationToken = default)
         {
             var probe = new JObject
             {
@@ -179,7 +187,8 @@ namespace HeimdallWeb.Scanners
                 ["scanTime"] = DateTime.Now
             };
 
-            using var cts = new CancellationTokenSource(_connectTimeout);
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cts.CancelAfter(_connectTimeout);
             try
             {
                 using var tcp = new TcpClient(ip.AddressFamily);
@@ -208,7 +217,7 @@ namespace HeimdallWeb.Scanners
                         {
                             var req = $"HEAD / HTTP/1.1\r\nHost: {ip}\r\nConnection: close\r\n\r\n";
                             var data = Encoding.ASCII.GetBytes(req);
-                            await stream.WriteAsync(data, 0, data.Length, CancellationToken.None);
+                            await stream.WriteAsync(data, 0, data.Length, cancellationToken);
                         }
                         else if (port == 443 || port == 8443)
                         {
@@ -220,8 +229,8 @@ namespace HeimdallWeb.Scanners
                         var buffer = new byte[1024];
                         int read = 0;
                         
-                        var readTask = stream.ReadAsync(buffer, 0, buffer.Length);
-                        var readFinished = await Task.WhenAny(readTask, Task.Delay(_readTimeout));
+                        var readTask = stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+                        var readFinished = await Task.WhenAny(readTask, Task.Delay(_readTimeout, cancellationToken));
                         if (readFinished == readTask)
                             read = readTask.Result;
 
@@ -231,6 +240,10 @@ namespace HeimdallWeb.Scanners
                             probe["banner"] = banner.Length > 512 ? banner.Substring(0, 512) : banner;
                         }
                     }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
                     catch (Exception exBanner)
                     {
                         probe["banner_error"] = exBanner.Message;
@@ -238,6 +251,10 @@ namespace HeimdallWeb.Scanners
                 }
 
                 return probe;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

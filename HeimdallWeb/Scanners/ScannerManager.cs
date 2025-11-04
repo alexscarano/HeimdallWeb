@@ -1,5 +1,6 @@
 ﻿using HeimdallWeb.Interfaces;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 
 namespace HeimdallWeb.Scanners
 {
@@ -15,12 +16,13 @@ namespace HeimdallWeb.Scanners
             _scanners.Add(new HttpRedirectScanner());
         }
 
-        public async Task<JObject> RunAllAsync(string target)
+        public async Task<JObject> RunAllAsync(string target, CancellationToken cancellationToken = default)
         {
             JObject results = new();
             foreach (var scanner in _scanners)
             {
-                var result = await scanner.scanAsync(target);
+                cancellationToken.ThrowIfCancellationRequested();
+                var result = await scanner.scanAsync(target, cancellationToken);
 
                 results.Merge(result, new JsonMergeSettings
                 {

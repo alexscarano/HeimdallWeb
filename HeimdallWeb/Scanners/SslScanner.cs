@@ -5,6 +5,8 @@ using System.Security.Cryptography.X509Certificates;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
 using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace HeimdallWeb.Scanners
 {
@@ -12,7 +14,7 @@ namespace HeimdallWeb.Scanners
     {
         private readonly List<int> _ports = new() { 443 };
 
-        public async Task<JObject> scanAsync(string targetRaw)
+        public async Task<JObject> scanAsync(string targetRaw, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -21,12 +23,14 @@ namespace HeimdallWeb.Scanners
 
                     foreach (var port in _ports)
                     {
+                        cancellationToken.ThrowIfCancellationRequested();
                         try
                         {
                             using var tcpClient = new TcpClient();
                             var connectTask = tcpClient.ConnectAsync(target, port);
-                            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-                            var completedTask = Task.WhenAny(connectTask, Task.Delay(Timeout.Infinite, cts.Token)).Result;
+                            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                            cts.CancelAfter(TimeSpan.FromSeconds(5));
+                            var completedTask = await Task.WhenAny(connectTask, Task.Delay(Timeout.Infinite, cts.Token));
 
                             if (!tcpClient.Connected)
                             {
@@ -42,7 +46,8 @@ namespace HeimdallWeb.Scanners
                             using var sslStream = new SslStream(tcpClient.GetStream(), false,
                                 (sender, certificate, chain, sslPolicyErrors) => true);
 
-                            await sslStream.AuthenticateAsClientAsync(target);
+                            var authTask = sslStream.AuthenticateAsClientAsync(target);
+                            await authTask.WaitAsync(cancellationToken);
 
                             var remoteCert = sslStream.RemoteCertificate;
                             var cert2 = new System.Security.Cryptography.X509Certificates.X509Certificate2(remoteCert);
@@ -92,6 +97,10 @@ namespace HeimdallWeb.Scanners
                             };
                             results.Add(certObj);
                         }
+                        catch (OperationCanceledException)
+                        {
+                            throw;
+                        }
                         catch (Exception exPort)
                         {
                             results.Add(JObject.FromObject(new
@@ -108,6 +117,10 @@ namespace HeimdallWeb.Scanners
                             resultsSslScanner = results
                         });
                     }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
