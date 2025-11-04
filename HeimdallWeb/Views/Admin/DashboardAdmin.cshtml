@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="~/css/dashboard-dark.css" asp-append-version="true" />
 </head>
 
-<div class="container mb-4">
+<div class="container-lg mb-4">
     <div class="d-flex justify-content-between align-items-center py-3 bg-dark rounded-3 text-white history-header">
-        <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center">
             <h4 class="m-0">Painel do Admin</h4>
 
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-stretch gap-2">
             <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
             <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
             <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
@@ -22,7 +22,7 @@
 </div>
 
 
-<div class="container">
+<div class="container-lg">
     <div class="table-responsive shadow-sm rounded bg-dark text-light p-2">
         <table class="table table-hover table-dark mb-0">
             @if (Model != null && Model.Items.Any())

@@ -57,9 +57,11 @@
             }
             else
             {
-                <div class="alert alert-secondary text-center m-3" role="alert">
-                    Nenhum registro encontrado no histórico.
-                </div>
+                <tbody class="alert">
+                    <tr>
+                        <td>Nenhum registro encontrado no histórico.</td>
+                    </tr>
+                </tbody>
             }
             <tbody class="table-group-divider">
             @if (Model != null && Model.Items.Any())
