@@ -1,6 +1,5 @@
 ﻿using HeimdallWeb.Interfaces;
 using Newtonsoft.Json.Linq;
-using System.Threading;
 
 namespace HeimdallWeb.Scanners
 {
@@ -14,6 +13,7 @@ namespace HeimdallWeb.Scanners
             _scanners.Add(new SslScanner());
             _scanners.Add(new PortScanner());
             _scanners.Add(new HttpRedirectScanner());
+            _scanners.Add(new RobotsScanner());
         }
 
         public async Task<JObject> RunAllAsync(string target, CancellationToken cancellationToken = default)

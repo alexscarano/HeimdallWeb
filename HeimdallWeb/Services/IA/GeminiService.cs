@@ -57,7 +57,7 @@ namespace HeimdallWeb.Services.IA
                                     ### Objetivos:
                                     - Interpretar saídas de scans (HTTP/HTTPS, banners, headers, certificados, portas, redirecionamentos).
                                     - Usar banners para confirmar tecnologia, versão e possíveis falhas conhecidas.
-                                    - Identificar vulnerabilidades como XSS, SQL Injection, headers e cookies inseguros, SSL inválido, exposição de portas críticas.
+                                    - Identificar vulnerabilidades como XSS, SQL Injection, Headers e Cookies Inseguros, SSL inválido, Robots.txt e Sitemap (incluidos no scan), exposição de portas críticas.
                                     - Classificar cada achado em categorias fixas: **SSL, Headers, Portas, Redirecionamento, Injeção, Outros**.
                                     - Retornar respostas **curtas, objetivas e padronizadas**, para economizar tokens.
                                     - Sempre classificar o risco em: **Baixo | Medio | Alto | Critico** (igual ao ENUM do sistema).

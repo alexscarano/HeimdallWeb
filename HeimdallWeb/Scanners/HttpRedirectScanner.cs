@@ -1,10 +1,8 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
 using Newtonsoft.Json.Linq;
-using System.Threading;
 
 namespace HeimdallWeb.Scanners
 {
