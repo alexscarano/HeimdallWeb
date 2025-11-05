@@ -4,38 +4,34 @@ using HeimdallWeb.Models;
 using HeimdallWeb.Services.IA;
 using HeimdallWeb.Scanners;
 using HeimdallWeb.Interfaces;
-using System.Threading;
 
 namespace HeimdallWeb.Services;
 
 public class ScanService : IScanService
 {
     private readonly IHistoryRepository _historyRepository;
-    private readonly IFindingRepository _findingRepository; // restored original name
+    private readonly IFindingRepository _findingRepository; 
     private readonly ITechnologyRepository _technologyRepository;
     private readonly AppDbContext _db;
     private readonly IConfiguration _config;
 
     public ScanService(
+        AppDbContext db, 
         IHistoryRepository historyRepository, 
         IFindingRepository findingRepository, 
         ITechnologyRepository technologyRepository,
-        AppDbContext db, 
         IConfiguration config
     )
     {
+        _db = db;
         _historyRepository = historyRepository;
         _findingRepository = findingRepository;
-        _technologyRepository = technologyRepository; // temporary, will correct below
-        _db = db;
+        _technologyRepository = technologyRepository; 
         _config = config;
     }
 
     public async Task<int> RunScanAndPersist(string domain, HistoryModel historyModel, CancellationToken cancellationToken = default)
     {
-        if (NetworkUtils.IsIPAddress(domain))
-            throw new ArgumentException("Por favor, insira um nome de domínio válido, não um endereço IP.");
-
         using var timeoutCts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
         var linkedToken = linkedCts.Token;
@@ -63,7 +59,7 @@ public class ScanService : IScanService
             historyModel.summary = doc.RootElement.GetProperty("resumo").GetString();
             historyModel.created_date = DateTime.Now;
 
-            // Persist in a transaction
+
             await using var tx = await _db.Database.BeginTransactionAsync(cancellationToken);
             try
             {

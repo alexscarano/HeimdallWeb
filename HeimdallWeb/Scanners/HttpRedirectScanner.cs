@@ -35,7 +35,7 @@ namespace HeimdallWeb.Scanners
         /// </summary>
         /// <param name="targetRaw">Alvo a ser escaneado (domínio ou IP)</param>
         /// <returns>Resultado do scan em formato JSON</returns>
-        public async Task<JObject> scanAsync(string targetRaw, CancellationToken cancellationToken = default)
+        public async Task<JObject> ScanAsync(string targetRaw, CancellationToken cancellationToken = default)
         {
             try
             {

@@ -5,6 +5,6 @@ namespace HeimdallWeb.Interfaces
 {
     public interface IScanner
     {
-        Task<JObject> scanAsync(string target, CancellationToken cancellationToken = default);
+        Task<JObject> ScanAsync(string target, CancellationToken cancellationToken = default);
     }
 }

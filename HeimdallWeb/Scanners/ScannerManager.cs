@@ -22,7 +22,7 @@ namespace HeimdallWeb.Scanners
             foreach (var scanner in _scanners)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var result = await scanner.scanAsync(target, cancellationToken);
+                var result = await scanner.ScanAsync(target, cancellationToken);
 
                 results.Merge(result, new JsonMergeSettings
                 {

@@ -98,7 +98,7 @@ namespace HeimdallWeb.Scanners
         /// </summary>
         /// <param name="targetRaw"></param>
         /// <returns>Retorna o json com dados do scan</returns>
-        public async Task<JObject> scanAsync(string targetRaw, CancellationToken cancellationToken = default/*,List<int>? ports = null*/)
+        public async Task<JObject> ScanAsync(string targetRaw, CancellationToken cancellationToken = default/*,List<int>? ports = null*/)
         {
             try
             {

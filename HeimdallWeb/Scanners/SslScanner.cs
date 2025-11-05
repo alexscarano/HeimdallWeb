@@ -14,7 +14,7 @@ namespace HeimdallWeb.Scanners
     {
         private readonly List<int> _ports = new() { 443 };
 
-        public async Task<JObject> scanAsync(string targetRaw, CancellationToken cancellationToken = default)
+        public async Task<JObject> ScanAsync(string targetRaw, CancellationToken cancellationToken = default)
         {
             try
             {

@@ -150,5 +150,6 @@ namespace HeimdallWeb.Helpers
         {
             return IPAddress.TryParse(input, out _);
         }
+
     }
 }

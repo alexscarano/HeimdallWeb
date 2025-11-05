@@ -4,7 +4,6 @@ using HeimdallWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Threading;
 
 namespace HeimdallWeb.Controllers;
 
@@ -31,7 +30,7 @@ public class HomeController : Controller
     {
         if (rateLimited == 1)
         {
-            TempData["ErrorMsg"] = "Aguarde 1 minuto para fazer outro scan.";
+            TempData["ErrorMsg"] = "Você está fazendo muitos scans de uma vez, respire !";
         }
         return View();
     }
@@ -46,23 +45,24 @@ public class HomeController : Controller
     [EnableRateLimiting("ScanPolicy")]
     public async Task<IActionResult> Scan(string domainInput, HistoryModel historyModel)
     {
-        #region Verificações de input
-
-        if (NetworkUtils.IsIPAddress(domainInput))
-        {
-            TempData["ErrorMsg"] = "Por favor, insira um nome de domínio válido, não um endereço IP.";
-            return View("Index", "Home");
-        }
-        else if (!NetworkUtils.IsValidUrl(domainInput, out Uri? uriResult))
-        {
-            TempData["ErrorMsg"] = "Por favor, insira um URL válido.";
-            return View("Index", "Home");
-        }
-
-        #endregion
-
         try
         {
+            if (NetworkUtils.IsIPAddress(domainInput))
+            {
+                TempData["ErrorMsg"] = "O endereço precisa ser uma URL, não um endereço IP";
+                return View("Index");
+            }
+            else if (!NetworkUtils.IsValidUrl(domainInput, out Uri? uriResult))
+            {
+                TempData["ErrorMsg"] = "O endereço precisa ser válido, exemplo: www.google.com !";
+                return View("Index");
+            }
+            else if (!await NetworkUtils.IsReachableAsync(domainInput))
+            {
+                TempData["ErrorMsg"] = "O endereço informado não está acessível. Verifique se está correto.";
+                return View("Index");
+            }
+
             var historyId = await _scanService.RunScanAndPersist(domainInput, historyModel, HttpContext.RequestAborted);
 
             TempData["OkMsg"] = "Scan feito com sucesso !";

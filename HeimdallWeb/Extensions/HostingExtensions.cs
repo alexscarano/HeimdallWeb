@@ -84,7 +84,7 @@ namespace HeimdallWeb.Extensions
                     var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
                     return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 100,
+                        PermitLimit = 85,
                         Window = TimeSpan.FromMinutes(1),
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                         QueueLimit = 0
@@ -96,7 +96,7 @@ namespace HeimdallWeb.Extensions
                     var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
                     return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 1,
+                        PermitLimit = 4,
                         Window = TimeSpan.FromMinutes(1),
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                         QueueLimit = 0

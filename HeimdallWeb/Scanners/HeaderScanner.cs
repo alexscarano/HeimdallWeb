@@ -20,7 +20,16 @@ namespace HeimdallWeb.Scanners
             { "Cache-Control", v => v.Contains("no-store") || v.Contains("no-cache") },
         };
 
-        public async Task<JObject> scanAsync(string targetRaw, CancellationToken cancellationToken = default)
+        private static readonly string[] SessionCookieNames = new[]
+        {
+            "ASP.NET_SessionId",
+            "PHPSESSID",
+            "JSESSIONID",
+            "SID",
+            "SESSIONID"
+        };
+
+        public async Task<JObject> ScanAsync(string targetRaw, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -58,6 +67,16 @@ namespace HeimdallWeb.Scanners
                     }
                 }
 
+                var cookies = new JArray();
+                if (response.Headers.TryGetValues("Set-Cookie", out var sessionCookies))
+                {
+                    foreach (var cookie in sessionCookies)
+                    {
+                        var cookieObj = AnalyzeCookie(cookie);
+                        cookies.Add(cookieObj);
+                    }
+                }
+
                 return JObject.FromObject(new
                 {
                     statusCodeHttpRequest = (int)response.StatusCode,
@@ -68,6 +87,7 @@ namespace HeimdallWeb.Scanners
                         weak,
                         missing
                     },
+                    cookies = cookies,
                     scanTime = DateTime.Now
                 });
 
@@ -81,5 +101,113 @@ namespace HeimdallWeb.Scanners
                 return new JObject();
             }
         }
+
+        private static JObject AnalyzeCookie(string cookieHeader)
+        {
+            // Separar por ';' e limpar espaços
+            var parts = cookieHeader.Split(';')
+                .Select(p => p.Trim())
+                .Where(p => !string.IsNullOrEmpty(p))
+                .ToList();
+
+            // nome=valor é o primeiro token (pode conter '=' no valor, então split apenas no primeiro)
+            var first = parts.FirstOrDefault() ?? string.Empty;
+            var idx = first.IndexOf('=');
+            string name = idx >= 0 ? first.Substring(0, idx) : first;
+            string value = idx >= 0 ? first.Substring(idx + 1) : string.Empty;
+
+            bool hasSecure = parts.Any(p => p.Equals("secure", StringComparison.OrdinalIgnoreCase));
+            bool hasHttpOnly = parts.Any(p => p.Equals("httponly", StringComparison.OrdinalIgnoreCase));
+
+            // SameSite: pode ser "SameSite=None" ou 'samesite=none'
+            var sameSitePart = parts.FirstOrDefault(p => p.StartsWith("samesite", StringComparison.OrdinalIgnoreCase));
+            string sameSite = "Not set";
+            if (sameSitePart is not null)
+            {
+                var eq = sameSitePart.IndexOf('=');
+                sameSite = eq >= 0 ? sameSitePart.Substring(eq + 1).Trim() : sameSitePart;
+                // normalize
+                sameSite = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(sameSite.ToLowerInvariant());
+            }
+
+            // Domain
+            var domainPart = parts.FirstOrDefault(p => p.StartsWith("domain=", StringComparison.OrdinalIgnoreCase));
+            string domain = domainPart is not null ? domainPart.Substring(domainPart.IndexOf('=') + 1).Trim() : "";
+
+            // Path
+            var pathPart = parts.FirstOrDefault(p => p.StartsWith("path=", StringComparison.OrdinalIgnoreCase));
+            string path = pathPart is not null ? pathPart.Substring(pathPart.IndexOf('=') + 1).Trim() : "";
+
+            // Check prefixes
+            bool hasSecurePrefix = name.StartsWith("__Secure-", StringComparison.OrdinalIgnoreCase);
+            bool hasHostPrefix = name.StartsWith("__Host-", StringComparison.OrdinalIgnoreCase);
+
+            // Detect cookie type (session-like)
+            bool isSessionCookie = SessionCookieNames.Any(s => s.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+            // score risk
+            string risk;
+            string description = "";
+            if (!hasHttpOnly && !hasSecure)
+            {
+                risk = "Critico";
+                description = "Cookie sem HttpOnly e sem Secure — altamente suscetível a roubo por XSS e exposição em conexões não-HTTPS.";
+            }
+            else if (!hasHttpOnly)
+            {
+                risk = "Alto";
+                description = "Cookie sem HttpOnly, pode ser acessado via JavaScript (risco de XSS).";
+            }
+            else if (!hasSecure)
+            {
+                risk = "Medio";
+                description = "Cookie sem Secure — pode ser transmitido via HTTP não criptografado.";
+            }
+            else if (sameSite == "Not set" || string.IsNullOrEmpty(sameSite) || sameSite.Equals("None", StringComparison.OrdinalIgnoreCase))
+            {
+                // SameSite=None é aceitável se Secure presente; porém pode aumentar superfície
+                risk = "Baixo";
+                description = "SameSite não definido (ou None). Recomenda-se SameSite=Lax/Strict para mitigar CSRF quando aplicável.";
+            }
+            else
+            {
+                risk = "Baixo";
+                description = "Flags básicas presentes.";
+            }
+
+            // Improve description with domain/path/prefix hints
+            if (!string.IsNullOrEmpty(domain))
+            {
+                if (domain.StartsWith("."))
+                    description += " Cookie com scoping amplo (Domain começa com '.') pode ser compartilhado entre subdomínios.";
+            }
+            if (!string.IsNullOrEmpty(path) && path == "/")
+            {
+                description += " Path='/' dá escopo global ao cookie.";
+            }
+            if (hasHostPrefix && !hasSecure)
+            {
+                description += " Cookie com prefixo __Host- sem Secure é inconsistente com boas práticas.";
+            }
+
+            return new JObject
+            {
+                ["nome"] = name,
+                ["value_sample"] = value.Length <= 64 ? value : value.Substring(0, 64),
+                ["temSecure"] = hasSecure,
+                ["temHttpOnly"] = hasHttpOnly,
+                ["sameSite"] = sameSite,
+                ["domain"] = domain,
+                ["path"] = path,
+                ["prefix_secure"] = hasSecurePrefix,
+                ["prefix_host"] = hasHostPrefix,
+                ["isSessionCookie"] = isSessionCookie,
+                ["risco"] = risk,
+                ["descricao"] = description.Trim()
+            };
+        }
     }
+
+
+
 }
