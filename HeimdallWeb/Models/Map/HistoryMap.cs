@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HeimdallWeb.Models.Map
 {
@@ -19,6 +18,14 @@ namespace HeimdallWeb.Models.Map
 
             builder.Property(h => h.raw_json_result)
             .HasColumnType("json");
+
+            builder.Property(h => h.has_completed)
+            .HasDefaultValue(false)
+            .IsRequired();
+
+            builder.Property(h => h.duration)
+            .HasColumnType("time")
+            .IsRequired(false);
 
             builder.HasMany(h => h.IASummaries)
             .WithOne(ia => ia.History)

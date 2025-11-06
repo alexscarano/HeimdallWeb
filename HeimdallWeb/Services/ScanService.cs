@@ -1,9 +1,10 @@
+using System.Diagnostics;
 using System.Text.Json;
-using HeimdallWeb.Models;
-using HeimdallWeb.Services.IA;
-using HeimdallWeb.Scanners;
-using HeimdallWeb.Interfaces;
 using HeimdallWeb.Helpers;
+using HeimdallWeb.Interfaces;
+using HeimdallWeb.Models;
+using HeimdallWeb.Scanners;
+using HeimdallWeb.Services.IA;
 
 namespace HeimdallWeb.Services;
 
@@ -32,6 +33,7 @@ public class ScanService : IScanService
 
     public async Task<int> RunScanAndPersist(string domainRaw, HistoryModel historyModel, CancellationToken cancellationToken = default)
     {
+        var stopwatch = Stopwatch.StartNew();
         using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(75));
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
         var linkedToken = linkedCts.Token;
@@ -56,20 +58,24 @@ public class ScanService : IScanService
 
             using var doc = JsonDocument.Parse(iaResponse);
 
-            historyModel.Target = domain;
-            historyModel.RawJsonResult = jsonString;
-            historyModel.Summary = doc.RootElement.GetProperty("resumo").GetString();
-            historyModel.CreatedAt = DateTime.Now;
+            historyModel.target = domain;
+            historyModel.raw_json_result = jsonString;
+            historyModel.summary = doc.RootElement.GetProperty("resumo").GetString();
+            historyModel.created_date = DateTime.Now;
 
 
             await using var tx = await _db.Database.BeginTransactionAsync(cancellationToken);
             try
             {
+                stopwatch.Stop();
+                historyModel.duration = stopwatch.Elapsed;
+                historyModel.has_completed = true;
                 var createdHistory = await _historyRepository.insertHistory(historyModel);
-                var historyId = createdHistory.HistoryId;
+                var historyId = createdHistory.history_id;
 
                 await _findingRepository.SaveFindingsFromAI(iaResponse, historyId);
                 await _technologyRepository.SaveTechnologiesFromAI(iaResponse, historyId);
+
 
                 await tx.CommitAsync(cancellationToken);
 

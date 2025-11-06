@@ -26,6 +26,16 @@ namespace HeimdallWeb.Models
         /// </summary>
         public required string summary { get; set; }
 
+        /// <summary>
+        /// Flag para verificar se o scan foi completado
+        /// </summary>
+        public bool has_completed { get; set; }
+
+        /// <summary>
+        /// Duração do scan
+        /// </summary>
+        public TimeSpan? duration { get; set; }
+
         [Required]
         public required DateTime created_date { get; set; } = DateTime.Now;
 
