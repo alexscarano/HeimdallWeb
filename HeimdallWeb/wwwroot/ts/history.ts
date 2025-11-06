@@ -25,6 +25,7 @@ function confirmDelete(historyId: number) {
     Swal.fire({
         title: 'Tem certeza?',
         text: 'Essa ação não pode ser desfeita!',
+        theme: 'dark',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -152,6 +153,7 @@ function loadTechnologies(historyId: number) {
 function showSummary(text: string) {
     Swal.fire({
         title: 'Resumo',
+        theme: 'dark',
         html: `<div style="text-align:left">${text}</div>`,
         confirmButtonText: 'Fechar'
     });

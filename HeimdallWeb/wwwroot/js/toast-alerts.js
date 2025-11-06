@@ -20,7 +20,7 @@
                 showConfirmButton: false,
                 timer: options.duration || 3000,
                 timerProgressBar: true,
-                background: 'linear-gradient(135deg, rgba(42, 107, 109, 0.95), rgba(34, 87, 89, 0.95))',
+                background: 'linear-gradient(135deg, rgba(28, 75, 99, 0.95), rgba(20, 64, 90, 0.95))',
                 color: '#ffffff',
                 icon: 'success',
                 title: options.message,

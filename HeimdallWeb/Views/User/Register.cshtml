@@ -53,7 +53,8 @@
             <div class="input-group">
                 <input type="password" class="form-control" asp-for="password" id="password" name="password" placeholder="Crie uma senha válida" required>
                 @Html.ValidationMessageFor(x => x.password)
-                <span class="input-group-text"><i class="bi bi-eye-slash-fill"></i></span>
+                <span class="input-group-text"><i class="bi bi-eye-fill" id="hide_eye"></i></span>
+                <span class="input-group-text"><i class="bi bi-eye-slash-fill" id="show_eye"></i></span>
             </div>
         </div>
 
@@ -64,7 +65,8 @@
         <div class="input-group">
             <input type="password" class="form-control" asp-for="confirm_password" id="confirm_password" name="confirm_password" placeholder="Confirme sua senha" required>
             @Html.ValidationMessageFor(x => x.confirm_password)
-            <span class="input-group-text"><i class="bi bi-eye-slash-fill"></i></span>
+            <span class="input-group-text"><i class="bi bi-eye-fill" id="hide_eye"></i></span>
+            <span class="input-group-text"><i class="bi bi-eye-slash-fill" id="show_eye"></i></span>
         </div>
         <ul class="regras mt-2">
             <li>No mínimo 8 caracteres</li>

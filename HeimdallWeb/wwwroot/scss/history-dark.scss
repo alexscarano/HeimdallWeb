@@ -434,17 +434,6 @@ $heimdall-primary: #2f6f8f;
 }
 
 // SweetAlert2 dark theme overrides
-.swal2-container {
-    background-color: rgba(0,0,0,0.6) !important; // darker overlay
-}
-
-.swal2-popup {
-    background: linear-gradient(180deg, rgba(12,16,17,0.98), rgba(8,12,13,0.98)) !important;
-    color: #eaf7f6 !important;
-    border-radius: 0.85rem !important;
-    border: 1px solid rgba(255,255,255,0.04) !important;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.7) !important;
-}
 
 .swal2-title {
     color: #ffffff !important;
@@ -481,13 +470,6 @@ $heimdall-primary: #2f6f8f;
     color: #fff !important;
 }
 
-.swal2-input, .swal2-textarea {
-    background: rgba(255,255,255,0.06) !important;
-    color: #eaf7f6 !important;
-    border: 1px solid rgba(255,255,255,0.06) !important;
-    border-radius: 0.35rem !important;
-}
-
 .swal2-footer {
     color: $heimdall-muted !important;
 }
@@ -496,6 +478,8 @@ $heimdall-primary: #2f6f8f;
 .swal2-html-container a {
     color: $heimdall-accent !important;
 }
+
+
 
 // small responsive tweak
 @media (max-width: 576px) {
