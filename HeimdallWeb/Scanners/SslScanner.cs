@@ -18,7 +18,7 @@ namespace HeimdallWeb.Scanners
         {
             try
             {
-                var target = NetworkUtils.removeHttpString(targetRaw);
+                var target = NetworkUtils.RemoveHttpString(targetRaw);
                 var results = new JArray();
 
                     foreach (var port in _ports)

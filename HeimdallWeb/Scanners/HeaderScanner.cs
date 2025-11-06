@@ -29,12 +29,11 @@ namespace HeimdallWeb.Scanners
             "SESSIONID"
         };
 
-        public async Task<JObject> ScanAsync(string targetRaw, CancellationToken cancellationToken = default)
+        public async Task<JObject> ScanAsync(string target, CancellationToken cancellationToken = default)
         {
             try
             {
                 using var client = new HttpClient();
-                string target = await NetworkUtils.NormalizeUrl(targetRaw);
 
                 var response = await client.GetAsync(target, cancellationToken);
      

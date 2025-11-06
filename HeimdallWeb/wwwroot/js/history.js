@@ -4,7 +4,21 @@ window.confirmDelete = confirmDelete;
 window.loadFindings = loadFindings;
 window.loadTechnologies = loadTechnologies;
 window.showSummary = showSummary;
+function getQueryParamNumber(name, defaultValue) {
+    try {
+        const url = new URL(window.location.href);
+        const val = url.searchParams.get(name);
+        if (!val)
+            return defaultValue;
+        const n = parseInt(val, 10);
+        return isNaN(n) ? defaultValue : n;
+    }
+    catch (_a) {
+        return defaultValue;
+    }
+}
 function confirmDelete(historyId) {
+    const currentPage = getQueryParamNumber('page', 1);
     Swal.fire({
         title: 'Tem certeza?',
         text: 'Essa ação não pode ser desfeita!',
@@ -31,7 +45,7 @@ function confirmDelete(historyId) {
                         if (rowElement) {
                             rowElement.remove();
                         }
-                        window.location.href = '/history?page=1&pageSize=10';
+                        window.location.href = `/history?page=${currentPage}&pageSize=10`;
                     });
                 }
                 else {

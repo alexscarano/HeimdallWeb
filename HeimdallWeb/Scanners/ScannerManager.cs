@@ -12,6 +12,7 @@ namespace HeimdallWeb.Scanners
             _scanners.Add(new HeaderScanner());
             _scanners.Add(new SslScanner());
             _scanners.Add(new PortScanner());
+            _scanners.Add(new SensitivePathsScanner());
             _scanners.Add(new HttpRedirectScanner());
             _scanners.Add(new RobotsScanner());
         }

@@ -137,7 +137,7 @@ public class UserController : Controller
 
             var userDB = await _userRepository.getUserById(id) ?? throw new Exception("Náo foi possável fazer a consulta do usuário");
 
-            if (PasswordUtils.VerifyPassword(userToDelete.password, userDB.password))
+            if (PasswordUtils.VerifyPassword(userToDelete.password, userDB.Password))
             {
                 bool deleted = await _userRepository.deleteUser(id);
 

@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Microsoft.Extensions.Hosting;
 
 namespace HeimdallWeb.Helpers
 {
@@ -11,7 +10,7 @@ namespace HeimdallWeb.Helpers
         /// <param name="url"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async static Task<string> NormalizeUrl(string url)
+        public static string NormalizeUrl(this string url)
         {
 			try
 			{
@@ -20,23 +19,18 @@ namespace HeimdallWeb.Helpers
                     throw new ArgumentException("A url não pode estar vazia");
                 }
 
-                if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+                if (!url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) 
+                    && !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                 {
-                    url = "https://" + url;
+                    url = $"https://{url}";
                 }
 
                 if (!IsValidUrl(url, out Uri? uriResult))
                     throw new ArgumentException("O alvo informado não é uma URL válida.");
 
-                //Testa se é acessível, se não for tenta com http: 
-                if (!await IsReachableAsync(url) && uriResult!.Scheme == Uri.UriSchemeHttps)
-                {
-                    string fallback = url.Replace("https://", "http://");
-                    if (await IsReachableAsync(fallback))
-                        return fallback;
-                }
+                var uriResultString = uriResult!.GetLeftPart(UriPartial.Authority).TrimEnd('/');
 
-                return uriResult!.ToString();
+                return uriResultString;
             }
 			catch (Exception)
 			{
@@ -87,20 +81,20 @@ namespace HeimdallWeb.Helpers
         /// <param name="url"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static string removeHttpString(string url)
+        public static string RemoveHttpString(string url)
         {
             if (string.IsNullOrEmpty(url))
             {
                 throw new ArgumentException("A url não pode estar vazia");
             }
 
-            if (url.StartsWith("http://"))
+            if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
             {
-                url = url.Replace("http://", "");
+                url = url.Replace("http://", "", StringComparison.OrdinalIgnoreCase);
             }
-            else if (url.StartsWith("https://"))
+            else if (url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             {
-                url = url.Replace("https://", "");
+                url = url.Replace("https://", "", StringComparison.OrdinalIgnoreCase);
             }
             
             if (url.Contains('/'))
@@ -123,7 +117,7 @@ namespace HeimdallWeb.Helpers
 
             try
             {
-                var host = removeHttpString(rawHost);
+                var host = RemoveHttpString(rawHost);
                 var addresses = Dns.GetHostAddresses(host);
                 foreach (var addr in addresses)
                 {

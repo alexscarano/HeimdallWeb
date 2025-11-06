@@ -98,6 +98,7 @@ namespace HeimdallWeb.Services.IA
                                         Caso nenhuma tecnologia seja identificada, retornar um array vazio.
                                     7. Se o campo esperado não tiver valor disponível, retornar valor nulo no json (null), pois o valor deve ser tratado como nulo,
                                         **nunca** as strings """"null"""", """"json null"""", """"undefined"""" ou qualquer texto fora do formato JSON.
+                                    8. Não forneça de forma alguma conteúdo repetido.
     
                                     ### JSON de entrada:
                                     {jsonInput}

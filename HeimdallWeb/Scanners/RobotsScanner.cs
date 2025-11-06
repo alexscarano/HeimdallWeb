@@ -1,4 +1,5 @@
-﻿using HeimdallWeb.Interfaces;
+﻿using System.Text.RegularExpressions;
+using HeimdallWeb.Interfaces;
 using Newtonsoft.Json.Linq;
 
 namespace HeimdallWeb.Scanners;
@@ -12,18 +13,8 @@ public class RobotsScanner : IScanner
         string robotsUrl = target;
         string sitemapUrl = target;
 
-        if (!target.Contains("/robots.txt"))
-        {
-            int idx = target.IndexOf("sitemap.xml"); // Skip "http://" or "https://"
-            robotsUrl = robotsUrl.Substring(0, idx >= 0 ? idx : target.Length);
-            robotsUrl = $"{robotsUrl.TrimEnd('/')}/robots.txt";
-        }
-        else if (!target.Contains("/sitemap.xml"))
-        {
-            int idx = target.IndexOf("robots.txt"); // Skip "http://" or "https://"
-            sitemapUrl = sitemapUrl.Substring(0, idx >= 0 ? idx : target.Length);
-            sitemapUrl = $"{sitemapUrl.TrimEnd('/')}/sitemap.xml";
-        }
+        robotsUrl = $"{robotsUrl}/robots.txt";
+        sitemapUrl = $"{sitemapUrl}/sitemap.xml";
 
         bool robotsFound = false;
         bool sitemapFound = false;
@@ -35,6 +26,8 @@ public class RobotsScanner : IScanner
 
         try
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var robotsResponse = await client.GetAsync(robotsUrl, cancellationToken);
 
             if (!robotsResponse.Content.Headers.ContentType?.MediaType?.Contains("text/plain") ?? true)
@@ -57,30 +50,28 @@ public class RobotsScanner : IScanner
                 using var stream = await robotsResponse.Content.ReadAsStreamAsync(cancellationToken);
                 using var reader = new StreamReader(stream);
 
-                int maxLines = 50;
-                var lines = new List<string>();
+                var sb = new StringBuilder();
+                int maxLines = 200;
 
                 for (int i = 0; i < maxLines && !reader.EndOfStream; i++)
                 {
                     var line = await reader.ReadLineAsync();
                     if (string.IsNullOrWhiteSpace(line)) continue;
-                    lines.Add(line.Trim());
+                    sb.AppendLine(line.Trim());
                 }
+
+                string[] lines = sb.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
                 foreach (var line in lines)
                 {
-                    var idx = line.IndexOf("Sitemap:", StringComparison.OrdinalIgnoreCase);
-
-                    if (idx == -1)
-                        break;
-
-                    if (idx >= 0)
+                    if (line.StartsWith("Sitemap:", StringComparison.OrdinalIgnoreCase))
                     {
-                        foundSitemapUrl = line[(idx + 8)..].Trim(); 
+                        foundSitemapUrl = line.Split(':', 2)[1].Trim();
                         sitemapFound = true;
-                        break; 
+                        break;
                     }
                 }
+
 
                 robotsFound = true;
                 robotsContent = string.Join('\n', lines);
@@ -111,11 +102,66 @@ public class RobotsScanner : IScanner
                 {
                     alerts.Add("O arquivo robots.txt é muito grande, o que pode indicar uma configuração complexa.");
                 }
+
+                // Additional heuristic checks
+                // WordPress specific
+                if (robotsContent.Contains("wp-admin", StringComparison.OrdinalIgnoreCase) || robotsContent.Contains("wp-login.php", StringComparison.OrdinalIgnoreCase))
+                {
+                    alerts.Add("O arquivo robots.txt referencia áreas do WordPress (wp-admin/wp-login), verifique exposição de painéis de administração.");
+                }
+
+                // Allow everything explicitly
+                if (robotsContent.Contains("Allow: /", StringComparison.OrdinalIgnoreCase))
+                {
+                    alerts.Add("O arquivo robots.txt contém 'Allow: /' permitindo acesso a todo o site para robôs.");
+                }
+
+                // Sensitive paths referenced
+                if (robotsContent.IndexOf("/backup", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    robotsContent.IndexOf(".sql", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    robotsContent.IndexOf(".env", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    robotsContent.IndexOf("/dump", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    alerts.Add("O arquivo robots.txt referencia possíveis backups ou arquivos sensíveis.");
+                }
+
+                // Host directive (Yandex/others)
+                if (robotsContent.Contains("Host:", StringComparison.OrdinalIgnoreCase))
+                {
+                    alerts.Add("O arquivo robots.txt contém a diretiva 'Host:', utilizada por alguns motores de busca.");
+                }
+
+                // Multiple sitemap entries
+                var sitemapCount = lines.Count(l => l.StartsWith("Sitemap:", StringComparison.OrdinalIgnoreCase));
+                if (sitemapCount > 1)
+                {
+                    alerts.Add($"O arquivo robots.txt declara múltiplos sitemaps ({sitemapCount}).");
+                }
+
+                // Crawl-delay value analysis
+                var cdMatch = Regex.Match(robotsContent, @"Crawl-delay\s*:\s*(\d+)", RegexOptions.IgnoreCase);
+                if (cdMatch.Success && int.TryParse(cdMatch.Groups[1].Value, out var cdVal))
+                {
+                    if (cdVal > 10)
+                        alerts.Add($"Crawl-delay alto detectado ({cdVal}), pode reduzir a cobertura de rastreamento.");
+                    else if (cdVal > 3)
+                        alerts.Add($"Crawl-delay definido ({cdVal}).");
+                }
+
+                // URLs with query strings in robots (could expose dynamic endpoints)
+                if (robotsContent.Contains("?", StringComparison.OrdinalIgnoreCase))
+                {
+                    alerts.Add("O arquivo robots.txt contém URLs com query string; isso pode expor endpoints dinâmicos.");
+                }
             }
             else
             {
                 alerts.Add("O arquivo robots.txt não foi encontrado.");
             }
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
         }
         catch
         {
@@ -139,9 +185,9 @@ public class RobotsScanner : IScanner
             }
         }
 
-        return alerts.Count > 0 ? new JObject
+        return alerts.Count >= 1 ? new JObject
         {
-            ["robots"] = new JObject
+            ["robotsScanner"] = new JObject
             {
                 ["robots_found"] = robotsFound,
                 ["sitemap_found"] = sitemapFound,
@@ -151,7 +197,7 @@ public class RobotsScanner : IScanner
         }
         : new JObject
         {
-            ["robots"] = new JObject
+            ["robotsScanner"] = new JObject
             {
                 ["robots_found"] = false,
                 ["sitemap_found"] = false,
