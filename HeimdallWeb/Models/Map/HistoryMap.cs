@@ -36,6 +36,17 @@ namespace HeimdallWeb.Models.Map
             .WithOne(t => t.History)
             .HasForeignKey(t => t.history_id)
             .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(h => h.Logs)
+                .WithOne(l => l.History)
+                .HasForeignKey(l => l.history_id)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(h => h.Findings)
+                .WithOne(f => f.History)
+                .HasForeignKey(f => f.history_id)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

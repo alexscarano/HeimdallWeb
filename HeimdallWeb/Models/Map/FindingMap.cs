@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HeimdallWeb.Models.Map
 {
@@ -34,6 +33,7 @@ namespace HeimdallWeb.Models.Map
             builder.HasOne(f => f.History)
                 .WithMany(h => h.Findings)
                 .HasForeignKey(f => f.history_id)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

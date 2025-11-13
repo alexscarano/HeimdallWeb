@@ -12,6 +12,8 @@ namespace HeimdallWeb.Data
         public DbSet <TechnologyModel> Technology { get; set; }
         public DbSet <IASummaryModel> IASummary {  get; set; }
         public DbSet <FindingModel> Finding { get; set; }
+        public DbSet<UserUsageModel> UserUsage { get; set; }
+        public DbSet<LogModel> Log { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserMap());
@@ -19,6 +21,8 @@ namespace HeimdallWeb.Data
             modelBuilder.ApplyConfiguration(new TechnologyMap());
             modelBuilder.ApplyConfiguration(new IASummaryMap());
             modelBuilder.ApplyConfiguration(new FindingMap());  
+            modelBuilder.ApplyConfiguration(new UserUsageMap());
+            modelBuilder.ApplyConfiguration(new LogMap());
         }
     }
 }

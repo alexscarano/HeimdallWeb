@@ -23,8 +23,10 @@ namespace HeimdallWeb.Models.Map
             .HasMaxLength(1000);
 
             builder.HasOne(t => t.History)
-            .WithMany(h => h.Technologies)
-            .HasForeignKey(h => h.history_id);
+                .WithMany(h => h.Technologies)
+                .HasForeignKey(t => t.history_id)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

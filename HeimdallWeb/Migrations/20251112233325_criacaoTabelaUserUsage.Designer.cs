@@ -4,6 +4,7 @@ using HeimdallWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HeimdallWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251112233325_criacaoTabelaUserUsage")]
+    partial class criacaoTabelaUserUsage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,136 +116,38 @@ namespace HeimdallWeb.Migrations
                 {
                     b.Property<int>("ia_summary_id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("ia_summary_id");
+                        .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ia_summary_id"));
 
                     b.Property<DateTime>("created_date")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("created_date");
-
-                    b.Property<int>("findings_critical")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
-                        .HasColumnName("findings_critical");
-
-                    b.Property<int>("findings_high")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
-                        .HasColumnName("findings_high");
-
-                    b.Property<int>("findings_low")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
-                        .HasColumnName("findings_low");
-
-                    b.Property<int>("findings_medium")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
-                        .HasColumnName("findings_medium");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int?>("history_id")
-                        .HasColumnType("int")
-                        .HasColumnName("history_id");
-
-                    b.Property<string>("ia_notes")
-                        .HasColumnType("text")
-                        .HasColumnName("ia_notes");
+                        .HasColumnType("int");
 
                     b.Property<string>("main_category")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("main_category");
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("notes")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("overall_risk")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(10)
                         .HasColumnType("ENUM('Baixo','Medio','Alto','Critico')")
-                        .HasDefaultValue("Baixo")
-                        .HasColumnName("overall_risk");
+                        .HasDefaultValue("Baixo");
 
                     b.Property<string>("summary_text")
                         .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)")
-                        .HasColumnName("summary_text");
+                        .HasColumnType("varchar(1000)");
 
-                    b.Property<int>("total_findings")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
-                        .HasColumnName("total_findings");
-
-                    b.HasKey("ia_summary_id")
-                        .HasName("pk_tb_ia_summary");
+                    b.HasKey("ia_summary_id");
 
                     b.HasIndex("history_id");
 
-                    b.ToTable("tb_ia_summary", (string)null);
-                });
-
-            modelBuilder.Entity("HeimdallWeb.Models.LogModel", b =>
-                {
-                    b.Property<int>("log_id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("log_id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("log_id"));
-
-                    b.Property<string>("details")
-                        .HasColumnType("text")
-                        .HasColumnName("details");
-
-                    b.Property<int?>("history_id")
-                        .HasColumnType("int")
-                        .HasColumnName("history_id");
-
-                    b.Property<string>("level")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
-                        .HasDefaultValue("Info")
-                        .HasColumnName("level");
-
-                    b.Property<string>("message")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
-                        .HasColumnName("message");
-
-                    b.Property<string>("source")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("source");
-
-                    b.Property<DateTime>("timestamp")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("timestamp");
-
-                    b.Property<int?>("user_id")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("log_id")
-                        .HasName("pk_tb_log");
-
-                    b.HasIndex("history_id");
-
-                    b.HasIndex("level")
-                        .HasDatabaseName("ix_tb_log_level");
-
-                    b.HasIndex("timestamp")
-                        .HasDatabaseName("ix_tb_log_timestamp");
-
-                    b.HasIndex("user_id");
-
-                    b.ToTable("tb_log", (string)null);
+                    b.ToTable("tb_ia_summary");
                 });
 
             modelBuilder.Entity("HeimdallWeb.Models.TechnologyModel", b =>
@@ -289,55 +194,43 @@ namespace HeimdallWeb.Migrations
                 {
                     b.Property<int>("user_id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
+                        .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("user_id"));
 
                     b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("created_at");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("email")
                         .IsRequired()
                         .HasMaxLength(75)
-                        .HasColumnType("varchar(75)")
-                        .HasColumnName("email");
+                        .HasColumnType("varchar(75)");
 
                     b.Property<string>("password")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("password");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("updated_at");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("user_type")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1)
-                        .HasColumnName("user_type");
+                        .HasColumnType("int");
 
                     b.Property<string>("username")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("username");
+                        .HasColumnType("varchar(30)");
 
-                    b.HasKey("user_id")
-                        .HasName("pk_tb_user");
+                    b.HasKey("user_id");
 
                     b.HasIndex("email")
-                        .IsUnique()
-                        .HasDatabaseName("ux_tb_user_email");
+                        .IsUnique();
 
                     b.HasIndex("username")
-                        .IsUnique()
-                        .HasDatabaseName("ux_tb_user_username");
+                        .IsUnique();
 
-                    b.ToTable("tb_user", (string)null);
+                    b.ToTable("tb_user");
                 });
 
             modelBuilder.Entity("HeimdallWeb.Models.UserUsageModel", b =>
@@ -401,23 +294,6 @@ namespace HeimdallWeb.Migrations
                     b.Navigation("History");
                 });
 
-            modelBuilder.Entity("HeimdallWeb.Models.LogModel", b =>
-                {
-                    b.HasOne("HeimdallWeb.Models.HistoryModel", "History")
-                        .WithMany("Logs")
-                        .HasForeignKey("history_id")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("HeimdallWeb.Models.UserModel", "User")
-                        .WithMany("LogModel")
-                        .HasForeignKey("user_id")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("History");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("HeimdallWeb.Models.TechnologyModel", b =>
                 {
                     b.HasOne("HeimdallWeb.Models.HistoryModel", "History")
@@ -434,7 +310,8 @@ namespace HeimdallWeb.Migrations
                         .WithMany("UserUsages")
                         .HasForeignKey("user_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_tb_user_usage_tb_user_user_id");
 
                     b.Navigation("User");
                 });
@@ -445,16 +322,12 @@ namespace HeimdallWeb.Migrations
 
                     b.Navigation("IASummaries");
 
-                    b.Navigation("Logs");
-
                     b.Navigation("Technologies");
                 });
 
             modelBuilder.Entity("HeimdallWeb.Models.UserModel", b =>
                 {
                     b.Navigation("Histories");
-
-                    b.Navigation("LogModel");
 
                     b.Navigation("UserUsages");
                 });

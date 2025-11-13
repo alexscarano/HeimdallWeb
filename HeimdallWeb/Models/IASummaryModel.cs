@@ -7,33 +7,59 @@ namespace HeimdallWeb.Models
     public class IASummaryModel
     {
         [Key]
-        public int ia_summary_id {  get; set; }
+        public int ia_summary_id { get; set; }
 
         /// <summary>
-        /// Resumo geral da análise em poucas linhas (bom para dashboards/relatórios)
+        /// Concise analysis summary for dashboards/reports
         /// </summary>
-        public string ?summary_text { get; set; }
-        /// <summary>
-        ///  Categoria predominante (ex: SSL, Headers, Portas, Geral)
-        /// </summary>
-        public string ?main_category { get; set; }
+        public string? summary_text { get; set; }
 
         /// <summary>
-        /// Nível de risco predominante (Baixo, Medio, Alto, Critico)
-        /// Padrão: Baixo
+        /// Predominant category (e.g., SSL, Headers, Ports, General)
         /// </summary>
-        public string? overall_risk { get; set; } = "Baixo";
+        public string? main_category { get; set; }
 
         /// <summary>
-        ///  Com observações adicionais que o IA pode ter sugerido
+        /// Predominant risk level (Low, Medium, High, Critical)
         /// </summary>
-        public string ?notes { get; set; }
+        public string? overall_risk { get; set; }
+
+        /// <summary>
+        /// Total number of findings
+        /// </summary>
+        public int total_findings { get; set; }
+
+        /// <summary>
+        /// Number of critical findings
+        /// </summary>
+        public int findings_critical { get; set; }
+
+        /// <summary>
+        /// Number of high findings
+        /// </summary>
+        public int findings_high { get; set; }
+
+        /// <summary>
+        /// Number of medium findings
+        /// </summary>
+        public int findings_medium { get; set; }
+
+        /// <summary>
+        /// Number of low findings
+        /// </summary>
+        public int findings_low { get; set; }
+
+        /// <summary>
+        /// Additional AI suggestions or notes
+        /// </summary>
+        public string? ia_notes { get; set; }
 
         [Required]
-        public required DateTime created_date { get; set; } = DateTime.Now;
+        public DateTime created_date { get; set; } = DateTime.Now;
 
-        public int ?history_id { get; set; }
+        public int? history_id { get; set; }
 
+        [ForeignKey("history_id")]
         public HistoryModel? History { get; set; }
     }
 }

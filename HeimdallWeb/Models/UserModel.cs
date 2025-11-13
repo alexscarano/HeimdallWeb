@@ -44,12 +44,16 @@ namespace HeimdallWeb.Models
         public required DateTime created_at { get; set; } = DateTime.Now;
 
         public DateTime? updated_at { get; set; }
+        public virtual List<HistoryModel> Histories { get; set; }
 
-        public virtual List<HistoryModel> ?Histories { get; set; }
+        public virtual List<UserUsageModel>? UserUsages { get; set; }
+
+        public virtual List<LogModel>? LogModel { get; set; }
 
         public string hashUserPassword()
         {
             return password = password.hashPassword();
         }
+
     }
 }
