@@ -48,6 +48,11 @@ public class LogModel
     /// </summary>
     public int? history_id { get; set; }
 
+    /// <summary>
+    /// IP remoto
+    /// </summary>
+    public string? remote_ip { get; set; }
+
     // navigation properties could be added here if needed
     public HistoryModel? History { get; set; }
 

@@ -43,6 +43,10 @@ public class LogMap : IEntityTypeConfiguration<LogModel>
         builder.Property(l => l.history_id)
             .HasColumnName("history_id");
 
+        builder.Property(l => l.remote_ip)
+            .HasMaxLength(32)
+            .HasColumnName("remote_ip");
+
         // relationships
         builder.HasOne(l => l.User)
             .WithMany(u => u.LogModel)
