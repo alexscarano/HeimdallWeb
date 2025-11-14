@@ -42,7 +42,7 @@ namespace HeimdallWeb.Controllers
                     if (userDB is null)
                         return JObject.FromObject(new { success = false, message = "Usuário não encontrado." });
 
-                    bool deleted = await _userRepository.deleteUser(id);
+                    bool deleted = await _userRepository.DeleteUser(id);
                     if (deleted)
                         return JObject.FromObject(new { success = true, message = "Usuário deletado com sucesso." });
 

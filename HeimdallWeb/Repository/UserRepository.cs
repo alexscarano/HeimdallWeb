@@ -55,7 +55,7 @@ namespace HeimdallWeb.Repository
             return await _appDbContext.User.FirstOrDefaultAsync(x => x.user_id == id);
         }
 
-        public async Task<UserModel> insertUser(UserModel user)
+        public async Task<UserModel> InsertUser(UserModel user)
         {
             user.password = user.hashUserPassword();  
             user.username = user.username.Trim().ToLower();
@@ -65,18 +65,35 @@ namespace HeimdallWeb.Repository
             return user;
         }
 
-        public async Task<UpdateUserDTO> updateUser(UpdateUserDTO user)
+        public async Task<UpdateUserDTO> UpdateUser(UpdateUserDTO user)
         {
+            if (user is null) throw new ArgumentNullException(nameof(user));
+
+            bool hasUsername = !string.IsNullOrWhiteSpace(user.username);
+            bool hasEmail = !string.IsNullOrWhiteSpace(user.email);
+            bool hasPassword = !string.IsNullOrWhiteSpace(user.password);
+
+            if (!hasUsername && !hasEmail && !hasPassword)
+                throw new ArgumentException("Nenhum campo para atualizar.");
+
+            if (hasPassword)
+            {
+                if (string.IsNullOrWhiteSpace(user.confirm_password) || user.password != user.confirm_password)
+                    throw new ArgumentException("As senhas precisam coincidir.");
+            }
+
             UserModel userDB = await getUserById(user.user_id) ?? throw new Exception("Houve um erro ao atualizar o usuário");
 
             if (userDB.user_id != user.user_id) throw new Exception("Houve um erro ao atualizar o usuário");
-            
-            if (user.username is not null)
-                userDB.username = user.username;
-            if (user.password is not null)
-                userDB.password = user.password.hashPassword();
-            if (user.email is not null)
-                userDB.email = user.email;  
+
+            if (hasUsername)
+                userDB.username = user.username!.Trim().ToLowerInvariant();
+
+            if (hasPassword)
+                userDB.password = user.password!.hashPassword();
+
+            if (hasEmail)
+                userDB.email = user.email!.Trim().ToLowerInvariant();
 
             userDB.updated_at = DateTime.Now;
 
@@ -85,7 +102,7 @@ namespace HeimdallWeb.Repository
             return user;
         }
 
-        public async Task<bool> deleteUser(int id)
+        public async Task<bool> DeleteUser(int id)
         {
             UserModel userDB = await getUserById(id) ?? throw new Exception("Houve um erro ao deletar o usuário");
 
@@ -95,33 +112,33 @@ namespace HeimdallWeb.Repository
             return true;
         }
 
-        public async Task<UserModel?> getUserByEmailOrLogin(string emailOrUsername)
+        public async Task<UserModel?> GetUserByEmailOrLogin(string emailOrUsername)
         {
             return await _appDbContext.User.AsNoTracking().FirstOrDefaultAsync(x => x.email == emailOrUsername || x.username == emailOrUsername); 
         }
 
-        public async Task<bool> verifyIfUserExists(UserModel user)
+        public async Task<bool> VerifyIfUserExists(UserModel user)
         {
             return await _appDbContext.User.AsNoTracking().
                 AnyAsync(x => x.username == user.username || x.email == user.email); 
         }
 
-        public async Task<bool> verifyIfUserExistsWithLogin(UserModel user)
+        public async Task<bool> VerifyIfUserExistsWithLogin(UserModel user)
         {
             return await _appDbContext.User.AsNoTracking().AnyAsync(x => x.username == user.username);
         }
 
-        public async Task<bool> verifyIfUserExistsWithLogin(UpdateUserDTO user)
+        public async Task<bool> VerifyIfUserExistsWithLogin(UpdateUserDTO user)
         {
             return await _appDbContext.User.AsNoTracking().AnyAsync(x => x.username == user.username);
         }
 
-        public async Task<bool> verifyIfUserExistsWithEmail(UserModel user)
+        public async Task<bool> VerifyIfUserExistsWithEmail(UserModel user)
         {
             return await _appDbContext.User.AsNoTracking().AnyAsync(x => x.email == user.email);
         }
 
-        public async Task<bool> verifyIfUserExistsWithEmail(UpdateUserDTO user)
+        public async Task<bool> VerifyIfUserExistsWithEmail(UpdateUserDTO user)
         {
             return await _appDbContext.User.AsNoTracking().AnyAsync(x => x.email == user.email);
         }

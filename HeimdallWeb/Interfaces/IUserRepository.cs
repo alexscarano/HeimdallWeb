@@ -8,24 +8,24 @@ namespace HeimdallWeb.Interfaces
     {
         Task<PaginatedResult<UserModel>?> getUsers(string ?where, int page, int pageSize);
 
-        Task<UserModel> insertUser(UserModel user);
+        Task<UserModel> InsertUser(UserModel user);
 
         Task<UserModel?> getUserById(int id);
 
-        Task<UpdateUserDTO> updateUser(UpdateUserDTO user);
+        Task<UpdateUserDTO> UpdateUser(UpdateUserDTO user);
 
-        Task<bool> deleteUser(int id);
+        Task<bool> DeleteUser(int id);
 
-        Task<UserModel?> getUserByEmailOrLogin(string emailOrUsername);
+        Task<UserModel?> GetUserByEmailOrLogin(string emailOrUsername);
 
-        Task<bool> verifyIfUserExists(UserModel user);
+        Task<bool> VerifyIfUserExists(UserModel user);
 
-        Task<bool> verifyIfUserExistsWithLogin(UpdateUserDTO user);
+        Task<bool> VerifyIfUserExistsWithLogin(UpdateUserDTO user);
 
-        Task<bool> verifyIfUserExistsWithEmail(UpdateUserDTO user);
+        Task<bool> VerifyIfUserExistsWithEmail(UpdateUserDTO user);
 
-        Task<bool> verifyIfUserExistsWithLogin(UserModel user);
+        Task<bool> VerifyIfUserExistsWithLogin(UserModel user);
 
-        Task<bool> verifyIfUserExistsWithEmail(UserModel user);
+        Task<bool> VerifyIfUserExistsWithEmail(UserModel user);
     }
 }

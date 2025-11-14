@@ -39,7 +39,7 @@ namespace HeimdallWeb.Models
         [Required]
         public required DateTime created_date { get; set; } = DateTime.Now;
 
-        public int ?user_id { get; set; }
+        public int user_id { get; set; }
 
         public UserModel ?User {  get; set; }
 

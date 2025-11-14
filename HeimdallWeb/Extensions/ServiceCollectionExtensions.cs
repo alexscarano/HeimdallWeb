@@ -24,6 +24,8 @@ namespace HeimdallWeb.Extensions
             services.AddScoped<IHistoryRepository, HistoryRepository>();
             services.AddScoped<IFindingRepository, FindingRepository>();
             services.AddScoped<ITechnologyRepository, TechnologyRepository>();
+            services.AddScoped<ILogRepository, LogRepository>();
+            services.AddScoped<IUserUsageRepository, UserUsageRepository>();
 
             return services;
         }

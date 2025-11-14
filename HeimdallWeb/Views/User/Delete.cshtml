@@ -37,7 +37,7 @@
         <div class="row mb-4"><h2>Excluir Usuário <i class="bi bi-exclamation-circle"></i></h2></div>
         <div class="row"><p>Essa ação não pode ser desfeita. Coloque as informações da conta para continuar:</p></div>
         <div class="row">
-            <form id="deleteForm" asp-action="DeleteAction" asp-controller="User" method="post">
+            <form id="deleteForm" asp-action="Delete" asp-controller="User" method="post">
                 <div class="form-group mb-4">
                     <label asp-for="password" class="form-label">Senha</label>
                     <input asp-for="password" class="form-control light-placeholder" placeholder="Senha da sua conta" type="password" required/>

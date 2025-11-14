@@ -40,16 +40,17 @@ public class UserController : Controller
     }    
 
     [HttpPost]
-    public async Task<IActionResult> RegisterAction(Models.UserModel user)
+    public async Task<IActionResult> Register(Models.UserModel user)
     {
         try
         {
+            ModelState.Remove(nameof(user.Histories));
             if (ModelState.IsValid)
             {
 
-                if (!await _userRepository.verifyIfUserExists(user))
+                if (!await _userRepository.VerifyIfUserExists(user))
                 {
-                    await _userRepository.insertUser(user);
+                    await _userRepository.InsertUser(user);
                     string token = TokenService.generateToken(user, _config);
                     CookiesHelper.generateAuthCookie(Response, token);  
                     TempData["OkMsg"] = "O usuário foi cadastrado com sucesso";
@@ -67,12 +68,11 @@ public class UserController : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> EditAction(UpdateUserDTO model)
+    public async Task<IActionResult> Edit(UpdateUserDTO model)
     {
         try
         {
             ModelState.Remove(nameof(model.user_id));
-
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário";
@@ -89,13 +89,13 @@ public class UserController : Controller
 
             model.user_id = userId.Value;
 
-            if (await _userRepository.verifyIfUserExistsWithLogin(model))
+            if (await _userRepository.VerifyIfUserExistsWithLogin(model))
             {
                 TempData["ErrorMsg"] = "Já existe um usuário com este login, tente outro.";
                 return View("Edit", model);
             }
 
-            if (await _userRepository.verifyIfUserExistsWithEmail(model))
+            if (await _userRepository.VerifyIfUserExistsWithEmail(model))
             {
                 TempData["ErrorMsg"] = "Já existe um usuário com este email, tente outro.";
                 return View("Edit", model);
@@ -109,13 +109,14 @@ public class UserController : Controller
                 return View("Edit", model);
             }
 
-            await _userRepository.updateUser(model);
+            await _userRepository.UpdateUser(model);
 
             TempData["OkMsg"] = "Usuário atualizado com sucesso";
         }
         catch (Exception)
         {
             TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário.";
+            return RedirectToAction("Edit", model);
         }
 
         return RedirectToAction("Index", "Home");
@@ -123,7 +124,7 @@ public class UserController : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> DeleteAction(int id, DeleteUserDTO userToDelete)
+    public async Task<IActionResult> Delete(int id, DeleteUserDTO userToDelete)
     {
         try
         {
@@ -139,7 +140,7 @@ public class UserController : Controller
 
             if (PasswordUtils.VerifyPassword(userToDelete.password, userDB.password))
             {
-                bool deleted = await _userRepository.deleteUser(id);
+                bool deleted = await _userRepository.DeleteUser(id);
 
                 if (deleted)
                 {

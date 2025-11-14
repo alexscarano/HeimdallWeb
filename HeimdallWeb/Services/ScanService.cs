@@ -5,6 +5,7 @@ using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
 using HeimdallWeb.Scanners;
 using HeimdallWeb.Services.IA;
+using Microsoft.AspNetCore.Http;
 
 namespace HeimdallWeb.Services;
 
@@ -13,26 +14,62 @@ public class ScanService : IScanService
     private readonly IHistoryRepository _historyRepository;
     private readonly IFindingRepository _findingRepository; 
     private readonly ITechnologyRepository _technologyRepository;
+    private readonly ILogRepository _logRepository;
+    private readonly IUserUsageRepository _userUsageRepository;
     private readonly AppDbContext _db;
     private readonly IConfiguration _config;
+    private readonly int _maxRequests;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public ScanService(
-        AppDbContext db, 
         IHistoryRepository historyRepository, 
         IFindingRepository findingRepository, 
-        ITechnologyRepository technologyRepository,
-        IConfiguration config
-    )
+        ITechnologyRepository technologyRepository, 
+        ILogRepository logRepository, 
+        IUserUsageRepository userUsageRepository, 
+        AppDbContext db, IConfiguration config,
+        IHttpContextAccessor httpContextAccessor)
     {
-        _db = db;
         _historyRepository = historyRepository;
         _findingRepository = findingRepository;
-        _technologyRepository = technologyRepository; 
+        _technologyRepository = technologyRepository;
+        _logRepository = logRepository;
+        _userUsageRepository = userUsageRepository;
+        _db = db;
         _config = config;
+        _maxRequests = 5;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<int> RunScanAndPersist(string domainRaw, HistoryModel historyModel, CancellationToken cancellationToken = default)
     {
+        int currentUserId = 0;
+        try
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext != null)
+            {
+                var cookie = CookiesHelper.getAuthCookie(httpContext.Request);
+                currentUserId = CookiesHelper.getUserIDFromCookie(cookie);
+                if (currentUserId > 0)
+                {
+                    historyModel.user_id = currentUserId;
+                }
+            }
+        }
+        catch
+        {
+            throw new Exception("Não foi possível identificar o usuário atual.");
+        }
+
+        (var user_usage_count, var user_usage) =
+            await _userUsageRepository.GetUserUsageCount(currentUserId, DateTime.Now);
+
+        if (user_usage_count >= _maxRequests)
+        {
+            throw new OperationCanceledException($"O limite diário de {_maxRequests} foi atingido");
+        }
+
         var stopwatch = Stopwatch.StartNew();
         using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(75));
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
@@ -73,9 +110,18 @@ public class ScanService : IScanService
                 var createdHistory = await _historyRepository.insertHistory(historyModel);
                 var historyId = createdHistory.history_id;
 
+ 
                 await _findingRepository.SaveFindingsFromAI(iaResponse, historyId);
                 await _technologyRepository.SaveTechnologiesFromAI(iaResponse, historyId);
 
+
+                await _userUsageRepository.AddUserUsage(new UserUsageModel
+                {
+                    user_id = currentUserId,
+                    date = DateTime.Now,
+                    request_counts = user_usage.request_counts + 1
+                });
+                
 
                 await tx.CommitAsync(cancellationToken);
 
