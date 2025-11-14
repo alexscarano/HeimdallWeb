@@ -11,8 +11,6 @@ $(document).on('click', '#btn-delete', function () {
         text: "Essa ação não poderá ser desfeita!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#2a9df4',
-        cancelButtonColor: '#ff0157',
         confirmButtonText: 'Sim, excluir!',
         cancelButtonText: 'Cancelar'
     }).then((result) => {

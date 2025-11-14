@@ -28,8 +28,6 @@ function confirmDelete(historyId: number) {
         theme: 'dark',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
         confirmButtonText: 'Sim, excluir',
         cancelButtonText: "Cancelar"
     }).then((result: any) => {

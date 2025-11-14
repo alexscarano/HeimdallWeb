@@ -204,6 +204,64 @@ namespace HeimdallWeb.Scanners
 
                 probe["open"] = true;
 
+                // Determina severidade baseado na porta e tipo de serviço
+                string severity;
+                string description;
+                
+                if (port == 23 || port == 21 || port == 20) // Telnet, FTP
+                {
+                    severity = "Critico";
+                    description = $"Porta {port} aberta - protocolo inseguro e desatualizado";
+                }
+                else if (port == 3389) // RDP
+                {
+                    severity = "Alto";
+                    description = "Porta 3389 (RDP) exposta publicamente - alto risco de ataques de força bruta";
+                }
+                else if (port == 22) // SSH
+                {
+                    severity = "Medio";
+                    description = "Porta 22 (SSH) aberta - assegure autenticação forte";
+                }
+                else if (port == 3306 || port == 5432 || port == 27017 || port == 1433 || port == 1521) // Databases
+                {
+                    severity = "Alto";
+                    description = $"Porta {port} (banco de dados) exposta publicamente - risco crítico de acesso não autorizado";
+                }
+                else if (port == 6379 || port == 11211) // Redis, Memcached
+                {
+                    severity = "Alto";
+                    description = $"Porta {port} (cache) exposta sem autenticação típica";
+                }
+                else if (port == 25 || port == 587 || port == 465 || port == 110 || port == 995 || port == 143 || port == 993) // Email
+                {
+                    severity = "Baixo";
+                    description = $"Porta {port} (email) aberta - serviço legítimo mas deve ser monitorado";
+                }
+                else if (port == 80 || port == 443 || port == 8080 || port == 8443) // Web
+                {
+                    severity = "Informativo";
+                    description = $"Porta {port} (web) aberta - serviço web padrão";
+                }
+                else if (port == 53) // DNS
+                {
+                    severity = "Informativo";
+                    description = "Porta 53 (DNS) aberta - serviço padrão";
+                }
+                else if (port == 2082 || port == 2083 || port == 2095 || port == 2096) // cPanel/Webmail
+                {
+                    severity = "Medio";
+                    description = $"Porta {port} (painel de controle) aberta - assegure autenticação forte";
+                }
+                else
+                {
+                    severity = "Baixo";
+                    description = $"Porta {port} aberta";
+                }
+                
+                probe["severity"] = severity;
+                probe["description"] = description;
+
                 // tentar banner grab (leitura curta) se configurado, true or false nas propriedades
                 if (_tryBanner)
                 {

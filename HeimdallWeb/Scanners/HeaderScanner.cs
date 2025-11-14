@@ -170,8 +170,8 @@ namespace HeimdallWeb.Scanners
             }
             else
             {
-                risk = "Baixo";
-                description = "Flags básicas presentes.";
+                risk = "Informativo";
+                description = "Cookie com flags de segurança adequadas (HttpOnly, Secure, SameSite).";
             }
 
             // Improve description with domain/path/prefix hints

@@ -26,11 +26,7 @@
     </div>
 </div>
 
-@* TempData para toasts - elementos ocultos processados pelo JavaScript *@
-@if (TempData["ErrorMsg"] != null)
-{
-    <div class="tempdata-container" data-tempdata-error="@TempData["ErrorMsg"]"></div>
-}
+@* TempData handled globally in _Layout.cshtml *@
 
 <div class="container deletar-box">
     <div class="table-responsive delete-panel shadow-sm rounded bg-dark text-light p-3">

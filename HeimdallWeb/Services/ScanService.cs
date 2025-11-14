@@ -5,7 +5,6 @@ using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
 using HeimdallWeb.Scanners;
 using HeimdallWeb.Services.IA;
-using Microsoft.AspNetCore.Http;
 
 namespace HeimdallWeb.Services;
 
@@ -44,6 +43,7 @@ public class ScanService : IScanService
     public async Task<int> RunScanAndPersist(string domainRaw, HistoryModel historyModel, CancellationToken cancellationToken = default)
     {
         int currentUserId = 0;
+        bool isUserAdmin = false;
         try
         {
             var httpContext = _httpContextAccessor.HttpContext;
@@ -62,12 +62,12 @@ public class ScanService : IScanService
             throw new Exception("Não foi possível identificar o usuário atual.");
         }
 
-        (var user_usage_count, var user_usage) =
-            await _userUsageRepository.GetUserUsageCount(currentUserId, DateTime.Now);
+        (var user_usage_count, var user_usage, isUserAdmin) =
+            await _userUsageRepository.GetUserUsageCount(currentUserId, DateTime.Now.Date);
 
-        if (user_usage_count >= _maxRequests)
+        if (!isUserAdmin && user_usage_count > _maxRequests)
         {
-            throw new OperationCanceledException($"O limite diário de {_maxRequests} foi atingido");
+            throw new Exception($"O limite diário de requisições ({_maxRequests}) foi atingido");
         }
 
         var stopwatch = Stopwatch.StartNew();
@@ -119,7 +119,8 @@ public class ScanService : IScanService
                 {
                     user_id = currentUserId,
                     date = DateTime.Now,
-                    request_counts = user_usage.request_counts + 1
+                    request_counts = user_usage.request_counts >= 0 
+                                ? user_usage.request_counts + 1 : 0
                 });
                 
 

@@ -9,15 +9,7 @@
 }
 
 @* TempData para toasts - elementos ocultos processados pelo JavaScript *@
-@if (TempData["ErrorMsg"] != null)
-{
-    <div class="tempdata-container" data-tempdata-error="@TempData["ErrorMsg"]"></div>
-}
-
-@if (TempData["OkMsg"] != null)
-{
-    <div class="tempdata-container" data-tempdata-ok="@TempData["OkMsg"]"></div>
-}
+@* TempData handled globally in _Layout.cshtml *@
 
 <!-- main hero container: switched inline height to a controllable CSS class -->
 <div class="container d-flex justify-content-center hero">

@@ -7,15 +7,7 @@
     ViewData["Title"] = "Registrar";
 }
 
-@* TempData para toasts - elementos ocultos processados pelo JavaScript *@
-@if (TempData["OkMsg"] != null)
-{
-    <div class="tempdata-container" data-tempdata-ok="@TempData["OkMsg"]"></div>
-}
-@if (TempData["ErrorMsg"] != null)
-{
-    <div class="tempdata-container" data-tempdata-error="@TempData["ErrorMsg"]"></div>
-}
+@* TempData handled globally in _Layout.cshtml *@
 
 <div class="container card-color mt-5 d-flex justify-content-center align-items-center flex-grow-1" data-bs-theme="dark">
 

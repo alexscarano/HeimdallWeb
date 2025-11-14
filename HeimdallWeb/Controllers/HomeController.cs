@@ -84,9 +84,22 @@ public class HomeController : Controller
             TempData["ErrorMsg"] = "A operação foi cancelada pelo usuário.";
             return View("Index");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            TempData["ErrorMsg"] = "Houve um erro ao fazer o scan !";
+            // Prefer an inner exception message when available, otherwise use the exception message.
+            var detailedMessage = ex.InnerException?.Message;
+            if (string.IsNullOrWhiteSpace(detailedMessage))
+            {
+                detailedMessage = ex.Message;
+            }
+
+            // If there's still no useful message, fall back to the generic user-facing message.
+            if (string.IsNullOrWhiteSpace(detailedMessage))
+            {
+                detailedMessage = "Houve um erro ao fazer o scan !";
+            }
+
+            TempData["ErrorMsg"] = detailedMessage;
             return View("Index");
         }
     }

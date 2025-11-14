@@ -78,6 +78,56 @@ namespace HeimdallWeb.Scanners
                                 sigAlg.Contains("md5", StringComparison.OrdinalIgnoreCase)
                             );
 
+                            // Determina severidade baseado no status do certificado
+                            string severity;
+                            string description;
+                            
+                            if (expired)
+                            {
+                                severity = "Critico";
+                                description = $"Certificado SSL expirado há {Math.Abs(daysToExpire)} dias";
+                            }
+                            else if (daysToExpire < 0)
+                            {
+                                severity = "Critico";
+                                description = "Certificado SSL expirado";
+                            }
+                            else if (daysToExpire <= 7)
+                            {
+                                severity = "Alto";
+                                description = $"Certificado SSL expira em {daysToExpire} dias (crítico)";
+                            }
+                            else if (daysToExpire <= 30)
+                            {
+                                severity = "Medio";
+                                description = $"Certificado SSL expira em {daysToExpire} dias (atenção necessária)";
+                            }
+                            else if (usesWeakSig)
+                            {
+                                severity = "Alto";
+                                description = $"Certificado SSL usa algoritmo fraco ({sigAlg})";
+                            }
+                            else if (!chainIsValid)
+                            {
+                                severity = "Alto";
+                                description = "Cadeia de certificado SSL inválida";
+                            }
+                            else if (keySize < 2048 && rsa != null)
+                            {
+                                severity = "Medio";
+                                description = $"Chave RSA pequena ({keySize} bits, recomendado >= 2048)";
+                            }
+                            else if (daysToExpire <= 90)
+                            {
+                                severity = "Informativo";
+                                description = $"Certificado SSL válido, expira em {daysToExpire} dias (considere renovação em breve)";
+                            }
+                            else
+                            {
+                                severity = "Informativo";
+                                description = $"Certificado SSL válido e configurado corretamente (expira em {daysToExpire} dias)";
+                            }
+
                             var certObj = new JObject
                             {
                                 ["port"] = port,
@@ -93,7 +143,9 @@ namespace HeimdallWeb.Scanners
                                 ["publicKeySize"] = keySize,
                                 ["chainValid"] = chainIsValid,
                                 ["chainStatus"] = new JArray(chain2.ChainStatus.Select(s => s.StatusInformation.Trim()).Where(s => !string.IsNullOrEmpty(s))),
-                                ["weakSignatureAlgorithm"] = usesWeakSig
+                                ["weakSignatureAlgorithm"] = usesWeakSig,
+                                ["severity"] = severity,
+                                ["description"] = description
                             };
                             results.Add(certObj);
                         }

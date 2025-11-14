@@ -31,7 +31,7 @@ public class UserUsageRepository : IUserUsageRepository
     }
 
 
-    public async Task<(int count, UserUsageModel obj)> GetUserUsageCount(int userId, DateTime date)
+    public async Task<(int count, UserUsageModel obj, bool isUserAdmin)> GetUserUsageCount(int userId, DateTime date)
     {
         try 
         {
@@ -43,11 +43,14 @@ public class UserUsageRepository : IUserUsageRepository
                 .OrderByDescending(u => u.date)
                 .FirstOrDefaultAsync(u => u.user_id == userId);
 
-            return (count, userUsage);
+                var isUserAdmin = await _dbContext.User
+                    .AnyAsync(u => u.user_id == userId && u.user_type == 2);
+
+            return (count, userUsage is not null ? userUsage : new UserUsageModel(), isUserAdmin);
         }
         catch
         {
-            return (-1, new UserUsageModel());
+            return (-1, new UserUsageModel(), false);
         }
     }
 

@@ -5,18 +5,7 @@
     <link rel="stylesheet" href="~/css/history-dark.css" asp-append-version="true" />
 </head>
 
-@* TempData para toasts - elementos ocultos processados pelo JavaScript *@
-
-@if (TempData["OkMsg"] != null)
-{
-    <div class="tempdata-container" data-tempdata-ok="@TempData["OkMsg"]"></div>
-}
-
-@if (TempData["ErrorMsg"] != null)
-{
-    <div class="tempdata-container" data-tempdata-error="@TempData["ErrorMsg"]"></div>
-}
-
+@* TempData handled globally in _Layout.cshtml *@
 
 <div class="container mb-4">
     <div class="d-flex justify-content-between align-items-center py-3 bg-dark rounded-3 text-white history-header">

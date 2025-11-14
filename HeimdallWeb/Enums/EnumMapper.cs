@@ -6,6 +6,7 @@
         {
             return statusValue switch
             {
+                SeverityLevel.Informational => "Informativo",
                 SeverityLevel.Low => "Baixo",
                 SeverityLevel.Medium => "Médio",
                 SeverityLevel.High => "Alto",

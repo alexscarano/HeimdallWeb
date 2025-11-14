@@ -60,7 +60,9 @@ namespace HeimdallWeb.Services.IA
                                     - Identificar vulnerabilidades como XSS, SQL Injection, Headers e Cookies Inseguros, SSL inválido, Robots.txt e Sitemap (incluidos no scan), exposição de portas críticas.
                                     - Classificar cada achado em categorias fixas: **SSL, Headers, Portas, Redirecionamento, Injeção, Outros**.
                                     - Retornar respostas **curtas, objetivas e padronizadas**, para economizar tokens.
-                                    - Sempre classificar o risco em: **Baixo | Medio | Alto | Critico** (igual ao ENUM do sistema).
+                                    - Sempre classificar o risco em: **Informativo | Baixo | Medio | Alto | Critico** (igual ao ENUM do sistema).
+                                    - Use **Informativo** para observações relevantes sem risco direto (fallback global detectado, headers recomendados ausentes mas não críticos, SSL válido próximo da expiração com >30 dias, configurações de SPA/catch-all, portas abertas não-críticas, etc.).
+                                    - **ATENÇÃO ESPECIAL**: Se o scanner de caminhos sensíveis retornar `""status"": ""suspected-fallback""` ou `""type"": ""global-fallback""`, isso indica que o site tem um fallback global (SPA/catch-all) e os caminhos sensíveis NÃO foram validados individualmente. Classifique isso como **Informativo** e mencione que é uma configuração comum em aplicações modernas, não uma vulnerabilidade.
                                     - Fornecer recomendações práticas de mitigação.
 
                                     ### Estrutura de resposta (JSON válido):
@@ -71,7 +73,7 @@ namespace HeimdallWeb.Services.IA
                                         {{
                                             ""descricao"": ""Explicação breve do problema"",
                                             ""categoria"": ""SSL | Headers | Portas | Redirecionamento | Injeção | Outros"",
-                                            ""risco"": ""Baixo | Medio | Alto | Critico"",
+                                            ""risco"": ""Informativo | Baixo | Medio | Alto | Critico"",
                                             ""evidencia"": ""Trecho do JSON analisado que comprova a vulnerabilidade"",
                                             ""recomendacao"": ""Sugestão de mitigação""
                                         }}
@@ -92,7 +94,7 @@ namespace HeimdallWeb.Services.IA
                                     3. Resumir sempre que possível, sem repetir informações.
                                     4. Se a entrada não for um log de scan, retornar:
                                         {{ ""alvo"": """", ""resumo"": ""Entrada inválida"", ""achados"": [], ""tecnologias"": [] }}
-                                    5. Não incluir no JSON itens irrelevantes ou seguros (ex: SSL válido dentro da validade).
+                                    5. Não incluir no JSON itens totalmente irrelevantes. Itens seguros mas informativos devem usar nível **Informativo** (ex: SSL válido mas perto da expiração, headers recomendados ausentes, fallback global detectado).
                                     6. Se possível, mapear as tecnologias detectadas (a partir de banners, headers, certificados ou respostas HTTP)
                                         dentro da chave ""tecnologias"", preenchendo ""nome_tecnologia"" e ""versao"".
                                         Caso nenhuma tecnologia seja identificada, retornar um array vazio.

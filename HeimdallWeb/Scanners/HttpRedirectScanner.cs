@@ -157,6 +157,23 @@ namespace HeimdallWeb.Scanners
                             var redirectUrl = response.Substring(locationIndex + 10, locationEnd - locationIndex - 10).Trim();
                             probe["redirect_url"] = redirectUrl;
                             probe["status"] = "redirect_found";
+                            
+                            // Determina severidade do redirect
+                            if (redirectUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                            {
+                                probe["severity"] = "Informativo";
+                                probe["description"] = "Redirect HTTP → HTTPS configurado corretamente";
+                            }
+                            else if (redirectUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
+                            {
+                                probe["severity"] = "Alto";
+                                probe["description"] = "Redirect HTTP → HTTP (não seguro)";
+                            }
+                            else
+                            {
+                                probe["severity"] = "Baixo";
+                                probe["description"] = $"Redirect configurado para: {redirectUrl}";
+                            }
                             /*
                                  Os primeiros 10 caracteres são "Location: "
                                  A URL de redirecionamento começa no índice 10
@@ -169,11 +186,15 @@ namespace HeimdallWeb.Scanners
                 {
                     probe["status"] = "bad_request";
                     probe["redirect_detected"] = false;
+                    probe["severity"] = "Baixo";
+                    probe["description"] = "Servidor respondeu com erro 400 (Bad Request)";
                 }
                 else
                 {
                     probe["redirect_detected"] = false;
                     probe["status"] = "no_redirect";
+                    probe["severity"] = "Medio";
+                    probe["description"] = "HTTP habilitado sem redirect para HTTPS - considere implementar redirect";
                 }
 
                 return probe;
