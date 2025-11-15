@@ -34,6 +34,11 @@ namespace HeimdallWeb.Models.Map
                 .IsRequired()
                 .HasDefaultValue((int)HeimdallWeb.Enums.UserType.Default);
 
+            builder.Property(u => u.is_active)
+                .HasColumnName("is_active")
+                .IsRequired()
+                .HasDefaultValue(true);
+
             builder.Property(u => u.created_at)
                 .HasColumnName("created_at")
                 .IsRequired();

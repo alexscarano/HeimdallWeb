@@ -55,12 +55,21 @@ public class ScanService : IScanService
                 if (currentUserId > 0)
                 {
                     historyModel.user_id = currentUserId;
+
+                    // Verificar se usuário está bloqueado
+                    var user = await _db.User.FirstOrDefaultAsync(u => u.user_id == currentUserId);
+                    if (user != null && !user.is_active)
+                    {
+                        throw new Exception("Sua conta está bloqueada. Entre em contato com o administrador.");
+                    }
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
-            throw new Exception("N�o foi poss�vel identificar o usu�rio atual.");
+            if (ex.Message.Contains("bloqueada"))
+                throw;
+            throw new Exception("Não foi possível identificar o usuário atual.");
         }
 
         (var user_usage_count, var user_usage, isUserAdmin) =
@@ -183,6 +192,19 @@ public class ScanService : IScanService
         }
         catch (OperationCanceledException ex)
         {
+            // Salvar histórico com has_completed = 0
+            stopwatch.Stop();
+            historyModel.target = domain;
+            historyModel.duration = stopwatch.Elapsed;
+            historyModel.has_completed = false;
+            historyModel.created_date = DateTime.Now;
+            
+            try
+            {
+                await _historyRepository.insertHistory(historyModel);
+            }
+            catch { /* Ignore save errors for failed scans */ }
+
             await _logRepository.AddLog(new LogModel
             {
                 code = LogEventCode.SCAN_ERROR,
@@ -192,9 +214,37 @@ public class ScanService : IScanService
                 details = ex.ToString(),
                 remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
             });
+            
             if (cancellationToken.IsCancellationRequested)
                 throw new OperationCanceledException("O usuário cancelou a requisição.");
             throw new TimeoutException("O scan demorou muito tempo e foi cancelado.");
+        }
+        catch (Exception ex)
+        {
+            // Salvar histórico com has_completed = 0 para qualquer outro erro
+            stopwatch.Stop();
+            historyModel.target = domain;
+            historyModel.duration = stopwatch.Elapsed;
+            historyModel.has_completed = false;
+            historyModel.created_date = DateTime.Now;
+            
+            try
+            {
+                await _historyRepository.insertHistory(historyModel);
+            }
+            catch { /* Ignore save errors for failed scans */ }
+
+            await _logRepository.AddLog(new LogModel
+            {
+                code = LogEventCode.SCAN_ERROR,
+                message = "Erro durante o processo de scan",
+                source = "ScanService",
+                user_id = currentUserId,
+                details = ex.ToString(),
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
+            });
+            
+            throw;
         }
     }
 }

@@ -15,9 +15,8 @@ function confirmDeleteUser(userId: number) {
                 .then((response: any) => {
                     const data = response.data;
                     if (data.success) {
-                        Swal.fire(`Usuário ${userId} Deletado!`, data.message, 'success');
-                        const row = document.getElementById('row-' + userId);
-                        if (row) row.remove();
+                        Swal.fire(`Usuário ${userId} Deletado!`, data.message, 'success')
+                            .then(() => location.reload());
                     } else {
                         Swal.fire('Erro', data.message, 'error');
                     }
@@ -29,5 +28,37 @@ function confirmDeleteUser(userId: number) {
     });
 }
 
-// Torna a função global para ser chamada pelo onclick do botão
-(window as any).confirmDelete = confirmDelete;
+function toggleUserStatus(userId: number, isActive: boolean) {
+    const action = isActive ? 'desbloquear' : 'bloquear';
+    const actionPast = isActive ? 'desbloqueado' : 'bloqueado';
+
+    Swal.fire({
+        title: `Tem certeza?`,
+        text: `Deseja ${action} este usuário?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: `Sim, ${action}`,
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: isActive ? '#28a745' : '#ffc107'
+    }).then((result: any) => {
+        if (result.isConfirmed) {
+            axios.post(`/admin/toggleUserStatus?id=${userId}&isActive=${isActive}`, { timeout: 5000 })
+                .then((response: any) => {
+                    const data = response.data;
+                    if (data.success) {
+                        Swal.fire(`Usuário ${actionPast}!`, data.message, 'success')
+                            .then(() => location.reload());
+                    } else {
+                        Swal.fire('Erro', data.message, 'error');
+                    }
+                })
+                .catch((err: any) => {
+                    Swal.fire('Erro', 'Ocorreu um erro ao processar a requisição: ' + err.message, 'error');
+                });
+        }
+    });
+}
+
+// Torna as funções globais para serem chamadas pelo onclick dos botões
+(window as any).confirmDeleteUser = confirmDeleteUser;
+(window as any).toggleUserStatus = toggleUserStatus;

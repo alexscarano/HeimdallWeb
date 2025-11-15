@@ -5,7 +5,6 @@ using HeimdallWeb.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Diagnostics.Eventing.Reader;
 
 namespace HeimdallWeb.Controllers;
 
