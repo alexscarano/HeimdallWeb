@@ -27,7 +27,7 @@ namespace HeimdallWeb.Repository;
 /// </summary>
 public class DashboardRepository : IDashboardRepository
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly AppDbContext _context;
     private readonly IMemoryCache _cache;
     private readonly ILogger<DashboardRepository> _logger;
 
@@ -44,11 +44,11 @@ public class DashboardRepository : IDashboardRepository
     private static readonly TimeSpan ActivityCacheDuration = TimeSpan.FromSeconds(5);
 
     public DashboardRepository(
-        IServiceProvider serviceProvider,
+        AppDbContext context,
         IMemoryCache cache,
         ILogger<DashboardRepository> logger)
     {
-        _serviceProvider = serviceProvider;
+        _context = context;
         _cache = cache;
         _logger = logger;
     }
@@ -57,31 +57,22 @@ public class DashboardRepository : IDashboardRepository
     {
         try
         {
-            // Buscar dados em paralelo (com cache individual por tipo)
-            var userStatsTask = GetUserStatsAsync();
-            var scanStatsTask = GetScanStatsAsync();
-            var logsOverviewTask = GetLogsOverviewAsync();
-            var recentActivityTask = GetRecentActivityAsync(logPage, logPageSize);
-            var scanTrendTask = GetScanTrendAsync();
-            var userRegTrendTask = GetUserRegistrationTrendAsync();
-
-            await Task.WhenAll(
-                userStatsTask,
-                scanStatsTask,
-                logsOverviewTask,
-                recentActivityTask,
-                scanTrendTask,
-                userRegTrendTask
-            );
+            // Executar as consultas sequencialmente para evitar uso concorrente do mesmo DbContext
+            var userStats = await GetUserStatsAsync();
+            var scanStats = await GetScanStatsAsync();
+            var logsOverview = await GetLogsOverviewAsync();
+            var recentActivity = await GetRecentActivityAsync(logPage, logPageSize);
+            var scanTrend = await GetScanTrendAsync();
+            var userRegTrend = await GetUserRegistrationTrendAsync();
 
             return new AdminDashboardViewModel
             {
-                UserStats = await userStatsTask,
-                ScanStats = await scanStatsTask,
-                LogsOverview = await logsOverviewTask,
-                RecentActivity = await recentActivityTask,
-                ScanTrend = await scanTrendTask,
-                UserRegistrationTrend = await userRegTrendTask
+                UserStats = userStats,
+                ScanStats = scanStats,
+                LogsOverview = logsOverview,
+                RecentActivity = recentActivity,
+                ScanTrend = scanTrend,
+                UserRegistrationTrend = userRegTrend
             };
         }
         catch (Exception ex)
@@ -98,9 +89,7 @@ public class DashboardRepository : IDashboardRepository
         {
             entry.AbsoluteExpirationRelativeToNow = StatsCacheDuration;
             _logger.LogInformation("Buscando UserStats do banco (cache miss)");
-            using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var result = await context.Set<DashboardUserStats>()
+            var result = await _context.Set<DashboardUserStats>()
                 .AsNoTracking()
                 .FirstOrDefaultAsync() ?? new DashboardUserStats();
             _logger.LogInformation("UserStats obtido: TotalUsers={Total}, Active={Active}, Blocked={Blocked}", 
@@ -114,9 +103,7 @@ public class DashboardRepository : IDashboardRepository
         return await _cache.GetOrCreateAsync(CacheKey_ScanStats, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = StatsCacheDuration;
-            using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            return await context.Set<DashboardScanStats>()
+            return await _context.Set<DashboardScanStats>()
                 .AsNoTracking()
                 .FirstOrDefaultAsync() ?? new DashboardScanStats();
         }) ?? new DashboardScanStats();
@@ -127,9 +114,7 @@ public class DashboardRepository : IDashboardRepository
         return await _cache.GetOrCreateAsync(CacheKey_LogsOverview, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = StatsCacheDuration;
-            using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            return await context.Set<DashboardLogsOverview>()
+            return await _context.Set<DashboardLogsOverview>()
                 .AsNoTracking()
                 .FirstOrDefaultAsync() ?? new DashboardLogsOverview();
         }) ?? new DashboardLogsOverview();
@@ -138,10 +123,7 @@ public class DashboardRepository : IDashboardRepository
     private async Task<PaginatedResult<DashboardRecentActivity>> GetRecentActivityAsync(int page, int pageSize)
     {
         // Não usar cache para atividade recente paginada (diferente por página)
-        using var scope = _serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        
-        var query = context.Set<DashboardRecentActivity>().AsNoTracking();
+        var query = _context.Set<DashboardRecentActivity>().AsNoTracking();
         var totalCount = await query.CountAsync();
         
         var items = await query
@@ -163,9 +145,7 @@ public class DashboardRepository : IDashboardRepository
         return await _cache.GetOrCreateAsync(CacheKey_ScanTrend, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = StatsCacheDuration;
-            using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            return await context.Set<DashboardScanTrendDaily>()
+            return await _context.Set<DashboardScanTrendDaily>()
                 .AsNoTracking()
                 .ToListAsync();
         }) ?? new List<DashboardScanTrendDaily>();
@@ -176,9 +156,7 @@ public class DashboardRepository : IDashboardRepository
         return await _cache.GetOrCreateAsync(CacheKey_UserRegTrend, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = StatsCacheDuration;
-            using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            return await context.Set<DashboardUserRegistrationTrend>()
+            return await _context.Set<DashboardUserRegistrationTrend>()
                 .AsNoTracking()
                 .ToListAsync();
         }) ?? new List<DashboardUserRegistrationTrend>();

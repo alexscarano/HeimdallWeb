@@ -80,7 +80,7 @@ namespace HeimdallWeb.Migrations
 
             modelBuilder.Entity("HeimdallWeb.Models.DashboardScanStats", b =>
                 {
-                    b.Property<double>("avg_scan_time_ms")
+                    b.Property<double>("avg_scan_time_s")
                         .HasColumnType("double");
 
                     b.Property<decimal>("fail_rate")

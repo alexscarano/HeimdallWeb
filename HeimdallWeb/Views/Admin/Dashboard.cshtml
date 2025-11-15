@@ -82,7 +82,16 @@
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <div class="small-box-footer" style="color: white;">
-                    Tempo médio: @Math.Round(Model.ScanStats.avg_scan_time_ms / 1000, 2)s
+                        @{ 
+                            var avg = Model?.ScanStats?.avg_scan_time_s ?? 0.0;
+                            // Always show minutes:seconds with up to 6 fractional digits (microsecond precision)
+                            var minutes = (int)(avg / 60);
+                            var seconds = avg - minutes * 60; // seconds with fractional part
+                            // Format seconds with at most 6 decimals, keep at least two integer digits
+                            var secondsStr = seconds.ToString("00.######");
+                            var avgDisplay = $"{minutes}:{secondsStr}";
+                        }
+                        Tempo médio: @avgDisplay
                 </div>
             </div>
         </div>

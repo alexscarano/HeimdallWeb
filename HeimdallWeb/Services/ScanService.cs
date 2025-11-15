@@ -77,7 +77,7 @@ public class ScanService : IScanService
 
         if (!isUserAdmin && user_usage_count > _maxRequests)
         {
-            throw new Exception($"O limite di�rio de requisi��es ({_maxRequests}) foi atingido");
+            throw new Exception($"O limite diário de requisições ({_maxRequests}) foi atingido");
         }
 
         var stopwatch = Stopwatch.StartNew();
