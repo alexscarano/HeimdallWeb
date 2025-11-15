@@ -18,8 +18,15 @@
 
 .normal {
   font-family: "Roboto";
-  font-weight: 300;
+  font-weight: 400;
   font-size: 1.5rem;
+}
+
+.normal-italic {
+  font-family: "Roboto";
+  font-weight: 400;
+  font-size: 1.5rem;
+  font-style: italic;
 }
 
 .minus-title {
@@ -87,7 +94,15 @@
 }
 
 .gradient-text {
-  background-image: linear-gradient(to right, #d2a64d, #516FAB);
+  background-image: linear-gradient(to left, #a85342, #516FAB);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.gradient-text-mini {
+  background-image: linear-gradient(to top, black, rgb(64, 64, 64));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

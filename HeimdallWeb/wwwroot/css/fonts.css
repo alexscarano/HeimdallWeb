@@ -18,8 +18,15 @@
 
 .normal {
   font-family: "Roboto";
-  font-weight: 300;
+  font-weight: 400;
   font-size: 1.5rem;
+}
+
+.normal-italic {
+  font-family: "Roboto";
+  font-weight: 400;
+  font-size: 1.5rem;
+  font-style: italic;
 }
 
 .minus-title {

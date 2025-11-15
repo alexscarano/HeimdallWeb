@@ -9,7 +9,15 @@
 }
 
 .gradient-text {
-  background-image: linear-gradient(to right, #d2a64d, #516FAB);
+  background-image: linear-gradient(to left, #a85342, #516FAB);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.gradient-text-mini {
+  background-image: linear-gradient(to top, black, rgb(64, 64, 64));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

@@ -3,6 +3,10 @@
     <link rel="stylesheet" href="~/css/alerts.css" asp-append-version="true" />
 </head>
 
+<style>
+
+</style>
+
 @{
     ViewData["Title"] = "HeimdallWeb - Home";
 }
@@ -13,15 +17,15 @@
 <!-- main hero container: switched inline height to a controllable CSS class -->
 <div class="container-xl d-flex justify-content-center hero">
 
-    <div class="row-cols-lg-2 d-flex justify-content-center align-self-center g-4">
+    <div class="row-cols-lg-2 d-flex justify-content-center align-self-center g-4 hero-box">
         <div>
-            <div class="mb-5 text-center text-white hero-title">
-                <h1 class="display-4 mb-3 title gradient-text">Descubra o quão <span class="focus">seguro</span> é seu site!</h1>
-                <p class="lead hero-lead mb-4 normal">Basta inserir a URL do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais pontos fortes, pontos fracos e possíveis melhorias.</p>
+            <div class="mb-5 text-center text-white hero-title py-5">
+                <h1 class="display-4 mb-3 title gradient-text">Descubra o quão seguro é seu site!</h1>
+                <p class="lead hero-lead mb-4 normal text-black gradient-text-mini">Basta <span class="normal-italic"> inserir a URL </span> do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais <span class="normal-italic">pontos fortes, pontos fracos e possíveis melhorias</span>.</p>
             </div>
 
             <div>
-                <div class="shadow-lg border-0 rounded-5">
+                <div class="shadow-lg border-0 rounded-5 p-0">
                     <form id="scanForm" asp-controller="Home" asp-action="Scan" method="post"> 
                         <!-- new layout: input and button adjacent and flush -->
                         <div class="hero-form d-flex align-items-center">
