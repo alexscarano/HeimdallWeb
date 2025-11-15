@@ -328,8 +328,8 @@
         // Dados para os gráficos
         const scanTrendData = @Html.Raw(Json.Serialize(Model.ScanTrend.Select(x => new { date = x.scan_date.ToString("dd/MM"), count = x.scan_count, success = x.successful_scans, failed = x.failed_scans }).Reverse()));
         const userRegTrendData = @Html.Raw(Json.Serialize(Model.UserRegistrationTrend.Select(x => new { date = x.registration_date.ToString("dd/MM"), count = x.new_users }).Reverse()));
-        const successRate = @Model.ScanStats.success_rate;
-        const failRate = @Model.ScanStats.fail_rate;
+        const successRate = @((Model?.ScanStats?.success_rate ?? 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
+        const failRate = @((Model?.ScanStats?.fail_rate ?? 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
 
         // Configuração comum para tema escuro
         Chart.defaults.color = '#ffffff';
