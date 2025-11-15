@@ -26,6 +26,7 @@ namespace HeimdallWeb.Extensions
             services.AddScoped<ITechnologyRepository, TechnologyRepository>();
             services.AddScoped<ILogRepository, LogRepository>();
             services.AddScoped<IUserUsageRepository, UserUsageRepository>();
+            services.AddScoped<IDashboardRepository, DashboardRepository>();
 
             return services;
         }

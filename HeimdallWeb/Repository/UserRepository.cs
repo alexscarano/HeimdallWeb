@@ -53,6 +53,104 @@ namespace HeimdallWeb.Repository
             }
         }
 
+        public async Task<PaginatedResult<UserModel>?> getUsers(string? where, int page, int pageSize, bool? isActive, bool? isAdmin, DateTime? createdFrom, DateTime? createdTo)
+        {
+            try
+            {
+                var query = _appDbContext.User.AsQueryable();
+
+                // Filtro de busca textual
+                if (!string.IsNullOrEmpty(where))
+                {
+                    query = query.Where(u => u.username.Contains(where) || u.email.Contains(where));
+                }
+
+                // Filtro de status ativo/bloqueado
+                if (isActive.HasValue)
+                {
+                    query = query.Where(u => u.is_active == isActive.Value);
+                }
+
+                // Filtro de tipo de usuário (admin ou não)
+                if (isAdmin.HasValue)
+                {
+                    int userType = isAdmin.Value ? 2 : 1; // 2 = Admin, 1 = Default
+                    query = query.Where(u => u.user_type == userType);
+                }
+
+                // Filtro de data de criação (de)
+                if (createdFrom.HasValue)
+                {
+                    query = query.Where(u => u.created_at >= createdFrom.Value);
+                }
+
+                // Filtro de data de criação (até)
+                if (createdTo.HasValue)
+                {
+                    var endOfDay = createdTo.Value.Date.AddDays(1).AddTicks(-1);
+                    query = query.Where(u => u.created_at <= endOfDay);
+                }
+
+                var totalCount = await query.CountAsync();
+
+                var items = await query
+                    .OrderByDescending(u => u.created_at)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                return new PaginatedResult<UserModel>
+                {
+                    Items = items,
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize
+                };
+            }
+            catch (Exception)
+            {
+                return new PaginatedResult<UserModel>();
+            }
+        }
+
+        public async Task<bool> ToggleUserActiveStatus(int id, bool isActive)
+        {
+            try
+            {
+                var user = await getUserById(id);
+                if (user is null) return false;
+
+                user.is_active = isActive;
+                user.updated_at = DateTime.Now;
+                
+                await _appDbContext.SaveChangesAsync();
+
+                await _logRepository.AddLog(new LogModel
+                {
+                    code = LogEventCode.DB_SAVE_OK,
+                    message = $"Usuário {(isActive ? "desbloqueado" : "bloqueado")} com sucesso",
+                    source = "UserRepository",
+                    user_id = user.user_id,
+                    details = $"Usuário: {user.username}, Status: {(isActive ? "Ativo" : "Bloqueado")}",
+                    remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(null)
+                });
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await _logRepository.AddLog(new LogModel
+                {
+                    code = LogEventCode.DB_SAVE_ERROR,
+                    message = "Erro ao alterar status do usuário",
+                    source = "UserRepository",
+                    details = ex.ToString(),
+                    remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(null)
+                });
+                return false;
+            }
+        }
+
         public async Task<UserModel?> getUserById(int id)
         {
             return await _appDbContext.User.FirstOrDefaultAsync(x => x.user_id == id);

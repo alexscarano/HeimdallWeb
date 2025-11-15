@@ -38,7 +38,7 @@ namespace HeimdallWeb.Repository
         {
             try
             {
-                var query = _appDbContext.History.AsQueryable();
+                var query = _appDbContext.History.Where(h => h.has_completed == true).AsQueryable();
 
                 var totalCount = await query.
                     AsNoTracking().
@@ -78,9 +78,22 @@ namespace HeimdallWeb.Repository
         {
             try
             {
-                var query = _appDbContext.History.AsQueryable();
+                var query = _appDbContext.History.Where(h => h.has_completed == true).AsQueryable();
                 int user_id = CookiesHelper.getUserIDFromCookie(CookiesHelper.getAuthCookie(_httpContextAccessor.HttpContext.Request));
                 id = user_id;
+
+                // Verificar se usuário está bloqueado
+                var user = await _appDbContext.User.FirstOrDefaultAsync(u => u.user_id == id);
+                if (user != null && !user.is_active)
+                {
+                    return new PaginatedResult<HistoryModel?>
+                    {
+                        Items = new List<HistoryModel?>(),
+                        TotalCount = 0,
+                        Page = page,
+                        PageSize = pageSize
+                    };
+                }
 
                 query = query.Where(h => h.user_id == id);
 

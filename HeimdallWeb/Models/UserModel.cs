@@ -41,6 +41,8 @@ namespace HeimdallWeb.Models
 
         public required int user_type { get; set; } = (int)Enums.UserType.Default;
 
+        public bool is_active { get; set; } = true;
+
         public required DateTime created_at { get; set; } = DateTime.Now;
 
         public DateTime? updated_at { get; set; }

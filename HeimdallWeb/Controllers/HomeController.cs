@@ -5,7 +5,6 @@ using HeimdallWeb.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Diagnostics.Eventing.Reader;
 
 namespace HeimdallWeb.Controllers;
 
@@ -52,8 +51,14 @@ public class HomeController : Controller
     {
         try
         {
+            if (string.IsNullOrEmpty(domainInput))
+            {
+                TempData["ErrorMsg"] = "O endereço está vazio, preencha ele antes de começar o scan";
+                return View("Index");
+            }
+            
+            string input = domainInput.Trim();
             bool wasTested = false;
-            var input = domainInput?.Trim() ?? string.Empty;
 
             if (!input.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
                 && !input.StartsWith("https://", StringComparison.OrdinalIgnoreCase))

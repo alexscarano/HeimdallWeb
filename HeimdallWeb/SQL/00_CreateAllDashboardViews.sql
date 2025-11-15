@@ -1,0 +1,122 @@
+-- ============================================================
+-- Script Master - Executar todas as VIEWs do Dashboard
+-- ============================================================
+-- Este script executa todos os scripts de VIEWs em ordem.
+-- Execute este arquivo para criar todas as VIEWs de uma vez.
+--
+-- OU execute cada arquivo individual separadamente:
+-- 01_vw_dashboard_user_stats.sql
+-- 02_vw_dashboard_scan_stats.sql
+-- 03_vw_dashboard_logs_overview.sql
+-- 04_vw_dashboard_recent_activity.sql
+-- 05_vw_dashboard_scan_trend_daily.sql
+-- 06_vw_dashboard_user_registration_trend.sql
+-- ============================================================
+
+USE heimdall_db;
+
+-- ==========================
+-- 1. vw_dashboard_user_stats
+-- ==========================
+DROP VIEW IF EXISTS vw_dashboard_user_stats;
+
+CREATE VIEW vw_dashboard_user_stats AS
+SELECT 
+    COUNT(*) AS total_users,
+    SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) AS active_users,
+    SUM(CASE WHEN is_active = 0 THEN 1 ELSE 0 END) AS blocked_users,
+    SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 ELSE 0 END) AS new_users_last_7_days,
+    SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) AS new_users_last_30_days
+FROM tb_user;
+
+-- ==========================
+-- 2. vw_dashboard_scan_stats
+-- ==========================
+DROP VIEW IF EXISTS vw_dashboard_scan_stats;
+
+CREATE VIEW vw_dashboard_scan_stats AS
+SELECT 
+    COUNT(*) AS total_scans,
+    SUM(CASE WHEN created_date >= DATE_SUB(NOW(), INTERVAL 24 HOUR) THEN 1 ELSE 0 END) AS scans_last_24h,
+    COALESCE(AVG(TIMESTAMPDIFF(MICROSECOND, created_date, DATE_ADD(created_date, INTERVAL duration MICROSECOND)) / 1000), 0) AS avg_scan_time_ms,
+    ROUND(
+        SUM(CASE WHEN has_completed = 1 THEN 1 ELSE 0 END) * 100.0 / NULLIF(COUNT(*), 0),
+        2
+    ) AS success_rate,
+    ROUND(
+        SUM(CASE WHEN has_completed = 0 THEN 1 ELSE 0 END) * 100.0 / NULLIF(COUNT(*), 0),
+        2
+    ) AS fail_rate
+FROM tb_history;
+
+-- =============================
+-- 3. vw_dashboard_logs_overview
+-- =============================
+DROP VIEW IF EXISTS vw_dashboard_logs_overview;
+
+CREATE VIEW vw_dashboard_logs_overview AS
+SELECT 
+    COUNT(*) AS total_logs,
+    SUM(CASE WHEN DATE(timestamp) = CURDATE() THEN 1 ELSE 0 END) AS logs_today,
+    SUM(CASE WHEN level = 'ERROR' AND timestamp >= DATE_SUB(NOW(), INTERVAL 24 HOUR) THEN 1 ELSE 0 END) AS logs_errors_last_24h,
+    SUM(CASE WHEN level = 'WARNING' AND timestamp >= DATE_SUB(NOW(), INTERVAL 24 HOUR) THEN 1 ELSE 0 END) AS logs_warn_last_24h,
+    SUM(CASE WHEN level = 'INFO' AND timestamp >= DATE_SUB(NOW(), INTERVAL 24 HOUR) THEN 1 ELSE 0 END) AS logs_info_last_24h
+FROM tb_log;
+
+-- =================================
+-- 4. vw_dashboard_recent_activity
+-- =================================
+DROP VIEW IF EXISTS vw_dashboard_recent_activity;
+
+CREATE VIEW vw_dashboard_recent_activity AS
+SELECT 
+    l.timestamp,
+    l.user_id,
+    l.level,
+    l.message,
+    l.source,
+    l.remote_ip,
+    u.username
+FROM tb_log l
+LEFT JOIN tb_user u ON l.user_id = u.user_id
+ORDER BY l.timestamp DESC
+LIMIT 50;
+
+-- ==================================
+-- 5. vw_dashboard_scan_trend_daily
+-- ==================================
+DROP VIEW IF EXISTS vw_dashboard_scan_trend_daily;
+
+CREATE VIEW vw_dashboard_scan_trend_daily AS
+SELECT 
+    DATE(created_date) AS scan_date,
+    COUNT(*) AS scan_count,
+    SUM(CASE WHEN has_completed = 1 THEN 1 ELSE 0 END) AS successful_scans,
+    SUM(CASE WHEN has_completed = 0 THEN 1 ELSE 0 END) AS failed_scans
+FROM tb_history
+WHERE created_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+GROUP BY DATE(created_date)
+ORDER BY scan_date DESC;
+
+-- ==========================================
+-- 6. vw_dashboard_user_registration_trend
+-- ==========================================
+DROP VIEW IF EXISTS vw_dashboard_user_registration_trend;
+
+CREATE VIEW vw_dashboard_user_registration_trend AS
+SELECT 
+    DATE(created_at) AS registration_date,
+    COUNT(*) AS new_users
+FROM tb_user
+WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+GROUP BY DATE(created_at)
+ORDER BY registration_date DESC;
+
+-- ============================================================
+-- Verificação das VIEWs criadas
+-- ============================================================
+SHOW FULL TABLES WHERE TABLE_TYPE LIKE 'VIEW';
+
+-- ============================================================
+-- Status: Todas as VIEWs foram criadas com sucesso!
+-- ============================================================

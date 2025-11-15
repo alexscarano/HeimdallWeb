@@ -18,7 +18,7 @@
             <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
             @if (User.IsInRole("2"))
             {
-                <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">Painel de Admin</a>
+                <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="Admin" asp-action="dashboard">Painel de Admin</a>
             }
         </div>
     </div>
@@ -36,6 +36,7 @@
                         <th scope="col">Achados</th>
                         <th scope="col">Tecnologias</th>
                         <th scope="col">Ações</th>
+                        <th scope="col">Duração do Scan</th>
                         <th scope="col">Data de criação</th>
                     </tr>
                 </thead>
@@ -69,6 +70,7 @@
                                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete(@history.history_id)">Excluir</button>
                             </div>
                         </td>
+                        <td class="text-light">@(history.duration.HasValue ? history.duration.Value.ToString(@"mm\:ss") : string.Empty)</td>
                         <td class="text-light">@history.created_date.ToString("g")</td>
                     </tr>
                 }
