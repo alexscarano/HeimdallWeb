@@ -14,8 +14,9 @@ namespace HeimdallWeb.Services.IA
 
         private readonly HttpClient _httpClient;
         private readonly ILogRepository? _logRepository;
+        private readonly IHttpContextAccessor? _httpContextAccessor;
 
-        public GeminiService(IConfiguration config, ILogRepository? logRepository = null)
+        public GeminiService(IConfiguration config, ILogRepository? logRepository = null, IHttpContextAccessor? httpContextAccessor = null)
         {
             _apiKey = config["GEMINI_API_KEY"] ?? throw new ArgumentNullException("Gemini API Key não configurada");
             _httpClient = new HttpClient
@@ -23,6 +24,7 @@ namespace HeimdallWeb.Services.IA
                 BaseAddress = new Uri(_apiUrl)
             };
             _logRepository = logRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<string> GeneratePrompt(string jsonInput)
@@ -121,7 +123,8 @@ namespace HeimdallWeb.Services.IA
                 {
                     code = LogEventCode.AI_REQUEST,
                     message = "Enviando requisição à IA",
-                    source = "GeminiService"
+                    source = "GeminiService",
+                    remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor?.HttpContext)
                 });
 
                 // Cria o conteúdo da requisição em JSON
@@ -149,7 +152,8 @@ namespace HeimdallWeb.Services.IA
                 {
                     code = LogEventCode.AI_RESPONSE,
                     message = "Resposta da IA recebida com sucesso",
-                    source = "GeminiService"
+                    source = "GeminiService",
+                    remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor?.HttpContext)
                 });
 
                 return aiResponseText;
@@ -161,7 +165,8 @@ namespace HeimdallWeb.Services.IA
                     code = LogEventCode.AI_RESPONSE_ERROR,
                     message = "Falha ao interpretar resposta da IA",
                     source = "GeminiService",
-                    details = err.ToString()
+                    details = err.ToString(),
+                    remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor?.HttpContext)
                 });
                 return $"Erro ao comunicar com o serviço Gemini. {err}";
             } 

@@ -66,7 +66,8 @@ namespace HeimdallWeb.Repository
                     code = LogEventCode.DB_SAVE_ERROR,
                     message = "Erro ao salvar dados no banco",
                     source = "HistoryRepository",
-                    details = ex.ToString()
+                    details = ex.ToString(),
+                    remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
                 });
                 return new PaginatedResult<HistoryModel>();
                 throw;
@@ -150,7 +151,8 @@ namespace HeimdallWeb.Repository
                 message = "Registro salvo com sucesso",
                 source = "HistoryRepository",
                 user_id = user_id,
-                history_id = history.history_id
+                history_id = history.history_id,
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
             });
 
             return history; 

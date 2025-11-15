@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 
 namespace HeimdallWeb.Helpers
 {
@@ -12,28 +14,31 @@ namespace HeimdallWeb.Helpers
         /// <exception cref="ArgumentException"></exception>
         public static string NormalizeUrl(this string url)
         {
-			try
-			{
+            try
+            {
                 if (string.IsNullOrEmpty(url))
                 {
                     throw new ArgumentException("A url não pode estar vazia");
                 }
 
-                if (!url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) 
+                if (!url.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
                     && !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                 {
                     url = $"https://{url}";
                 }
 
-                if (!IsValidUrl(url, out Uri? uriResult))
+                if (!Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
+                    || (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
+                {
                     throw new ArgumentException("O alvo informado não é uma URL válida.");
+                }
 
-                var uriResultString = uriResult!.GetLeftPart(UriPartial.Authority).TrimEnd('/');
+                var uriResultString = uriResult.GetLeftPart(UriPartial.Authority).TrimEnd('/');
 
                 return uriResultString;
             }
-			catch (Exception)
-			{
+            catch (Exception)
+            {
                 return string.Empty;
             }
         }
@@ -74,6 +79,7 @@ namespace HeimdallWeb.Helpers
                 return false;
             }
         }
+
 
         /// <summary>
         /// Remove o http/https do início da URL
@@ -145,5 +151,78 @@ namespace HeimdallWeb.Helpers
             return IPAddress.TryParse(input, out _);
         }
 
+        public static string? GetRemoteIPv4(HttpContext? httpContext)
+        {
+            if (httpContext is null)
+            {
+                return null;
+            }
+
+            // Prefer headers set by proxies (e.g. ngrok, load balancers)
+            try
+            {
+                var headers = httpContext.Request?.Headers;
+                if (headers is not null)
+                {
+                    if (headers.TryGetValue("X-Forwarded-For", out var xff))
+                    {
+                        var first = xff.ToString().Split(',').FirstOrDefault()?.Trim();
+                        if (!string.IsNullOrEmpty(first) && IPAddress.TryParse(first, out var parsed))
+                        {
+                            if (parsed.AddressFamily == AddressFamily.InterNetwork)
+                                return parsed.ToString();
+                            if (parsed.AddressFamily == AddressFamily.InterNetworkV6 && parsed.IsIPv4MappedToIPv6)
+                                return parsed.MapToIPv4().ToString();
+                            return parsed.ToString();
+                        }
+                    }
+
+                    if (headers.TryGetValue("X-Real-IP", out var xrip))
+                    {
+                        var val = xrip.ToString().Trim();
+                        if (!string.IsNullOrEmpty(val) && IPAddress.TryParse(val, out var parsed2))
+                        {
+                            if (parsed2.AddressFamily == AddressFamily.InterNetwork)
+                                return parsed2.ToString();
+                            if (parsed2.AddressFamily == AddressFamily.InterNetworkV6 && parsed2.IsIPv4MappedToIPv6)
+                                return parsed2.MapToIPv4().ToString();
+                            return parsed2.ToString();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Fall through to connection-based detection
+            }
+
+            var ip = httpContext?.Connection?.RemoteIpAddress;
+            if (ip is null)
+            {
+                return null;
+            }
+
+            // Native IPv6
+            if (ip.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                try
+                {
+                    return ip.MapToIPv4().ToString();
+                }
+                catch 
+                {
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Return IPv4 string or provided fallback (default empty string).
+        /// </summary>
+        public static string GetRemoteIPv4OrFallback(HttpContext? httpContext, string fallback = "")
+        {
+            return GetRemoteIPv4(httpContext) ?? fallback;
+        }
     }
 }

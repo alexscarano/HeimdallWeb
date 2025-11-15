@@ -84,7 +84,8 @@ public class ScanService : IScanService
             message = "Iniciando processo de varredura",
             source = "ScanService",
             user_id = currentUserId,
-            details = $"Target: {domain}"
+            details = $"Target: {domain}",
+            remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
         });
 
         // Run scanners
@@ -104,11 +105,12 @@ public class ScanService : IScanService
                 code = LogEventCode.AI_REQUEST,
                 message = "Enviando requisição à IA",
                 source = "ScanService",
-                user_id = currentUserId
+                user_id = currentUserId,
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
             });
 
             // Call IA
-            var gemini = new GeminiService(_config, _logRepository);
+            var gemini = new GeminiService(_config, _logRepository, _httpContextAccessor);
             var iaResponse = await gemini.GeneratePrompt(jsonString);
 
             await _logRepository.AddLog(new LogModel
@@ -116,7 +118,8 @@ public class ScanService : IScanService
                 code = LogEventCode.AI_RESPONSE,
                 message = "Resposta da IA recebida com sucesso",
                 source = "ScanService",
-                user_id = currentUserId
+                user_id = currentUserId,
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
             });
 
             using var doc = JsonDocument.Parse(iaResponse);
@@ -155,7 +158,8 @@ public class ScanService : IScanService
                     message = "Registro salvo com sucesso",
                     source = "ScanService",
                     user_id = currentUserId,
-                    history_id = historyId
+                    history_id = historyId,
+                    remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
                 });
 
                 await tx.CommitAsync(cancellationToken);
@@ -170,7 +174,8 @@ public class ScanService : IScanService
                     message = "Erro ao salvar dados no banco",
                     source = "ScanService",
                     user_id = currentUserId,
-                    details = dbEx.ToString()
+                    details = dbEx.ToString(),
+                    remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
                 });
                 await tx.RollbackAsync(cancellationToken);
                 throw;
@@ -184,7 +189,8 @@ public class ScanService : IScanService
                 message = "Erro durante o processo de scan",
                 source = "ScanService",
                 user_id = currentUserId,
-                details = ex.ToString()
+                details = ex.ToString(),
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
             });
             if (cancellationToken.IsCancellationRequested)
                 throw new OperationCanceledException("O usuário cancelou a requisição.");

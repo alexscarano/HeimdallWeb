@@ -1,4 +1,6 @@
 using System.Text;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.Net;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
@@ -30,7 +32,7 @@ namespace HeimdallWeb.Extensions
             services.Configure<JwtOptions>(config.GetSection("Jwt"));
 
             var jwtOptions = config.GetSection("Jwt").Get<JwtOptions>() ?? new JwtOptions();
-            var jwtKey = Encoding.ASCII.GetBytes(jwtOptions.Key ?? "Key não informada");
+            var jwtKey = Encoding.ASCII.GetBytes(jwtOptions.Key ?? "Key nï¿½o informada");
 
             // Authentication
             services.AddAuthentication(options =>
@@ -141,6 +143,16 @@ namespace HeimdallWeb.Extensions
 
         public static WebApplication UseHeimdallPipeline(this WebApplication app)
         {
+            // Process X-Forwarded-* headers from known proxies (ngrok, load balancers)
+            var forwardedOptions = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            // Trust local proxy/tunnel (ngrok) and IPv6 loopback
+            forwardedOptions.KnownProxies.Add(IPAddress.Loopback);
+            forwardedOptions.KnownProxies.Add(IPAddress.IPv6Loopback);
+            app.UseForwardedHeaders(forwardedOptions);
+
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");

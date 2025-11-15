@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using HeimdallWeb.DTO;
+using HeimdallWeb.Helpers;
 using HeimdallWeb.DTO.Mappers;
 using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
@@ -57,7 +58,8 @@ namespace HeimdallWeb.Repository
                 message = "Registro salvo com sucesso",
                 source = "TechnologyRepository",
                 history_id = historyId,
-                details = $"Salvas {tecnologias.Count} tecnologias"
+                details = $"Salvas {tecnologias.Count} tecnologias",
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(null)
             });
         }
 

@@ -5,6 +5,7 @@ using HeimdallWeb.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Diagnostics.Eventing.Reader;
 
 namespace HeimdallWeb.Controllers;
 
@@ -51,20 +52,47 @@ public class HomeController : Controller
     {
         try
         {
-            if (NetworkUtils.IsIPAddress(domainInput))
+            bool wasTested = false;
+            var input = domainInput?.Trim() ?? string.Empty;
+
+            if (!input.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+                && !input.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             {
-                TempData["ErrorMsg"] = "O endereço precisa ser uma URL, não um endereço IP";
-                return View("Index");
+                input = $"https://{input}"; 
             }
-            else if (!NetworkUtils.IsValidUrl(domainInput, out Uri? uriResult))
+
+            bool isReachable = await NetworkUtils.IsReachableAsync(input);
+            if (!isReachable)
+            {
+                // try fallback to http
+                if (input.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                {
+                    input = $"http://{input.Substring("https://".Length)}";
+                }
+                else if (!input.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
+                {
+                    input = $"http://{input}";
+                }
+            }
+            else
+            {
+                wasTested = true;
+            }
+
+            domainInput = input;
+
+            if (!NetworkUtils.IsValidUrl(domainInput, out Uri? uriResult) && !NetworkUtils.IsIPAddress(domainInput))
             {
                 TempData["ErrorMsg"] = "O endereço precisa ser válido, exemplo: www.google.com !";
                 return View("Index");
             }
-            else if (!await NetworkUtils.IsReachableAsync(domainInput))
+            if (!wasTested)
             {
-                TempData["ErrorMsg"] = "O endereço informado não está acessível. Verifique se está correto.";
-                return View("Index");
+                if (!await NetworkUtils.IsReachableAsync(domainInput))
+                {
+                    TempData["ErrorMsg"] = "O endereço informado não está acessível. Verifique se está correto.";
+                    return View("Index");
+                }
             }
 
             await _logRepository.AddLog(new LogModel
@@ -73,7 +101,7 @@ public class HomeController : Controller
                 message = "Iniciando processo de varredura",
                 source = "HomeController",
                 details = $"Target: {domainInput}",
-                remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(HttpContext)
             });
 
             var historyId = await _scanService.RunScanAndPersist(domainInput, historyModel, HttpContext.RequestAborted);
@@ -84,7 +112,7 @@ public class HomeController : Controller
                 message = "Scan finalizado com sucesso",
                 source = "HomeController",
                 history_id = historyId,
-                remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(HttpContext)
             });
 
             TempData["OkMsg"] = "Scan feito com sucesso !";
@@ -99,7 +127,7 @@ public class HomeController : Controller
                 message = "Erro durante o processo de scan",
                 source = "HomeController",
                 details = $"Timeout: {ex.Message}",
-                remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(HttpContext)
             });
             TempData["ErrorMsg"] = "O scan demorou muito tempo e foi cancelado. Tente novamente.";
             return View("Index");
@@ -112,7 +140,7 @@ public class HomeController : Controller
                 message = "Erro durante o processo de scan",
                 source = "HomeController",
                 details = $"ArgumentException: {ex.Message}",
-                remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(HttpContext)
             });
             TempData["ErrorMsg"] = ex.Message;
             return View("Index");
@@ -125,7 +153,7 @@ public class HomeController : Controller
                 message = "Erro durante o processo de scan",
                 source = "HomeController",
                 details = $"Cancelado: {ex.Message}",
-                remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(HttpContext)
             });
             TempData["ErrorMsg"] = "A operação foi cancelada pelo usuário.";
             return View("Index");
@@ -138,7 +166,7 @@ public class HomeController : Controller
                 message = "Erro inesperado não tratado",
                 source = "HomeController",
                 details = ex.ToString(),
-                remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(HttpContext)
             });
             // Prefer an inner exception message when available, otherwise use the exception message.
             var detailedMessage = ex.InnerException?.Message;

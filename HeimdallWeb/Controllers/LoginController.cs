@@ -47,7 +47,7 @@ public class LoginController : Controller
                             message = "Usuário autenticado com sucesso",
                             source = "LoginController",
                             user_id = userDB.user_id,
-                            remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                            remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(HttpContext)
                         });
                         TempData["OkMsg"] = "Login concluido com sucesso!";
                         CookiesHelper.generateAuthCookie(Response, token);
@@ -61,7 +61,7 @@ public class LoginController : Controller
                 message = "Falha na autenticação do usuário",
                 source = "LoginController",
                 details = $"Tentativa de login com: {user.emailOrLogin}",
-                remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(HttpContext)
             });
             TempData["ErrorMsg"] = "Credenciais inválidas";
             return RedirectToAction("Index", "Home");
@@ -74,7 +74,7 @@ public class LoginController : Controller
                 message = "Falha na autenticação do usuário",
                 source = "LoginController",
                 details = ex.Message,
-                remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(HttpContext)
             });
             TempData["ErrorMsg"] = "Credenciais inválidas";
         }

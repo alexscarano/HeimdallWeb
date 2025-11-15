@@ -71,7 +71,8 @@ namespace HeimdallWeb.Repository
                 message = "Registro salvo com sucesso",
                 source = "UserRepository",
                 user_id = user.user_id,
-                details = $"Novo usuário criado: {user.username}"
+                details = $"Novo usuário criado: {user.username}",
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(null)
             });
 
             return user;
@@ -117,7 +118,8 @@ namespace HeimdallWeb.Repository
                 message = "Registro salvo com sucesso",
                 source = "UserRepository",
                 user_id = userDB.user_id,
-                details = $"Usuário atualizado: {userDB.username}"
+                details = $"Usuário atualizado: {userDB.username}",
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(null)
             });
 
             return user;

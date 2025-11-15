@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using HeimdallWeb.DTO;
+using HeimdallWeb.Helpers;
 using HeimdallWeb.DTO.Mappers;
 using HeimdallWeb.Enums;
 using HeimdallWeb.Interfaces;
@@ -57,7 +58,8 @@ namespace HeimdallWeb.Repository
                 message = "Registro salvo com sucesso",
                 source = "FindingRepository",
                 history_id = historyId,
-                details = $"Salvos {findings.Count} achados"
+                details = $"Salvos {findings.Count} achados",
+                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(null)
             });
         }
     }
