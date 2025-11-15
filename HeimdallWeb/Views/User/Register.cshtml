@@ -43,10 +43,10 @@
             <i class="fa-solid fa-lock"></i> Senha
         </label>
             <div class="input-group">
-                <input type="password" class="form-control" asp-for="password" id="password" name="password" placeholder="Crie uma senha válida" required>
+                <input type="password" class="form-control" asp-for="password" id="password_hide" name="password" placeholder="Crie uma senha válida" required>
                 @Html.ValidationMessageFor(x => x.password)
-                <span class="input-group-text"><i class="bi bi-eye-fill" id="hide_eye"></i></span>
-                <span class="input-group-text"><i class="bi bi-eye-slash-fill" id="show_eye"></i></span>
+                <span class="input-group-text rounded-end-3" id="hide_eye"><i class="bi bi-eye-fill" onclick="showPassword()"></i></span>
+                <span class="input-group-text rounded-end-3 d-none" id="show_eye"><i class="bi bi-eye-slash-fill" onclick="showPassword()"></i></span>
             </div>
         </div>
 
@@ -57,8 +57,8 @@
         <div class="input-group">
             <input type="password" class="form-control" asp-for="confirm_password" id="confirm_password" name="confirm_password" placeholder="Confirme sua senha" required>
             @Html.ValidationMessageFor(x => x.confirm_password)
-            <span class="input-group-text"><i class="bi bi-eye-fill" id="hide_eye"></i></span>
-            <span class="input-group-text"><i class="bi bi-eye-slash-fill" id="show_eye"></i></span>
+            <span class="input-group-text rounded-end-3" id="confirm_hide_eye"><i class="bi bi-eye-fill" onclick="showConfirmPassword()"></i></span>
+            <span class="input-group-text rounded-end-3 d-none" id="confirm_show_eye"><i class="bi bi-eye-slash-fill" onclick="showConfirmPassword()"></i></span>
         </div>
         <ul class="regras mt-2">
             <li>No mínimo 8 caracteres</li>
@@ -79,3 +79,6 @@
     </form>
     </div>
 </div>
+
+
+<script src="~/js/eye.js" asp-append-version="true"></script>

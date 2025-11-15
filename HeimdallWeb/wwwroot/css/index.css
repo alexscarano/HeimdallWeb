@@ -1,32 +1,124 @@
+@font-face {
+  font-family: "Roboto";
+  src: url("~/Fontes/Roboto/static/Roboto_Condensed-Regular.ttf");
+}
+@font-face {
+  font-family: "Roboto-Mono";
+  src: url("~/Fontes/Roboto_Mono/static/RobotoMono-Regular.ttf");
+}
+@font-face {
+  font-family: "Roboto-Serif";
+  src: url("~/Fontes/Roboto_Serif/static/RobotoSerif-Regular.ttf");
+}
+.title {
+  font-family: "Roboto-Serif";
+  font-weight: 900;
+  font-size: 3.5rem;
+}
+
+.normal {
+  font-family: "Roboto";
+  font-weight: 300;
+  font-size: 1.5rem;
+}
+
+.minus-title {
+  font-family: "Roboto" !important;
+  font-weight: 500;
+  font-size: 1.25rem;
+}
+
+.minus {
+  font-family: "Roboto-Mono" !important;
+  font-weight: 300;
+  font-size: 1.15rem;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-family: "Roboto-Serif";
+    font-weight: 900;
+    font-size: 2rem;
+  }
+  .normal {
+    font-family: "Roboto";
+    font-weight: 300;
+    font-size: 1.2rem;
+  }
+  .minus-title {
+    font-family: "Roboto" !important;
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+  .minus {
+    font-family: "Roboto-Mono" !important;
+    font-weight: 300;
+    font-size: 0.8rem;
+  }
+}
+@media (max-width: 1200px) {
+  .title {
+    font-family: "Roboto-Serif";
+    font-weight: 900;
+    font-size: 3rem;
+  }
+  .normal {
+    font-family: "Roboto";
+    font-weight: 300;
+    font-size: 1.2rem;
+  }
+  .minus-title {
+    font-family: "Roboto" !important;
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+  .minus {
+    font-family: "Roboto-Mono" !important;
+    font-weight: 300;
+    font-size: 1rem;
+  }
+}
 :root {
   --main-color: #519CAB;
   --secondary-color: #C3E7F1;
-  --tertiary-color: #20373B;
-  --complementary-color: #FFC454;
+  --tertiary-color: #519CAB;
+  --complementary-color: #516FAB;
   --background-color: #EAEAEA;
 }
 
+.gradient-text {
+  background-image: linear-gradient(to right, #d2a64d, #516FAB);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.focus {
+  color: var(--complementary-color);
+}
+
 .btn {
-  background-color: var(--tertiary-color) !important;
+  background-color: var(--complementary-color) !important;
   border: 5px;
-  border-radius: 0.5rem;
   color: whitesmoke;
+  border-radius: 0.5rem;
 }
 
 .btn:hover {
-  background-color: #1c3033;
+  background-color: #3f5fa0 !important;
   color: rgba(245, 245, 245, 0.6431372549);
   border: 5px;
 }
 
 .btn:active {
-  background-color: #1c3033 !important;
+  background-color: #385286 !important;
   color: rgba(245, 245, 245, 0.6431372549) !important;
   border: 5px !important;
 }
 
 .btn:focus {
-  background-color: #1c3033 !important;
+  background-color: #385286 !important;
   color: rgba(245, 245, 245, 0.6431372549) !important;
   border: 5px !important;
 }

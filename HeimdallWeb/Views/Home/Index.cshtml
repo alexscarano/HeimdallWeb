@@ -3,7 +3,6 @@
     <link rel="stylesheet" href="~/css/alerts.css" asp-append-version="true" />
 </head>
 
-
 @{
     ViewData["Title"] = "HeimdallWeb - Home";
 }
@@ -12,13 +11,13 @@
 @* TempData handled globally in _Layout.cshtml *@
 
 <!-- main hero container: switched inline height to a controllable CSS class -->
-<div class="container d-flex justify-content-center hero">
+<div class="container-xl d-flex justify-content-center hero">
 
     <div class="row-cols-lg-2 d-flex justify-content-center align-self-center g-4">
         <div>
-            <div class="mb-5 text-center text-white">
-                <h1 class="display-4 mb-3 fw-bold hero-title">Descubra o quão seguro é seu site!</h1>
-                <p class="lead mb-4 hero-lead">Basta inserir a URL do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais pontos fortes, pontos fracos e possíveis melhorias.</p>
+            <div class="mb-5 text-center text-white hero-title">
+                <h1 class="display-4 mb-3 title gradient-text">Descubra o quão <span class="focus">seguro</span> é seu site!</h1>
+                <p class="lead hero-lead mb-4 normal">Basta inserir a URL do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais pontos fortes, pontos fracos e possíveis melhorias.</p>
             </div>
 
             <div>
@@ -29,8 +28,8 @@
                             <div class="input-button-group w-100 d-flex">
                                 <input type="text" class="form-control form-control-lg input-left" name="domainInput" id="domainInput"  
                                     placeholder="Insira a URL" required />
-                                <button class="btn analyze-btn btn-lg input-right"  type="submit">Analisar</button>
-                                <button class="btn btn-primary btn-lg input-right" type="button">
+                                <button class="btn analyze-btn btn-lg input-right normal"  type="submit" id="analyze" onclick="loading()">Analisar</button>
+                                <button class="btn btn-primary btn-lg input-right d-none normal" id="analyzing" type="button">
                                     <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                                     Analisando...
                                 </button>
@@ -44,19 +43,22 @@
 </div>
 
 <!-- Info boxes section -->
-<section class="info-boxes" aria-label="Informações">
+<section class="info-boxes gap-5" aria-label="Informações">
+
     <div class="info-box info-animation-3">
-        <h5><i class="bi bi-shield-check"></i> Confiabilidade</h5>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus euismod, nunc at pulvinar cursus, nisl urna dapibus justo, sit amet feugiat neque urna at lacus.</p>
+        <h5><i class="bi bi-shield-check minus-title d-flex justify-content-center gap-1"> Confiabilidade</i></h5>
+        <p class="minus">A análise é feita por meio de uma Inteligência Artificial previamente treinada para seguir requisitos e rodar checagens sob instruções pré-estabelecidas, assim como verificar diversos cenários, adicionando maior redundância e confiabilidade.</p>
     </div>
 
     <div class="info-box info-animation-2">
-        <h5><i class="bi bi-shield-lock"></i> Segurança</h5>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet lacus vel justo facilisis gravida. Integer vitae sem ut mauris placerat dictum.</p>
+        <h5><i class="bi bi-shield-lock minus-title d-flex justify-content-center gap-1"> Segurança</i></h5>
+        <p class="minus">Auxiliamos você a maximizar o nível de segurança de seu produto, com base em análises automatizadas, focadas e rápidas, para que as medidas sejam tomadas o quanto antes. Assim como mantemos nossas checagens em dia para que os seus dados fornecidos estejam seguros.</p>
     </div>
 
     <div class="info-box info-animation-1">
-        <h5><i class="bi bi-speedometer2"></i> Performance</h5>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pretium, augue id pulvinar cursus, lectus urna pulvinar urna, a consequat lorem erat in nisl.</p>
+        <h5><i class="bi bi-speedometer2 minus-title d-flex justify-content-center gap-1"> Praticidade</i></h5>
+        <p class="minus">Ao usar o HeimdallWeb na análise de segurança de seu web-site, muito tempo e esforço são poupados, uma vez que o processo de desenvolvimento não terá que sofrer interrupções para testes manuais.</p>
     </div>
 </section>
+
+<script src="~/js/loading.js" asp-append-version="true"></script>

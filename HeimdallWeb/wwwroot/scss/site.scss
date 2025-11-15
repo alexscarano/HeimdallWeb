@@ -49,9 +49,9 @@ html {
   padding-left: 0.6rem;
 }
 
-html {
+body {
   position: relative;
-  min-height: 100%;
+  min-height: 100vh;
 }
 
 /* Add spacing below the main navbar so content doesn't butt up to it.
