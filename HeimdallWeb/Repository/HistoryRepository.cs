@@ -2,6 +2,7 @@
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
+using HeimdallWeb.Enums;
 using HeimdallWeb.Models.Map;
 using Newtonsoft.Json.Linq;
 
@@ -11,11 +12,13 @@ namespace HeimdallWeb.Repository
     {
         private readonly AppDbContext _appDbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogRepository _logRepository;
 
-        public HistoryRepository(AppDbContext appDbContext, IHttpContextAccessor httpContextAccessor)
+        public HistoryRepository(AppDbContext appDbContext, IHttpContextAccessor httpContextAccessor, ILogRepository logRepository)
         {
             _appDbContext = appDbContext;
             _httpContextAccessor = httpContextAccessor;
+            _logRepository = logRepository;
         }
 
         public async Task<bool> deleteHistory(int id)
@@ -56,8 +59,15 @@ namespace HeimdallWeb.Repository
                     PageSize = pageSize
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                await _logRepository.AddLog(new LogModel
+                {
+                    code = LogEventCode.DB_SAVE_ERROR,
+                    message = "Erro ao salvar dados no banco",
+                    source = "HistoryRepository",
+                    details = ex.ToString()
+                });
                 return new PaginatedResult<HistoryModel>();
                 throw;
             }
@@ -133,6 +143,15 @@ namespace HeimdallWeb.Repository
             history.user_id = user_id;
             await _appDbContext.History.AddAsync(history);
             await _appDbContext.SaveChangesAsync();
+
+            await _logRepository.AddLog(new LogModel
+            {
+                code = LogEventCode.DB_SAVE_OK,
+                message = "Registro salvo com sucesso",
+                source = "HistoryRepository",
+                user_id = user_id,
+                history_id = history.history_id
+            });
 
             return history; 
         }

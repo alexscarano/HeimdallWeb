@@ -1,6 +1,8 @@
 ﻿using ASHelpers.Extensions;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
+using HeimdallWeb.Enums;
+using HeimdallWeb.Models;
 
 namespace HeimdallWeb.Services.IA
 {
@@ -11,14 +13,16 @@ namespace HeimdallWeb.Services.IA
         private readonly string _apiUrl = "https://generativelanguage.googleapis.com/v1beta/";
 
         private readonly HttpClient _httpClient;
+        private readonly ILogRepository? _logRepository;
 
-        public GeminiService(IConfiguration config)
+        public GeminiService(IConfiguration config, ILogRepository? logRepository = null)
         {
             _apiKey = config["GEMINI_API_KEY"] ?? throw new ArgumentNullException("Gemini API Key não configurada");
             _httpClient = new HttpClient
             {
                 BaseAddress = new Uri(_apiUrl)
             };
+            _logRepository = logRepository;
         }
 
         public async Task<string> GeneratePrompt(string jsonInput)
@@ -113,6 +117,13 @@ namespace HeimdallWeb.Services.IA
 
             try
             {
+                _logRepository?.AddLog(new LogModel
+                {
+                    code = LogEventCode.AI_REQUEST,
+                    message = "Enviando requisição à IA",
+                    source = "GeminiService"
+                });
+
                 // Cria o conteúdo da requisição em JSON
                 var content = new StringContent(
                       Newtonsoft.Json.JsonConvert.SerializeObject(payload),
@@ -131,11 +142,27 @@ namespace HeimdallWeb.Services.IA
 
                 var parsedResult = result.CorrectWrongNullValues().ToJson();
 
-                return parsedResult["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.ToString().RemoveMarkdown()
+                var aiResponseText = parsedResult["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.ToString().RemoveMarkdown()
                     ?? "Nenhuma resposta gerada.";
+
+                _logRepository?.AddLog(new LogModel
+                {
+                    code = LogEventCode.AI_RESPONSE,
+                    message = "Resposta da IA recebida com sucesso",
+                    source = "GeminiService"
+                });
+
+                return aiResponseText;
             }
             catch (Exception err)
             {
+                _logRepository?.AddLog(new LogModel
+                {
+                    code = LogEventCode.AI_RESPONSE_ERROR,
+                    message = "Falha ao interpretar resposta da IA",
+                    source = "GeminiService",
+                    details = err.ToString()
+                });
                 return $"Erro ao comunicar com o serviço Gemini. {err}";
             } 
         }

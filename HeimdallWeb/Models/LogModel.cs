@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using HeimdallWeb.Enums;
 
 namespace HeimdallWeb.Models;
 
@@ -12,6 +13,12 @@ public class LogModel
     /// </summary>
     [Required]
     public DateTime timestamp { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// Código de id do evento (ex: INIT_SCAN, SCAN_COMPLETED, AI_REQUEST, etc)
+    /// </summary>
+    [MaxLength(45)]
+    public LogEventCode code { get; set; }
 
     /// <summary>
     /// Nível do log: Info, Warning, Error, Critical, Debug

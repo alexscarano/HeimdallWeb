@@ -76,6 +76,8 @@ public class SensitivePathsScanner : IScanner
     {
         try
         {
+            Console.WriteLine("[SensitivePathsScanner] Iniciando varredura de caminhos sensíveis");
+            
             // PASSO 1: Capturar conteúdo da homepage para comparação
             await CaptureHomepageBaselineAsync(target, cancellationToken);
             
@@ -114,6 +116,8 @@ public class SensitivePathsScanner : IScanner
             
             if (fallbackDetection.IsSuspected)
             {
+                Console.WriteLine($"[SensitivePathsScanner] Todos os caminhos retornaram 200 — possível falso-positivo. Razão: {fallbackDetection.Reason}");
+                
                 // Retorna um achado especial indicando fallback global detectado
                 var fallbackFinding = new JObject
                 {
@@ -141,7 +145,7 @@ public class SensitivePathsScanner : IScanner
                     ["sensitivePathScanner"] = new JObject
                     {
                         ["status"] = "suspected-fallback",
-                        ["timestamp"] = DateTime.UtcNow,
+                        ["timestamp"] = DateTime.Now,
                         ["totalChecked"] = listToCheck.Count,
                         ["findings"] = 1,
                         ["results"] = fallbackResults
@@ -164,7 +168,7 @@ public class SensitivePathsScanner : IScanner
             {
                 ["sensitivePathScanner"] = new JObject
                 {
-                    ["timestamp"] = DateTime.UtcNow,
+                    ["timestamp"] = DateTime.Now,
                     ["totalChecked"] = listToCheck.Count,
                     ["findings"] = results.Count,
                     ["results"] = results

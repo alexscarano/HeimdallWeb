@@ -130,6 +130,16 @@
     @* Paginação *@
     @if (Model.TotalPages > 1)
     {
+        
+            int maxPagesToShow = 10;
+            int startPage = Math.Max(1, Model.Page - maxPagesToShow / 2);
+            int endPage = startPage + maxPagesToShow - 1;
+            if (endPage > Model.TotalPages)
+            {
+                endPage = Model.TotalPages;
+                startPage = Math.Max(1, endPage - maxPagesToShow + 1);
+            }
+
         <nav class="mt-3">
             <ul class="pagination justify-content-center">
                 @if (Model.HasPrevious)
@@ -139,10 +149,34 @@
                     </li>
                 }
 
-                @for (int i = 1; i <= Model.TotalPages; i++)
+                @* show first and leading ellipsis if needed *@
+                @if (startPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1&pageSize=@Model.PageSize">1</a>
+                    </li>
+                    @if (startPage > 2)
+                    {
+                        <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                    }
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
                 {
                     <li class="page-item @(i == Model.Page ? "active" : "")">
                         <a class="page-link" href="?page=@i&pageSize=@Model.PageSize">@i</a>
+                    </li>
+                }
+
+                @* trailing ellipsis and last page if needed *@
+                @if (endPage < Model.TotalPages)
+                {
+                    if (endPage < Model.TotalPages - 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@Model.TotalPages&pageSize=@Model.PageSize">@Model.TotalPages</a>
                     </li>
                 }
 

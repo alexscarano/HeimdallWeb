@@ -2,6 +2,7 @@
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
+using HeimdallWeb.Enums;
 using HeimdallWeb.Models.Map;
 
 namespace HeimdallWeb.Repository
@@ -9,10 +10,12 @@ namespace HeimdallWeb.Repository
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _appDbContext;
+        private readonly ILogRepository _logRepository;
 
-        public UserRepository(AppDbContext appDbContext)
+        public UserRepository(AppDbContext appDbContext, ILogRepository logRepository)
         {
             _appDbContext = appDbContext;
+            _logRepository = logRepository;
         }
 
         public async Task<PaginatedResult<UserModel>?> getUsers(string? where, int page, int pageSize)
@@ -62,6 +65,15 @@ namespace HeimdallWeb.Repository
             await _appDbContext.User.AddAsync(user);
             await _appDbContext.SaveChangesAsync();
 
+            await _logRepository.AddLog(new LogModel
+            {
+                code = LogEventCode.DB_SAVE_OK,
+                message = "Registro salvo com sucesso",
+                source = "UserRepository",
+                user_id = user.user_id,
+                details = $"Novo usuário criado: {user.username}"
+            });
+
             return user;
         }
 
@@ -98,6 +110,15 @@ namespace HeimdallWeb.Repository
             userDB.updated_at = DateTime.Now;
 
             await _appDbContext.SaveChangesAsync();
+            
+            await _logRepository.AddLog(new LogModel
+            {
+                code = LogEventCode.DB_SAVE_OK,
+                message = "Registro salvo com sucesso",
+                source = "UserRepository",
+                user_id = userDB.user_id,
+                details = $"Usuário atualizado: {userDB.username}"
+            });
 
             return user;
         }

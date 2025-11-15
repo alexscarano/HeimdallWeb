@@ -14,6 +14,12 @@ public class LogMap : IEntityTypeConfiguration<LogModel>
         builder.Property(l => l.log_id)
             .HasColumnName("log_id");
 
+        builder.Property(l => l.code)
+            .HasColumnName("code")
+            .HasConversion<string>()    
+            .HasMaxLength(45)
+            .IsRequired();
+
         builder.Property(l => l.timestamp)
             .HasColumnName("timestamp")
             .IsRequired();
@@ -48,13 +54,13 @@ public class LogMap : IEntityTypeConfiguration<LogModel>
             .WithMany(u => u.LogModel)
             .HasForeignKey(l => l.user_id)
             .IsRequired(false)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasOne(l => l.History)
             .WithMany(h => h.Logs)
             .HasForeignKey(l => l.history_id)
             .IsRequired(false)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         // optional indexes for common queries
         builder.HasIndex(l => l.timestamp).HasDatabaseName("ix_tb_log_timestamp");

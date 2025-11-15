@@ -3,15 +3,18 @@ using HeimdallWeb.DTO;
 using HeimdallWeb.DTO.Mappers;
 using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
+using HeimdallWeb.Enums;
 
 namespace HeimdallWeb.Repository
 {
     public class TechnologyRepository : ITechnologyRepository
     {
         private readonly AppDbContext _appDbContext;
-        public TechnologyRepository(AppDbContext dbContext)
+        private readonly ILogRepository _logRepository;
+        public TechnologyRepository(AppDbContext dbContext, ILogRepository logRepository)
         {
             _appDbContext = dbContext;
+            _logRepository = logRepository;
         }
 
         public async Task<List<TechnologyModel>> getTechnologiesByHistoryId(int historyId)
@@ -47,6 +50,15 @@ namespace HeimdallWeb.Repository
             
             await _appDbContext.Technology.AddRangeAsync(tecnologias);
             await _appDbContext.SaveChangesAsync();
+            
+            await _logRepository.AddLog(new LogModel
+            {
+                code = LogEventCode.DB_SAVE_OK,
+                message = "Registro salvo com sucesso",
+                source = "TechnologyRepository",
+                history_id = historyId,
+                details = $"Salvas {tecnologias.Count} tecnologias"
+            });
         }
 
     }

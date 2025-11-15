@@ -3,6 +3,7 @@ using System.Text.Json;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
+using HeimdallWeb.Enums;
 using HeimdallWeb.Scanners;
 using HeimdallWeb.Services.IA;
 
@@ -59,7 +60,7 @@ public class ScanService : IScanService
         }
         catch
         {
-            throw new Exception("Não foi possível identificar o usuário atual.");
+            throw new Exception("Nï¿½o foi possï¿½vel identificar o usuï¿½rio atual.");
         }
 
         (var user_usage_count, var user_usage, isUserAdmin) =
@@ -67,7 +68,7 @@ public class ScanService : IScanService
 
         if (!isUserAdmin && user_usage_count > _maxRequests)
         {
-            throw new Exception($"O limite diário de requisições ({_maxRequests}) foi atingido");
+            throw new Exception($"O limite diï¿½rio de requisiï¿½ï¿½es ({_maxRequests}) foi atingido");
         }
 
         var stopwatch = Stopwatch.StartNew();
@@ -76,6 +77,15 @@ public class ScanService : IScanService
         var linkedToken = linkedCts.Token;
 
         string domain = domainRaw.NormalizeUrl();
+
+        await _logRepository.AddLog(new LogModel
+        {
+            code = LogEventCode.INIT_SCAN,
+            message = "Iniciando processo de varredura",
+            source = "ScanService",
+            user_id = currentUserId,
+            details = $"Target: {domain}"
+        });
 
         // Run scanners
         var scanner = new ScannerManager();
@@ -89,9 +99,25 @@ public class ScanService : IScanService
             // Preprocess JSON
             JsonPreprocessor.PreProcessScanResults(ref jsonString);
 
+            await _logRepository.AddLog(new LogModel
+            {
+                code = LogEventCode.AI_REQUEST,
+                message = "Enviando requisiÃ§Ã£o Ã  IA",
+                source = "ScanService",
+                user_id = currentUserId
+            });
+
             // Call IA
-            var gemini = new GeminiService(_config);
+            var gemini = new GeminiService(_config, _logRepository);
             var iaResponse = await gemini.GeneratePrompt(jsonString);
+
+            await _logRepository.AddLog(new LogModel
+            {
+                code = LogEventCode.AI_RESPONSE,
+                message = "Resposta da IA recebida com sucesso",
+                source = "ScanService",
+                user_id = currentUserId
+            });
 
             using var doc = JsonDocument.Parse(iaResponse);
 
@@ -123,21 +149,45 @@ public class ScanService : IScanService
                                 ? user_usage.request_counts + 1 : 0
                 });
                 
+                await _logRepository.AddLog(new LogModel
+                {
+                    code = LogEventCode.DB_SAVE_OK,
+                    message = "Registro salvo com sucesso",
+                    source = "ScanService",
+                    user_id = currentUserId,
+                    history_id = historyId
+                });
 
                 await tx.CommitAsync(cancellationToken);
 
                 return historyId;
             }
-            catch
+            catch (Exception dbEx)
             {
+                await _logRepository.AddLog(new LogModel
+                {
+                    code = LogEventCode.DB_SAVE_ERROR,
+                    message = "Erro ao salvar dados no banco",
+                    source = "ScanService",
+                    user_id = currentUserId,
+                    details = dbEx.ToString()
+                });
                 await tx.RollbackAsync(cancellationToken);
                 throw;
             }
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException ex)
         {
+            await _logRepository.AddLog(new LogModel
+            {
+                code = LogEventCode.SCAN_ERROR,
+                message = "Erro durante o processo de scan",
+                source = "ScanService",
+                user_id = currentUserId,
+                details = ex.ToString()
+            });
             if (cancellationToken.IsCancellationRequested)
-                throw new OperationCanceledException("O usuário cancelou a requisição.");
+                throw new OperationCanceledException("O usuÃ¡rio cancelou a requisiÃ§Ã£o.");
             throw new TimeoutException("O scan demorou muito tempo e foi cancelado.");
         }
     }

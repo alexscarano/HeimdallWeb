@@ -10,9 +10,11 @@ namespace HeimdallWeb.Repository
     public class FindingRepository : IFindingRepository
     {
         private readonly AppDbContext _appDbContext;
-        public FindingRepository(AppDbContext appDbContext)
+        private readonly ILogRepository _logRepository;
+        public FindingRepository(AppDbContext appDbContext, ILogRepository logRepository)
         {
              _appDbContext = appDbContext;
+             _logRepository = logRepository;
         }
 
         public async Task<List<FindingModel>> getFindingsByHistoryId(int history_id)
@@ -48,6 +50,15 @@ namespace HeimdallWeb.Repository
 
             await _appDbContext.Finding.AddRangeAsync(findings);
             await _appDbContext.SaveChangesAsync();
+            
+            await _logRepository.AddLog(new LogModel
+            {
+                code = LogEventCode.DB_SAVE_OK,
+                message = "Registro salvo com sucesso",
+                source = "FindingRepository",
+                history_id = historyId,
+                details = $"Salvos {findings.Count} achados"
+            });
         }
     }
 }

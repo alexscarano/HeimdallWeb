@@ -46,6 +46,7 @@ namespace HeimdallWeb.Scanners
                 var allHeaders = headers.Concat(contentHeaders)
                                         .ToDictionary(h => h.Key, h => h.Value);
 
+                Console.WriteLine("[HeaderScanner] Verificando headers HTTP");
 
                 var present = new Dictionary<string, string>();
                 var weak = new Dictionary<string, string>();
@@ -69,6 +70,7 @@ namespace HeimdallWeb.Scanners
                 var cookies = new JArray();
                 if (response.Headers.TryGetValues("Set-Cookie", out var sessionCookies))
                 {
+                    Console.WriteLine("[HeaderScanner] Inspecionando cookies e flags de segurança");
                     foreach (var cookie in sessionCookies)
                     {
                         var cookieObj = AnalyzeCookie(cookie);

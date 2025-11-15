@@ -1,4 +1,5 @@
-﻿using HeimdallWeb.Interfaces;
+﻿using HeimdallWeb.Enums;
+using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
 using HeimdallWeb.Models.Map;
 
@@ -13,14 +14,27 @@ public class LogRepository : ILogRepository
         _dbContext = dbContext;
     }
 
-    public async Task<bool> AddLog(LogModel log)
+    public async Task<bool> AddLog(LogModel entry)
     {
         try
         {   
-            if (log is null)
+            if (entry is null)
                 return false;
 
-            await _dbContext.Log.AddAsync(log);
+            var model = new LogModel
+            {
+                code = entry.code, 
+                timestamp = DateTime.Now,
+                level = GetLevel(entry.code),
+                source = entry.source ?? "SYSTEM",
+                message = entry.message, 
+                details = entry.details,
+                user_id = entry.user_id,
+                history_id = entry.history_id,
+                remote_ip = entry.remote_ip
+            };
+
+            await _dbContext.Log.AddAsync(model);
             await _dbContext.SaveChangesAsync();
 
             return true;
@@ -117,4 +131,17 @@ public class LogRepository : ILogRepository
         }
     }
 
+    private string GetLevel(LogEventCode code)
+    {
+        return code switch
+        {
+            LogEventCode.SCAN_ERROR => "ERROR",
+            LogEventCode.AI_RESPONSE_ERROR => "ERROR",
+            LogEventCode.DB_SAVE_ERROR => "ERROR",
+            LogEventCode.UNHANDLED_EXCEPTION => "CRITICAL",
+            LogEventCode.USER_LOGIN_FAILED => "WARNING",
+            LogEventCode.PATH_SUSPECTED_FALLBACK => "WARNING",
+            _ => "INFO"
+        };
+    }
 }

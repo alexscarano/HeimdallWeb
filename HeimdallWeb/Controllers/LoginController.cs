@@ -2,6 +2,7 @@ using HeimdallWeb.DTO;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
 using HeimdallWeb.Models;
+using HeimdallWeb.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,10 +12,12 @@ public class LoginController : Controller
 {
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _config;
-    public LoginController(IUserRepository userRepository, IConfiguration config)
+    private readonly ILogRepository _logRepository;
+    public LoginController(IUserRepository userRepository, IConfiguration config, ILogRepository logRepository)
     {
         _userRepository = userRepository;
         _config = config;
+        _logRepository = logRepository;
     }
 
     [HttpGet]
@@ -38,17 +41,41 @@ public class LoginController : Controller
 
                     if (!string.IsNullOrEmpty(token))
                     {
+                        await _logRepository.AddLog(new LogModel
+                        {
+                            code = LogEventCode.USER_LOGIN,
+                            message = "Usuário autenticado com sucesso",
+                            source = "LoginController",
+                            user_id = userDB.user_id,
+                            remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                        });
                         TempData["OkMsg"] = "Login concluido com sucesso!";
                         CookiesHelper.generateAuthCookie(Response, token);
                         return RedirectToAction("Index", "Home");
                     }
                 }
             }
+            await _logRepository.AddLog(new LogModel
+            {
+                code = LogEventCode.USER_LOGIN_FAILED,
+                message = "Falha na autenticação do usuário",
+                source = "LoginController",
+                details = $"Tentativa de login com: {user.emailOrLogin}",
+                remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+            });
             TempData["ErrorMsg"] = "Credenciais inválidas";
             return RedirectToAction("Index", "Home");
         }
-        catch (System.Exception)
+        catch (System.Exception ex)
         {
+            await _logRepository.AddLog(new LogModel
+            {
+                code = LogEventCode.USER_LOGIN_FAILED,
+                message = "Falha na autenticação do usuário",
+                source = "LoginController",
+                details = ex.Message,
+                remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+            });
             TempData["ErrorMsg"] = "Credenciais inválidas";
         }
         return RedirectToAction("Index", "Home");
