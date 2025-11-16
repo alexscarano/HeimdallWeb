@@ -12,10 +12,14 @@ public class UserController : Controller
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _config;
 
+    public IActionResult Login() => View();
+    public IActionResult Register() => View();
+
+
     private async Task<string> SaveProfileImageAsync(IFormFile file)
     {
         if (file is null || file.Length == 0)
-            return null;
+            throw new IOException("Houve um erro ao fazer upload do arquivo");
 
         string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "users");
 
@@ -41,24 +45,7 @@ public class UserController : Controller
     }
 
     [Authorize]
-    public IActionResult Delete()
-    {
-        return View();
-    }
-
-    public IActionResult Login()
-    {
-        return View();
-    }
-
-    public IActionResult Register()
-    {
-        return View();
-    }
-
-    [HttpGet]
-    [Authorize]
-    public async Task<IActionResult> Edit()
+    public async Task<IActionResult> Profile()
     {
         int? userId = TokenService.GetUserIdFromClaims(User);
         if (userId is null) return RedirectToAction("Index", "Home");
@@ -73,11 +60,11 @@ public class UserController : Controller
                 user_id = user.user_id,
                 username = user.username,
                 email = user.email,
-                // não preencha password/confirm_password por segurança
             },
             DeleteUser = new DeleteUserDTO()
         };
 
+        // Pass the model to the view so the form includes the current user_id and other values
         return View(model);
     }
 
@@ -89,12 +76,11 @@ public class UserController : Controller
             ModelState.Remove(nameof(user.Histories));
             if (ModelState.IsValid)
             {
-
                 if (!await _userRepository.VerifyIfUserExists(user))
                 {
                     await _userRepository.InsertUser(user);
                     string token = TokenService.generateToken(user, _config);
-                    CookiesHelper.generateAuthCookie(Response, token);  
+                    CookiesHelper.generateAuthCookie(Response, token);
                     TempData["OkMsg"] = "O usuário foi cadastrado com sucesso";
                     return RedirectToAction("Index", "Home");
                 }
@@ -107,19 +93,36 @@ public class UserController : Controller
         }
         return View("Register", user);
     }
-
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Edit(UserEditViewModel model, string? action)
+    public async Task<IActionResult> Profile(UserEditViewModel model, string? action)
     {
         try
         {
-            // 'action' vem do name do botão submit (ex.: name="action" value="update" ou "delete")
+            // Remove model state entries for the unrelated nested model depending on the action
+            if (action == "update")
+            {
+                var keysToRemove = ModelState.Keys.Where(k => k.StartsWith(nameof(model.DeleteUser))).ToList();
+                ModelState.Remove($"{nameof(model.UpdateUser)}.{nameof(model.UpdateUser.user_id)}");
+                foreach (var k in keysToRemove) ModelState.Remove(k);
+            }
+            else if (action == "delete")
+            {
+                var keysToRemove = ModelState.Keys.Where(k => k.StartsWith(nameof(model.UpdateUser))).ToList();
+                foreach (var k in keysToRemove) ModelState.Remove(k);
+            }
+
             int? userId = TokenService.GetUserIdFromClaims(User);
             if (userId is null)
             {
-                TempData["ErrorMsg"] = "Erro de autenticação.";
-                return View(model);
+                TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário";
+                return View("Profile", model);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário";
+                return View("Profile", model);
             }
 
             if (action == "update")
@@ -127,7 +130,6 @@ public class UserController : Controller
                 // garante que o user_id é o do token
                 model.UpdateUser.user_id = userId.Value;
 
-                // Verificações de negócio usando UpdateUser
                 if (await _userRepository.VerifyIfUserExistsWithLogin(model.UpdateUser))
                 {
                     TempData["ErrorMsg"] = "Já existe um usuário com este login, tente outro.";
@@ -141,7 +143,7 @@ public class UserController : Controller
                 }
 
                 var userDb = await _userRepository.getUserById(userId.Value);
-                if (userDb == null)
+                if (userDb is null)
                 {
                     TempData["ErrorMsg"] = "Usuário não encontrado.";
                     return View(model);
@@ -150,7 +152,7 @@ public class UserController : Controller
                 if (model.ProfileImage is not null)
                 {
                     string? imagePath = await SaveProfileImageAsync(model.ProfileImage);
-                    if (imagePath != null)
+                    if (imagePath is not null)
                     {
                         model.UpdateUser.profile_image_path = imagePath;
                     }
@@ -162,23 +164,14 @@ public class UserController : Controller
             }
             else if (action == "delete")
             {
-                // valida apenas o DeleteUser
-                if (!TryValidateModel(model.DeleteUser, prefix: "DeleteUser"))
-                {
-                    TempData["ErrorMsg"] = "Corrija os erros no formulário de exclusão.";
-                    return View(model);
-                }
-
-                // confirmar senha (exemplo: verificar se senha bate com a do DB)
                 var userDb = await _userRepository.getUserById(userId.Value);
-                if (userDb == null)
+                if (userDb is null)
                 {
                     TempData["ErrorMsg"] = "Usuário não encontrado.";
                     return View(model);
                 }
 
-                // exemplo de método para verificar senha
-                if (!PasswordUtils.VerifyPassword(userDb.password, model.DeleteUser.password))
+                if (!PasswordUtils.VerifyPassword(model.DeleteUser.password, userDb.password))
                 {
                     TempData["ErrorMsg"] = "Senha inválida.";
                     return View(model);
@@ -191,68 +184,29 @@ public class UserController : Controller
                 }
 
                 await _userRepository.DeleteUser(userId.Value);
+                CookiesHelper.deleteAuthCookie(Response);
                 TempData["OkMsg"] = "Usuário excluído com sucesso.";
                 return RedirectToAction("Index", "Home");
             }
-
-            // Se action não vier ou for inválida, volta para a view com uma mensagem
-            TempData["ErrorMsg"] = "Ação inválida.";
-            return View(model);
-
         }
-        catch (IOException e)
+        catch (IOException)
         {
-            TempData["ErrorMsg"] = $"Ocorreu um erro ao fazer o upload da imagem. {e}";
+            TempData["ErrorMsg"] = $"Ocorreu um erro ao fazer o upload da imagem.";
             return View(model);
         }
-        catch (UnauthorizedAccessException e)
+        catch (UnauthorizedAccessException)
         {
-            TempData["ErrorMsg"] = $"Permissão negada ao salvar a imagem. {e}";
+            TempData["ErrorMsg"] = $"Houve um erro em atualizar o usuário";
             return View(model);
-        }
-        catch (Exception e)
-        {
-            TempData["ErrorMsg"] = $"Deu merda aqui. {e}";
-            return View(model);
-        }
-    }
-
-    [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> Delete(int id, DeleteUserDTO userToDelete)
-    {
-        try
-        {
-            int? userId = TokenService.GetUserIdFromClaims(User);
-            if (userId is null)
-            {
-                return View("Edit", userToDelete);
-            }
-
-            id = userId.Value;
-
-            var userDB = await _userRepository.getUserById(id) ?? throw new Exception("Náo foi possável fazer a consulta do usuário");
-
-            if (PasswordUtils.VerifyPassword(userToDelete.password, userDB.password))
-            {
-                bool deleted = await _userRepository.DeleteUser(id);
-
-                if (deleted)
-                {
-                    CookiesHelper.deleteAuthCookie(Response);
-                    TempData["OkMsg"] = "Usuário deletado com sucesso, volte sempre.";
-                    return RedirectToAction("Index", "Login");
-                }
-            }
-            TempData["ErrorMsg"] = "Senha incorreta, tente novamente.";
         }
         catch (Exception)
         {
-            TempData["ErrorMsg"] = "Ocorreu um erro ao tentar deletar o usuário, tente novamente.";
-            return View("Delete");
+            TempData["ErrorMsg"] = $"Houve um erro em atualizar o usuário";
+            return View(model);
         }
 
-        return View("Delete", userToDelete);
+        return RedirectToAction("Index", "Home");
     }
-
 }
+
+

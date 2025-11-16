@@ -53,7 +53,12 @@ public class DashboardRepository : IDashboardRepository
         _logger = logger;
     }
 
-    public async Task<AdminDashboardViewModel> GetAdminDashboardDataAsync(int logPage = 1, int logPageSize = 10)
+    public async Task<AdminDashboardViewModel> GetAdminDashboardDataAsync(
+        int logPage = 1, 
+        int logPageSize = 10,
+        string? logLevel = null,
+        DateTime? logStartDate = null,
+        DateTime? logEndDate = null)
     {
         try
         {
@@ -61,7 +66,7 @@ public class DashboardRepository : IDashboardRepository
             var userStats = await GetUserStatsAsync();
             var scanStats = await GetScanStatsAsync();
             var logsOverview = await GetLogsOverviewAsync();
-            var recentActivity = await GetRecentActivityAsync(logPage, logPageSize);
+            var recentActivity = await GetRecentActivityAsync(logPage, logPageSize, logLevel, logStartDate, logEndDate);
             var scanTrend = await GetScanTrendAsync();
             var userRegTrend = await GetUserRegistrationTrendAsync();
 
@@ -120,10 +125,32 @@ public class DashboardRepository : IDashboardRepository
         }) ?? new DashboardLogsOverview();
     }
 
-    private async Task<PaginatedResult<DashboardRecentActivity>> GetRecentActivityAsync(int page, int pageSize)
+    private async Task<PaginatedResult<DashboardRecentActivity>> GetRecentActivityAsync(
+        int page, 
+        int pageSize,
+        string? logLevel = null,
+        DateTime? logStartDate = null,
+        DateTime? logEndDate = null)
     {
-        // Não usar cache para atividade recente paginada (diferente por página)
+        // Não usar cache para atividade recente paginada (diferente por página e filtros)
         var query = _context.Set<DashboardRecentActivity>().AsNoTracking();
+
+        // Aplicar filtros conforme LogRepository
+        if (!string.IsNullOrWhiteSpace(logLevel))
+            query = query.Where(l => l.level == logLevel);
+
+        if (logStartDate.HasValue)
+        {
+            var s = logStartDate.Value.Date;
+            query = query.Where(l => l.timestamp >= s);
+        }
+
+        if (logEndDate.HasValue)
+        {
+            var eExclusive = logEndDate.Value.Date.AddDays(1);
+            query = query.Where(l => l.timestamp < eExclusive);
+        }
+        
         var totalCount = await query.CountAsync();
         
         var items = await query

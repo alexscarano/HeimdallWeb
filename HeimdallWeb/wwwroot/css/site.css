@@ -69,3 +69,20 @@ body {
 }
 
 /*# sourceMappingURL=site.css.map */
+
+/* Make native select dropdown options readable when inputs are styled dark */
+/* Some browsers/OSes honor option color/background. Provide a safe default. */
+select.form-select option {
+  color: #212529; /* dark text for dropdown items */
+  background-color: #ffffff;
+}
+
+/* Keep the closed select value light on dark backgrounds, but dropdown items
+   should remain readable */
+.form-select.bg-transparent,
+.form-select.bg-dark,
+.form-control.bg-transparent,
+.form-control.bg-dark {
+  color: #ffffff;
+}
+

@@ -26,18 +26,20 @@
             
             @if (Model.isAuthenticated) 
             {
-                <div class="dropdown nav-item">
-                <a href="#" role="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Perfil</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
-                        @if (User.IsInRole("2"))
-                        {
-                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="dashboard">Dashboard</a>
-                        }
-                        <a class="dropdown-item" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
-                        <a class="dropdown-item" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
-                    </div>
+                <div class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="User" asp-action="Profile">Perfil</a>
                 </div>
+
+                <div class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
+                </div>
+
+                @if (User.IsInRole("2"))
+                {
+                    <div class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="dashboard">Dashboard</a>
+                    </div>
+                }
 
                 <div class="nav-item">
                     <a class="nav-link" role="button" asp-controller="Login" asp-action="Logout">Sair</a>

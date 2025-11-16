@@ -33,7 +33,12 @@ namespace HeimdallWeb.Controllers
         /// </summary>
         [Authorize(Roles = "2")]
         [HttpGet]
-        public async Task<IActionResult> Dashboard(int logPage = 1, int logPageSize = 10)
+        public async Task<IActionResult> Dashboard(
+            int logPage = 1, 
+            int logPageSize = 10,
+            string? logLevel = null,
+            DateTime? logStartDate = null,
+            DateTime? logEndDate = null)
         {
             try
             {
@@ -41,7 +46,13 @@ namespace HeimdallWeb.Controllers
                 logPage = Math.Max(logPage, 1);
                 logPageSize = Math.Min(Math.Max(logPageSize, 5), 50); // entre 5 e 50
                 
-                var viewModel = await _dashboardRepository.GetAdminDashboardDataAsync(logPage, logPageSize);
+                // Passar filtros para ViewData para repopular form
+                ViewData["LogLevel"] = logLevel;
+                ViewData["LogStartDate"] = logStartDate?.ToString("yyyy-MM-dd");
+                ViewData["LogEndDate"] = logEndDate?.ToString("yyyy-MM-dd");
+                
+                var viewModel = await _dashboardRepository.GetAdminDashboardDataAsync(
+                    logPage, logPageSize, logLevel, logStartDate, logEndDate);
                 return View(viewModel);
             }
             catch (Exception ex)

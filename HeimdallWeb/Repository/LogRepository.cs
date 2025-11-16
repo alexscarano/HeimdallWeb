@@ -78,10 +78,17 @@ public class LogRepository : ILogRepository
                 query = query.Where(l => l.level == levelFilter);
 
             if (startDate.HasValue)
-                query = query.Where(l => l.timestamp >= startDate.Value);
+            {
+                var s = startDate.Value.Date;
+                query = query.Where(l => l.timestamp >= s);
+            }
 
             if (endDate.HasValue)
-                query = query.Where(l => l.timestamp <= endDate.Value);
+            {
+                // Treat endDate as inclusive for the whole day by using an exclusive upper bound
+                var eExclusive = endDate.Value.Date.AddDays(1);
+                query = query.Where(l => l.timestamp < eExclusive);
+            }
 
             var totalCount = await query.CountAsync();
 
@@ -117,10 +124,16 @@ public class LogRepository : ILogRepository
                 query = query.Where(l => l.level == levelFilter);
 
             if (startDate.HasValue)
-                query = query.Where(l => l.timestamp >= startDate.Value);
+            {
+                var s = startDate.Value.Date;
+                query = query.Where(l => l.timestamp >= s);
+            }
 
             if (endDate.HasValue)
-                query = query.Where(l => l.timestamp <= endDate.Value);
+            {
+                var eExclusive = endDate.Value.Date.AddDays(1);
+                query = query.Where(l => l.timestamp < eExclusive);
+            }
 
             return await query.CountAsync();
         }

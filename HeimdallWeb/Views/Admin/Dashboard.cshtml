@@ -191,6 +191,76 @@
     <!-- Atividade Recente -->
     <div class="row">
         <div class="col-12 mb-4">
+            <!-- Filtros de Log -->
+            <form method="get" class="mb-3 p-3 bg-dark rounded-3 shadow-sm">
+                <div class="row g-3">
+                    <!-- Filtro Nível -->
+                    <div class="col-md-3">
+                        <label for="logLevel" class="form-label text-light">Nível</label>
+                        <select name="logLevel" id="logLevel" class="form-select bg-transparent text-light border-secondary">
+                            <option value="">Todos</option>
+                            @{ 
+                                var __logLevelSel = ViewData["LogLevel"]?.ToString();
+                            }
+                            @if (__logLevelSel == "INFO")
+                            {
+                                <option value="INFO" selected>INFO</option>
+                            }
+                            else
+                            {
+                                <option value="INFO">INFO</option>
+                            }
+                            @if (__logLevelSel == "WARNING")
+                            {
+                                <option value="WARNING" selected>WARNING</option>
+                            }
+                            else
+                            {
+                                <option value="WARNING">WARNING</option>
+                            }
+                            @if (__logLevelSel == "ERROR")
+                            {
+                                <option value="ERROR" selected>ERROR</option>
+                            }
+                            else
+                            {
+                                <option value="ERROR">ERROR</option>
+                            }
+                            @if (__logLevelSel == "CRITICAL")
+                            {
+                                <option value="CRITICAL" selected>CRITICAL</option>
+                            }
+                            else
+                            {
+                                <option value="CRITICAL">CRITICAL</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Data Início -->
+                    <div class="col-md-3">
+                        <label for="logStartDate" class="form-label text-light">Data Início</label>
+                        <input type="date" name="logStartDate" id="logStartDate" class="form-control bg-transparent text-light border-secondary" value="@ViewData["LogStartDate"]" />
+                    </div>
+
+                    <!-- Data Fim -->
+                    <div class="col-md-3">
+                        <label for="logEndDate" class="form-label text-light">Data Fim</label>
+                        <input type="date" name="logEndDate" id="logEndDate" class="form-control bg-transparent text-light border-secondary" value="@ViewData["LogEndDate"]" />
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="col-md-3 d-flex align-items-end gap-2">
+                        <button type="submit" class="btn btn-outline-primary" title="Filtrar">
+                            <i class="fas fa-search"></i> Filtrar
+                        </button>
+                        <a href="@Url.Action("Dashboard", "Admin")" class="btn btn-outline-secondary" title="Limpar Filtros">
+                            <i class="fas fa-times"></i> Limpar
+                        </a>
+                    </div>
+                </div>
+            </form>
+
             <div class="card bg-dark text-white">
                 <div class="card-header">
                     <h5 class="card-title m-0"><i class="fas fa-history"></i> Atividade Recente</h5>
@@ -260,7 +330,7 @@
                                     @if (Model.RecentActivity.HasPrevious)
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="?logPage=@(Model.RecentActivity.Page - 1)&logPageSize=@Model.RecentActivity.PageSize">Anterior</a>
+                                            <a class="page-link" href="?logPage=@(Model.RecentActivity.Page - 1)&logPageSize=@Model.RecentActivity.PageSize&logLevel=@ViewData["LogLevel"]&logStartDate=@ViewData["LogStartDate"]&logEndDate=@ViewData["LogEndDate"]">Anterior</a>
                                         </li>
                                     }
 
@@ -278,7 +348,7 @@
                                     @if (startPage > 1)
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="?logPage=1&logPageSize=@Model.RecentActivity.PageSize">1</a>
+                                            <a class="page-link" href="?logPage=1&logPageSize=@Model.RecentActivity.PageSize&logLevel=@ViewData["LogLevel"]&logStartDate=@ViewData["LogStartDate"]&logEndDate=@ViewData["LogEndDate"]">1</a>
                                         </li>
                                         @if (startPage > 2)
                                         {
@@ -289,7 +359,7 @@
                                     @for (int i = startPage; i <= endPage; i++)
                                     {
                                         <li class="page-item @(i == Model.RecentActivity.Page ? "active" : "")">
-                                            <a class="page-link" href="?logPage=@i&logPageSize=@Model.RecentActivity.PageSize">@i</a>
+                                            <a class="page-link" href="?logPage=@i&logPageSize=@Model.RecentActivity.PageSize&logLevel=@ViewData["LogLevel"]&logStartDate=@ViewData["LogStartDate"]&logEndDate=@ViewData["LogEndDate"]">@i</a>
                                         </li>
                                     }
 
@@ -300,14 +370,14 @@
                                             <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
                                         }
                                         <li class="page-item">
-                                            <a class="page-link" href="?logPage=@Model.RecentActivity.TotalPages&logPageSize=@Model.RecentActivity.PageSize">@Model.RecentActivity.TotalPages</a>
+                                            <a class="page-link" href="?logPage=@Model.RecentActivity.TotalPages&logPageSize=@Model.RecentActivity.PageSize&logLevel=@ViewData["LogLevel"]&logStartDate=@ViewData["LogStartDate"]&logEndDate=@ViewData["LogEndDate"]">@Model.RecentActivity.TotalPages</a>
                                         </li>
                                     }
 
                                     @if (Model.RecentActivity.HasNext)
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="?logPage=@(Model.RecentActivity.Page + 1)&logPageSize=@Model.RecentActivity.PageSize">Próxima</a>
+                                            <a class="page-link" href="?logPage=@(Model.RecentActivity.Page + 1)&logPageSize=@Model.RecentActivity.PageSize&logLevel=@ViewData["LogLevel"]&logStartDate=@ViewData["LogStartDate"]&logEndDate=@ViewData["LogEndDate"]">Próxima</a>
                                         </li>
                                     }
                                 </ul>
