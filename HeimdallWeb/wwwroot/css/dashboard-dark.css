@@ -594,12 +594,6 @@
   text-align: center !important;
 }
 
-.swal2-popup {
-  background: rgba(16, 24, 25, 0.95) !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  border-radius: 0.85rem !important;
-}
-
 .swal2-title {
   color: #ffffff !important;
   font-weight: 600;
@@ -618,7 +612,6 @@
 }
 
 .swal2-confirm {
-  background: transparent !important;
   color: #2a6b6d !important;
   border: 1px solid rgba(42, 107, 109, 0.9) !important;
 }
@@ -641,28 +634,7 @@
 .swal2-icon {
   box-shadow: none !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-.swal2-icon.swal2-warning {
   color: #fff !important;
-  border-color: #facea8 !important;
-}
-
-.swal2-icon.swal2-success {
-  border-color: #2a6b6d !important;
-}
-.swal2-icon.swal2-success [class^=swal2-success-line] {
-  background-color: #2a6b6d !important;
-}
-.swal2-icon.swal2-success .swal2-success-ring {
-  border-color: rgba(42, 107, 109, 0.3) !important;
-}
-
-.swal2-icon.swal2-error {
-  border-color: #c94b56 !important;
-}
-.swal2-icon.swal2-error [class^=swal2-x-mark-line] {
-  background-color: #c94b56 !important;
 }
 
 .swal2-footer {

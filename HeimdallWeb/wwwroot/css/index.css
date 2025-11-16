@@ -24,7 +24,7 @@
 
 .normal-italic {
   font-family: "Roboto";
-  font-weight: 400;
+  font-weight: 500;
   font-size: 1.5rem;
   font-style: italic;
 }
@@ -41,26 +41,32 @@
   font-size: 1.15rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 680px) {
   .title {
     font-family: "Roboto-Serif";
     font-weight: 900;
-    font-size: 2rem;
+    font-size: 2.5rem !important;
   }
   .normal {
     font-family: "Roboto";
-    font-weight: 300;
-    font-size: 1.2rem;
+    font-weight: 400 !important;
+    font-size: 1.2rem !important;
+  }
+  .normal-italic {
+    font-family: "Roboto";
+    font-weight: 500 !important;
+    font-size: 1.2rem !important;
+    font-style: italic;
   }
   .minus-title {
     font-family: "Roboto" !important;
     font-weight: 500;
-    font-size: 1.1rem;
+    font-size: 1.1rem !important;
   }
   .minus {
     font-family: "Roboto-Mono" !important;
     font-weight: 300;
-    font-size: 0.8rem;
+    font-size: 0.95rem !important;
   }
 }
 @media (max-width: 1200px) {
@@ -71,8 +77,14 @@
   }
   .normal {
     font-family: "Roboto";
-    font-weight: 300;
+    font-weight: 400;
     font-size: 1.2rem;
+  }
+  .normal-italic {
+    font-family: "Roboto";
+    font-weight: 500;
+    font-size: 1.2rem;
+    font-style: italic;
   }
   .minus-title {
     font-family: "Roboto" !important;
@@ -136,11 +148,6 @@
   background-color: #385286 !important;
   color: rgba(245, 245, 245, 0.6431372549) !important;
   border: 5px !important;
-}
-
-.dropdown-item:active {
-  background-color: #FFC454 !important;
-  color: #282c30 !important;
 }
 
 /* Ensure hero input background and placeholder are set in source (moved from compiled css) */

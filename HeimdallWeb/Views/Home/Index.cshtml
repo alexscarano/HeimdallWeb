@@ -1,6 +1,5 @@
 ﻿<head>
     <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/alerts.css" asp-append-version="true" />
 </head>
 
 <style>
@@ -15,32 +14,29 @@
 @* TempData handled globally in _Layout.cshtml *@
 
 <!-- main hero container: switched inline height to a controllable CSS class -->
-<div class="container-xl d-flex justify-content-center hero">
+<div class="container-md d-flex justify-content-center align-content-center hero">
 
-    <div class="row-cols-lg-2 d-flex justify-content-center align-self-center g-4 hero-box">
-        <div>
+    <div class="row-cols-lg-2 d-flex justify-content-center g-4 hero-box">
+        <div class="d-flex flex-column">
             <div class="mb-5 text-center text-white hero-title py-5">
                 <h1 class="display-4 mb-3 title gradient-text">Descubra o quão seguro é seu site!</h1>
                 <p class="lead hero-lead mb-4 normal text-black gradient-text-mini">Basta <span class="normal-italic"> inserir a URL </span> do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais <span class="normal-italic">pontos fortes, pontos fracos e possíveis melhorias</span>.</p>
             </div>
-
-            <div>
-                <div class="shadow-lg border-0 rounded-5 p-0">
-                    <form id="scanForm" asp-controller="Home" asp-action="Scan" method="post"> 
-                        <!-- new layout: input and button adjacent and flush -->
-                        <div class="hero-form d-flex align-items-center">
-                            <div class="input-button-group w-100 d-flex">
-                                <input type="text" class="form-control form-control-lg input-left" name="domainInput" id="domainInput"  
-                                    placeholder="Insira a URL" required />
-                                <button class="btn analyze-btn btn-lg input-right normal"  type="submit" id="analyze" onclick="loading()">Analisar</button>
-                                <button class="btn btn-primary btn-lg input-right d-none normal" id="analyzing" type="button">
-                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                    Analisando...
-                                </button>
-                            </div>
+            <div class="shadow-lg border-0 rounded-5 p-0">
+                <form id="scanForm" asp-controller="Home" asp-action="Scan" method="post"> 
+                    <!-- new layout: input and button adjacent and flush -->
+                    <div class="hero-form d-flex align-items-center">
+                        <div class="input-button-group">
+                            <input type="text" class="form-control form-control-lg input-left" name="domainInput" id="domainInput"  
+                                placeholder="Insira a URL" required />
+                            <button class="btn analyze-btn btn-lg input-right normal"  type="submit" id="analyze" onclick="loading()">Analisar</button>
+                            <button class="btn btn-primary btn-lg input-right d-none normal" id="analyzing" type="button">
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                Analisando...
+                            </button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
