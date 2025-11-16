@@ -4,77 +4,80 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/history-dark.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/edit-dark.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/profile-dark.css" asp-append-version="true" />
 </head>
 
-<div class="container mb-4">
-    <div class="d-flex justify-content-between align-items-center py-3 bg-dark rounded-3 text-white history-header">
-        <div class="d-flex align-items-center gap-3">
-            <h4 class="m-0">Alterar dados da conta</h4>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-            <a class="btn btn-outline-light btn-sm" asp-controller="History" asp-action="Index">Histórico</a>
-            @if (User.IsInRole("2"))
-            {
-                <a class="btn btn-outline-light btn-sm" asp-controller="Admin" asp-action="Dashboard">Painel de Admin</a>
-            }
-            <a class="btn btn-outline-light btn-sm" asp-controller="Home" asp-action="Index">Voltar</a>
-        </div>
-    </div>
-</div>
-
-<div class="container mt-3">
-    <div class="d-flex justify-content-center">
-        <div class="page-panel edit-panel" style="max-width:720px; width:100%">
-            <div class="mb-4 text-center">
-                <h2 class="acme">Perfil</h2>
+<div class="container mt-3 bg-danger h-100">
+    <div class="page-panel edit-panel w-100 d-flex flex-column flex-md-row gap-4" style="min-height: 503px">
+        <div class="d-flex flex-column align-items-center gap-3">
+            <div class="d-flex flex-column align-items-center gap-3">
+                <img src="~/uploads/users/default_user_image.png" alt="User Image" width="250" height="250" class="rounded-circle" />
+                <h4>@@@(Model.UpdateUser.username)</h4>
             </div>
+            <div class="w-100">
+                <ul class="nav nav-underline flex-column nav-fill" id="perfilTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="perfil-tab" data-bs-toggle="tab" data-bs-target="#perfil" type="button" role="tab">
+                            Perfil
+                        </button>
+                    </li>
 
-            <form asp-controller="User" asp-action="Profile" method="post" enctype="multipart/form-data">
-                @Html.AntiForgeryToken()
-                <input type="hidden" asp-for="UpdateUser.user_id" />
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="excluir-tab" data-bs-toggle="tab" data-bs-target="#excluir" type="button" role="tab">
+                            Excluir Conta
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tab-content d-flex w-100" id="perfilTabsContent">
+            <div class="tab-pane fade active show w-100" id="perfil" role="tabpanel">
+                <form asp-controller="User" asp-action="Profile" method="post" enctype="multipart/form-data">
+                    <div class="mb-4 d-none d-md-block">
+                        <h2>Perfil</h2>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="UpdateUser.user_id" />
+                    
+                    <div class="mb-3">
+                        <label asp-for="UpdateUser.username" class="form-label">Login</label>
+                        <input asp-for="UpdateUser.username" class="form-control" placeholder="Digite o nome do Usuário" />
+                        @Html.ValidationMessageFor(x => x.UpdateUser.username)
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="UpdateUser.username" class="form-label">Login</label>
-                    <input asp-for="UpdateUser.username" class="form-control" placeholder="Digite o nome do Usuário" />
-                    @Html.ValidationMessageFor(x => x.UpdateUser.username)
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="UpdateUser.email" class="form-label">E-mail</label>
+                        <input asp-for="UpdateUser.email" class="form-control" placeholder="Digite o email do Usuário" />
+                        @Html.ValidationMessageFor(x => x.UpdateUser.email)
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="UpdateUser.password" class="form-label">Senha</label>
+                        <input asp-for="UpdateUser.password" class="form-control" placeholder="Nova senha (deixe em branco para manter)" />
+                        @Html.ValidationMessageFor(x => x.UpdateUser.password)
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="UpdateUser.email" class="form-label">E-mail</label>
-                    <input asp-for="UpdateUser.email" class="form-control" placeholder="Digite o email do Usuário" />
-                    @Html.ValidationMessageFor(x => x.UpdateUser.email)
-                </div>
+                    <div class="mb-4">
+                        <label asp-for="UpdateUser.confirm_password" class="form-label">Confirmar senha</label>
+                        <input asp-for="UpdateUser.confirm_password" class="form-control" placeholder="Confirme a senha" />
+                        @Html.ValidationMessageFor(x => x.UpdateUser.confirm_password)
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="UpdateUser.password" class="form-label">Senha</label>
-                    <input asp-for="UpdateUser.password" class="form-control" placeholder="Nova senha (deixe em branco para manter)" />
-                    @Html.ValidationMessageFor(x => x.UpdateUser.password)
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="ProfileImage" class="form-label">Imagem de Perfil (opcional)</label>
+                        <input asp-for="ProfileImage" type="file" class="form-control" />
+                    </div>
 
-                <div class="mb-4">
-                    <label asp-for="UpdateUser.confirm_password" class="form-label">Confirmar senha</label>
-                    <input asp-for="UpdateUser.confirm_password" class="form-control" placeholder="Confirme a senha" />
-                    @Html.ValidationMessageFor(x => x.UpdateUser.confirm_password)
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="ProfileImage" class="form-label">Imagem de Perfil (opcional)</label>
-                    <input asp-for="ProfileImage" type="file" class="form-control" />
-                </div>
-
-                <div class="d-flex w-100 justify-content-end gap-2">
-                    <button type="submit" class="btn btn-outline-primary" name="action" value="update">Salvar alterações</button>
-                </div>
-            </form>
-
-            <hr class="my-5">
-
-            <div class="row mb-4"><h2><i class="bi bi-exclamation-circle"></i> Excluir Conta</h2></div>
-            <div class="row"><p>Essa ação não pode ser desfeita. Confirme sua senha para continuar:</p></div>
-            <div class="row">
+                    <div class="d-flex w-100 justify-content-end gap-2">
+                        <button type="submit" class="btn btn-outline-primary" name="action" value="update">Salvar alterações</button>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade w-100" id="excluir" role="tabpanel">
                 <form id="deleteForm" asp-action="Profile" asp-controller="User" method="post">
+                    <div class="row mb-4"><h2><i class="bi bi-exclamation-circle"></i> Excluir Conta</h2></div>
+                    <div class="row"><p>Essa ação não pode ser desfeita. Confirme sua senha para continuar:</p></div>
+            
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="UpdateUser.user_id" />
 

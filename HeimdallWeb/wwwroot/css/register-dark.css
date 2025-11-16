@@ -444,12 +444,6 @@
   --background-color: #EAEAEA;
 }
 
-.acme {
-  font-family: "Acme", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
 .roboto {
   font-family: "Roboto", sans-serif;
   font-weight: 500;
@@ -513,11 +507,6 @@ body {
   border-radius: 1rem !important;
   border: 1px solid rgba(255, 255, 255, 0.04) !important;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6) !important;
-}
-
-.page-panel .acme,
-.acme {
-  color: #eaf7f6 !important;
 }
 
 .roboto {

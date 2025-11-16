@@ -436,36 +436,25 @@
   font-size: 0.95rem;
 }
 
+/* Make primary and outline buttons on the edit page use the Heimdall accent color
+   to match the Buscar button on the dashboard admin. */
 .page-panel {
-  /* slightly tighter padding for edit form */
   padding: 1rem;
   background-color: #212529;
 }
-
-.page-panel .acme {
-  margin-bottom: 0.5rem;
-}
-
-/* Make primary and outline buttons on the edit page use the Heimdall accent color
-   to match the Buscar button on the dashboard admin. */
 .page-panel .btn-outline-primary {
-  color: #2a6b6d !important;
-  border-color: rgba(42, 107, 109, 0.9) !important;
-  background: transparent !important;
+  color: #2a6b6d;
+  border-color: rgba(42, 107, 109, 0.9);
+  background: transparent;
 }
-
+.page-panel .nav-link.active {
+  color: #fff;
+}
 .page-panel .btn-outline-primary:hover,
 .page-panel .btn-outline-primary:focus {
-  background: rgba(42, 107, 109, 0.12) !important;
-  color: #fff !important;
-  border-color: #2a6b6d !important;
+  background: rgba(42, 107, 109, 0.12);
+  color: #fff;
+  border-color: #2a6b6d;
 }
 
-.page-panel .btn-primary {
-  background: #2a6b6d !important;
-  border-color: rgba(42, 107, 109, 0.9) !important;
-  color: #fff !important;
-  box-shadow: none !important;
-}
-
-/*# sourceMappingURL=edit-dark.css.map */
+/*# sourceMappingURL=profile-dark.css.map */
