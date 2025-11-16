@@ -14,6 +14,10 @@ namespace HeimdallWeb.Models.Map
             builder.Property(x => x.user_id)
                 .HasColumnName("user_id");
 
+            builder.Property(u => u.profile_image)
+                .HasColumnName("profile_image")
+                .HasMaxLength(255);
+
             builder.Property(u => u.username)
                 .IsRequired()
                 .HasColumnName("username")

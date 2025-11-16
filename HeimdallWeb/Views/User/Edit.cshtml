@@ -1,4 +1,4 @@
-@model HeimdallWeb.DTO.UpdateUserDTO
+@model HeimdallWeb.ViewModels.UserEditViewModel
 @{
     ViewData["Title"] = "Alterar Usuário";
 }
@@ -16,7 +16,6 @@
         </div>
         <div class="d-flex align-items-center gap-2">
             <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
-            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
             @if (User.IsInRole("2"))
             {
                 <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="Admin" asp-action="dashboard">Painel de Admin</a>
@@ -28,46 +27,83 @@
 @* TempData handled globally in _Layout.cshtml *@
 
 <div class="container mt-3">
-    <div class="d-flex justify-content-center">
+    <div class="d-flex flex-column align-items-center gap-3">
         <div class="page-panel edit-panel" style="max-width:720px; width:100%">
-            <div class="mb-4 text-center">
-                <h2 class="acme">Alterar Usuário</h2>
+            <div class="mb-4">
+                <h2 class="acme">Alterar Dados</h2>
             </div>
 
-            <form asp-controller="User" asp-action="Edit" method="post">
-                <input type="hidden" asp-for="user_id" />
+            <form asp-controller="User" asp-action="Edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="UpdateUser.user_id" />
 
                 <div class="mb-3">
-                    <label asp-for="username" class="form-label">Login</label>
-                    <input asp-for="username" class="form-control" placeholder="Digite o nome do Usuário" />
-                    @Html.ValidationMessageFor(x => x.username)
+                    <label asp-for="UpdateUser.username" class="form-label">Login</label>
+                    <input asp-for="UpdateUser.username" class="form-control" placeholder="Digite o nome do Usuário" />
+                    @Html.ValidationMessageFor(x => x.UpdateUser.username)
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="email" class="form-label">E-mail</label>
-                    <input asp-for="email" class="form-control" placeholder="Digite o email do Usuário" />
-                    @Html.ValidationMessageFor(x => x.email)
+                    <label asp-for="UpdateUser.email" class="form-label">E-mail</label>
+                    <input asp-for="UpdateUser.email" class="form-control" placeholder="Digite o email do Usuário" />
+                    @Html.ValidationMessageFor(x => x.UpdateUser.email)
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="password" class="form-label">Senha</label>
-                    <input asp-for="password" class="form-control" placeholder="Digite a senha do Usuário" />
-                    @Html.ValidationMessageFor(x => x.password)
+                    <label asp-for="UpdateUser.password" class="form-label">Senha</label>
+                    <input asp-for="UpdateUser.password" class="form-control" placeholder="Digite a senha do Usuário" />
+                    @Html.ValidationMessageFor(x => x.UpdateUser.password)
                 </div>
+
+
+                <div class="mb-3">
+                    <label asp-for="UpdateUser.confirm_password" class="form-label">Confirmar senha</label>
+                    <input asp-for="UpdateUser.confirm_password" class="form-control" placeholder="Confirme a senha" />
+                    @Html.ValidationMessageFor(x => x.UpdateUser.confirm_password)
+                </div>
+
 
                 <div class="mb-4">
-                    <label asp-for="confirm_password" class="form-label">Confirmar senha</label>
-                    <input asp-for="confirm_password" class="form-control" placeholder="Confirme a senha" />
-                    @Html.ValidationMessageFor(x => x.confirm_password)
+                    <input type="file" asp-for="ProfileImage" class="form-control" />
                 </div>
 
-                <div class="d-flex align-items-center gap-2">
-                    <button type="submit" class="btn btn-outline-primary">Editar</button>
+                <div class="d-flex w-100 justify-content-end gap-2">
+                    <button type="submit" class="btn btn-outline-primary" name="action" value="update">Editar</button>
                     <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Voltar</a>
                 </div>
             </form>
+
+            <hr class="my-5">
+            @* Excluir *@
+
+            <div class="row mb-4"><h2><i class="bi bi-exclamation-circle"></i> Excluir Usuário</h2></div>
+            <div class="row"><p>Essa ação não pode ser desfeita. Coloque as informações da conta para continuar:</p></div>
+            <div class="row">
+                <form id="deleteForm" asp-action="Delete" asp-controller="User" method="post">
+                    <div class="form-group mb-4">
+                        <label asp-for="DeleteUser.password" class="form-label">Senha</label>
+                        <input asp-for="DeleteUser.password" class="form-control light-placeholder" placeholder="Senha da sua conta" type="password" required/>
+                        @Html.ValidationMessageFor(x => x.DeleteUser.password)
+                    </div>
+                    <div class="form-group mb-4">
+                        <label asp-for="DeleteUser.confirm_password" class="form-label">Confirmar senha</label>
+                        <input asp-for="DeleteUser.confirm_password" class="form-control light-placeholder" placeholder="Confirme sua senha" type="password" required/>
+                        @Html.ValidationMessageFor(x => x.DeleteUser.confirm_password)
+                    </div>
+                    <div class="form-check mb-5">
+                        <input asp-for="DeleteUser.confirm_delete" class="form-check-input" type="checkbox" required/>
+                        <label asp-for="DeleteUser.confirm_delete" class="form-check-label">
+                            Confirmo que desejo excluir minha conta permanentemente.
+                        </label>
+                        @Html.ValidationMessageFor(x => x.DeleteUser.confirm_delete)
+                    </div>
+                    <div class="d-flex w-100 justify-content-end">
+                        <button type="button" class="btn btn-outline-danger" id="btn-delete" name="action" value="delete"><i class="bi bi-x-circle"></i> Excluir</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+
 </div>
 
 @section Scripts {

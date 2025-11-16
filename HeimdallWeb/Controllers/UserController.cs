@@ -1,6 +1,7 @@
 using HeimdallWeb.DTO;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
+using HeimdallWeb.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,28 @@ public class UserController : Controller
 {
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _config;
+
+    private async Task<string> SaveProfileImageAsync(IFormFile file)
+    {
+        if (file is null || file.Length == 0)
+            return null;
+
+        string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "users");
+
+        if (!Directory.Exists(uploadsFolder))
+            Directory.CreateDirectory(uploadsFolder);
+
+        string uniqueName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+        string filePath = Path.Combine(uploadsFolder, uniqueName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        return $"/uploads/users/{uniqueName}";
+    }
 
     public UserController(IUserRepository userRepository, IConfiguration config)
     {
@@ -33,11 +56,30 @@ public class UserController : Controller
         return View();
     }
 
+    [HttpGet]
     [Authorize]
-    public IActionResult Edit()
+    public async Task<IActionResult> Edit()
     {
-        return View();
-    }    
+        int? userId = TokenService.GetUserIdFromClaims(User);
+        if (userId is null) return RedirectToAction("Index", "Home");
+
+        var user = await _userRepository.getUserById(userId.Value);
+        if (user == null) return NotFound();
+
+        var model = new UserEditViewModel
+        {
+            UpdateUser = new UpdateUserDTO
+            {
+                user_id = user.user_id,
+                username = user.username,
+                email = user.email,
+                // não preencha password/confirm_password por segurança
+            },
+            DeleteUser = new DeleteUserDTO()
+        };
+
+        return View(model);
+    }
 
     [HttpPost]
     public async Task<IActionResult> Register(Models.UserModel user)
@@ -68,58 +110,111 @@ public class UserController : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Edit(UpdateUserDTO model)
+    public async Task<IActionResult> Edit(UserEditViewModel model, string? action)
     {
         try
         {
-            ModelState.Remove(nameof(model.user_id));
-            if (!ModelState.IsValid)
-            {
-                TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário";
-                return View("Edit", model);
-            }
-
+            // 'action' vem do name do botão submit (ex.: name="action" value="update" ou "delete")
             int? userId = TokenService.GetUserIdFromClaims(User);
-            // Pega o user_id dos claims validados pelo middleware (preferível)
             if (userId is null)
             {
-                TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário";
-                return View("Edit", model);
+                TempData["ErrorMsg"] = "Erro de autenticação.";
+                return View(model);
             }
 
-            model.user_id = userId.Value;
-
-            if (await _userRepository.VerifyIfUserExistsWithLogin(model))
+            if (action == "update")
             {
-                TempData["ErrorMsg"] = "Já existe um usuário com este login, tente outro.";
-                return View("Edit", model);
-            }
+                // garante que o user_id é o do token
+                model.UpdateUser.user_id = userId.Value;
 
-            if (await _userRepository.VerifyIfUserExistsWithEmail(model))
+                // Verificações de negócio usando UpdateUser
+                if (await _userRepository.VerifyIfUserExistsWithLogin(model.UpdateUser))
+                {
+                    TempData["ErrorMsg"] = "Já existe um usuário com este login, tente outro.";
+                    return View(model);
+                }
+
+                if (await _userRepository.VerifyIfUserExistsWithEmail(model.UpdateUser))
+                {
+                    TempData["ErrorMsg"] = "Já existe um usuário com este email, tente outro.";
+                    return View(model);
+                }
+
+                var userDb = await _userRepository.getUserById(userId.Value);
+                if (userDb == null)
+                {
+                    TempData["ErrorMsg"] = "Usuário não encontrado.";
+                    return View(model);
+                }
+
+                if (model.ProfileImage is not null)
+                {
+                    string? imagePath = await SaveProfileImageAsync(model.ProfileImage);
+                    if (imagePath != null)
+                    {
+                        model.UpdateUser.profile_image_path = imagePath;
+                    }
+                }
+
+                await _userRepository.UpdateUser(model.UpdateUser);
+                TempData["OkMsg"] = "Usuário atualizado com sucesso.";
+                return RedirectToAction("Index", "Home");
+            }
+            else if (action == "delete")
             {
-                TempData["ErrorMsg"] = "Já existe um usuário com este email, tente outro.";
-                return View("Edit", model);
+                // valida apenas o DeleteUser
+                if (!TryValidateModel(model.DeleteUser, prefix: "DeleteUser"))
+                {
+                    TempData["ErrorMsg"] = "Corrija os erros no formulário de exclusão.";
+                    return View(model);
+                }
+
+                // confirmar senha (exemplo: verificar se senha bate com a do DB)
+                var userDb = await _userRepository.getUserById(userId.Value);
+                if (userDb == null)
+                {
+                    TempData["ErrorMsg"] = "Usuário não encontrado.";
+                    return View(model);
+                }
+
+                // exemplo de método para verificar senha
+                if (!PasswordUtils.VerifyPassword(userDb.password, model.DeleteUser.password))
+                {
+                    TempData["ErrorMsg"] = "Senha inválida.";
+                    return View(model);
+                }
+
+                if (!model.DeleteUser.confirm_delete)
+                {
+                    TempData["ErrorMsg"] = "Confirme a exclusão.";
+                    return View(model);
+                }
+
+                await _userRepository.DeleteUser(userId.Value);
+                TempData["OkMsg"] = "Usuário excluído com sucesso.";
+                return RedirectToAction("Index", "Home");
             }
 
-            // buscar usuário e atualiza campos permitidos
-            var userDb = await _userRepository.getUserById(userId.Value);
-            if (userDb == null)
-            {
-                TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário.";
-                return View("Edit", model);
-            }
+            // Se action não vier ou for inválida, volta para a view com uma mensagem
+            TempData["ErrorMsg"] = "Ação inválida.";
+            return View(model);
 
-            await _userRepository.UpdateUser(model);
-
-            TempData["OkMsg"] = "Usuário atualizado com sucesso";
         }
-        catch (Exception)
+        catch (IOException e)
         {
-            TempData["ErrorMsg"] = "Ocorreu um erro ao atualizar o usuário.";
-            return RedirectToAction("Edit", model);
+            TempData["ErrorMsg"] = $"Ocorreu um erro ao fazer o upload da imagem. {e}";
+            return View(model);
         }
-
-        return RedirectToAction("Index", "Home");
+        catch (UnauthorizedAccessException e)
+        {
+            TempData["ErrorMsg"] = $"Permissão negada ao salvar a imagem. {e}";
+            return View(model);
+        }
+        catch (Exception e)
+        {
+            TempData["ErrorMsg"] = $"Deu merda aqui. {e}";
+            return View(model);
+        }
     }
 
     [HttpPost]

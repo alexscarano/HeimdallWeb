@@ -22,8 +22,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
-      <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
@@ -41,6 +41,10 @@
     <TypeScriptCompile Include="wwwroot\ts\history.ts" />
     <TypeScriptCompile Include="wwwroot\ts\types\Tecnology.ts" />
     <TypeScriptCompile Include="wwwroot\ts\types\Finding.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\users\" />
   </ItemGroup>
 
 </Project>
