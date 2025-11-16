@@ -11,16 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <style>
-        /* Aplicar o mesmo background escuro do GerenciarUsuarios */
-        body {
-            background-color: #1a1a1a !important;
-            color: #ffffff !important;
-        }
-        .content-wrapper {
-            background-color: #1a1a1a !important;
-        }
-    </style>
 </head>
 
 <div class="container-lg mb-4">
@@ -88,10 +78,10 @@
                             var minutes = (int)(avg / 60);
                             var seconds = avg - minutes * 60; // seconds with fractional part
                             // Format seconds with at most 6 decimals, keep at least two integer digits
-                            var secondsStr = seconds.ToString("00.######");
+                            var secondsStr = seconds.ToString("00");
                             var avgDisplay = $"{minutes}:{secondsStr}";
                         }
-                        Tempo médio: @avgDisplay
+                        Tempo médio: @(avgDisplay)s
                 </div>
             </div>
         </div>
