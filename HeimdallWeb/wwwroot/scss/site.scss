@@ -20,6 +20,14 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
+.nav-link {
+  font-size: 1.35rem;
+}
+
+.navbar {
+  background-color: #353935;
+}
+
 .bar {
   display: flex;
   justify-content: space-around;
@@ -47,6 +55,25 @@ html {
 
 .bar-char {
   padding-left: 0.6rem;
+}
+
+.modal {
+  background: rgba(44, 44, 44, .5); /* Semi-transparent background for visibility */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* For Webkit browsers */
+}
+
+.modal-body {
+  background-color: #2c302c;
+}
+
+
+
+.rainbow-button:hover {
+background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  color: white;
+  cursor: pointer;
+  transition: background-position 0.5s ease; /* Smooth transition for background-position */
 }
 
 body {
