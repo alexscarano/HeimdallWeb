@@ -1,6 +1,8 @@
+using System.Runtime.CompilerServices;
 using HeimdallWeb.DTO;
 using HeimdallWeb.Helpers;
 using HeimdallWeb.Interfaces;
+using HeimdallWeb.Services;
 using HeimdallWeb.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +46,7 @@ public class UserController : Controller
                 user_id = user.user_id,
                 username = user.username,
                 email = user.email,
-                profile_image_path = user.profile_image
+                profile_image_path = user.profile_image ?? "~/uploads/users/default_user_image.png",
             },
             DeleteUser = new DeleteUserDTO()
         };
@@ -150,11 +152,19 @@ public class UserController : Controller
 
                 if (model.ProfileImage is not null)
                 {
-                    string? imagePath = await SaveProfileImageAsync(model.ProfileImage);
-                    if (imagePath is not null)
-                    {
+                    if (!model.ProfileImage.IsImageFile())
+                        throw new Exception("O formato de imagem precisa ser válido: PNG, JPG, GIF ou WEBP");
+                    else if (model.ProfileImage.IsFileSizeInvalid())
+                        throw new Exception("O tamanho da imagem não pode passar de 2MB");
+
+                    bool hasDeleted = ImageService.DeleteOldProfileImage(userDb.profile_image ?? string.Empty);
+                    string? imagePath = null;
+
+                    if (hasDeleted) 
+                        imagePath = await model.ProfileImage.SaveProfileImageAsync();
+                    
+                    if (!string.IsNullOrEmpty(imagePath))
                         model.UpdateUser.profile_image_path = imagePath;
-                    }
                 }
 
                 await _userRepository.UpdateUser(model.UpdateUser);
@@ -191,43 +201,29 @@ public class UserController : Controller
         catch (IOException)
         {
             TempData["ErrorMsg"] = $"Ocorreu um erro ao fazer o upload da imagem.";
-            return View(model);
+            return RedirectToAction("Profile", "User");
         }
         catch (UnauthorizedAccessException)
         {
             TempData["ErrorMsg"] = $"Houve um erro em atualizar o usuário";
-            return View(model);
+            return RedirectToAction("Profile", "User");
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            var msg = e.Message;
+
+            if (!string.IsNullOrEmpty(msg))
+            {
+                TempData["ErrorMsg"] = $"{msg}";
+                return RedirectToAction("Profile", "User");
+            }
+
             TempData["ErrorMsg"] = $"Houve um erro em atualizar o usuário";
-            return View(model);
+            return RedirectToAction("Profile", "User");
         }
 
         return RedirectToAction("Index", "Home");
     }
-    private async Task<string> SaveProfileImageAsync(IFormFile file)
-    {
-        if (file is null || file.Length == 0)
-            throw new IOException("Houve um erro ao fazer upload do arquivo");
-
-        string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "users");
-
-        if (!Directory.Exists(uploadsFolder))
-            Directory.CreateDirectory(uploadsFolder);
-
-        string uniqueName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-        string filePath = Path.Combine(uploadsFolder, uniqueName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
-
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        return $"/uploads/users/{uniqueName}";
-    }
-
 }
 
 

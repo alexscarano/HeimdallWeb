@@ -52,13 +52,13 @@
                     
                     <div class="mb-3">
                         <label asp-for="UpdateUser.username" class="form-label">Login</label>
-                        <input asp-for="UpdateUser.username" class="form-control" placeholder="Digite o nome do Usuário" />
+                        <input class="form-control" placeholder="Digite o nome do Usuário" />
                         @Html.ValidationMessageFor(x => x.UpdateUser.username)
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="UpdateUser.email" class="form-label">E-mail</label>
-                        <input asp-for="UpdateUser.email" class="form-control" placeholder="Digite o email do Usuário" />
+                        <input class="form-control" placeholder="Digite o email do Usuário" />
                         @Html.ValidationMessageFor(x => x.UpdateUser.email)
                     </div>
                     
