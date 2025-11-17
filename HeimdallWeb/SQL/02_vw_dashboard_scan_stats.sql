@@ -3,12 +3,9 @@
 -- Descrição: Estatísticas de scans/varreduras
 -- Cache: 30 segundos
 -- ============================================================
-
-USE heimdall_db;
-
 DROP VIEW IF EXISTS vw_dashboard_scan_stats;
 
-CREATE VIEW vw_dashboard_scan_stats AS
+CREATE OR REPLACE VIEW vw_dashboard_scan_stats AS
 SELECT 
     COUNT(*) AS total_scans,
     SUM(CASE WHEN created_date >= DATE_SUB(NOW(), INTERVAL 24 HOUR) THEN 1 ELSE 0 END) AS scans_last_24h,
@@ -23,6 +20,3 @@ SELECT
         2
     ) AS fail_rate
 FROM tb_history;
-
--- Verificar VIEW criada
-SELECT * FROM vw_dashboard_scan_stats;

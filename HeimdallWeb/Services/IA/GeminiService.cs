@@ -64,7 +64,8 @@ namespace HeimdallWeb.Services.IA
                                     - Interpretar saídas de scans (HTTP/HTTPS, banners, headers, certificados, portas, redirecionamentos).
                                     - Usar banners para confirmar tecnologia, versão e possíveis falhas conhecidas.
                                     - Identificar vulnerabilidades como XSS, SQL Injection, Headers e Cookies Inseguros, SSL inválido, Robots.txt e Sitemap (incluidos no scan), exposição de portas críticas.
-                                    - Classificar cada achado em categorias fixas: **SSL, Headers, Portas, Redirecionamento, Injeção, Outros**.
+                                    - Classificar cada achado em categorias específicas: **SSL/TLS, Headers de Segurança, Cookies Inseguros, Portas Abertas, Redirecionamento, Injeção, XSS, CSRF, Autenticação, Autorização, Exposição de Dados, Configuração, Path Traversal, File Upload, CORS, API Security, DoS/DDoS, Criptografia, Session Management, Input Validation, Information Disclosure, Outros**.
+                                    - Use a categoria **Outros** APENAS quando a vulnerabilidade não se encaixar em NENHUMA das categorias acima.
                                     - Retornar respostas **curtas, objetivas e padronizadas**, para economizar tokens.
                                     - Sempre classificar o risco em: **Informativo | Baixo | Medio | Alto | Critico** (igual ao ENUM do sistema).
                                     - Use **Informativo** para observações relevantes sem risco direto (fallback global detectado, headers recomendados ausentes mas não críticos, SSL válido próximo da expiração com >30 dias, configurações de SPA/catch-all, portas abertas não-críticas, etc.).
@@ -78,7 +79,7 @@ namespace HeimdallWeb.Services.IA
                                         ""achados"": [
                                         {{
                                             ""descricao"": ""Explicação breve do problema"",
-                                            ""categoria"": ""SSL | Headers | Portas | Redirecionamento | Injeção | Outros"",
+                                            ""categoria"": ""SSL/TLS | Headers de Segurança | Cookies Inseguros | Portas Abertas | Redirecionamento | Injeção | XSS | CSRF | Autenticação | Autorização | Exposição de Dados | Configuração | Path Traversal | File Upload | CORS | API Security | DoS/DDoS | Criptografia | Session Management | Input Validation | Information Disclosure | Outros"",
                                             ""risco"": ""Informativo | Baixo | Medio | Alto | Critico"",
                                             ""evidencia"": ""Trecho do JSON analisado que comprova a vulnerabilidade"",
                                             ""recomendacao"": ""Sugestão de mitigação""

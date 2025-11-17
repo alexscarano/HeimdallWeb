@@ -38,6 +38,9 @@ public class DashboardRepository : IDashboardRepository
     private const string CacheKey_RecentActivity = "Dashboard_RecentActivity";
     private const string CacheKey_ScanTrend = "Dashboard_ScanTrend";
     private const string CacheKey_UserRegTrend = "Dashboard_UserRegTrend";
+    private const string CacheKey_IASummaryStats = "Dashboard_IASummaryStats";
+    private const string CacheKey_RiskDistribution = "Dashboard_RiskDistribution";
+    private const string CacheKey_TopCategories = "Dashboard_TopCategories";
 
     // Cache durations
     private static readonly TimeSpan StatsCacheDuration = TimeSpan.FromSeconds(30);
@@ -70,6 +73,12 @@ public class DashboardRepository : IDashboardRepository
             var scanTrend = await GetScanTrendAsync();
             var userRegTrend = await GetUserRegistrationTrendAsync();
 
+            // Buscar novos dados de IA Summary
+            var iaSummaryStats = await GetIASummaryStatsAsync();
+            var riskDistribution = await GetRiskDistributionDailyAsync();
+            var topCategories = await GetTopCategoriesAsync();
+            var vulnerableTargets = await GetMostVulnerableTargetsAsync();
+
             return new AdminDashboardViewModel
             {
                 UserStats = userStats,
@@ -77,7 +86,11 @@ public class DashboardRepository : IDashboardRepository
                 LogsOverview = logsOverview,
                 RecentActivity = recentActivity,
                 ScanTrend = scanTrend,
-                UserRegistrationTrend = userRegTrend
+                UserRegistrationTrend = userRegTrend,
+                IASummaryStats = iaSummaryStats,
+                RiskDistribution = riskDistribution,
+                TopCategories = topCategories,
+                MostVulnerableTargets = vulnerableTargets
             };
         }
         catch (Exception ex)
@@ -194,5 +207,47 @@ public class DashboardRepository : IDashboardRepository
         // Placeholder - implementar no futuro
         _logger.LogInformation("GetUserMetricsAsync chamado para userId={UserId} (não implementado)", userId);
         return Task.FromResult<UserMetricsViewModel?>(null);
+    }
+
+    private async Task<AdminIASummaryStats?> GetIASummaryStatsAsync()
+    {
+        return await _cache.GetOrCreateAsync(CacheKey_IASummaryStats, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = StatsCacheDuration;
+            return await _context.Set<AdminIASummaryStats>()
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        });
+    }
+
+    private async Task<List<AdminRiskDistributionDaily>> GetRiskDistributionDailyAsync()
+    {
+        return await _cache.GetOrCreateAsync(CacheKey_RiskDistribution, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = StatsCacheDuration;
+            return await _context.Set<AdminRiskDistributionDaily>()
+                .AsNoTracking()
+                .OrderByDescending(r => r.risk_date)
+                .ToListAsync();
+        }) ?? new List<AdminRiskDistributionDaily>();
+    }
+
+    private async Task<List<AdminTopCategory>> GetTopCategoriesAsync()
+    {
+        return await _cache.GetOrCreateAsync(CacheKey_TopCategories, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = StatsCacheDuration;
+            return await _context.Set<AdminTopCategory>()
+                .AsNoTracking()
+                .ToListAsync();
+        }) ?? new List<AdminTopCategory>();
+    }
+
+    private async Task<List<AdminMostVulnerableTarget>> GetMostVulnerableTargetsAsync()
+    {
+        // Não usar cache para alvos vulneráveis (muda frequentemente)
+        return await _context.Set<AdminMostVulnerableTarget>()
+            .AsNoTracking()
+            .ToListAsync();
     }
 }

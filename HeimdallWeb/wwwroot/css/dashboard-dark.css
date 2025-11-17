@@ -680,4 +680,66 @@
   }
 }
 
+/* Card dark styling for consistent dashboard appearance */
+.card-dark {
+  background-color: #1a1d1e !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+}
+
+.card-dark .card-header {
+  background-color: #1c3033 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+.card-dark .card-body {
+  background-color: #1a1d1e !important;
+  color: #fff !important;
+}
+
+.card-dark .card-title {
+  color: #ffffff !important;
+}
+
+/* Force canvas elements to have transparent background - let Chart.js handle it */
+canvas {
+  border-radius: 0.5rem;
+}
+
+/* Info boxes styling for vulnerability summary */
+.info-box {
+  background-color: #1a1d1e !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.info-box .info-box-text {
+  color: #9fb7b7 !important;
+}
+
+.info-box .info-box-number {
+  color: #ffffff !important;
+}
+
+.info-box .progress-description {
+  color: #9fb7b7 !important;
+}
+
+/* Chart container wrapper */
+.chart-container {
+  background-color: #1a1d1e !important;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+/* Ensure bg-dark cards are truly dark */
+.card.bg-dark {
+  background-color: #1a1d1e !important;
+}
+
+.card.bg-dark .card-body {
+  background-color: #1a1d1e !important;
+}
+
 /*# sourceMappingURL=dashboard-dark.css.map */

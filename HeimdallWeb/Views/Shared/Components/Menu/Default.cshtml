@@ -34,6 +34,13 @@
                     <a class="nav-link" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
                 </div>
 
+                @if (User.IsInRole("1") || User.IsInRole("2"))
+                {
+                    <div class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="User" asp-action="Statistics">Estatísticas</a>
+                    </div>
+                }
+
                 @if (User.IsInRole("2"))
                 {
                     <div class="nav-item">

@@ -16,6 +16,7 @@ public class ScanService : IScanService
     private readonly ITechnologyRepository _technologyRepository;
     private readonly ILogRepository _logRepository;
     private readonly IUserUsageRepository _userUsageRepository;
+    private readonly IIASummaryRepository _iaSummaryRepository;
     private readonly AppDbContext _db;
     private readonly IConfiguration _config;
     private readonly int _maxRequests;
@@ -27,6 +28,7 @@ public class ScanService : IScanService
         ITechnologyRepository technologyRepository, 
         ILogRepository logRepository, 
         IUserUsageRepository userUsageRepository, 
+        IIASummaryRepository iaSummaryRepository,
         AppDbContext db, IConfiguration config,
         IHttpContextAccessor httpContextAccessor)
     {
@@ -35,6 +37,7 @@ public class ScanService : IScanService
         _technologyRepository = technologyRepository;
         _logRepository = logRepository;
         _userUsageRepository = userUsageRepository;
+        _iaSummaryRepository = iaSummaryRepository;
         _db = db;
         _config = config;
         _maxRequests = 5;
@@ -151,6 +154,7 @@ public class ScanService : IScanService
  
                 await _findingRepository.SaveFindingsFromAI(iaResponse, historyId);
                 await _technologyRepository.SaveTechnologiesFromAI(iaResponse, historyId);
+                await _iaSummaryRepository.SaveIASummaryFromFindings(historyId, iaResponse);
 
 
                 await _userUsageRepository.AddUserUsage(new UserUsageModel

@@ -11,38 +11,22 @@ public class UserController : Controller
 {
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _config;
+    private readonly IUserStatisticsRepository _userStatisticsRepository;
+
+    public UserController(
+        IUserRepository userRepository, 
+        IConfiguration config, 
+        IUserStatisticsRepository userStatisticsRepository
+    )
+    {
+        _userRepository = userRepository;
+        _config = config;
+        _userStatisticsRepository = userStatisticsRepository;
+    }
 
     public IActionResult Login() => View();
     public IActionResult Register() => View();
 
-
-    private async Task<string> SaveProfileImageAsync(IFormFile file)
-    {
-        if (file is null || file.Length == 0)
-            throw new IOException("Houve um erro ao fazer upload do arquivo");
-
-        string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "users");
-
-        if (!Directory.Exists(uploadsFolder))
-            Directory.CreateDirectory(uploadsFolder);
-
-        string uniqueName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-        string filePath = Path.Combine(uploadsFolder, uniqueName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
-
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        return $"/uploads/users/{uniqueName}";
-    }
-
-    public UserController(IUserRepository userRepository, IConfiguration config)
-    {
-        _userRepository = userRepository;
-        _config = config;
-    }
 
     [Authorize]
     public async Task<IActionResult> Profile()
@@ -66,6 +50,20 @@ public class UserController : Controller
 
         // Pass the model to the view so the form includes the current user_id and other values
         return View(model);
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Statistics()
+    {
+        int? userId = TokenService.GetUserIdFromClaims(User);
+        if (userId is null)
+        {
+            TempData["ErrorMsg"] = "Usuário não autenticado.";
+            return RedirectToAction("Index", "Home");
+        }
+
+        var statistics = await _userStatisticsRepository.GetUserStatisticsAsync(userId.Value);
+        return View(statistics);
     }
 
     [HttpPost]
@@ -207,6 +205,28 @@ public class UserController : Controller
 
         return RedirectToAction("Index", "Home");
     }
+    private async Task<string> SaveProfileImageAsync(IFormFile file)
+    {
+        if (file is null || file.Length == 0)
+            throw new IOException("Houve um erro ao fazer upload do arquivo");
+
+        string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "users");
+
+        if (!Directory.Exists(uploadsFolder))
+            Directory.CreateDirectory(uploadsFolder);
+
+        string uniqueName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+        string filePath = Path.Combine(uploadsFolder, uniqueName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        return $"/uploads/users/{uniqueName}";
+    }
+
 }
 
 

@@ -15,4 +15,10 @@ public class AdminDashboardViewModel
     public PaginatedResult<DashboardRecentActivity> RecentActivity { get; set; } = new();
     public List<DashboardScanTrendDaily> ScanTrend { get; set; } = new();
     public List<DashboardUserRegistrationTrend> UserRegistrationTrend { get; set; } = new();
+    
+    // Novas propriedades para dados de IA Summary
+    public AdminIASummaryStats? IASummaryStats { get; set; }
+    public List<AdminRiskDistributionDaily> RiskDistribution { get; set; } = new();
+    public List<AdminTopCategory> TopCategories { get; set; } = new();
+    public List<AdminMostVulnerableTarget> MostVulnerableTargets { get; set; } = new();
 }
