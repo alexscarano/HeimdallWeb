@@ -5,9 +5,11 @@
 
 <head>
     <link rel="stylesheet" href="~/css/profile-dark.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 </head>
 
-<div class="container mt-3">
+<div class="container my-3">
     <div class="page-panel edit-panel w-100 d-flex flex-column flex-md-row gap-4" style="min-height: 503px">
         <div class="d-flex flex-column align-items-center gap-3">
             <div class="d-flex flex-column align-items-center gap-3">
@@ -22,23 +24,43 @@
                 </div>
                 <h4>@@@(Model.UpdateUser.username)</h4>
             </div>
-            
-            <div class="w-100">
-                <ul class="nav nav-md-underline flex-column nav-fill" id="perfilTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="perfil-tab" data-bs-toggle="tab"
-                                data-bs-target="#perfil" type="button" role="tab">
-                            Perfil
-                        </button>
-                    </li>
 
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="excluir-tab" data-bs-toggle="tab" data-bs-target="#excluir"
-                                type="button" role="tab">
-                            Excluir Conta
-                        </button>
-                    </li>
-                </ul>
+            <div class="w-100">
+                <div class="d-none d-md-block">
+                    <ul class="nav nav-underline flex-column nav-fill" id="perfilDesktopTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab"
+                                    data-bs-target="#perfil" type="button" role="tab">
+                                Perfil
+                            </button>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#excluir"
+                                    type="button" role="tab">
+                                Excluir Conta
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="d-block d-md-none">
+                    <ul class="nav nav-underline nav-fill" id="perfilMobileTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab"
+                                    data-bs-target="#perfil" type="button" role="tab">
+                                Perfil
+                            </button>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#excluir"
+                                    type="button" role="tab">
+                                Excluir Conta
+                            </button>
+                        </li>
+                    </ul>
+                    <hr class="my-1">
+                </div>
             </div>
         </div>
         <div class="tab-content d-flex w-100" id="perfilTabsContent">
@@ -48,8 +70,8 @@
                         <h2>Perfil</h2>
                     </div>
                     @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="UpdateUser.user_id" />
-                    
+                    <input type="hidden" asp-for="UpdateUser.user_id"/>
+
                     <div class="mb-3">
                         <label asp-for="UpdateUser.username" class="form-label">Login</label>
                         <input class="form-control" placeholder="Digite o nome do Usuário" />
@@ -61,22 +83,22 @@
                         <input class="form-control" placeholder="Digite o email do Usuário" />
                         @Html.ValidationMessageFor(x => x.UpdateUser.email)
                     </div>
-                    
+
                     <div class="mb-3">
                         <label asp-for="UpdateUser.password" class="form-label">Senha</label>
-                        <input asp-for="UpdateUser.password" class="form-control" placeholder="Nova senha (deixe em branco para manter)" />
+                        <input asp-for="UpdateUser.password" class="form-control" placeholder="Nova senha (deixe em branco para manter)"/>
                         @Html.ValidationMessageFor(x => x.UpdateUser.password)
                     </div>
 
                     <div class="mb-4">
                         <label asp-for="UpdateUser.confirm_password" class="form-label">Confirmar senha</label>
-                        <input asp-for="UpdateUser.confirm_password" class="form-control" placeholder="Confirme a senha" />
+                        <input asp-for="UpdateUser.confirm_password" class="form-control" placeholder="Confirme a senha"/>
                         @Html.ValidationMessageFor(x => x.UpdateUser.confirm_password)
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="ProfileImage" class="form-label">Imagem de Perfil (opcional)</label>
-                        <input asp-for="ProfileImage" type="file" class="form-control" />
+                        <input asp-for="ProfileImage" type="file" class="form-control" id="profileImageInput"/>
                     </div>
 
                     <div class="d-flex w-100 justify-content-end gap-2">
@@ -86,27 +108,29 @@
             </div>
             <div class="tab-pane fade w-100" id="excluir" role="tabpanel">
                 <form id="deleteForm" asp-action="Profile" asp-controller="User" method="post">
-                    <div class="row mb-4"><h2><i class="bi bi-exclamation-circle"></i> Excluir Conta</h2></div>
-                    <div class="row"><p>Essa ação não pode ser desfeita. Confirme sua senha para continuar:</p></div>
-            
+                    <div class="row mb-4">
+                        <h2><i class="bi bi-exclamation-circle"></i> Excluir Conta</h2></div>
+                    <div class="row">
+                        <p>Essa ação não pode ser desfeita. Confirme sua senha para continuar:</p></div>
+
                     @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="UpdateUser.user_id" />
+                    <input type="hidden" asp-for="UpdateUser.user_id"/>
 
                     <div class="form-group mb-4">
                         <label asp-for="DeleteUser.password" class="form-label">Senha</label>
-                        <input asp-for="DeleteUser.password" class="form-control" placeholder="Senha da sua conta" type="password" required />
+                        <input asp-for="DeleteUser.password" class="form-control" placeholder="Senha da sua conta" type="password" required/>
                         @Html.ValidationMessageFor(x => x.DeleteUser.password)
                     </div>
 
                     <div class="form-group mb-4">
                         <label asp-for="DeleteUser.confirm_password" class="form-label">Confirmar senha</label>
-                        <input asp-for="DeleteUser.confirm_password" class="form-control" placeholder="Confirmar senha da sua conta" type="password" required />
+                        <input asp-for="DeleteUser.confirm_password" class="form-control" placeholder="Confirmar senha da sua conta" type="password" required/>
                         @Html.ValidationMessageFor(x => x.DeleteUser.confirm_password)
                     </div>
 
 
                     <div class="form-check mb-5">
-                        <input asp-for="DeleteUser.confirm_delete" class="form-check-input" type="checkbox" required />
+                        <input asp-for="DeleteUser.confirm_delete" class="form-check-input" type="checkbox" required/>
                         <label asp-for="DeleteUser.confirm_delete" class="form-check-label">
                             Confirmo que desejo excluir minha conta permanentemente.
                         </label>
@@ -120,4 +144,99 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="cropperModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajustar Imagem</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="img-container" style="max-height: 503px;">
+                        <img id="imageToCrop" style="max-width: 100%;" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="cropBtn" class="btn btn-primary">Salvar Recorte</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        // profileImageInput
+        let cropper;
+
+        // quando selecionar a imagem
+        document.getElementById('profileImageInput').addEventListener('change', function (e) {
+            let file = e.target.files[0];
+            if (!file) return;
+
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                document.getElementById('imageToCrop').src = event.target.result;
+
+                let modal = new bootstrap.Modal(document.getElementById('cropperModal'));
+                modal.show();
+
+                setTimeout(() => {
+                    if (cropper) cropper.destroy();
+
+                    cropper = new Cropper(document.getElementById('imageToCrop'), {
+                        aspectRatio: 1,
+                        viewMode: 2,
+                        dragMode: 'crop',
+                        autoCrop: true,
+                        autoCropArea: 0.8,
+                        movable: true,
+                        zoomable: true,
+                        zoomOnWheel: true,
+                        zoomOnTouch: true,
+                        wheelZoomRatio: 0.1,
+                        cropBoxMovable: true,
+                        cropBoxResizable: false,
+                        toggleDragModeOnDblclick: true,
+                        minCropBoxWidth: 300,
+                        minCropBoxHeight: 300,
+                        background: false,
+                        guides: true,
+                        highlight: true,
+                        center: true,
+                        responsive: true,
+                        restore: true,
+                        checkCrossOrigin: true,
+                        checkOrientation: true,
+                        modal: true,
+                    });
+                }, 200);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // botão de recortar
+        document.getElementById('cropBtn').addEventListener('click', function () {
+            let canvas = cropper.getCroppedCanvas({
+                width: 500,
+                height: 500,
+            });
+
+            canvas.toBlob(function (blob) {
+                let fileInput = document.getElementById('profileImageInput');
+
+                let croppedFile = new File([blob], "profile.jpg", { type: "image/jpeg" });
+
+                // substitui o arquivo original pelo recortado
+                let dataTransfer = new DataTransfer();
+                dataTransfer.items.add(croppedFile);
+                fileInput.files = dataTransfer.files;
+
+                bootstrap.Modal.getInstance(document.getElementById('cropperModal')).hide();
+            });
+        });
+    </script>
+}

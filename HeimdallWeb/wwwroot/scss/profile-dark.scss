@@ -12,10 +12,12 @@
     background: transparent;
   }
   
-  .nav-link {
-    color: #fff;
-    &.active{
-      color: $heimdall-primary;
+  .nav {
+    .nav-link {
+        color: #fff;
+        &.active{
+          color: $heimdall-primary;
+        }
     }
   }
   
