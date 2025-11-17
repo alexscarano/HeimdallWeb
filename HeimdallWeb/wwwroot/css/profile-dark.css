@@ -447,8 +447,11 @@
   border-color: rgba(42, 107, 109, 0.9);
   background: transparent;
 }
-.page-panel .nav-link.active {
+.page-panel .nav-link {
   color: #fff;
+}
+.page-panel .nav-link.active {
+  color: #2f6f8f;
 }
 .page-panel .btn-outline-primary:hover,
 .page-panel .btn-outline-primary:focus {

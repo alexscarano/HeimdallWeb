@@ -44,6 +44,7 @@ public class UserController : Controller
                 user_id = user.user_id,
                 username = user.username,
                 email = user.email,
+                profile_image_path = user.profile_image
             },
             DeleteUser = new DeleteUserDTO()
         };

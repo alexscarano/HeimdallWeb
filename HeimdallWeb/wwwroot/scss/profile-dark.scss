@@ -12,8 +12,11 @@
     background: transparent;
   }
   
-  .nav-link.active {
+  .nav-link {
     color: #fff;
+    &.active{
+      color: $heimdall-primary;
+    }
   }
   
   .btn-outline-primary:hover,

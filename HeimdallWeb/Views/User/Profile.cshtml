@@ -11,19 +11,30 @@
     <div class="page-panel edit-panel w-100 d-flex flex-column flex-md-row gap-4" style="min-height: 503px">
         <div class="d-flex flex-column align-items-center gap-3">
             <div class="d-flex flex-column align-items-center gap-3">
-                <img src="~/uploads/users/default_user_image.png" alt="User Image" width="250" height="250" class="rounded-circle" />
+                @* Get the correct path of profile image. *@
+                @{
+                    var img = Url.Content(string.IsNullOrWhiteSpace(Model.UpdateUser.profile_image_path)
+                        ? "~/uploads/users/default_user_image.png"
+                        : Model.UpdateUser.profile_image_path);
+                }
+                <div style="height: 250px; width: 250px;" class="overflow-hidden rounded-circle d-flex justify-content-center align-items-center">
+                    <img src="@img" alt="User Image" width="250"/>
+                </div>
                 <h4>@@@(Model.UpdateUser.username)</h4>
             </div>
+            
             <div class="w-100">
-                <ul class="nav nav-underline flex-column nav-fill" id="perfilTabs" role="tablist">
+                <ul class="nav nav-md-underline flex-column nav-fill" id="perfilTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="perfil-tab" data-bs-toggle="tab" data-bs-target="#perfil" type="button" role="tab">
+                        <button class="nav-link active" id="perfil-tab" data-bs-toggle="tab"
+                                data-bs-target="#perfil" type="button" role="tab">
                             Perfil
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="excluir-tab" data-bs-toggle="tab" data-bs-target="#excluir" type="button" role="tab">
+                        <button class="nav-link" id="excluir-tab" data-bs-toggle="tab" data-bs-target="#excluir"
+                                type="button" role="tab">
                             Excluir Conta
                         </button>
                     </li>
@@ -33,7 +44,7 @@
         <div class="tab-content d-flex w-100" id="perfilTabsContent">
             <div class="tab-pane fade active show w-100" id="perfil" role="tabpanel">
                 <form asp-controller="User" asp-action="Profile" method="post" enctype="multipart/form-data">
-                    <div class="mb-4 d-none d-md-block">
+                    <div class="mb-4">
                         <h2>Perfil</h2>
                     </div>
                     @Html.AntiForgeryToken()
