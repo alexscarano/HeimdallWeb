@@ -160,7 +160,7 @@ public class UserController : Controller
                     bool hasDeleted = ImageService.DeleteOldProfileImage(userDb.profile_image ?? string.Empty);
                     string? imagePath = null;
 
-                    if (hasDeleted)
+                    if (hasDeleted || string.IsNullOrEmpty(userDb.profile_image))
                         imagePath = await model.ProfileImage.SaveProfileImageAsync();
 
                     if (!string.IsNullOrEmpty(imagePath))
