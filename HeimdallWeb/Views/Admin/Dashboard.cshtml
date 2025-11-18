@@ -4,11 +4,16 @@
 }
 
 <head>
+<<<<<<< Updated upstream
     <link rel="stylesheet" href="~/css/dashboard-dark.css" asp-append-version="true" />
     <!-- AdminLTE CSS via CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+=======
+    <!-- AdminLTE CSS via CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+>>>>>>> Stashed changes
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
@@ -23,20 +28,10 @@
     </style>
 </head>
 
-<div class="container-lg mb-4">
-    <div class="d-flex justify-content-between align-items-center py-3 bg-dark rounded-3 text-white history-header px-3">
-        <div class="d-flex align-items-center">
-            <h4 class="m-0"><i class="fas fa-tachometer-alt"></i> Dashboard Administrativo</h4>
-        </div>
-        <div class="d-flex align-items-stretch gap-2">
-            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="Admin" asp-action="GerenciarUsuarios">Gerenciar Usuários</a>
-            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
-        </div>
-    </div>
-</div>
+
 
 <!-- Cards de Estatísticas Principais -->
-<div class="container-lg">
+<div class="container">
     <div class="row">
         <!-- Card: Total de Usuários -->
         <div class="col-lg-3 col-md-6 col-sm-12 mb-3">

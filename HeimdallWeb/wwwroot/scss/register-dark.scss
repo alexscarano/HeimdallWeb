@@ -1,18 +1,3 @@
-@import 'history-dark.scss';
-@import 'register.scss';
-
-/* Dark theme overrides for register page (ASCII-only comments) */
-
-:root {
-  --background-color: #0b1415;
-}
-
-/* page background (behind the panel) */
-body {
-  background-color: var(--background-color) !important;
-  color: #eaf7f6 !important;
-}
-
 /* Panel containing the form: dark background, light text */
 .page-panel {
   background: rgba(8,12,13,0.95) !important;
@@ -22,11 +7,14 @@ body {
   box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important;
 }
 
+<<<<<<< Updated upstream
 .page-panel .acme,
 .acme {
   color: #eaf7f6 !important;
 }
 
+=======
+>>>>>>> Stashed changes
 .roboto {
   color: #eaf7f6 !important;
 }
@@ -56,10 +44,6 @@ input::placeholder{
   color: rgba(234,247,246,0.55) !important;
 }
 
-.regras {
-  color: $heimdall-muted !important;
-}
-
 /* Buttons: use the accent from history-dark.scss and ensure good contrast */
 .btn {
   background-color: rgba(255,255,255,0.03) !important; /* neutral base for outlines */
@@ -69,21 +53,15 @@ input::placeholder{
 }
 
 .btn-primary, .btn.btn-primary {
-  background-color: $heimdall-accent !important;
-  border-color: rgba($heimdall-accent, 0.9) !important;
+  background-color: var(--main-color) !important;
   color: #fff !important;
 }
 
 .btn:hover,
 .btn:focus,
 .btn:active {
-  background-color: rgba($heimdall-accent, 0.9) !important;
+  background-color: black !important;
   color: #fff !important;
-}
-
-/* Links inside the panel (login link) */
-.page-panel a {
-  color: rgba($heimdall-accent, 0.95) !important;
 }
 
 /* Ensure headings contrast well on dark panel */

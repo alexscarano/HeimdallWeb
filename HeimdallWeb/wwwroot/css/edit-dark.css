@@ -1,15 +1,21 @@
-:root {
-  --heimdall-dark: #1c3033;
-  --heimdall-dark-2: #163033;
-  --heimdall-accent: #2a6b6d;
-  --heimdall-muted: #9fb7b7;
-}
+/* Error: Undefined variable.
+ *   ,
+ * 9 |     color: $heimdall-accent;
+ *   |            ^^^^^^^^^^^^^^^^
+ *   '
+ *   wwwroot/scss/profile-dark.scss 9:12  root stylesheet */
 
-.history-header {
-  padding-left: 1.25rem; /* move text away from left edge */
-  padding-right: 1.25rem; /* move controls away from right edge */
-  border-radius: 0.85rem; /* slightly more rounded than default rounded-3 */
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: Undefined variable.\a   \2577 \a 9 \2502      color: $heimdall-accent;\a   \2502             ^^^^^^^^^^^^^^^^\a   \2575 \a   wwwroot/scss/profile-dark.scss 9:12  root stylesheet";
 }
+<<<<<<< Updated upstream:HeimdallWeb/wwwroot/css/edit-dark.css
 
 .history-header a.nav-link {
   padding: 0.375rem 0.6rem;
@@ -469,3 +475,5 @@
 }
 
 /*# sourceMappingURL=edit-dark.css.map */
+=======
+>>>>>>> Stashed changes:HeimdallWeb/wwwroot/css/profile-dark.css
