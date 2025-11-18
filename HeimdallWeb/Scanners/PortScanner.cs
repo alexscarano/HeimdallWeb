@@ -123,7 +123,10 @@ namespace HeimdallWeb.Scanners
                                 var probe = await ProbeIpPortAsync(ip, port, cancellationToken);
                                 lock (results)
                                 {
-                                    results.Add(probe);
+                                    if (probe is not null && probe["open"]?.Value<bool>() == true)
+                                    {
+                                        results.Add(probe);
+                                    }
                                 }
                             }
                             catch (OperationCanceledException)

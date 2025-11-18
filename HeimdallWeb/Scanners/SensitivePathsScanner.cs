@@ -115,9 +115,7 @@ public class SensitivePathsScanner : IScanner
             var fallbackDetection = DetectGlobalFallback(allProbeResults);
             
             if (fallbackDetection.IsSuspected)
-            {
-                Console.WriteLine($"[SensitivePathsScanner] Todos os caminhos retornaram 200 — possível falso-positivo. Razão: {fallbackDetection.Reason}");
-                
+            {                
                 // Retorna um achado especial indicando fallback global detectado
                 var fallbackFinding = new JObject
                 {
@@ -586,7 +584,7 @@ public class SensitivePathsScanner : IScanner
     }
     
     /// <summary>
-    /// 🔍 Método principal de sondagem com heurísticas anti-falso-positivo
+    /// Método principal de sondagem com heurísticas anti-falso-positivo
     /// SEMPRE retorna JObject (nunca null) para permitir análise de fallback global
     /// </summary>
     private async Task<JObject> ProbePathAsync(string target, string path, CancellationToken cancellationToken)
@@ -619,14 +617,14 @@ public class SensitivePathsScanner : IScanner
             result["statusCode"] = (int)response.StatusCode;
             var statusCode = (int)response.StatusCode;
 
-            // 🚫 REGRA 1: Bloquear códigos inválidos (4xx, 5xx, 3xx)
+            // REGRA 1: Bloquear códigos inválidos (4xx, 5xx, 3xx)
             if (statusCode >= 300 && statusCode < 400)
             {
                 // Redirect detectado
                 var location = response.Headers.Location?.ToString();
                 result["redirectLocation"] = location;
                 
-                // 🔍 HEURÍSTICA 2: Detectar redirect para login (falso-positivo)
+                // HEURÍSTICA 2: Detectar redirect para login (falso-positivo)
                 if (IsLoginRedirect(location))
                 {
                     result["falsePositiveReason"] = "Redirect global para página de login";
@@ -651,7 +649,7 @@ public class SensitivePathsScanner : IScanner
                 return result; // Não existe, _validFinding = false
             }
 
-            // ✅ REGRA 2: Códigos válidos (200, 204, 401, 403)
+            // REGRA 2: Códigos válidos (200, 204, 401, 403)
             if (statusCode == 401)
             {
                 // Requer autenticação - recurso existe e está protegido
@@ -698,7 +696,7 @@ public class SensitivePathsScanner : IScanner
                     return result; // _validFinding = false
                 }
 
-                // 🔍 HEURÍSTICA 4: Comparar com homepage (mesmo conteúdo = falso-positivo)
+                // HEURÍSTICA 4: Comparar com homepage (mesmo conteúdo = falso-positivo)
                 if (IsSameAsHomepage(content))
                 {
                     result["falsePositiveReason"] = "Conteúdo idêntico à homepage";
@@ -740,7 +738,7 @@ public class SensitivePathsScanner : IScanner
     }
     
     /// <summary>
-    /// 🔍 HEURÍSTICA 2: Detecta se é um redirect para página de login (falso-positivo comum)
+    /// HEURÍSTICA 2: Detecta se é um redirect para página de login (falso-positivo comum)
     /// </summary>
     private static bool IsLoginRedirect(string? location)
     {
