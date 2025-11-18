@@ -153,23 +153,25 @@ public class UserController : Controller
                 if (model.ProfileImage is not null)
                 {
                     if (!model.ProfileImage.IsImageFile())
-                        throw new Exception("O formato de imagem precisa ser válido: PNG, JPG, GIF ou WEBP");
+                        throw new Exception("O formato de imagem precisa ser válido: PNG, JPG ou WEBP");
                     else if (model.ProfileImage.IsFileSizeInvalid())
                         throw new Exception("O tamanho da imagem não pode passar de 2MB");
 
                     bool hasDeleted = ImageService.DeleteOldProfileImage(userDb.profile_image ?? string.Empty);
                     string? imagePath = null;
 
-                    if (hasDeleted) 
+                    if (hasDeleted)
                         imagePath = await model.ProfileImage.SaveProfileImageAsync();
-                    
+                    else
+                        throw new Exception();
+
                     if (!string.IsNullOrEmpty(imagePath))
                         model.UpdateUser.profile_image_path = imagePath;
                 }
 
                 await _userRepository.UpdateUser(model.UpdateUser);
                 TempData["OkMsg"] = "Usuário atualizado com sucesso.";
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Profile", "User");
             }
             else if (action == "delete")
             {

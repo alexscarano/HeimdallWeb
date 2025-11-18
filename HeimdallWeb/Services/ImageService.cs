@@ -2,7 +2,7 @@
 
 public static class ImageService
 {
-    private static readonly long _maxSizeInBytes = 2097152;
+    private static readonly long _maxSizeInBytes = 2097152; // 2 MB
 
     public static bool IsImageFile(this IFormFile file)
     {
@@ -11,7 +11,6 @@ public static class ImageService
         {
             "image/jpeg",
             "image/png",
-            "image/gif",
             "image/webp"
         };
 
@@ -20,7 +19,7 @@ public static class ImageService
 
     public static bool IsFileSizeInvalid(this IFormFile file)
     {
-        return file.Length <= _maxSizeInBytes;
+        return file.Length >= _maxSizeInBytes;
     }
 
     // Existing simple save method kept intact
