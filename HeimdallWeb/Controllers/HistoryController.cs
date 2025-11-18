@@ -150,5 +150,37 @@ namespace HeimdallWeb.Controllers
                 return StatusCode(500, new { success = false, message = "Erro ao gerar PDF: " + ex.Message });
             }
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> ExportSinglePdf(int historyId)
+        {
+            try
+            {
+                // Validar entrada
+                if (historyId <= 0)
+                    return BadRequest(new { success = false, message = "ID de histórico inválido." });
+
+                // Buscar histórico específico com Findings e Technologies
+                var history = await _historyRepository.getHistoryByIdWithIncludes(historyId);
+
+                if (history == null)
+                    return NotFound(new { success = false, message = "Histórico não encontrado." });
+
+                // Obter nome do usuário atual
+                var userName = User.Identity?.Name ?? "Usuário desconhecido";
+
+                // Gerar PDF individual
+                var pdfBytes = _pdfService.GenerateSingleHistoryPdf(history, userName);
+
+                // Retornar arquivo PDF
+                var fileName = $"Scan_{history.target.Replace("https://", "").Replace("http://", "").Replace("/", "_")}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
+                return File(pdfBytes, "application/pdf", fileName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Erro ao gerar PDF: " + ex.Message });
+            }
+        }
     }
 }

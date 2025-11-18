@@ -14,6 +14,9 @@
 
         </div>
         <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-warning btn-sm" onclick="exportAllPdf()" title="Exportar todos os sites desta página em PDF">
+                <i class="bi bi-file-pdf"></i> Exportar Todos (PDF)
+            </button>
             <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
             <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
             @if (User.IsInRole("2"))
@@ -67,7 +70,7 @@
                             <div class="btn-group" role="group" aria-label="Acoes">
                                 <a class="btn btn-sm btn-outline-success" asp-controller="History" asp-action="ViewJson" asp-route-id="@history.history_id">JSON</a>
                                 <button type="button" class="btn btn-sm btn-outline-primary" onclick="showSummary('@history.summary?.Replace("'", "\\'")')">Resumo</button>
-                                <button type="button" class="btn btn-sm btn-outline-warning" onclick="exportPdf(@history.user_id)" title="Exportar PDF"><i class="bi bi-file-pdf"></i></button>
+                                <button type="button" class="btn btn-sm btn-outline-warning" onclick="exportSinglePdf(@history.history_id)" title="Exportar PDF deste site"><i class="bi bi-file-pdf"></i></button>
                                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete(@history.history_id)">Excluir</button>
                             </div>
                         </td>

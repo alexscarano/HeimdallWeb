@@ -121,9 +121,22 @@ namespace HeimdallWeb.Repository
             }
         }
 
+        // Método original: não realiza eager-loading dos relacionamentos
         public async Task<HistoryModel?> getHistoryById(int id)
         {
             var history = await _appDbContext.History
+                .AsNoTracking()
+                .FirstOrDefaultAsync(h => h.history_id == id);
+
+            return history;
+        }
+
+        // Novo método que carrega as entidades relacionadas (Findings e Technologies)
+        public async Task<HistoryModel?> getHistoryByIdWithIncludes(int id)
+        {
+            var history = await _appDbContext.History
+                .Include(h => h.Findings)
+                .Include(h => h.Technologies)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(h => h.history_id == id);
 
