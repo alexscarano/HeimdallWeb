@@ -112,7 +112,6 @@
                         <h2><i class="bi bi-exclamation-circle"></i> Excluir Conta</h2></div>
                     <div class="row">
                         <p>Essa ação não pode ser desfeita. Confirme sua senha para continuar:</p></div>
-
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="UpdateUser.user_id"/>
 
@@ -144,99 +143,22 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="cropperModal" tabindex="-1">
+    <div class="modal fade" id="cropperModal" tabindex="-1" data-bs-backdrop="static"
+         data-bs-keyboard="false">>
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Ajustar Imagem</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
                 <div class="modal-body">
                     <div class="img-container" style="max-height: 503px;">
-                        <img id="imageToCrop" style="max-width: 100%;" />
+                        <img id="imageToCrop" alt="Image not found!" style="max-width: 100%;" />
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button id="cropBtn" class="btn btn-primary">Salvar Recorte</button>
+                    <button id="cropBtn" class="btn btn-primary">Recortar</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts
-{
-    <script>
-        // profileImageInput
-        let cropper;
-
-        // quando selecionar a imagem
-        document.getElementById('profileImageInput').addEventListener('change', function (e) {
-            let file = e.target.files[0];
-            if (!file) return;
-
-            let reader = new FileReader();
-            reader.onload = function (event) {
-                document.getElementById('imageToCrop').src = event.target.result;
-
-                let modal = new bootstrap.Modal(document.getElementById('cropperModal'));
-                modal.show();
-
-                setTimeout(() => {
-                    if (cropper) cropper.destroy();
-
-                    cropper = new Cropper(document.getElementById('imageToCrop'), {
-                        aspectRatio: 1,
-                        viewMode: 2,
-                        dragMode: 'crop',
-                        autoCrop: true,
-                        autoCropArea: 0.8,
-                        movable: true,
-                        zoomable: true,
-                        zoomOnWheel: true,
-                        zoomOnTouch: true,
-                        wheelZoomRatio: 0.1,
-                        cropBoxMovable: true,
-                        cropBoxResizable: false,
-                        toggleDragModeOnDblclick: true,
-                        minCropBoxWidth: 300,
-                        minCropBoxHeight: 300,
-                        background: false,
-                        guides: true,
-                        highlight: true,
-                        center: true,
-                        responsive: true,
-                        restore: true,
-                        checkCrossOrigin: true,
-                        checkOrientation: true,
-                        modal: true,
-                    });
-                }, 200);
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // botão de recortar
-        document.getElementById('cropBtn').addEventListener('click', function () {
-            let canvas = cropper.getCroppedCanvas({
-                width: 500,
-                height: 500,
-            });
-
-            canvas.toBlob(function (blob) {
-                let fileInput = document.getElementById('profileImageInput');
-
-                let croppedFile = new File([blob], "profile.jpg", { type: "image/jpeg" });
-
-                // substitui o arquivo original pelo recortado
-                let dataTransfer = new DataTransfer();
-                dataTransfer.items.add(croppedFile);
-                fileInput.files = dataTransfer.files;
-
-                bootstrap.Modal.getInstance(document.getElementById('cropperModal')).hide();
-            });
-        });
-    </script>
-}
+@section Scripts {<script src="~/js/cropImage.js"></script>}

@@ -10,8 +10,6 @@ public static class ImageService
         var allowedMimeTypes = new List<string>
         {
             "image/jpeg",
-            "image/png",
-            "image/webp"
         };
 
         return allowedMimeTypes.Contains(file.ContentType);

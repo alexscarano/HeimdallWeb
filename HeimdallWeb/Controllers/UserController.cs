@@ -153,7 +153,7 @@ public class UserController : Controller
                 if (model.ProfileImage is not null)
                 {
                     if (!model.ProfileImage.IsImageFile())
-                        throw new Exception("O formato de imagem precisa ser válido: PNG, JPG ou WEBP");
+                        throw new Exception("O formato de imagem precisa ser JPG.");
                     else if (model.ProfileImage.IsFileSizeInvalid())
                         throw new Exception("O tamanho da imagem não pode passar de 2MB");
 
