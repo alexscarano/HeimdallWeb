@@ -36,6 +36,7 @@ namespace HeimdallWeb.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<IScanService, ScanService>();
+            services.AddScoped<IPdfService, PdfService>();
             return services;
         }
 

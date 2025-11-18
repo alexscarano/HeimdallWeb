@@ -4,6 +4,7 @@ window.confirmDelete = confirmDelete;
 window.loadFindings = loadFindings;
 window.loadTechnologies = loadTechnologies;
 window.showSummary = showSummary;
+window.exportPdf = exportPdf;
 function getQueryParamNumber(name, defaultValue) {
     try {
         const url = new URL(window.location.href);
@@ -141,4 +142,96 @@ function showSummary(text) {
         confirmButtonText: 'Fechar'
     });
 }
+
+function exportPdf(userId) {
+    const currentPage = getQueryParamNumber('page', 1);
+    const pageSize = getQueryParamNumber('pageSize', 10);
+    
+    if (!userId) {
+        Swal.fire('Erro', 'ID do usuário não encontrado.', 'error');
+        return;
+    }
+
+    // Mostrar mensagem de carregamento
+    Swal.fire({
+        title: 'Gerando PDF...',
+        text: 'Por favor aguarde',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    // Criar payload para enviar ao backend
+    const payload = {
+        userId: parseInt(userId),
+        page: currentPage,
+        pageSize: pageSize
+    };
+
+    // Fazer requisição POST para exportar PDF
+    axios.post('/history/exportpdf', payload, {
+        responseType: 'blob',
+        timeout: 30000,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then((response) => {
+        // Fechar o loading
+        Swal.close();
+
+        // Criar um link temporário para download
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        
+        // Extrair nome do arquivo do header ou usar padrão
+        const contentDisposition = response.headers['content-disposition'];
+        let fileName = `Historico_${new Date().toISOString().slice(0,10)}.pdf`;
+        if (contentDisposition) {
+            const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/i);
+            if (fileNameMatch && fileNameMatch.length === 2) {
+                fileName = fileNameMatch[1];
+            }
+        }
+        
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+
+        // Mostrar mensagem de sucesso
+        Swal.fire({
+            title: 'Sucesso!',
+            text: 'PDF exportado com sucesso!',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    })
+    .catch((err) => {
+        console.error('Erro ao exportar PDF:', err);
+        let errorMessage = 'Ocorreu um erro ao gerar o PDF.';
+        
+        if (err.response && err.response.data) {
+            // Tentar ler a mensagem de erro do blob
+            const reader = new FileReader();
+            reader.onload = function() {
+                try {
+                    const errorData = JSON.parse(reader.result);
+                    errorMessage = errorData.message || errorMessage;
+                } catch (e) {
+                    // Se não for JSON, manter mensagem padrão
+                }
+                Swal.fire('Erro', errorMessage, 'error');
+            };
+            reader.readAsText(err.response.data);
+        } else {
+            Swal.fire('Erro', errorMessage, 'error');
+        }
+    });
+}
+
 //# sourceMappingURL=history.js.map

@@ -67,6 +67,7 @@
                             <div class="btn-group" role="group" aria-label="Acoes">
                                 <a class="btn btn-sm btn-outline-success" asp-controller="History" asp-action="ViewJson" asp-route-id="@history.history_id">JSON</a>
                                 <button type="button" class="btn btn-sm btn-outline-primary" onclick="showSummary('@history.summary?.Replace("'", "\\'")')">Resumo</button>
+                                <button type="button" class="btn btn-sm btn-outline-warning" onclick="exportPdf(@history.user_id)" title="Exportar PDF"><i class="bi bi-file-pdf"></i></button>
                                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete(@history.history_id)">Excluir</button>
                             </div>
                         </td>

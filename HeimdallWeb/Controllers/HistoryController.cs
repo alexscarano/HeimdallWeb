@@ -1,4 +1,5 @@
 ﻿using ASHelpers.Extensions;
+using HeimdallWeb.DTO;
 using HeimdallWeb.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,15 +12,19 @@ namespace HeimdallWeb.Controllers
             private readonly IHistoryRepository _historyRepository;
             private readonly IFindingRepository _findingRepository;
             private readonly ITechnologyRepository _technologyRepository;
+            private readonly IPdfService _pdfService;
+            
             public HistoryController(
                 IHistoryRepository historyRepository, 
                 IFindingRepository findingRepository,
-                ITechnologyRepository technologyRepository
+                ITechnologyRepository technologyRepository,
+                IPdfService pdfService
             )
             {
                 _historyRepository = historyRepository;
                 _findingRepository = findingRepository;
                 _technologyRepository = technologyRepository;
+                _pdfService = pdfService;
             }
 
             [Authorize]
@@ -107,6 +112,42 @@ namespace HeimdallWeb.Controllers
             catch (Exception)
             {
                 return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ExportPdf([FromBody] HistoryExportRequestDTO request)
+        {
+            try
+            {
+                // Validar entrada
+                if (request.UserId <= 0)
+                    return BadRequest(new { success = false, message = "ID de usuário inválido." });
+
+                // Buscar histórico com os filtros aplicados
+                var histories = await _historyRepository.getHistoriesByUserID(
+                    request.UserId, 
+                    request.Page, 
+                    request.PageSize
+                );
+
+                if (histories == null || !histories.Items.Any())
+                    return NotFound(new { success = false, message = "Nenhum histórico encontrado." });
+
+                // Obter nome do usuário atual
+                var userName = User.Identity?.Name ?? "Usuário desconhecido";
+
+                // Gerar PDF
+                var pdfBytes = _pdfService.GenerateHistoryPdf(histories, userName);
+
+                // Retornar arquivo PDF
+                var fileName = $"Historico_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
+                return File(pdfBytes, "application/pdf", fileName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Erro ao gerar PDF: " + ex.Message });
             }
         }
     }
