@@ -1,5 +1,6 @@
 ﻿using ASHelpers.Extensions;
 using HeimdallWeb.DTO;
+using HeimdallWeb.DTO.Mappers;
 using HeimdallWeb.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -64,19 +65,26 @@ namespace HeimdallWeb.Controllers
         [Authorize]
         public async Task<IActionResult> ViewJson(int id)
         {
-            var jsonResult = await _historyRepository.getJsonByHistoryId(id);
-            if (jsonResult is null)
+            // Busca o histórico completo
+            var history = await _historyRepository.getHistoryById(id);
+            if (history is null)
             {
-                TempData["ErrorMsg"] = "Falha ao carregar JSON do histórico.";
-                return RedirectToAction("Index", "Home");
-            }
-            
-            if (!jsonResult.HasValues)
-            {
+                TempData["ErrorMsg"] = "Histórico não encontrado.";
                 return RedirectToAction("Index", "History");
             }
 
-            return Content(jsonResult.ToString(), "application/json");
+            // Busca o JSON bruto do scanner
+            var jsonResult = await _historyRepository.getJsonByHistoryId(id);
+            if (jsonResult is null || !jsonResult.HasValues)
+            {
+                TempData["ErrorMsg"] = "JSON do scan não disponível.";
+                return RedirectToAction("Index", "History");
+            }
+
+            // Converte para DTO de apresentação usando o mapper
+            var prettyDTO = JsonViewMapper.ToPrettyDTO(jsonResult, history.target, history.summary);
+
+            return View(prettyDTO);
         }
 
         [Authorize]
