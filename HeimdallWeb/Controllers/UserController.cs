@@ -162,8 +162,6 @@ public class UserController : Controller
 
                     if (hasDeleted)
                         imagePath = await model.ProfileImage.SaveProfileImageAsync();
-                    else
-                        throw new Exception();
 
                     if (!string.IsNullOrEmpty(imagePath))
                         model.UpdateUser.profile_image_path = imagePath;
