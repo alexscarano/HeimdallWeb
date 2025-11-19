@@ -81,7 +81,7 @@ public class SensitivePathsScanner : IScanner
             // PASSO 1: Capturar conteúdo da homepage para comparação
             await CaptureHomepageBaselineAsync(target, cancellationToken);
             
-            var allProbeResults = new List<ProbeResult>(); // 🟧 Rastreia TODAS as respostas
+            var allProbeResults = new List<ProbeResult>(); //  Rastreia TODAS as respostas
             var listToCheck = _defaultPaths;
 
             // Limita o número de tarefas paralelas

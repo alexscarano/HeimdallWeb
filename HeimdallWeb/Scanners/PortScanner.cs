@@ -102,8 +102,6 @@ namespace HeimdallWeb.Scanners
         {
             try
             {
-                //ports ??= _defaultPorts;
-
                 IPAddress[] target = NetworkUtils.GetIPv4Addresses(targetRaw);
 
                 var results = new JArray();

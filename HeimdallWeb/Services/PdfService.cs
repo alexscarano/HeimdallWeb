@@ -246,9 +246,24 @@ namespace HeimdallWeb.Services
                         .FontSize(8)
                         .FontColor("#616161");
 
-                    row.RelativeItem().AlignRight().Text($"Página X")
-                        .FontSize(8)
-                        .FontColor("#616161");
+                    row.RelativeItem().AlignRight().Text(text =>
+                    {
+                        text.Span("Página ")
+                            .FontSize(8)
+                            .FontColor("#616161");
+
+                        text.CurrentPageNumber()
+                            .FontSize(8)
+                            .FontColor("#616161");
+
+                        text.Span(" de ")
+                            .FontSize(8)
+                            .FontColor("#616161");
+
+                        text.TotalPages()
+                            .FontSize(8)
+                            .FontColor("#616161");
+                    });
                 });
             });
         }
