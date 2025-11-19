@@ -1,5 +1,10 @@
 ﻿@model HeimdallWeb.Models.Map.PaginatedResult<HeimdallWeb.Models.HistoryModel>
 
+
+@{
+    ViewData["Title"] = "Histórico";
+}
+
 @{
     // capturar id do usuário
     var userIdValue = string.Empty;
@@ -15,7 +20,6 @@
 
 @* TempData handled globally in _Layout.cshtml *@
 
-@* Hidden field with resolved user id for use by JavaScript *@
 <input type="hidden" id="userId" name="userId" value="@userIdValue" />
 
 <div class="container mb-4">

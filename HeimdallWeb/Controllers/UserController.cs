@@ -134,20 +134,20 @@ public class UserController : Controller
                 if (await _userRepository.VerifyIfUserExistsWithLogin(model.UpdateUser))
                 {
                     TempData["ErrorMsg"] = "Já existe um usuário com este login, tente outro.";
-                    return View(model);
+                    return RedirectToAction("Profile", "User");
                 }
 
                 if (await _userRepository.VerifyIfUserExistsWithEmail(model.UpdateUser))
                 {
                     TempData["ErrorMsg"] = "Já existe um usuário com este email, tente outro.";
-                    return View(model);
+                    return RedirectToAction("Profile", "User");
                 }
 
                 var userDb = await _userRepository.getUserById(userId.Value);
                 if (userDb is null)
                 {
                     TempData["ErrorMsg"] = "Usuário não encontrado.";
-                    return View(model);
+                    return RedirectToAction("Profile", "User");
                 }
 
                 if (model.ProfileImage is not null)

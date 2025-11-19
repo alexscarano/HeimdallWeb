@@ -65,34 +65,37 @@
         </div>
         <div class="tab-content d-flex w-100" id="perfilTabsContent">
             <div class="tab-pane fade active show w-100" id="perfil" role="tabpanel">
-                <form asp-controller="User" asp-action="Profile" method="post" enctype="multipart/form-data">
+                <form asp-controller="User" asp-action="Profile" method="post" enctype="multipart/form-data" autocomplete="off">
                     <div class="mb-4">
                         <h2>Perfil</h2>
                     </div>
                     @Html.AntiForgeryToken()
+                    @* Dummy hidden fields to reduce browser autofill interference *@
+                    <input type="text" name="__fakeusernameremembered" style="position:absolute; left:-10000px; top:auto; width:1px; height:1px;" autocomplete="username" />
+                    <input type="password" name="__fakepasswordremembered" style="position:absolute; left:-10000px; top:auto; width:1px; height:1px;" autocomplete="new-password" />
                     <input type="hidden" asp-for="UpdateUser.user_id"/>
 
                     <div class="mb-3">
                         <label asp-for="UpdateUser.username" class="form-label">Login</label>
-                        <input class="form-control" placeholder="Digite o nome do Usuário" />
+                        <input asp-for="UpdateUser.username" class="form-control" placeholder="Digite o nome do Usuário" autocomplete="off" />
                         @Html.ValidationMessageFor(x => x.UpdateUser.username)
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="UpdateUser.email" class="form-label">E-mail</label>
-                        <input class="form-control" placeholder="Digite o email do Usuário" />
+                        <input asp-for="UpdateUser.email" class="form-control" placeholder="Digite o email do Usuário" autocomplete="off" />
                         @Html.ValidationMessageFor(x => x.UpdateUser.email)
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="UpdateUser.password" class="form-label">Senha</label>
-                        <input asp-for="UpdateUser.password" class="form-control" placeholder="Nova senha (deixe em branco para manter)"/>
+                        <input asp-for="UpdateUser.password" class="form-control" placeholder="Nova senha (deixe em branco para manter)" autocomplete="new-password" />
                         @Html.ValidationMessageFor(x => x.UpdateUser.password)
                     </div>
 
                     <div class="mb-4">
                         <label asp-for="UpdateUser.confirm_password" class="form-label">Confirmar senha</label>
-                        <input asp-for="UpdateUser.confirm_password" class="form-control" placeholder="Confirme a senha"/>
+                        <input asp-for="UpdateUser.confirm_password" class="form-control" placeholder="Confirme a senha" autocomplete="new-password" />
                         @Html.ValidationMessageFor(x => x.UpdateUser.confirm_password)
                     </div>
 
