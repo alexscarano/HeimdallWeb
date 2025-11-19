@@ -111,22 +111,16 @@
             @if (Model != null && Model.Items.Any())
             {
                 <thead class="table-dark">
-                    <tr class="text-center align-middle">
-                        <th scope="col">ID</th>
-                        <th scope="col">Login</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Tipo</th>
-                        <th scope="col">Criado em</th>
-                        <th scope="col">Ações</th>
-                    </tr>
+                <tr class="text-center align-middle">
+                    <th scope="col">ID</th>
+                    <th scope="col">Login</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Criado em</th>
+                    <th scope="col">Ações</th>
+                </tr>
                 </thead>
-            }
-            else
-            {
-                <div class="alert alert-secondary text-center m-3" role="alert">
-                    Nenhum registro encontrado no painel.
-                </div>
             }
 
             <tbody class="table-group-divider">
@@ -189,6 +183,12 @@
                             </td>
                         </tr>
                     }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7">Nenhum registro encontrado no painel.</td>
+                    </tr>
                 }
             </tbody>
         </table>

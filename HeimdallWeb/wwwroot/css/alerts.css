@@ -1,15 +1,12 @@
 .alert {
   border: 1px solid rgba(0, 0, 0, 0.18);
+  color: #fff;
   border-radius: 0.5rem;
-  padding: 0.9rem 1rem;
+  padding: 0.9rem 2.6rem 0.9rem 1rem;
   font-weight: 600;
   position: relative;
   margin: 1.2rem auto 0;
-  z-index: 1050;
   width: min(50vw, 500px);
-  box-sizing: border-box;
-  padding-right: 2.6rem;
-  font-family: "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, system-ui, -apple-system, sans-serif;
   text-align: center;
   letter-spacing: 0.2px;
   line-height: 1.25;
@@ -18,71 +15,29 @@
   transition: background-color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
 }
 .alert.alert-success {
-  background-color: #2ecc71 !important;
-  color: #ffffff !important; /* white text on green */
-  border: 3px solid rgba(0, 0, 0, 0.18) !important;
+  background-color: #2ecc71;
 }
 .alert.alert-success:hover, .alert.alert-success:focus {
-  background-color: #27ae60 !important;
+  background-color: #27ae60;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38);
 }
-.alert.alert-danger, .alert.alert-error {
-  background-color: #e74c3c !important;
-  color: #ffffff !important; /* white text on red */
-  border: 3px solid rgba(0, 0, 0, 0.18) !important;
+.alert.alert-error {
+  background-color: #e74c3c;
 }
-.alert.alert-danger:hover, .alert.alert-danger:focus, .alert.alert-error:hover, .alert.alert-error:focus {
-  background-color: #c0392b !important;
+.alert.alert-error:hover, .alert.alert-error:focus {
+  background-color: #c0392b;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38);
 }
 .alert a {
-  text-decoration: underline;
   color: inherit;
-}
-.alert .btn-close {
-  position: absolute !important;
-  right: 0.45rem !important;
-  top: 0.45rem !important;
-  width: 1.6rem !important;
-  height: 1.6rem !important;
-  padding: 0 !important;
-  z-index: 1060 !important;
-  opacity: 0.95;
-  filter: invert(1) brightness(1.2) !important;
-}
-@media (max-width: 576px) {
-  .alert .btn-close {
-    right: 0.6rem !important;
-    top: 0.45rem !important;
-  }
-}
-
-body .alert.alert-success, .alert.alert-success, body .alert.alert-success.fade.show, .alert.alert-success.fade.show {
-  background-color: #2ecc71 !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(0, 0, 0, 0.18) !important;
-}
-
-body .alert.alert-danger, .alert.alert-danger, body .alert.alert-danger.fade.show, .alert.alert-danger.fade.show, .alert.alert-error {
-  background-color: #e74c3c !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(0, 0, 0, 0.18) !important;
 }
 
 @media (max-width: 576px) {
   .alert {
-    width: calc(100% - 1.2rem) !important;
-    margin: 0.6rem auto !important;
-    transform: none !important;
-    padding-right: 2.4rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.32);
+    width: calc(100% - 1.2rem);
+    margin: 0.6rem auto;
+    transform: none;
     font-size: 0.92rem;
-    text-align: center;
-    border: 1px solid rgba(0, 0, 0, 0.16) !important;
-  }
-  .alert .btn-close {
-    right: 0.6rem !important;
-    top: 0.35rem !important;
   }
 }
 
