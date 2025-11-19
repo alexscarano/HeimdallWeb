@@ -134,11 +134,7 @@ namespace HeimdallWeb.Controllers
                     return BadRequest(new { success = false, message = "ID de usuário inválido." });
 
                 // Buscar histórico com os filtros aplicados
-                var histories = await _historyRepository.getHistoriesByUserID(
-                    request.UserId, 
-                    request.Page, 
-                    request.PageSize
-                );
+                var histories = await _historyRepository.getAllHistoriesWithIncludes();
 
                 if (histories == null || !histories.Items.Any())
                     return NotFound(new { success = false, message = "Nenhum histórico encontrado." });

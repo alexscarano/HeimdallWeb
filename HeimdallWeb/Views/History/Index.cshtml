@@ -1,5 +1,13 @@
 ﻿@model HeimdallWeb.Models.Map.PaginatedResult<HeimdallWeb.Models.HistoryModel>
 
+@{
+    // capturar id do usuário
+    var userIdValue = string.Empty;
+
+    if (Model is not null && string.IsNullOrEmpty(userIdValue))
+        userIdValue = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+}
+
 <head>
     <link rel="stylesheet" href="~/css/delete.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/history-dark.css" asp-append-version="true" />
@@ -7,11 +15,13 @@
 
 @* TempData handled globally in _Layout.cshtml *@
 
+@* Hidden field with resolved user id for use by JavaScript *@
+<input type="hidden" id="userId" name="userId" value="@userIdValue" />
+
 <div class="container mb-4">
     <div class="d-flex justify-content-between align-items-center py-3 bg-dark rounded-3 text-white history-header">
         <div class="d-flex align-items-center gap-3">
             <h4 class="m-0">Histórico</h4>
-
         </div>
         <div class="d-flex align-items-center gap-2">
             <button class="btn btn-warning btn-sm" onclick="exportAllPdf()" title="Exportar todos os sites desta página em PDF">
