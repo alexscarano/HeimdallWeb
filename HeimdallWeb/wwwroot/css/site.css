@@ -75,7 +75,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   position: relative;
   min-height: 100dvh;
   background-image: url("/images/cartographer.png");
@@ -121,7 +122,7 @@ html, body {
   }
 }
 #homeTitle {
-  background-image: linear-gradient(to left, #a85342, #516FAB);
+  background-image: linear-gradient(to left, #a85342, #516fab);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -227,7 +228,8 @@ html, body {
 #technologiesModal th {
   background: #4a4a4a;
 }
-#findingsModal td, #findingsModal th,
+#findingsModal td,
+#findingsModal th,
 #technologiesModal td,
 #technologiesModal th {
   border: 1px solid rgba(255, 255, 255, 0.06);

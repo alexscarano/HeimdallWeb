@@ -228,8 +228,7 @@ function exportAllPdf() {
     const pageSize = getQueryParamNumber('pageSize', 10);
     
     // Extrair userId da URL atual (assumindo que está na query string)
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('userId');
+    const userId = document.getElementById('userId')?.value;
     
     if (!userId) {
         Swal.fire('Erro', 'ID do usuário não encontrado. Recarregue a página.', 'error');

@@ -1,10 +1,25 @@
 ﻿@model HeimdallWeb.Models.Map.PaginatedResult<HeimdallWeb.Models.HistoryModel>
 
+
+@{
+    ViewData["Title"] = "Histórico";
+}
+
+@{
+    // capturar id do usuário
+    var userIdValue = string.Empty;
+
+    if (Model is not null && string.IsNullOrEmpty(userIdValue))
+        userIdValue = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+}
+
 <head>
     <link rel="stylesheet" href="~/css/history-dark.css" asp-append-version="true" />
 </head>
 
 @* TempData handled globally in _Layout.cshtml *@
+
+<input type="hidden" id="userId" name="userId" value="@userIdValue" />
 
 <div class="container mb-4">
     <div class="d-flex justify-content-between align-items-center p-3 bg-dark rounded-3">

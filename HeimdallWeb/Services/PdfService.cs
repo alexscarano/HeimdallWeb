@@ -94,8 +94,6 @@ namespace HeimdallWeb.Services
                         var completedCount = histories.Items.Count(h => h.has_completed);
                         col.Item().Text($"Scans completados: {completedCount}")
                             .FontSize(11);
-                        col.Item().PaddingTop(5).Text($"Scans em andamento: {histories.Items.Count - completedCount}")
-                            .FontSize(11);
                     });
                 });
 
@@ -152,7 +150,6 @@ namespace HeimdallWeb.Services
                     // Definir colunas
                     table.ColumnsDefinition(columns =>
                     {
-                        columns.ConstantColumn(40);  // ID
                         columns.RelativeColumn(3);   // Site
                         columns.RelativeColumn(2);   // Data
                         columns.ConstantColumn(70);  // Duração
@@ -163,8 +160,6 @@ namespace HeimdallWeb.Services
                     // Cabeçalho da tabela
                     table.Header(header =>
                     {
-                        header.Cell().Background("#1565C0").Padding(5).Text("ID")
-                            .FontColor("#FFFFFF").FontSize(9).SemiBold();
                         header.Cell().Background("#1565C0").Padding(5).Text("Site")
                             .FontColor("#FFFFFF").FontSize(9).SemiBold();
                         header.Cell().Background("#1565C0").Padding(5).Text("Data")
@@ -183,9 +178,6 @@ namespace HeimdallWeb.Services
                         var backgroundColor = histories.Items.IndexOf(history) % 2 == 0 
                             ? "#EEEEEE"
                             : "#FFFFFF";
-
-                        table.Cell().Background(backgroundColor).Padding(5).Text(history.history_id.ToString())
-                            .FontSize(8);
                         
                         table.Cell().Background(backgroundColor).Padding(5).Text(TruncateText(history.target, 40))
                             .FontSize(8);
@@ -218,17 +210,19 @@ namespace HeimdallWeb.Services
                         .SemiBold()
                         .FontColor("#1565C0");
 
+                    int i = 1;
                     foreach (var history in histories.Items.Where(h => !string.IsNullOrWhiteSpace(h.summary)))
                     {
                         column.Item().PaddingTop(10).Column(col =>
                         {
-                            col.Item().Text($"ID {history.history_id} - {history.target}")
+                            col.Item().Text($"{i} - {history.target}")
                                 .FontSize(10)
                                 .SemiBold();
                             col.Item().PaddingTop(3).Text(TruncateText(history.summary, 500))
                                 .FontSize(9)
                                 .FontColor("#757575");
                         });
+                        i++;
                     }
                 }
             });

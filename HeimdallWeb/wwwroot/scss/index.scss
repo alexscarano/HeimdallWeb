@@ -9,7 +9,7 @@
   background-color: $background;
   padding-bottom: 0.75rem; /* extra inner space */
   margin-bottom: 1.75rem; /* space between navbar and next elements */
-  
+
   .nav-link.active {
     color: $primary;
   }
@@ -23,7 +23,7 @@
 
 // Home Title
 #homeTitle {
-  background-image: linear-gradient(to left, #a85342, #516FAB);
+  background-image: linear-gradient(to left, #a85342, #516fab);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -54,7 +54,6 @@
     display: block;
     animation: spinner 2s linear infinite;
   }
-
 }
 
 // Info Boxes
@@ -75,14 +74,14 @@
     color: $color;
     padding: 1.2rem;
     border-radius: 0.75rem;
-    border: 1px solid rgba($white, .03);
-    box-shadow: 0 8px 24px rgba($black, .35);
+    border: 1px solid rgba($white, 0.03);
+    box-shadow: 0 8px 24px rgba($black, 0.35);
     cursor: default;
     text-align: center;
     transition: translate 220ms ease;
     &:hover {
       translate: 0 -10px;
-      box-shadow: 0 20px 48px rgba($black, .5);
+      box-shadow: 0 20px 48px rgba($black, 0.5);
     }
   }
 }
@@ -97,11 +96,11 @@
   padding: 1rem;
   background-color: $background;
   border-radius: 1rem;
-  border: 1px solid rgba($white, .04);
-  box-shadow: 0 6px 20px rgba($black, .6);
+  border: 1px solid rgba($white, 0.04);
+  box-shadow: 0 6px 20px rgba($black, 0.6);
   .form-control {
-    background: rgba($white, .03);
-    border: 1px solid rgba($white, .06);
+    background: rgba($white, 0.03);
+    border: 1px solid rgba($white, 0.06);
     color: $color;
 
     &::placeholder {
@@ -123,7 +122,7 @@
   .nav {
     .nav-link {
       color: #fff;
-      &.active{
+      &.active {
         color: $primary;
       }
     }
@@ -132,7 +131,7 @@
 
 // findingsModal/technologiesModal table padding fix
 #findingsModal,
-#technologiesModal{
+#technologiesModal {
   td {
     padding: 0.9rem 1rem;
     background: $background2;
@@ -140,8 +139,9 @@
   th {
     background: $complementary;
   }
-  td, th{
-    border: 1px solid rgba($white,0.06);
+  td,
+  th {
+    border: 1px solid rgba($white, 0.06);
   }
 }
 
@@ -149,11 +149,11 @@
   padding: 1rem;
   background-color: $background;
   border-radius: 1rem;
-  border: 1px solid rgba($white, .04);
-  box-shadow: 0 6px 20px rgba($black, .6);
+  border: 1px solid rgba($white, 0.04);
+  box-shadow: 0 6px 20px rgba($black, 0.6);
   .form-control {
-    background: rgba($white, .03);
-    border: 1px solid rgba($white, .06);
+    background: rgba($white, 0.03);
+    border: 1px solid rgba($white, 0.06);
     color: $color;
 
     &::placeholder {
@@ -175,7 +175,7 @@
   .nav {
     .nav-link {
       color: #fff;
-      &.active{
+      &.active {
         color: $primary;
       }
     }

@@ -4,11 +4,12 @@
 
 // Default styles
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-html, body {
+html,
+body {
   position: relative;
   min-height: 100dvh;
   background-image: url("/images/cartographer.png");
