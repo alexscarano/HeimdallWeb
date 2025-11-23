@@ -33,13 +33,13 @@
 }
 
 .minus-title {
-    font-family: 'Roboto' !important;
+    font-family: 'Roboto';
     font-weight: 500;
     font-size: 1.25rem;    
 }
 
 .minus {
-    font-family: 'Roboto-Mono' !important;
+    font-family: 'Roboto-Mono';
     font-weight: 300;
     font-size: 1.15rem;
 }
@@ -47,26 +47,18 @@
 @media (max-width: 768px) {
 
     .title {
-        font-family: 'Roboto-Serif';
-        font-weight: 900;
         font-size: 2rem;
     }
 
     .normal {
-        font-family: 'Roboto';
-        font-weight: 300;
         font-size: 1.2rem;
     }
 
     .minus-title {
-        font-family: 'Roboto' !important;
-        font-weight: 500;
         font-size: 1.1rem;    
     }
 
     .minus {
-        font-family: 'Roboto-Mono' !important;
-        font-weight: 300;
         font-size: 0.8rem;
     }
 
@@ -75,26 +67,18 @@
 @media (max-width: 1200px) {
 
     .title {
-        font-family: 'Roboto-Serif';
-        font-weight: 900;
         font-size: 3rem;
     }
 
     .normal {
-        font-family: 'Roboto';
-        font-weight: 300;
         font-size: 1.2rem;
     }
 
     .minus-title {
-        font-family: 'Roboto' !important;
-        font-weight: 500;
         font-size: 1.1rem;    
     }
 
     .minus {
-        font-family: 'Roboto-Mono' !important;
-        font-weight: 300;
         font-size: 1rem;
     }
 

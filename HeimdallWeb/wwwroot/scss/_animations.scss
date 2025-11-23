@@ -1,0 +1,22 @@
+:root {
+  --slide-down-fade: slideDownFade 0.8s cubic-bezier(.01,.25,.45,1) both;
+}
+
+
+
+@keyframes spinner {
+  to {
+    transform: rotateX(360deg);
+  }
+}
+
+@keyframes slideDownFade {
+  0% {
+    opacity: 0;
+    transform: translateY(clamp(-100px, -50%, -30px));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
