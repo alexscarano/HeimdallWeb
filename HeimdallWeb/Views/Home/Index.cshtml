@@ -1,6 +1,5 @@
 ﻿<head>
     <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/alerts.css" asp-append-version="true" />
 </head>
 
 <style>
@@ -17,7 +16,7 @@
 <!-- main hero container: switched inline height to a controllable CSS class -->
 <div class="container-xl d-flex justify-content-center hero">
 
-    <div class="row-cols-lg-2 d-flex justify-content-center align-self-center g-4 hero-box">
+    <div class="row-cols-2 d-flex justify-content-center align-self-center g-4 hero-box">
         <div>
             <div class="mb-5 text-center text-white hero-title py-5">
                 <h1 class="display-4 mb-3 title gradient-text">Descubra o quão seguro é seu site!</h1>
@@ -25,7 +24,7 @@
             </div>
 
             <div>
-                <div class="shadow-lg border-0 rounded-5 p-0">
+                <div class="shadow border-0 rounded-5 p-0">
                     <form id="scanForm" asp-controller="Home" asp-action="Scan" method="post"> 
                         <!-- new layout: input and button adjacent and flush -->
                         <div class="hero-form d-flex align-items-center">
