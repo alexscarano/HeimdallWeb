@@ -390,8 +390,9 @@ O projeto segue consistentemente:
 
 ### Diagrama do Banco de Dados
 
+```
 ![Diagrama do Banco de Dados](./Diagrama_Banco_Heimdall.jpg)
-
+```
 ---
 
 **Estrutura do banco de dados:**
@@ -427,8 +428,9 @@ O banco de dados é composto por 7 tabelas:
 
 ### Diagrama de Classe
 
+```
 ![Diagrama de Classe](./Diagrama_Classe_Heimdall.png)
-
+```
 ---
 
 ## 🧪 Tecnologias Utilizadas
