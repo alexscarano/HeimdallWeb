@@ -193,17 +193,6 @@ HeimdallWeb/
 | `.gitignore` | Arquivos excluídos do controle de versão |
 | `HeimdallWeb.csproj` | Dependências NuGet, target framework, build configs |
 
-### 📦 Dependências Principais
-
-O projeto utiliza as seguintes bibliotecas (veja `HeimdallWeb.csproj` para versões):
-- **ASP.NET Core 8.0** - Framework web
-- **Entity Framework Core 9.0.8** - ORM
-- **Pomelo.EntityFrameworkCore.MySql** - Provider MySQL
-- **Microsoft.AspNetCore.Authentication.JwtBearer** - Autenticação JWT
-- **Newtonsoft.Json** - Manipulação JSON
-
-
-
 ## ⚙️ Funcionalidades Principais
 
 ### 🔍 Scanners Especializados
