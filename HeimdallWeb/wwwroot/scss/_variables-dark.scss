@@ -10,7 +10,7 @@ $complementary: #4a4a4a;
 $background-image: #faebd7;
 $color: $white;
 
-$primary: #2f6f8f;
+$primary: #516fab; // #2f6f8f;
 
 $success: #2a6b6d;
 $danger: #c94b56;
@@ -23,6 +23,8 @@ $alert-success-bg: #2ecc71; // primary success
 $alert-success-bg-soft: #27ae60; // softer/hover success
 $alert-color: #fff; // alert text color
 
-$main-color: #516FAB;
-$complementary-color: #a85342;
 $background-color: rgb(242, 228, 209);
+
+:root {
+  --bs-primary: $primary;
+}

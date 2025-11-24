@@ -9,6 +9,7 @@
   background-color: $background;
   padding-bottom: 0.75rem; /* extra inner space */
   margin-bottom: 1.75rem; /* space between navbar and next elements */
+  border-bottom: 4px solid $primary;
 
   .nav-link.active {
     color: $primary;
