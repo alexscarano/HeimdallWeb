@@ -18,6 +18,192 @@ O projeto segue princípios de arquitetura limpa, separação de responsabilidad
 
 ---
 
+## 📁 Organização de Diretórios
+
+O projeto segue uma estrutura organizada em camadas, separando responsabilidades de forma clara e facilitando a manutenção:
+
+```
+HeimdallWeb/
+├── 📂 HeimdallWeb/                      # Projeto principal da aplicação
+│   ├── 📂 Controllers/                  # Controladores MVC
+│   │   ├── AdminController.cs           # Painel administrativo
+│   │   ├── AuthController.cs            # Autenticação e autorização
+│   │   ├── DashboardController.cs       # Dashboard e estatísticas
+│   │   ├── HistoryController.cs         # Histórico de scans
+│   │   ├── HomeController.cs            # Página inicial e scans
+│   │   └── UserController.cs            # Gerenciamento de usuários
+│   │
+│   ├── 📂 Services/                     # Lógica de negócio
+│   │   ├── ScanService.cs               # Orquestração de scans
+│   │   └── 📂 IA/
+│   │       └── GeminiService.cs         # Integração com Google Gemini AI
+│   │
+│   ├── 📂 Repositories/                 # Camada de acesso a dados
+│   │   ├── DashboardRepository.cs       # Repositório do dashboard (com cache)
+│   │   ├── FindingRepository.cs         # Repositório de vulnerabilidades
+│   │   ├── HistoryRepository.cs         # Repositório de histórico
+│   │   ├── LogRepository.cs             # Repositório de logs
+│   │   ├── TechnologyRepository.cs      # Repositório de tecnologias
+│   │   ├── UserRepository.cs            # Repositório de usuários
+│   │   └── UserUsageRepository.cs       # Controle de rate limiting
+│   │
+│   ├── 📂 Scanners/                     # Scanners especializados
+│   │   ├── HeaderScanner.cs             # Scanner de cabeçalhos HTTP
+│   │   ├── SslScanner.cs                # Scanner de certificados SSL/TLS
+│   │   ├── PortScanner.cs               # Scanner de portas
+│   │   ├── HttpRedirectScanner.cs       # Scanner de redirecionamentos
+│   │   ├── RobotsScanner.cs             # Scanner de robots.txt
+│   │   ├── SensitivePathsScanner.cs     # Scanner de caminhos sensíveis
+│   │   └── ScannerManager.cs            # Gerenciador de scanners
+│   │
+│   ├── 📂 Models/                       # Entidades do domínio
+│   │   ├── UserModel.cs                 # Modelo de usuário
+│   │   ├── HistoryModel.cs              # Modelo de histórico de scan
+│   │   ├── FindingModel.cs              # Modelo de vulnerabilidade
+│   │   ├── TechnologyModel.cs           # Modelo de tecnologia detectada
+│   │   ├── LogModel.cs                  # Modelo de log estruturado
+│   │   ├── UserUsageModel.cs            # Modelo de uso/rate limiting
+│   │   └── IASummaryModel.cs            # Modelo de análise da IA
+│   │
+│   ├── 📂 DTO/                          # Data Transfer Objects
+│   │   ├── LoginDTO.cs                  # DTO de login
+│   │   ├── RegisterDTO.cs               # DTO de registro
+│   │   ├── UpdateUserDTO.cs             # DTO de atualização de usuário
+│   │   └── ScanResultDTO.cs             # DTO de resultado de scan
+│   │
+│   ├── 📂 Interfaces/                   # Contratos de interface
+│   │   ├── IScanner.cs                  # Interface para scanners
+│   │   ├── IScanService.cs              # Interface do serviço de scan
+│   │   ├── IHistoryRepository.cs        # Interface do repositório de histórico
+│   │   ├── IUserRepository.cs           # Interface do repositório de usuário
+│   │   ├── IFindingRepository.cs        # Interface do repositório de findings
+│   │   ├── ITechnologyRepository.cs     # Interface do repositório de tecnologias
+│   │   ├── ILogRepository.cs            # Interface do repositório de logs
+│   │   ├── IDashboardRepository.cs      # Interface do repositório de dashboard
+│   │   └── IUserUsageRepository.cs      # Interface do repositório de uso
+│   │
+│   ├── 📂 Data/                         # Contexto do banco de dados
+│   │   └── AppDbContext.cs              # Contexto do Entity Framework Core
+│   │
+│   ├── 📂 Migrations/                   # Migrações do EF Core
+│   │   └── [Arquivos de migração]       # Histórico de mudanças no schema
+│   │
+│   ├── 📂 Helpers/                      # Classes auxiliares
+│   │   ├── CookiesHelper.cs             # Manipulação de cookies
+│   │   ├── NetworkUtils.cs              # Utilitários de rede
+│   │   └── JsonPreprocessor.cs          # Pré-processamento de JSON
+│   │
+│   ├── 📂 Enums/                        # Enumeradores
+│   │   └── LogEventCode.cs              # Códigos de eventos de log
+│   │
+│   ├── 📂 Extensions/                   # Extension methods
+│   │   └── ServiceExtensions.cs         # Extensões de configuração
+│   │
+│   ├── 📂 Options/                      # Configurações
+│   │   └── JwtOptions.cs                # Opções de configuração JWT
+│   │
+│   ├── 📂 Views/                        # Views Razor (UI)
+│   │   ├── 📂 Home/                     # Views da página inicial
+│   │   ├── 📂 Auth/                     # Views de autenticação
+│   │   ├── 📂 History/                  # Views de histórico
+│   │   ├── 📂 Admin/                    # Views administrativas
+│   │   ├── 📂 Dashboard/                # Views do dashboard
+│   │   ├── 📂 User/                     # Views de usuário
+│   │   └── 📂 Shared/                   # Views compartilhadas (_Layout, etc)
+│   │
+│   ├── 📂 wwwroot/                      # Arquivos estáticos
+│   │   ├── 📂 css/                      # Folhas de estilo CSS
+│   │   ├── 📂 scss/                     # Arquivos SASS/SCSS
+│   │   ├── 📂 js/                       # JavaScript compilado
+│   │   ├── 📂 ts/                       # TypeScript (fonte)
+│   │   ├── 📂 lib/                      # Bibliotecas JavaScript externas
+│   │   ├── 📂 img/                      # Imagens e ícones
+│   │   └── 📂 Fontes/                   # Fontes customizadas (Roboto, Acme)
+│   │
+│   ├── Program.cs                       # Ponto de entrada da aplicação
+│   ├── GlobalUsings.cs                  # Usings globais do C# 10+
+│   ├── appsettings.json                 # Configurações da aplicação
+│   └── HeimdallWeb.csproj               # Arquivo de projeto .NET
+│
+├── 📂 dlls/                             # Bibliotecas externas (.dll)
+├── 📂 .github/                          # Configurações do GitHub
+│
+├── HeimdallWeb.sln                      # Solution do Visual Studio
+├── .gitignore                           # Arquivos ignorados pelo Git
+├── README.md                            # Documentação principal
+├── Diagrama_Banco_Heimdall.jpg          # Diagrama do banco de dados
+└── Diagrama_Classe_Heimdall.png         # Diagrama de classes UML
+```
+
+### 📋 Descrição das Camadas
+
+#### **Controllers** (Camada de Apresentação)
+- Recebe requisições HTTP
+- Valida entrada de dados
+- Invoca services para lógica de negócio
+- Retorna views ou JSON
+
+#### **Services** (Camada de Negócio)
+- Contém regras de negócio
+- Orquestra operações complexas
+- Coordena múltiplos repositories
+- Integra com APIs externas (Google Gemini)
+
+#### **Repositories** (Camada de Dados)
+- Implementa padrão Repository
+- Abstrai acesso ao banco de dados
+- Utiliza Entity Framework Core
+- Implementa caching quando necessário
+
+#### **Scanners** (Camada de Scanning)
+- Implementam interface `IScanner`
+- Executam verificações de segurança
+- Retornam resultados em formato JSON
+- São coordenados pelo `ScannerManager`
+
+#### **Models** (Entidades de Domínio)
+- Mapeiam tabelas do banco de dados
+- Contêm propriedades e relacionamentos
+- Utilizados pelo Entity Framework Core
+
+#### **DTO** (Data Transfer Objects)
+- Transferência de dados entre camadas
+- Validação de entrada de dados
+- Separação entre modelo de domínio e API
+
+#### **Views** (Interface do Usuário)
+- Razor Pages (.cshtml)
+- Template AdminLTE integrado
+- Componentes reutilizáveis
+- Responsivas (Bootstrap 5)
+
+#### **wwwroot** (Recursos Estáticos)
+- CSS compilado de SCSS
+- JavaScript compilado de TypeScript
+- Bibliotecas CDN e locais
+- Imagens e fontes customizadas
+
+### 🔧 Arquivos de Configuração
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `Program.cs` | Configuração inicial da aplicação, DI, middleware |
+| `appsettings.json` | Connection strings, JWT, API keys, logging |
+| `GlobalUsings.cs` | Namespaces globais (C# 10+) |
+| `.gitignore` | Arquivos excluídos do controle de versão |
+| `HeimdallWeb.csproj` | Dependências NuGet, target framework, build configs |
+
+### 📦 Dependências Principais
+
+O projeto utiliza as seguintes bibliotecas (veja `HeimdallWeb.csproj` para versões):
+- **ASP.NET Core 8.0** - Framework web
+- **Entity Framework Core 9.0.8** - ORM
+- **Pomelo.EntityFrameworkCore.MySql** - Provider MySQL
+- **Microsoft.AspNetCore.Authentication.JwtBearer** - Autenticação JWT
+- **Newtonsoft.Json** - Manipulação JSON
+
+
+
 ## ⚙️ Funcionalidades Principais
 
 ### 🔍 Scanners Especializados
