@@ -217,6 +217,8 @@ O projeto segue consistentemente:
 
 ![Database Diagram](https://github.com/alexscarano/HeimdallWeb/blob/main/Diagrama_Banco_Heimdall.jpg)
 
+---
+
 **Estrutura do banco de dados:**
 
 O banco de dados é composto por 7 tabelas:
@@ -248,7 +250,7 @@ O banco de dados é composto por 7 tabelas:
    - Campos: `user_usage_id`, `date`, `request_counts`, `user_id`
    - Relacionamento: `FK → tb_user.user_id`
 
-### Diagrama de Classes
+### Diagrama de Classe
 
 ![Class Diagram](https://github.com/alexscarano/HeimdallWeb/blob/main/Diagrama_Classe_Heimdall.png)
 
