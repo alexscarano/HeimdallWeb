@@ -761,20 +761,6 @@ Certifique-se de que a chave JWT tem pelo menos 32 caracteres.
 
 ---
 
-## 📞 Suporte
-
-Para questões técnicas ou problemas:
-- Abra uma [issue no GitHub](https://github.com/alexscarano/HeimdallWeb/issues)
-- Entre em contato através do perfil do GitHub
-
-## 🔒 Segurança
-
-Se você descobrir uma vulnerabilidade de segurança, **NÃO** abra uma issue pública. Entre em contato diretamente através do GitHub para que possamos endereçar o problema de forma responsável.
-
----
-
----
-
 ## 🐳 Executando com Docker
 
 O HeimdallWeb possui suporte completo para Docker e Docker Compose, facilitando o deploy e a execução em qualquer ambiente.
@@ -1123,4 +1109,15 @@ docker-compose up -d --build --force-recreate
 
 ---
 
+## 📞 Suporte
+
+Para questões técnicas ou problemas:
+- Abra uma [issue no GitHub](https://github.com/alexscarano/HeimdallWeb/issues)
+- Entre em contato através do perfil do GitHub
+
+## 🔒 Segurança
+
+Se você descobrir uma vulnerabilidade de segurança, **NÃO** abra uma issue pública. Entre em contato diretamente através do GitHub para que possamos endereçar o problema de forma responsável.
+
+---
 **Desenvolvido para auditoria e segurança de aplicações web corporativas**
