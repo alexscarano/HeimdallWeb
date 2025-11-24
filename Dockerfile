@@ -1,29 +1,32 @@
-# Use the official .NET SDK image as the first stage
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
 
-# Set the working directory to /app
+COPY ["HeimdallWeb/HeimdallWeb.csproj", "HeimdallWeb/"]
+RUN dotnet restore "HeimdallWeb/HeimdallWeb.csproj"
+
+COPY . .
+WORKDIR "/src/HeimdallWeb"
+RUN dotnet build "HeimdallWeb.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "HeimdallWeb.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
-# Copy the project files and restore dependencies
-COPY *.sln .
-COPY ./src/*.csproj ./src/
-RUN dotnet restore
+RUN useradd -m -u 1000 appuser && chown -R appuser /app
+USER appuser
 
-# Copy the rest of the application files and build the project
-COPY ./src/. ./src/
-RUN dotnet publish -c Release -o out
+EXPOSE 8080
+EXPOSE 8081
 
-# Use the official ASP.NET Core runtime image as the second stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+COPY --from=publish --chown=appuser /app/publish .
 
-# Set the working directory to /app
-WORKDIR /app
+ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_ENVIRONMENT=Production
 
-# Copy the build output from the previous stage
-COPY --from=build /app/src/out .
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8080/health || exit 1
 
-# Expose the port on which the app will run
-EXPOSE 80
-
-# Start the application
-ENTRYPOINT [ "dotnet", "YourApplication.dll" ]
+ENTRYPOINT ["dotnet", "HeimdallWeb.dll"]
