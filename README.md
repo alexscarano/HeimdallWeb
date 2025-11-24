@@ -773,4 +773,354 @@ Se você descobrir uma vulnerabilidade de segurança, **NÃO** abra uma issue p�
 
 ---
 
+---
+
+## 🐳 Executando com Docker
+
+O HeimdallWeb possui suporte completo para Docker e Docker Compose, facilitando o deploy e a execução em qualquer ambiente.
+
+### Pré-requisitos Docker
+
+- **Docker** 20.10+ ([Download](https://docs.docker.com/get-docker/))
+- **Docker Compose** 2.0+ (geralmente incluído no Docker Desktop)
+
+### Opção 1: Docker Compose (Recomendado)
+
+O método mais simples para executar toda a stack (aplicação + MySQL):
+
+#### 1. Configure as Variáveis de Ambiente
+
+Edite o arquivo `docker-compose.yml` e altere as seguintes variáveis:
+
+```yaml
+environment:
+  - Jwt__Key=SUA_CHAVE_JWT_SEGURA_COM_MINIMO_32_CARACTERES
+  - GEMINI_API_KEY=SUA_CHAVE_API_GEMINI
+  - MYSQL_PASSWORD=SUA_SENHA_MYSQL_SEGURA
+```
+
+⚠️ **IMPORTANTE**: Nunca commite o `docker-compose.yml` com credenciais reais!
+
+#### 2. Inicie os Containers
+
+```bash
+# Build e start dos containers
+docker-compose up -d --build
+
+# Verificar logs
+docker-compose logs -f heimdallweb
+
+# Verificar status
+docker-compose ps
+```
+
+#### 3. Acesse a Aplicação
+
+A aplicação estará disponível em:
+- **HTTP**: http://localhost:5000
+- **HTTPS**: https://localhost:5001
+
+O banco de dados MySQL estará em:
+- **Host**: localhost
+- **Porta**: 3306
+- **Database**: heimdallweb
+- **User**: heimdall_user
+
+#### 4. Aplicar Migrações (Primeira Execução)
+
+```bash
+# Entrar no container
+docker exec -it heimdallweb_app bash
+
+# Aplicar migrações
+dotnet ef database update
+
+# Sair do container
+exit
+```
+
+#### 5. Parar e Remover Containers
+
+```bash
+# Parar containers
+docker-compose stop
+
+# Parar e remover containers
+docker-compose down
+
+# Remover containers E volumes (⚠️ apaga dados do banco)
+docker-compose down -v
+```
+
+---
+
+### Opção 2: Apenas Docker (Sem Compose)
+
+Se você já possui um MySQL rodando ou prefere gerenciar os containers individualmente:
+
+#### 1. Build da Imagem
+
+```bash
+# Build da imagem
+docker build -t heimdallweb:latest .
+
+# Verificar imagem criada
+docker images | grep heimdallweb
+```
+
+#### 2. Executar o Container
+
+```bash
+docker run -d \
+  --name heimdallweb_app \
+  -p 5000:8080 \
+  -p 5001:8081 \
+  -e ConnectionStrings__AppDbConnectionString="Server=SEU_HOST_MYSQL;Database=heimdallweb;User=heimdall_user;Password=SUA_SENHA;" \
+  -e Jwt__Key="SUA_CHAVE_JWT_SEGURA_COM_MINIMO_32_CARACTERES" \
+  -e Jwt__Issuer="HeimdallWeb" \
+  -e Jwt__Audience="HeimdallWebUsers" \
+  -e GEMINI_API_KEY="SUA_CHAVE_API_GEMINI" \
+  -e ASPNETCORE_ENVIRONMENT="Production" \
+  heimdallweb:latest
+```
+
+#### 3. Verificar Logs
+
+```bash
+# Ver logs em tempo real
+docker logs -f heimdallweb_app
+
+# Ver últimas 100 linhas
+docker logs --tail 100 heimdallweb_app
+```
+
+#### 4. Parar e Remover Container
+
+```bash
+# Parar container
+docker stop heimdallweb_app
+
+# Remover container
+docker rm heimdallweb_app
+```
+
+---
+
+### Opção 3: Docker com MySQL Externo
+
+Se você usa um MySQL gerenciado (AWS RDS, Azure Database, etc):
+
+```bash
+docker run -d \
+  --name heimdallweb_app \
+  -p 5000:8080 \
+  -e ConnectionStrings__AppDbConnectionString="Server=seu-mysql.rds.amazonaws.com;Database=heimdallweb;User=admin;Password=senha;" \
+  -e Jwt__Key="sua_chave_jwt_segura" \
+  -e GEMINI_API_KEY="sua_chave_gemini" \
+  heimdallweb:latest
+```
+
+---
+
+### 🔍 Verificação de Saúde (Health Check)
+
+O container possui health check configurado:
+
+```bash
+# Verificar status de saúde
+docker inspect --format='{{.State.Health.Status}}' heimdallweb_app
+
+# Ver histórico de health checks
+docker inspect --format='{{json .State.Health}}' heimdallweb_app | jq
+```
+
+---
+
+### 🛠️ Comandos Úteis
+
+```bash
+# Ver containers em execução
+docker ps
+
+# Ver todos os containers (incluindo parados)
+docker ps -a
+
+# Entrar no container em execução
+docker exec -it heimdallweb_app bash
+
+# Ver uso de recursos
+docker stats heimdallweb_app
+
+# Ver logs de erro específicos
+docker logs heimdallweb_app 2>&1 | grep -i error
+
+# Reiniciar container
+docker restart heimdallweb_app
+
+# Ver informações detalhadas
+docker inspect heimdallweb_app
+```
+
+---
+
+### 📊 Volumes e Persistência de Dados
+
+O `docker-compose.yml` cria um volume nomeado para persistir dados do MySQL:
+
+```bash
+# Listar volumes
+docker volume ls
+
+# Inspecionar volume
+docker volume inspect heimdall_mysql_data
+
+# Backup do volume
+docker run --rm -v heimdall_mysql_data:/data -v $(pwd):/backup ubuntu tar czf /backup/backup.tar.gz -C /data .
+
+# Restaurar backup
+docker run --rm -v heimdall_mysql_data:/data -v $(pwd):/backup ubuntu tar xzf /backup/backup.tar.gz -C /data
+```
+
+---
+
+### 🔒 Boas Práticas de Segurança
+
+#### 1. Use Secrets do Docker (Produção)
+
+```yaml
+# docker-compose.yml com secrets
+version: '3.8'
+
+services:
+  heimdallweb:
+    secrets:
+      - db_password
+      - jwt_key
+      - gemini_key
+    environment:
+      - ConnectionStrings__AppDbConnectionString=Server=db;Database=heimdallweb;User=heimdall_user;Password_File=/run/secrets/db_password
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+  jwt_key:
+    file: ./secrets/jwt_key.txt
+  gemini_key:
+    file: ./secrets/gemini_key.txt
+```
+
+#### 2. Use Variáveis de Ambiente Externas
+
+```bash
+# Criar arquivo .env
+cat > .env << EOF
+MYSQL_PASSWORD=senha_segura_aqui
+JWT_KEY=chave_jwt_segura_aqui
+GEMINI_API_KEY=chave_gemini_aqui
+EOF
+
+# Adicionar .env ao .gitignore
+echo ".env" >> .gitignore
+
+# Docker Compose lerá automaticamente o arquivo .env
+docker-compose up -d
+```
+
+#### 3. Limitar Recursos do Container
+
+```yaml
+services:
+  heimdallweb:
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+```
+
+---
+
+### 🚀 Deploy em Produção
+
+#### Docker Hub
+
+```bash
+# Login no Docker Hub
+docker login
+
+# Tag da imagem
+docker tag heimdallweb:latest seu-usuario/heimdallweb:1.0.0
+docker tag heimdallweb:latest seu-usuario/heimdallweb:latest
+
+# Push para Docker Hub
+docker push seu-usuario/heimdallweb:1.0.0
+docker push seu-usuario/heimdallweb:latest
+```
+
+#### Registry Privado (Azure, AWS, GCP)
+
+```bash
+# Azure Container Registry
+az acr login --name seuregistry
+docker tag heimdallweb:latest seuregistry.azurecr.io/heimdallweb:1.0.0
+docker push seuregistry.azurecr.io/heimdallweb:1.0.0
+
+# AWS ECR
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin SEU_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+docker tag heimdallweb:latest SEU_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/heimdallweb:1.0.0
+docker push SEU_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/heimdallweb:1.0.0
+```
+
+---
+
+### 🐛 Troubleshooting
+
+#### Container não inicia
+
+```bash
+# Ver logs detalhados
+docker logs heimdallweb_app
+
+# Verificar se portas estão em uso
+netstat -tuln | grep 5000
+lsof -i :5000
+```
+
+#### Erro de conexão com MySQL
+
+```bash
+# Verificar se MySQL está rodando
+docker ps | grep mysql
+
+# Testar conexão do container da aplicação
+docker exec -it heimdallweb_app bash
+apt-get update && apt-get install -y mysql-client
+mysql -h db -u heimdall_user -p
+```
+
+#### Aplicação não aplica migrações
+
+```bash
+# Forçar aplicação de migrações
+docker exec -it heimdallweb_app dotnet ef database update --verbose
+```
+
+#### Limpar tudo e recomeçar
+
+```bash
+# Parar e remover tudo
+docker-compose down -v
+
+# Remover imagens
+docker rmi heimdallweb:latest
+
+# Rebuild completo
+docker-compose up -d --build --force-recreate
+```
+
+---
+
 **Desenvolvido para auditoria e segurança de aplicações web corporativas**
