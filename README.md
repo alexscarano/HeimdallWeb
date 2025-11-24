@@ -123,7 +123,7 @@ Scanner avançado que busca por arquivos e diretórios sensíveis com **heuríst
 
 - **Dashboard principal** com métricas consolidadas de todos os scans
 - **Mini dashboard por usuário** com estatísticas individualizadas
-- **Visualização de estatísticas em tempo real** usando AdminLTE
+- **Visualização de estatísticas em tempo real** 
 - **Repositório dedicado** (`DashboardRepository`) com caching via `MemoryCache`
 - **Views SQL otimizadas** mapeadas no EF Core para consultas performáticas
 - **Gráficos e indicadores** de vulnerabilidades, scans realizados e tendências
@@ -268,7 +268,6 @@ O banco de dados é composto por 7 tabelas:
 
 ### **Frontend**
 - **Razor Pages** - View engine do ASP.NET Core
-- **AdminLTE** (via CDN) - Template administrativo responsivo
 - **Bootstrap 5** - Framework CSS para layout responsivo
 - **Prism.js** - Syntax highlighting para JSON e código
 - **jQuery** - Manipulação DOM e AJAX
