@@ -528,6 +528,8 @@ Cada tipo de log possui uma mensagem estruturada pré-definida:
 | `DatabaseError` | "Erro de banco de dados: {errorDetails}" | Error |
 | `ExternalApiError` | "Falha na API externa {apiName}: {errorMessage}" | Error |
 
+```
+
 ### Como Registrar Logs no Código
 
 ```csharp
