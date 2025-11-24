@@ -390,7 +390,7 @@ O projeto segue consistentemente:
 
 ### Diagrama do Banco de Dados
 
-[Database Diagram](https://github.com/alexscarano/HeimdallWeb/blob/main/Diagrama_Banco_Heimdall.jpg)
+![Diagrama do Banco de Dados](./Diagrama_Banco_Heimdall.jpg)
 
 ---
 
@@ -427,7 +427,7 @@ O banco de dados é composto por 7 tabelas:
 
 ### Diagrama de Classe
 
-[Class Diagram](https://github.com/alexscarano/HeimdallWeb/blob/main/Diagrama_Classe_Heimdall.png)
+![Diagrama de Classe](./Diagrama_Classe_Heimdall.png)
 
 ---
 
