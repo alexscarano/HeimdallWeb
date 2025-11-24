@@ -290,19 +290,16 @@ O banco de dados é composto por 7 tabelas:
 O dashboard utiliza uma **View SQL customizada** mapeada no EF Core para agregação eficiente de dados:
 
 ```sql
--- Exemplo conceitual da view
-CREATE VIEW DashboardStatsView AS
+-- Exemplo de view do projeto
+CREATE OR REPLACE VIEW vw_dashboard_user_stats AS
 SELECT 
-    u.UserId,
-    u.Username,
-    COUNT(s.ScanId) as TotalScans,
-    COUNT(CASE WHEN f.Severity = 'High' THEN 1 END) as HighVulnerabilities,
-    COUNT(CASE WHEN f.Severity = 'Medium' THEN 1 END) as MediumVulnerabilities,
-    COUNT(CASE WHEN f.Severity = 'Low' THEN 1 END) as LowVulnerabilities
-FROM Users u
-LEFT JOIN Scans s ON u.UserId = s.UserId
-LEFT JOIN Findings f ON s.ScanId = f.ScanId
-GROUP BY u.UserId, u.Username;
+    COUNT(*) AS total_users,
+    SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) AS active_users,
+    SUM(CASE WHEN is_active = 0 THEN 1 ELSE 0 END) AS blocked_users,
+    SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 ELSE 0 END) AS new_users_last_7_days,
+    SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) AS new_users_last_30_days
+FROM tb_user;
+
 ```
 
 ### Mapeamento EF Core
