@@ -219,7 +219,7 @@ O projeto segue consistentemente:
 
 **Estrutura do banco de dados:**
 
-O banco de dados é composto por 6 tabelas principais:
+O banco de dados é composto por 7 tabelas:
 
 1. **`tb_user`** - Armazena informações dos usuários
    - Campos: `user_id`, `username`, `email`, `password`, `user_type`, `created_at`, `updated_at`, `is_active`, `profile_image`
@@ -249,11 +249,8 @@ O banco de dados é composto por 6 tabelas principais:
    - Relacionamento: `FK → tb_user.user_id`
 
 ### Diagrama de Classes
-<!-- Insira aqui a imagem do diagrama de classes -->
-```
-[Espaço reservado para o diagrama de classes]
-Exemplo: ![Class Diagram](docs/images/class-diagram.png)
-```
+
+![Class Diagram](https://github.com/alexscarano/HeimdallWeb/blob/main/Diagrama_Classe_Heimdall.png)
 
 ---
 
