@@ -1,0 +1,76 @@
+# Diretórios de build e publicação
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+# Arquivos do Visual Studio
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Arquivos de configuração local
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/*.Development.json
+
+# Node modules (se houver frontend)
+**/node_modules/
+**/npm-debug.log
+
+# Diretórios de teste
+**/TestResults/
+**/*.trx
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentação
+*.md
+!README.md
+*.txt
+
+# Diagramas e imagens de documentação
+*.jpg
+*.png
+*.svg
+!HeimdallWeb/wwwroot/**/*.jpg
+!HeimdallWeb/wwwroot/**/*.png
+!HeimdallWeb/wwwroot/**/*.svg
+
+# Arquivos de cache e temporários
+**/.DS_Store
+**/Thumbs.db
+**/*.swp
+**/*.bak
+**/*.tmp
+
+# Logs
+**/logs/
+**/*.log
+
+# Banco de dados local
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+
+# Certificados de desenvolvimento
+**/*.pfx
+**/*.p12
+
+# Secrets (nunca incluir!)
+**/*secret*
+**/*password*
+**/.env
+
+# NuGet
+**/*.nupkg
+**/.nuget/
+
+# DLLs externas (se já estiverem no projeto, manter comentado)
+# dlls/
