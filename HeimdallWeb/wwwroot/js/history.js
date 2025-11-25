@@ -4,6 +4,8 @@ window.confirmDelete = confirmDelete;
 window.loadFindings = loadFindings;
 window.loadTechnologies = loadTechnologies;
 window.showSummary = showSummary;
+window.exportSinglePdf = exportSinglePdf;
+window.exportAllPdf = exportAllPdf;
 function getQueryParamNumber(name, defaultValue) {
     try {
         const url = new URL(window.location.href);
@@ -141,4 +143,177 @@ function showSummary(text) {
         confirmButtonText: 'Fechar'
     });
 }
+
+// Exportar PDF individual de um site específico
+function exportSinglePdf(historyId) {
+    if (!historyId) {
+        Swal.fire('Erro', 'ID do histórico não encontrado.', 'error');
+        return;
+    }
+
+    // Mostrar mensagem de carregamento
+    Swal.fire({
+        title: 'Gerando PDF do site...',
+        text: 'Por favor aguarde',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    // Fazer requisição GET para exportar PDF individual
+    axios.get(`/history/exportsinglepdf?historyId=${historyId}`, {
+        responseType: 'blob',
+        timeout: 30000
+    })
+    .then((response) => {
+        // Fechar o loading
+        Swal.close();
+
+        // Criar um link temporário para download
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        
+        // Extrair nome do arquivo do header ou usar padrão
+        const contentDisposition = response.headers['content-disposition'];
+        let fileName = `Scan_${historyId}_${new Date().toISOString().slice(0,10)}.pdf`;
+        if (contentDisposition) {
+            const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/i);
+            if (fileNameMatch && fileNameMatch.length === 2) {
+                fileName = fileNameMatch[1];
+            }
+        }
+        
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+
+        // Mostrar mensagem de sucesso
+        Swal.fire({
+            title: 'Sucesso!',
+            text: 'PDF do site exportado com sucesso!',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    })
+    .catch((err) => {
+        console.error('Erro ao exportar PDF:', err);
+        let errorMessage = 'Ocorreu um erro ao gerar o PDF do site.';
+        
+        if (err.response && err.response.data) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                try {
+                    const errorData = JSON.parse(reader.result);
+                    errorMessage = errorData.message || errorMessage;
+                } catch (e) {
+                    // Se não for JSON, manter mensagem padrão
+                }
+                Swal.fire('Erro', errorMessage, 'error');
+            };
+            reader.readAsText(err.response.data);
+        } else {
+            Swal.fire('Erro', errorMessage, 'error');
+        }
+    });
+}
+
+// Exportar PDF com todos os sites da página atual
+function exportAllPdf() {
+    const currentPage = getQueryParamNumber('page', 1);
+    const pageSize = getQueryParamNumber('pageSize', 10);
+    
+    // Extrair userId da URL atual (assumindo que está na query string)
+    const userId = document.getElementById('userId')?.value;
+    
+    if (!userId) {
+        Swal.fire('Erro', 'ID do usuário não encontrado. Recarregue a página.', 'error');
+        return;
+    }
+
+    // Mostrar mensagem de carregamento
+    Swal.fire({
+        title: 'Gerando PDF completo...',
+        text: 'Por favor aguarde, isso pode levar alguns segundos',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    // Criar payload para enviar ao backend
+    const payload = {
+        userId: parseInt(userId),
+        page: currentPage,
+        pageSize: pageSize
+    };
+
+    // Fazer requisição POST para exportar PDF
+    axios.post('/history/exportpdf', payload, {
+        responseType: 'blob',
+        timeout: 60000, // 60 segundos para todos os sites
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then((response) => {
+        // Fechar o loading
+        Swal.close();
+
+        // Criar um link temporário para download
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        
+        // Extrair nome do arquivo do header ou usar padrão
+        const contentDisposition = response.headers['content-disposition'];
+        let fileName = `Historico_Completo_${new Date().toISOString().slice(0,10)}.pdf`;
+        if (contentDisposition) {
+            const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/i);
+            if (fileNameMatch && fileNameMatch.length === 2) {
+                fileName = fileNameMatch[1];
+            }
+        }
+        
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+
+        // Mostrar mensagem de sucesso
+        Swal.fire({
+            title: 'Sucesso!',
+            text: 'PDF completo exportado com sucesso!',
+            icon: 'success',
+            timer: 2500,
+            showConfirmButton: false
+        });
+    })
+    .catch((err) => {
+        console.error('Erro ao exportar PDF:', err);
+        let errorMessage = 'Ocorreu um erro ao gerar o PDF completo.';
+        
+        if (err.response && err.response.data) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                try {
+                    const errorData = JSON.parse(reader.result);
+                    errorMessage = errorData.message || errorMessage;
+                } catch (e) {
+                    // Se não for JSON, manter mensagem padrão
+                }
+                Swal.fire('Erro', errorMessage, 'error');
+            };
+            reader.readAsText(err.response.data);
+        } else {
+            Swal.fire('Erro', errorMessage, 'error');
+        }
+    });
+}
+
 //# sourceMappingURL=history.js.map

@@ -12,6 +12,10 @@ namespace HeimdallWeb.Interfaces
 
         Task<HistoryModel?> getHistoryById(int id);
 
+        Task<PaginatedResult<HistoryModel>?> getAllHistoriesWithIncludes(int page = 1, int pageSize = 10);
+
+        Task<HistoryModel?> getHistoryByIdWithIncludes(int id);
+
         Task<PaginatedResult<HistoryModel?>> getHistoriesByUserID(int id, int page = 1, int pageSize = 10);
 
         Task<bool> deleteHistory(int id);

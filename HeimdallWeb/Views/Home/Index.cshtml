@@ -1,64 +1,46 @@
-﻿<head>
-    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
-</head>
-
-<style>
-
-</style>
-
 @{
-    ViewData["Title"] = "HeimdallWeb - Home";
+    ViewData["Title"] = "Home";
 }
 
-@* TempData para toasts - elementos ocultos processados pelo JavaScript *@
-@* TempData handled globally in _Layout.cshtml *@
-
-<!-- main hero container: switched inline height to a controllable CSS class -->
-<div class="container-md d-flex justify-content-center align-content-center hero">
-
-    <div class="row-cols-lg-2 d-flex justify-content-center g-4 hero-box">
-        <div class="d-flex flex-column">
-            <div class="mb-5 text-center text-white hero-title py-5">
-                <h1 class="display-4 mb-3 title gradient-text">Descubra o quão seguro é seu site!</h1>
-                <p class="lead hero-lead mb-4 normal text-black gradient-text-mini">Basta <span class="normal-italic"> inserir a URL </span> do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais <span class="normal-italic">pontos fortes, pontos fracos e possíveis melhorias</span>.</p>
-            </div>
-            <div class="shadow-lg border-0 rounded-5 p-0">
-                <form id="scanForm" asp-controller="Home" asp-action="Scan" method="post"> 
-                    <!-- new layout: input and button adjacent and flush -->
-                    <div class="hero-form d-flex align-items-center">
-                        <div class="input-button-group">
-                            <input type="text" class="form-control form-control-lg input-left" name="domainInput" id="domainInput"  
-                                placeholder="Insira a URL" required />
-                            <button class="btn analyze-btn btn-lg input-right normal"  type="submit" id="analyze" onclick="loading()">Analisar</button>
-                            <button class="btn btn-primary btn-lg input-right d-none normal" id="analyzing" type="button">
-                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                Analisando...
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+<div class="container d-flex flex-column align-items-center gap-5">
+    <div class="bg-glass d-flex flex-column align-items-center gap-5 w-100 p-5 rounded-4">
+        <div class="text-center">
+            <h1 class="mb-5 title" id="homeTitle">Descubra o quão seguro é seu site!</h1>
+            <p class="text-black normal" id="homeIntroduce">Basta <span class="fst-italic"> inserir a URL </span> do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais <span class="fst-italic">pontos fortes, pontos fracos e possíveis melhorias</span>.</p>
         </div>
+
+        <form id="scanForm" class="shadow-lg" asp-controller="Home" asp-action="Scan" method="post">
+            <div class="input-group input-group-lg ">
+                <input type="text" class="form-control" name="domainInput" id="domainInput"
+                       placeholder="www.exmaple-url.com" required />
+                <button class="btn btn-primary" id="analyze" type="submit">
+                    <span class="d-none spinner">
+                        <i class="bi bi-hourglass-top"></i>
+                    </span>
+                    <span>Analizar</span>
+                </button>
+            </div>
+        </form>
     </div>
+
+    <!-- Info boxes section -->
+    <section id="info-boxes" aria-label="Informações">
+
+        <div class="info-box slide-down-fade" style="--animation-delay: 1000ms">
+            <h5><i class="bi bi-shield-check"> Confiabilidade</i></h5>
+            <p>A análise é feita por meio de uma Inteligência Artificial previamente treinada para seguir requisitos e rodar checagens sob instruções pré-estabelecidas, assim como verificar diversos cenários, adicionando maior redundância e confiabilidade.</p>
+        </div>
+
+        <div class="info-box slide-down-fade" style="--animation-delay: 1400ms">
+            <h5><i class="bi bi-shield-lock"> Segurança</i></h5>
+            <p>Auxiliamos você a maximizar o nível de segurança de seu produto, com base em análises automatizadas, focadas e rápidas, para que as medidas sejam tomadas o quanto antes. Assim como mantemos nossas checagens em dia para que os seus dados fornecidos estejam seguros.</p>
+        </div>
+
+        <div class="info-box slide-down-fade" style="--animation-delay: 1800ms">
+            <h5><i class="bi bi-speedometer2"> Praticidade</i></h5>
+            <p>Ao usar o HeimdallWeb na análise de segurança de seu web-site, muito tempo e esforço são poupados, uma vez que o processo de desenvolvimento não terá que sofrer interrupções para testes manuais.</p>
+        </div>
+    </section>
 </div>
-
-<!-- Info boxes section -->
-<section class="info-boxes gap-5" aria-label="Informações">
-
-    <div class="info-box info-animation-3">
-        <h5><i class="bi bi-shield-check minus-title d-flex justify-content-center gap-1"> Confiabilidade</i></h5>
-        <p class="minus">A análise é feita por meio de uma Inteligência Artificial previamente treinada para seguir requisitos e rodar checagens sob instruções pré-estabelecidas, assim como verificar diversos cenários, adicionando maior redundância e confiabilidade.</p>
-    </div>
-
-    <div class="info-box info-animation-2">
-        <h5><i class="bi bi-shield-lock minus-title d-flex justify-content-center gap-1"> Segurança</i></h5>
-        <p class="minus">Auxiliamos você a maximizar o nível de segurança de seu produto, com base em análises automatizadas, focadas e rápidas, para que as medidas sejam tomadas o quanto antes. Assim como mantemos nossas checagens em dia para que os seus dados fornecidos estejam seguros.</p>
-    </div>
-
-    <div class="info-box info-animation-1">
-        <h5><i class="bi bi-speedometer2 minus-title d-flex justify-content-center gap-1"> Praticidade</i></h5>
-        <p class="minus">Ao usar o HeimdallWeb na análise de segurança de seu web-site, muito tempo e esforço são poupados, uma vez que o processo de desenvolvimento não terá que sofrer interrupções para testes manuais.</p>
-    </div>
-</section>
 
 <script src="~/js/loading.js" asp-append-version="true"></script>

@@ -6,6 +6,7 @@ using HeimdallWeb.Models;
 using HeimdallWeb.Enums;
 using HeimdallWeb.Scanners;
 using HeimdallWeb.Services.IA;
+using ASHelpers.Extensions;
 
 namespace HeimdallWeb.Services;
 
@@ -16,6 +17,7 @@ public class ScanService : IScanService
     private readonly ITechnologyRepository _technologyRepository;
     private readonly ILogRepository _logRepository;
     private readonly IUserUsageRepository _userUsageRepository;
+    private readonly IIASummaryRepository _iaSummaryRepository;
     private readonly AppDbContext _db;
     private readonly IConfiguration _config;
     private readonly int _maxRequests;
@@ -27,6 +29,7 @@ public class ScanService : IScanService
         ITechnologyRepository technologyRepository, 
         ILogRepository logRepository, 
         IUserUsageRepository userUsageRepository, 
+        IIASummaryRepository iaSummaryRepository,
         AppDbContext db, IConfiguration config,
         IHttpContextAccessor httpContextAccessor)
     {
@@ -35,6 +38,7 @@ public class ScanService : IScanService
         _technologyRepository = technologyRepository;
         _logRepository = logRepository;
         _userUsageRepository = userUsageRepository;
+        _iaSummaryRepository = iaSummaryRepository;
         _db = db;
         _config = config;
         _maxRequests = 5;
@@ -58,7 +62,7 @@ public class ScanService : IScanService
 
                     // Verificar se usuário está bloqueado
                     var user = await _db.User.FirstOrDefaultAsync(u => u.user_id == currentUserId);
-                    if (user != null && !user.is_active)
+                    if (user is null && !user.is_active)
                     {
                         throw new Exception("Sua conta está bloqueada. Entre em contato com o administrador.");
                     }
@@ -138,7 +142,6 @@ public class ScanService : IScanService
             historyModel.summary = doc.RootElement.GetProperty("resumo").GetString();
             historyModel.created_date = DateTime.Now;
 
-
             await using var tx = await _db.Database.BeginTransactionAsync(cancellationToken);
             try
             {
@@ -147,18 +150,16 @@ public class ScanService : IScanService
                 historyModel.has_completed = true;
                 var createdHistory = await _historyRepository.insertHistory(historyModel);
                 var historyId = createdHistory.history_id;
-
  
                 await _findingRepository.SaveFindingsFromAI(iaResponse, historyId);
                 await _technologyRepository.SaveTechnologiesFromAI(iaResponse, historyId);
-
+                await _iaSummaryRepository.SaveIASummaryFromFindings(historyId, iaResponse);
 
                 await _userUsageRepository.AddUserUsage(new UserUsageModel
                 {
                     user_id = currentUserId,
                     date = DateTime.Now,
-                    request_counts = user_usage.request_counts >= 0 
-                                ? user_usage.request_counts + 1 : 0
+                    request_counts = user_usage.request_counts >= 0 ? user_usage.request_counts + 1 : 0
                 });
                 
                 await _logRepository.AddLog(new LogModel
@@ -183,7 +184,7 @@ public class ScanService : IScanService
                     message = "Erro ao salvar dados no banco",
                     source = "ScanService",
                     user_id = currentUserId,
-                    details = dbEx.ToString(),
+                    details = dbEx.ToStringNullable(),
                     remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
                 });
                 await tx.RollbackAsync(cancellationToken);
@@ -211,7 +212,7 @@ public class ScanService : IScanService
                 message = "Erro durante o processo de scan",
                 source = "ScanService",
                 user_id = currentUserId,
-                details = ex.ToString(),
+                details = ex.ToStringNullable(),
                 remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
             });
             
@@ -240,7 +241,7 @@ public class ScanService : IScanService
                 message = "Erro durante o processo de scan",
                 source = "ScanService",
                 user_id = currentUserId,
-                details = ex.ToString(),
+                details = ex.ToStringNullable(),
                 remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
             });
             

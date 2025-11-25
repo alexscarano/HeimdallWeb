@@ -183,8 +183,9 @@ namespace HeimdallWeb.Repository
             bool hasUsername = !string.IsNullOrWhiteSpace(user.username);
             bool hasEmail = !string.IsNullOrWhiteSpace(user.email);
             bool hasPassword = !string.IsNullOrWhiteSpace(user.password);
+            bool hasImage = !string.IsNullOrEmpty(user.profile_image_path);
 
-            if (!hasUsername && !hasEmail && !hasPassword)
+            if (!hasUsername && !hasEmail && !hasPassword && !hasImage)
                 throw new ArgumentException("Nenhum campo para atualizar.");
 
             if (hasPassword)
@@ -205,6 +206,9 @@ namespace HeimdallWeb.Repository
 
             if (hasEmail)
                 userDB.email = user.email!.Trim().ToLowerInvariant();
+
+            if (hasImage)
+                userDB.profile_image = user.profile_image_path;
 
             userDB.updated_at = DateTime.Now;
 

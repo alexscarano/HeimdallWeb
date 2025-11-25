@@ -27,6 +27,8 @@ namespace HeimdallWeb.Extensions
             services.AddScoped<ILogRepository, LogRepository>();
             services.AddScoped<IUserUsageRepository, UserUsageRepository>();
             services.AddScoped<IDashboardRepository, DashboardRepository>();
+            services.AddScoped<IIASummaryRepository, IASummaryRepository>();
+            services.AddScoped<IUserStatisticsRepository, UserStatisticsRepository>();
 
             return services;
         }
@@ -34,6 +36,7 @@ namespace HeimdallWeb.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<IScanService, ScanService>();
+            services.AddScoped<IPdfService, PdfService>();
             return services;
         }
 

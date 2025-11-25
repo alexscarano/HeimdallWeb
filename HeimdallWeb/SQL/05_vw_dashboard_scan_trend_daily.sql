@@ -4,12 +4,9 @@
 -- Uso: Gráfico de linha (Chart.js)
 -- Cache: 30 segundos
 -- ============================================================
-
-USE heimdall_db;
-
 DROP VIEW IF EXISTS vw_dashboard_scan_trend_daily;
 
-CREATE VIEW vw_dashboard_scan_trend_daily AS
+CREATE OR REPLACE VIEW vw_dashboard_scan_trend_daily AS
 SELECT 
     DATE(created_date) AS scan_date,
     COUNT(*) AS scan_count,
@@ -19,6 +16,3 @@ FROM tb_history
 WHERE created_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
 GROUP BY DATE(created_date)
 ORDER BY scan_date DESC;
-
--- Verificar VIEW criada
-SELECT * FROM vw_dashboard_scan_trend_daily LIMIT 10;

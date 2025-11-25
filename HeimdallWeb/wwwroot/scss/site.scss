@@ -1,72 +1,23 @@
-:root {
-  --main-color: #519CAB;
-  --secondary-color: #C3E7F1;
-  --tertiary-color: #20373B;
-  --complementary-color: #FFC454;
-  --background-color: #EAEAEA;
-}
+// Imports
+@import "_variables-dark.scss"; // Dark theme variables
+@import "_fonts.scss"; // Fonts
 
+// Default styles
 * {
-  box-sizing: border-box;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-
-html {
+html,
+body {
+  position: relative;
+  min-height: 100dvh;
+  background-image: url("/images/cartographer.png");
+  background-color: $background-image;
+  color: $color;
   font-size: 14px;
 }
 
- html {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+/*====================================================================================================================*/
 
-.nav-link {
-  font-size: 1.35rem;
-}
-
-.bar {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.bar-item-link {
-  display: flex;
-  color: var(--tertiary-color);
-  padding: 0.7rem;
-  text-decoration: none;
-  transition: 0.27s ease-in-out;
-}
-
-.bar-item-link:hover {
-  background-color: var(--tertiary-color);
-  color: var(--secondary-color);
-  border-radius: 1.3rem;
-}
-
-.bar-logo {
-  width: 33vh;
-}
-
-.bar-char {
-  padding-left: 0.6rem;
-}
-
-body {
-  position: relative;
-  min-height: 100vh;
-}
-
-/* Add spacing below the main navbar so content doesn't butt up to it.
-   Scoped to dark-themed navbars to avoid affecting other navbar variants. */
-.navbar[data-bs-theme="dark"] {
-  padding-bottom: 0.75rem; /* extra inner space */
-  margin-bottom: 1.75rem; /* space between navbar and next elements */
-}
-
-@media (max-width: 768px) {
-  .navbar[data-bs-theme="dark"] {
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.5rem;
-  }
-}
+@import "index.scss";

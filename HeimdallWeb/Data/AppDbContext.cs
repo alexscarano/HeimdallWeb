@@ -23,6 +23,18 @@ namespace HeimdallWeb.Data
         public DbSet<DashboardScanTrendDaily> DashboardScanTrendDaily { get; set; }
         public DbSet<DashboardUserRegistrationTrend> DashboardUserRegistrationTrend { get; set; }
 
+        // User Statistics VIEWs
+        public DbSet<UserScanSummary> UserScanSummary { get; set; }
+        public DbSet<UserFindingsSummary> UserFindingsSummary { get; set; }
+        public DbSet<UserRiskTrend> UserRiskTrend { get; set; }
+        public DbSet<UserCategoryBreakdown> UserCategoryBreakdown { get; set; }
+
+        // Admin IA Summary VIEWs
+        public DbSet<AdminIASummaryStats> AdminIASummaryStats { get; set; }
+        public DbSet<AdminRiskDistributionDaily> AdminRiskDistributionDaily { get; set; }
+        public DbSet<AdminTopCategory> AdminTopCategory { get; set; }
+        public DbSet<AdminMostVulnerableTarget> AdminMostVulnerableTarget { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserMap());
@@ -57,6 +69,40 @@ namespace HeimdallWeb.Data
             modelBuilder.Entity<DashboardUserRegistrationTrend>()
                 .HasNoKey()
                 .ToView("vw_dashboard_user_registration_trend");
+
+            // Mapear User Statistics VIEWs
+            modelBuilder.Entity<UserScanSummary>()
+                .HasNoKey()
+                .ToView("vw_user_scan_summary");
+
+            modelBuilder.Entity<UserFindingsSummary>()
+                .HasNoKey()
+                .ToView("vw_user_findings_summary");
+
+            modelBuilder.Entity<UserRiskTrend>()
+                .HasNoKey()
+                .ToView("vw_user_risk_trend");
+
+            modelBuilder.Entity<UserCategoryBreakdown>()
+                .HasNoKey()
+                .ToView("vw_user_category_breakdown");
+
+            // Mapear Admin IA Summary VIEWs
+            modelBuilder.Entity<AdminIASummaryStats>()
+                .HasNoKey()
+                .ToView("vw_admin_ia_summary_stats");
+
+            modelBuilder.Entity<AdminRiskDistributionDaily>()
+                .HasNoKey()
+                .ToView("vw_admin_risk_distribution_daily");
+
+            modelBuilder.Entity<AdminTopCategory>()
+                .HasNoKey()
+                .ToView("vw_admin_top_categories");
+
+            modelBuilder.Entity<AdminMostVulnerableTarget>()
+                .HasNoKey()
+                .ToView("vw_admin_most_vulnerable_targets");
         }
     }
 }

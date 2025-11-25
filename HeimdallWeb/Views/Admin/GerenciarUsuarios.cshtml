@@ -4,51 +4,32 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/dashboard-dark.css" asp-append-version="true" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .form-control.bg-transparent::placeholder,
-        .form-select.bg-transparent option {
-            color: #adb5bd;
-        }
-        .form-select.bg-transparent option {
-            background-color: #212529;
-            color: #fff;
-        }
-        .form-control.bg-transparent:focus,
-        .form-select.bg-transparent:focus {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-color: #6c757d;
-            color: #fff;
-        }
-    </style>
 </head>
 
-<div class="container-lg mb-4">
-    <div class="d-flex justify-content-between align-items-center py-3 bg-dark rounded-3 text-white history-header">
-        <div class="d-flex align-items-center">
-            <h4 class="m-0">Gerenciar Usuários</h4>
-        </div>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center p-3 bg-dark rounded-3 history-header">
+        <h4 class="m-0">
+            <i class="fa-solid fa-users-gear"></i>
+            Gerenciar Usuários
+        </h4>
         <div class="d-flex align-items-stretch gap-2">
-            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
-            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
-            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Edit">Alterar Usuário</a>
-            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="User" asp-action="Delete">Excluir Usuário</a>
+            <a class="btn btn-outline-light btn-sm" asp-area="" asp-controller="Admin" asp-action="Dashboard">Voltar</a>
         </div>
     </div>
 </div>
 
 <!-- Filtros Avançados -->
-<div class="container-lg mb-3">
-    <form method="get" id="filterForm" class="row g-3 p-3 bg-dark rounded-3 shadow-sm">
+<div class="container">
+    <form method="get" id="filterForm" class="d-flex flex-column flex-md-row gap-3 p-3 bg-dark rounded-3 shadow-sm">
         <!-- Busca textual -->
-        <div class="col-md-3">
+        <div class="flex-fill">
             <input type="text" name="where" id="where" class="form-control bg-transparent text-light border-secondary" placeholder="Pesquisar (Login/Email)..." value="@ViewData["CurrentSearch"]" />
         </div>
 
         <!-- Filtro Status -->
-        <div class="col-md-2">
+        <div class="flex-fill">
             <select name="isActive" id="isActive" class="form-select bg-transparent text-light border-secondary">
                 <option value="">Todos Status</option>
                 @{ var __isActiveSel = ViewData["IsActive"]?.ToString(); }
@@ -66,7 +47,7 @@
         </div>
 
         <!-- Filtro Tipo de Usuário -->
-        <div class="col-md-2">
+        <div class="flex-fill">
             <select name="isAdmin" id="isAdmin" class="form-select bg-transparent text-light border-secondary">
                 <option value="">Todos Tipos</option>
                 @{ var __isAdminSel = ViewData["IsAdmin"]?.ToString(); }
@@ -84,17 +65,17 @@
         </div>
 
         <!-- Data Criação (De) -->
-        <div class="col-md-2">
+        <div class="flex-fill">
             <input type="date" name="createdFrom" id="createdFrom" class="form-control bg-transparent text-light border-secondary" value="@ViewData["CreatedFrom"]" />
         </div>
 
         <!-- Data Criação (Até) -->
-        <div class="col-md-2">
+        <div class="flex-fill">
             <input type="date" name="createdTo" id="createdTo" class="form-control bg-transparent text-light border-secondary" value="@ViewData["CreatedTo"]" />
         </div>
 
         <!-- Botões -->
-        <div class="col-md-1 d-flex gap-1">
+        <div class="flex-fill d-flex justify-content-end justify-content-md-start gap-3">
             <button type="submit" class="btn btn-outline-primary btn-sm" title="Filtrar">
                 <i class="fas fa-search"></i>
             </button>
@@ -105,28 +86,22 @@
     </form>
 </div>
 
-<div class="container-lg">
+<div class="container">
     <div class="table-responsive shadow-sm rounded bg-dark text-light p-2">
         <table class="table table-hover table-dark mb-0">
             @if (Model != null && Model.Items.Any())
             {
                 <thead class="table-dark">
-                    <tr class="text-center align-middle">
-                        <th scope="col">ID</th>
-                        <th scope="col">Login</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Tipo</th>
-                        <th scope="col">Criado em</th>
-                        <th scope="col">Ações</th>
-                    </tr>
+                <tr class="text-center align-middle">
+                    <th scope="col">ID</th>
+                    <th scope="col">Login</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Criado em</th>
+                    <th scope="col">Ações</th>
+                </tr>
                 </thead>
-            }
-            else
-            {
-                <div class="alert alert-secondary text-center m-3" role="alert">
-                    Nenhum registro encontrado no painel.
-                </div>
             }
 
             <tbody class="table-group-divider">
@@ -189,6 +164,12 @@
                             </td>
                         </tr>
                     }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7">Nenhum registro encontrado no painel.</td>
+                    </tr>
                 }
             </tbody>
         </table>
@@ -262,5 +243,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/dashboard-admin.js" asp-append-version="true"></script>
+    <script src="~/js/gerenciar-usuarios.js" asp-append-version="true"></script>
 }

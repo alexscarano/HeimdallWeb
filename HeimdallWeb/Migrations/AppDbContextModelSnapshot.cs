@@ -454,6 +454,11 @@ namespace HeimdallWeb.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("password");
 
+                    b.Property<string>("profile_image")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("profile_image");
+
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("updated_at");

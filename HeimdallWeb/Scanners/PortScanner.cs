@@ -102,8 +102,6 @@ namespace HeimdallWeb.Scanners
         {
             try
             {
-                //ports ??= _defaultPorts;
-
                 IPAddress[] target = NetworkUtils.GetIPv4Addresses(targetRaw);
 
                 var results = new JArray();
@@ -123,7 +121,10 @@ namespace HeimdallWeb.Scanners
                                 var probe = await ProbeIpPortAsync(ip, port, cancellationToken);
                                 lock (results)
                                 {
-                                    results.Add(probe);
+                                    if (probe is not null && probe["open"]?.Value<bool>() == true)
+                                    {
+                                        results.Add(probe);
+                                    }
                                 }
                             }
                             catch (OperationCanceledException)

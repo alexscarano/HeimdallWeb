@@ -13,7 +13,12 @@ public interface IDashboardRepository
     /// Retorna o ViewModel completo do dashboard administrativo.
     /// Cache: 30 segundos (estatísticas) e logs paginados sem cache.
     /// </summary>
-    Task<AdminDashboardViewModel> GetAdminDashboardDataAsync(int logPage = 1, int logPageSize = 10);
+    Task<AdminDashboardViewModel> GetAdminDashboardDataAsync(
+        int logPage = 1, 
+        int logPageSize = 10,
+        string? logLevel = null,
+        DateTime? logStartDate = null,
+        DateTime? logEndDate = null);
 
     /// <summary>
     /// Placeholder para métricas do usuário (não admin).

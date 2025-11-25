@@ -84,6 +84,7 @@ namespace HeimdallWeb.Repository
 
                 // Verificar se usuário está bloqueado
                 var user = await _appDbContext.User.FirstOrDefaultAsync(u => u.user_id == id);
+
                 if (user != null && !user.is_active)
                 {
                     return new PaginatedResult<HistoryModel?>
@@ -121,10 +122,23 @@ namespace HeimdallWeb.Repository
             }
         }
 
+        // Método original: não realiza eager-loading dos relacionamentos
         public async Task<HistoryModel?> getHistoryById(int id)
         {
             var history = await _appDbContext.History
                 .AsNoTracking()
+                .FirstOrDefaultAsync(h => h.history_id == id);
+
+            return history;
+        }
+
+        // Novo método que carrega as entidades relacionadas (Findings e Technologies) sem paginação
+        public async Task<HistoryModel?> getHistoryByIdWithIncludes(int id)
+        {
+            var history = await _appDbContext.History
+                .AsNoTracking()
+                .Include(h => h.Findings)
+                .Include(h => h.Technologies)
                 .FirstOrDefaultAsync(h => h.history_id == id);
 
             return history;
@@ -169,6 +183,50 @@ namespace HeimdallWeb.Repository
             });
 
             return history; 
+        }
+
+        public async Task<PaginatedResult<HistoryModel>?> getAllHistoriesWithIncludes(int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var query = _appDbContext.History
+                    .Where(h => h.has_completed == true)
+                    .Include(h => h.Findings)
+                    .Include(h => h.Technologies)
+                    .AsQueryable();
+
+                var totalCount = await query
+                    .AsNoTracking()
+                    .CountAsync();
+
+                var items = await query
+                    .OrderByDescending(h => h.created_date)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                return new PaginatedResult<HistoryModel>
+                {
+                    Items = items,
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize
+                };
+            }
+            catch (Exception ex)
+            {
+                await _logRepository.AddLog(new LogModel
+                {
+                    code = LogEventCode.DB_SAVE_ERROR,
+                    message = "Erro ao carregar históricos com includes",
+                    source = "HistoryRepository",
+                    details = ex.ToString(),
+                    remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
+                });
+
+                return new PaginatedResult<HistoryModel>();
+            }
         }
     }
 }
