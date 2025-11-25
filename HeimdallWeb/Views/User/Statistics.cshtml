@@ -62,8 +62,8 @@
                     <div class="small-box-footer">
                         @{
                             var avgTime = Model.ScanSummary.avg_scan_duration_seconds ?? 0m;
-                            var minutes = (int)(avgTime / 60);
-                            var seconds = avgTime - minutes * 60;
+                            var minutes = (int)(avgTime / 60m);
+                            var seconds = avgTime - (decimal)minutes * 60m;
                             var secondsStr = seconds.ToString("00");
                             var avgDisplay = $"{minutes}:{secondsStr}";
                         }

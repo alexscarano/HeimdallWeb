@@ -1,6 +1,6 @@
 const btn = document.querySelector("#analyze");
 const form = document.querySelector("#scanForm");
-var analyzing = false;
+let analyzing = false;
 
 btn.addEventListener("click", () => {
     if (analyzing) return;

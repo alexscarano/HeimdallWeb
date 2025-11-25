@@ -146,43 +146,6 @@
   }
 }
 
-#profileContainer {
-  padding: 1rem;
-  background-color: $background;
-  border-radius: 1rem;
-  border: 1px solid rgba($white, 0.04);
-  box-shadow: 0 6px 20px rgba($black, 0.6);
-  .form-control {
-    background: rgba($white, 0.03);
-    border: 1px solid rgba($white, 0.06);
-    color: $color;
-
-    &::placeholder {
-      color: $color;
-      opacity: 0.6;
-    }
-  }
-  .btn-outline-success {
-    color: $success;
-    border-color: rgba($success, 0.9);
-
-    &:hover,
-    &:focus {
-      background: rgba($success, 0.12);
-      color: #fff;
-      border-color: rgba($success, 1);
-    }
-  }
-  .nav {
-    .nav-link {
-      color: #fff;
-      &.active {
-        color: $primary;
-      }
-    }
-  }
-}
-
 // Import Global styles
 @import "_global.scss";
 

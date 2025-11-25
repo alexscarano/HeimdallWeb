@@ -31,7 +31,7 @@ public static class ImageService
         if (!Directory.Exists(uploadsFolder))
             Directory.CreateDirectory(uploadsFolder);
 
-        string uniqueName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+        string uniqueName = Guid.NewGuid() + Path.GetExtension(file.FileName);
         string filePath = Path.Combine(uploadsFolder, uniqueName);
 
         using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))

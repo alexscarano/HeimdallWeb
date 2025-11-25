@@ -190,7 +190,7 @@ namespace HeimdallWeb.Repository
             try
             {
                 var query = _appDbContext.History
-                    .Where(h => h.has_completed == true)
+                    .Where(h => h.has_completed)
                     .Include(h => h.Findings)
                     .Include(h => h.Technologies)
                     .AsQueryable();
