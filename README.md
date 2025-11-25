@@ -512,10 +512,9 @@ public class DashboardRepository : IDashboardRepository
 
 ---
 
-```
-
 ### Lista de Mensagens Padronizadas
 
+```
 Cada tipo de log possui uma mensagem estruturada pré-definida:
 
 | Tipo | Mensagem | Nível |
