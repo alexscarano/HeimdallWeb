@@ -1,9 +1,5 @@
 :root {
-  --bs-primary: $primary;
-}
-
-:root {
-  --slide-down-fade: slideDownFade 0.8s cubic-bezier(0.01, 0.25, 0.45, 1) both;
+  --slide-down-fade: slideDownFade 0.8s cubic-bezier(.01,.25,.45,1) both;
 }
 
 @keyframes spinner {
@@ -26,7 +22,8 @@
   background-color: #252525;
   padding-bottom: 0.75rem; /* extra inner space */
   margin-bottom: 1.75rem; /* space between navbar and next elements */
-  border-bottom: 4px solid #516fab;
+  border-bottom: 2.5px solid;
+  border-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) 1;
 }
 #navbar .nav-link.active {
   color: #516fab;
@@ -44,11 +41,11 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  max-width: 500px;
+  max-width: 700px;
 }
 
 #homeIntroduce {
-  max-width: 500px;
+  max-width: 700px;
 }
 
 #scanForm {
@@ -92,7 +89,7 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   cursor: default;
   text-align: center;
-  transition: translate 220ms ease;
+  transition: translate 300ms ease;
 }
 #info-boxes .info-box:hover {
   translate: 0 -10px;
@@ -124,8 +121,7 @@
   color: #2a6b6d;
   border-color: rgba(42, 107, 109, 0.9);
 }
-#profileContainer .btn-outline-success:hover,
-#profileContainer .btn-outline-success:focus {
+#profileContainer .btn-outline-success:hover, #profileContainer .btn-outline-success:focus {
   background: rgba(42, 107, 109, 0.12);
   color: #fff;
   border-color: #2a6b6d;
@@ -173,8 +169,7 @@
   color: #2a6b6d;
   border-color: rgba(42, 107, 109, 0.9);
 }
-#profileContainer .btn-outline-success:hover,
-#profileContainer .btn-outline-success:focus {
+#profileContainer .btn-outline-success:hover, #profileContainer .btn-outline-success:focus {
   background: rgba(42, 107, 109, 0.12);
   color: #fff;
   border-color: #2a6b6d;
@@ -187,11 +182,7 @@
 }
 
 :root {
-  --bs-primary: $primary;
-}
-
-:root {
-  --slide-down-fade: slideDownFade 0.8s cubic-bezier(0.01, 0.25, 0.45, 1) both;
+  --slide-down-fade: slideDownFade 0.8s cubic-bezier(.01,.25,.45,1) both;
 }
 
 @keyframes spinner {
@@ -237,6 +228,31 @@
   color: #ffffff;
 }
 
+.btn-primary {
+  background-color: #516fab;
+  border: 5px;
+  color: whitesmoke;
+  border-radius: 0.5rem;
+}
+
+.btn-primary:hover {
+  background-color: #3f5fa0;
+  color: rgba(245, 245, 245, 0.6431372549);
+  border: 5px;
+}
+
+.btn-primary:focus {
+  background-color: #3f5fa0;
+  color: rgba(245, 245, 245, 0.6431372549);
+  border: 5px;
+}
+
+.btn-primary:active {
+  background-color: #385286 !important;
+  color: rgba(245, 245, 245, 0.6431372549);
+  border: 5px;
+}
+
 .pagination .page-link {
   background: rgba(74, 74, 74, 0.9);
   color: #ffffff;
@@ -278,8 +294,7 @@
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
-  box-shadow: 0 5px 25px 20px rgba(0, 0, 0, 0.1),
-    inset 5px 5px 10px 3px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 5px 25px 20px rgba(0, 0, 0, 0.1), inset 5px 5px 10px 3px rgba(255, 255, 255, 0.2);
 }
 
 input::placeholder {
@@ -308,8 +323,7 @@ input::placeholder {
     max-width: 95%;
   }
 }
-.table td,
-.table th {
+.table td, .table th {
   vertical-align: middle;
 }
 
@@ -384,10 +398,6 @@ input::placeholder {
   background: rgba(0, 0, 0, 0.3);
 }
 
-:root {
-  --bs-primary: $primary;
-}
-
 .swal2-title {
   color: #ffffff;
   font-weight: 600;
@@ -436,10 +446,6 @@ input::placeholder {
     width: 92%;
   }
 }
-:root {
-  --bs-primary: $primary;
-}
-
 .alert {
   border: 1px solid rgba(0, 0, 0, 0.18);
   color: #fff;
@@ -453,24 +459,20 @@ input::placeholder {
   letter-spacing: 0.2px;
   line-height: 1.25;
   font-size: 0.95rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.02);
-  transition: background-color 160ms ease, box-shadow 160ms ease,
-    transform 120ms ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  transition: background-color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
 }
 .alert.alert-success {
   background-color: #2ecc71;
 }
-.alert.alert-success:hover,
-.alert.alert-success:focus {
+.alert.alert-success:hover, .alert.alert-success:focus {
   background-color: #27ae60;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38);
 }
 .alert.alert-error {
   background-color: #e74c3c;
 }
-.alert.alert-error:hover,
-.alert.alert-error:focus {
+.alert.alert-error:hover, .alert.alert-error:focus {
   background-color: #c0392b;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38);
 }

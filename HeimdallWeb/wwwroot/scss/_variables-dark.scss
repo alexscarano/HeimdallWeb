@@ -4,13 +4,16 @@ $black: #000000;
 
 // Theme Colors
 $background: #252525;
-$background2: #303030;
+$background-2: #303030;
 $complementary: #4a4a4a;
 
 $background-image: #faebd7;
 $color: $white;
 
 $primary: #516fab; // #2f6f8f;
+$primary-dark: #3f5fa0;
+$primary-dark-2: #385286; 
+
 
 $success: #2a6b6d;
 $danger: #c94b56;
@@ -22,9 +25,3 @@ $alert-danger-bg-soft: #c0392b; // softer/hover error
 $alert-success-bg: #2ecc71; // primary success
 $alert-success-bg-soft: #27ae60; // softer/hover success
 $alert-color: #fff; // alert text color
-
-$background-color: rgb(242, 228, 209);
-
-:root {
-  --bs-primary: $primary;
-}

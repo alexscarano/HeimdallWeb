@@ -9,7 +9,8 @@
   background-color: $background;
   padding-bottom: 0.75rem; /* extra inner space */
   margin-bottom: 1.75rem; /* space between navbar and next elements */
-  border-bottom: 4px solid $primary;
+  border-bottom: 2.5px solid;
+  border-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) 1;
 
   .nav-link.active {
     color: $primary;
@@ -29,12 +30,12 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  max-width: 500px;
+  max-width: 700px;
 }
 
 //Home Introduce
 #homeIntroduce {
-  max-width: 500px;
+  max-width: 700px;
 }
 
 // Scan Input
@@ -79,7 +80,7 @@
     box-shadow: 0 8px 24px rgba($black, 0.35);
     cursor: default;
     text-align: center;
-    transition: translate 220ms ease;
+    transition: translate 300ms ease;
     &:hover {
       translate: 0 -10px;
       box-shadow: 0 20px 48px rgba($black, 0.5);
@@ -135,7 +136,7 @@
 #technologiesModal {
   td {
     padding: 0.9rem 1rem;
-    background: $background2;
+    background: $background-2;
   }
   th {
     background: $complementary;
