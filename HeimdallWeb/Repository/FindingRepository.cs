@@ -50,17 +50,7 @@ namespace HeimdallWeb.Repository
             var findings = findingsDto.Select(dto => FindingDTOMapper.ToModel(dto, historyId)).ToList();
 
             await _appDbContext.Finding.AddRangeAsync(findings);
-            await _appDbContext.SaveChangesAsync();
-            
-            await _logRepository.AddLog(new LogModel
-            {
-                code = LogEventCode.DB_SAVE_OK,
-                message = "Registro salvo com sucesso",
-                source = "FindingRepository",
-                history_id = historyId,
-                details = $"Salvos {findings.Count} achados",
-                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(null)
-            });
+            // SaveChangesAsync será chamado no ScanService dentro da transação
         }
     }
 }

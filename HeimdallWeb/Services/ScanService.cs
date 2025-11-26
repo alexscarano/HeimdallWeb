@@ -91,7 +91,7 @@ public class ScanService : IScanService
 
         string domain = domainRaw.NormalizeUrl();
 
-        await _logRepository.AddLog(new LogModel
+        await _logRepository.AddLogImmediate(new LogModel
         {
             code = LogEventCode.INIT_SCAN,
             message = "Iniciando processo de varredura",
@@ -113,7 +113,7 @@ public class ScanService : IScanService
             // Preprocess JSON
             JsonPreprocessor.PreProcessScanResults(ref jsonString);
 
-            await _logRepository.AddLog(new LogModel
+            await _logRepository.AddLogImmediate(new LogModel
             {
                 code = LogEventCode.AI_REQUEST,
                 message = "Enviando requisição à IA",
@@ -126,7 +126,7 @@ public class ScanService : IScanService
             var gemini = new GeminiService(_config, _logRepository, _httpContextAccessor);
             var iaResponse = await gemini.GeneratePrompt(jsonString);
 
-            await _logRepository.AddLog(new LogModel
+            await _logRepository.AddLogImmediate(new LogModel
             {
                 code = LogEventCode.AI_RESPONSE,
                 message = "Resposta da IA recebida com sucesso",
@@ -148,9 +148,14 @@ public class ScanService : IScanService
                 stopwatch.Stop();
                 historyModel.duration = stopwatch.Elapsed;
                 historyModel.has_completed = true;
+                
+                // Adicionar history ao contexto (sem persistir ainda)
                 var createdHistory = await _historyRepository.insertHistory(historyModel);
+                // Força SaveChanges para gerar o history_id (necessário para foreign keys)
+                await _db.SaveChangesAsync(cancellationToken);
                 var historyId = createdHistory.history_id;
  
+                // Adicionar findings, technologies, summary e usage ao contexto
                 await _findingRepository.SaveFindingsFromAI(iaResponse, historyId);
                 await _technologyRepository.SaveTechnologiesFromAI(iaResponse, historyId);
                 await _iaSummaryRepository.SaveIASummaryFromFindings(historyId, iaResponse);
@@ -162,6 +167,7 @@ public class ScanService : IScanService
                     request_counts = user_usage.request_counts >= 0 ? user_usage.request_counts + 1 : 0
                 });
                 
+                // Adicionar log de sucesso ao contexto
                 await _logRepository.AddLog(new LogModel
                 {
                     code = LogEventCode.DB_SAVE_OK,
@@ -172,13 +178,20 @@ public class ScanService : IScanService
                     remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
                 });
 
+                // Persistir todas as mudanças de uma vez
+                await _db.SaveChangesAsync(cancellationToken);
+                
+                // Commitar a transação
                 await tx.CommitAsync(cancellationToken);
 
                 return historyId;
             }
             catch (Exception dbEx)
             {
-                await _logRepository.AddLog(new LogModel
+                await tx.RollbackAsync(cancellationToken);
+                
+                // Log de erro fora da transação
+                await _logRepository.AddLogImmediate(new LogModel
                 {
                     code = LogEventCode.DB_SAVE_ERROR,
                     message = "Erro ao salvar dados no banco",
@@ -187,7 +200,7 @@ public class ScanService : IScanService
                     details = dbEx.ToStringNullable(),
                     remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
                 });
-                await tx.RollbackAsync(cancellationToken);
+                
                 throw;
             }
         }
@@ -203,10 +216,11 @@ public class ScanService : IScanService
             try
             {
                 await _historyRepository.insertHistory(historyModel);
+                await _db.SaveChangesAsync(); // Persistir fora da transação principal
             }
             catch { /* Ignore save errors for failed scans */ }
 
-            await _logRepository.AddLog(new LogModel
+            await _logRepository.AddLogImmediate(new LogModel
             {
                 code = LogEventCode.SCAN_ERROR,
                 message = "Erro durante o processo de scan",
@@ -232,10 +246,11 @@ public class ScanService : IScanService
             try
             {
                 await _historyRepository.insertHistory(historyModel);
+                await _db.SaveChangesAsync(); // Persistir fora da transação principal
             }
             catch { /* Ignore save errors for failed scans */ }
 
-            await _logRepository.AddLog(new LogModel
+            await _logRepository.AddLogImmediate(new LogModel
             {
                 code = LogEventCode.SCAN_ERROR,
                 message = "Erro durante o processo de scan",

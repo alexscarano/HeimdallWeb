@@ -46,7 +46,7 @@ public class IASummaryRepository : IIASummaryRepository
                 };
 
                 await _db.IASummary.AddAsync(emptySummary);
-                await _db.SaveChangesAsync();
+                // SaveChangesAsync será chamado no ScanService dentro da transação
                 return;
             }
 
@@ -89,29 +89,11 @@ public class IASummaryRepository : IIASummaryRepository
             };
 
             await _db.IASummary.AddAsync(iaSummary);
-            await _db.SaveChangesAsync();
-
-            await _logRepository.AddLog(new LogModel
-            {
-                code = LogEventCode.DB_SAVE_OK,
-                message = "IA Summary salvo com sucesso",
-                source = "IASummaryRepository",
-                history_id = historyId,
-                details = $"Total findings: {findings.Count}, Risk: {overallRisk}",
-                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(null)
-            });
+            // SaveChangesAsync será chamado no ScanService dentro da transação
         }
         catch (Exception ex)
         {
-            await _logRepository.AddLog(new LogModel
-            {
-                code = LogEventCode.DB_SAVE_ERROR,
-                message = "Erro ao salvar IA Summary",
-                source = "IASummaryRepository",
-                history_id = historyId,
-                details = ex.ToString(),
-                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(null)
-            });
+            // Logging será tratado no ScanService
             throw;
         }
     }

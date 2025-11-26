@@ -170,17 +170,7 @@ namespace HeimdallWeb.Repository
 
             history.user_id = user_id;
             await _appDbContext.History.AddAsync(history);
-            await _appDbContext.SaveChangesAsync();
-
-            await _logRepository.AddLog(new LogModel
-            {
-                code = LogEventCode.DB_SAVE_OK,
-                message = "Registro salvo com sucesso",
-                source = "HistoryRepository",
-                user_id = user_id,
-                history_id = history.history_id,
-                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(_httpContextAccessor.HttpContext)
-            });
+            // SaveChangesAsync será chamado no ScanService dentro da transação
 
             return history; 
         }

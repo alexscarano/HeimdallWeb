@@ -35,6 +35,39 @@ public class LogRepository : ILogRepository
             };
 
             await _dbContext.Log.AddAsync(model);
+            // SaveChangesAsync será chamado externamente (ou em batch)
+            // Importante: logs fora de transação devem usar AddLogImmediate
+
+            return true;
+        }
+        catch 
+        {
+            return false;
+        }
+    }
+
+    // Método para logs que precisam ser persistidos imediatamente (fora de transação)
+    public async Task<bool> AddLogImmediate(LogModel entry)
+    {
+        try
+        {   
+            if (entry is null)
+                return false;
+
+            var model = new LogModel
+            {
+                code = entry.code, 
+                timestamp = DateTime.Now,
+                level = GetLevel(entry.code),
+                source = entry.source ?? "SYSTEM",
+                message = entry.message, 
+                details = entry.details,
+                user_id = entry.user_id,
+                history_id = entry.history_id,
+                remote_ip = entry.remote_ip
+            };
+
+            await _dbContext.Log.AddAsync(model);
             await _dbContext.SaveChangesAsync();
 
             return true;

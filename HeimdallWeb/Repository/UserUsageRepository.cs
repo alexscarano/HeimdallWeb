@@ -21,7 +21,7 @@ public class UserUsageRepository : IUserUsageRepository
                 return false;
 
             _dbContext.UserUsage.Add(userUsage);
-            await _dbContext.SaveChangesAsync();
+            // SaveChangesAsync será chamado no ScanService dentro da transação
             return true; 
         }
         catch 

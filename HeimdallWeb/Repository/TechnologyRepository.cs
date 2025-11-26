@@ -50,17 +50,7 @@ namespace HeimdallWeb.Repository
                 .ToModel(dto, historyId)).ToList();
             
             await _appDbContext.Technology.AddRangeAsync(tecnologias);
-            await _appDbContext.SaveChangesAsync();
-            
-            await _logRepository.AddLog(new LogModel
-            {
-                code = LogEventCode.DB_SAVE_OK,
-                message = "Registro salvo com sucesso",
-                source = "TechnologyRepository",
-                history_id = historyId,
-                details = $"Salvas {tecnologias.Count} tecnologias",
-                remote_ip = NetworkUtils.GetRemoteIPv4OrFallback(null)
-            });
+            // SaveChangesAsync será chamado no ScanService dentro da transação
         }
 
     }
