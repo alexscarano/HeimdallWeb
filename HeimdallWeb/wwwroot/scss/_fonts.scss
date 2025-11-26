@@ -34,7 +34,7 @@
 
 .minus-title {
   font-family: "Roboto";
-  font-weight: 500;
+  font-weight: 300;
   font-size: 1.25rem;
 }
 
@@ -46,36 +46,36 @@
 
 @media (max-width: 680px) {
   .title {
-    font-size: 2rem;
+    font-size: 2.7rem !important;
   }
 
   .normal {
-    font-size: 1.2rem;
+    font-size: 1.3rem !important;
   }
 
   .minus-title {
-    font-size: 1.1rem;
+    font-size: 1.1rem !important;
   }
 
   .minus {
-    font-size: 0.8rem;
+    font-size: 0.8rem !important;
   }
 }
 
 @media (max-width: 1200px) {
   .title {
-    font-size: 3rem;
+    font-size: 3rem !important;
   }
 
   .normal {
-    font-size: 1.2rem;
+    font-size: 1.45rem !important;
   }
 
   .minus-title {
-    font-size: 1.1rem;
+    font-size: 1.2rem !important;
   }
 
   .minus {
-    font-size: 1rem;
+    font-size: 1.1rem !important;
   }
 }

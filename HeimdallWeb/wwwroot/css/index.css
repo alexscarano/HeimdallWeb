@@ -10,7 +10,7 @@
 @keyframes slideDownFade {
   0% {
     opacity: 0;
-    transform: translateY(clamp(-100px, -50%, -30px));
+    transform: translateY(clamp(-1000px, -50%, -150px));
   }
   100% {
     opacity: 1;
@@ -22,8 +22,11 @@
   background-color: #252525;
   padding-bottom: 0.75rem; /* extra inner space */
   margin-bottom: 1.75rem; /* space between navbar and next elements */
-  border-bottom: 2.5px solid;
+  border-bottom: 2.75px solid;
   border-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) 1;
+}
+#navbar .nav-link {
+  font-size: 1.3rem;
 }
 #navbar .nav-link.active {
   color: #516fab;
@@ -41,15 +44,15 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  max-width: 700px;
+  max-width: 750px;
 }
 
 #homeIntroduce {
-  max-width: 700px;
+  max-width: 750px;
 }
 
 #scanForm {
-  background: #252525;
+  background: #303030;
   max-width: 760px;
   border-radius: 0.5rem;
   width: 100%;
@@ -69,7 +72,7 @@
 
 #info-boxes {
   display: flex;
-  gap: 1rem;
+  gap: 1.3rem;
   margin-top: 7rem;
   justify-content: center;
   align-items: stretch;
@@ -133,6 +136,10 @@
   color: #516fab;
 }
 
+td {
+  padding: 12px !important;
+}
+
 #findingsModal td,
 #technologiesModal td {
   padding: 0.9rem 1rem;
@@ -193,7 +200,7 @@
 @keyframes slideDownFade {
   0% {
     opacity: 0;
-    transform: translateY(clamp(-100px, -50%, -30px));
+    transform: translateY(clamp(-1000px, -50%, -150px));
   }
   100% {
     opacity: 1;
@@ -204,6 +211,7 @@
 .btn-outline-success {
   color: #2a6b6d;
   border-color: rgba(42, 107, 109, 0.85);
+  font-size: 1.1rem;
 }
 .btn-outline-success:hover {
   background: rgba(42, 107, 109, 0.12);
@@ -213,6 +221,7 @@
 .btn-outline-primary {
   color: #516fab;
   border-color: rgba(81, 111, 171, 0.85);
+  font-size: 1.1rem;
 }
 .btn-outline-primary:hover {
   background: rgba(81, 111, 171, 0.12);
@@ -222,10 +231,15 @@
 .btn-outline-danger {
   color: #c94b56;
   border-color: rgba(201, 75, 86, 0.85);
+  font-size: 1.1rem;
 }
 .btn-outline-danger:hover {
   background: rgba(201, 75, 86, 0.12);
   color: #ffffff;
+}
+
+.btn-outline-warning {
+  font-size: 1.2rem;
 }
 
 .btn-primary {
@@ -298,8 +312,8 @@
 }
 
 input::placeholder {
-  color: #ffffff;
-  opacity: 0.6;
+  color: whitesmoke !important;
+  opacity: 0.5 !important;
 }
 
 .modal {
@@ -313,8 +327,6 @@ input::placeholder {
 }
 .modal .modal-body {
   background: #252525;
-}
-.modal .modal-body * {
   text-align: center;
   color: #E8E5E5;
 }
@@ -325,6 +337,28 @@ input::placeholder {
 @media (max-width: 1200px) {
   .modal-dialog {
     max-width: 95%;
+  }
+}
+#modal-login {
+  background: rgba(37, 37, 37, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* For Webkit browsers */
+}
+#modal-login .modal-header,
+#modal-login .modal-footer {
+  background: #252525;
+}
+#modal-login #modal-body-login {
+  background: #303030;
+  text-align: start;
+}
+#modal-login .modal-dialog {
+  max-width: 640px;
+}
+
+@media (max-width: 1200px) {
+  #modal-dialog {
+    max-width: 640px;
   }
 }
 .table td, .table th {

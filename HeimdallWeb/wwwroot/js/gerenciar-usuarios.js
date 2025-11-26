@@ -3,6 +3,7 @@ function confirmDeleteUser(userId) {
     Swal.fire({
         title: 'Tem certeza?',
         text: 'Essa ação não pode ser desfeita!',
+        theme: 'dark',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sim, excluir',
@@ -33,10 +34,10 @@ function toggleUserStatus(userId, isActive) {
         title: `Tem certeza?`,
         text: `Deseja ${action} este usuário?`,
         icon: 'question',
+        theme: 'dark',
         showCancelButton: true,
         confirmButtonText: `Sim, ${action}`,
         cancelButtonText: "Cancelar",
-        confirmButtonColor: isActive ? '#28a745' : '#ffc107'
     }).then((result) => {
         if (result.isConfirmed) {
             axios.post(`/admin/toggleUserStatus?id=${userId}&isActive=${isActive}`, { timeout: 5000 })

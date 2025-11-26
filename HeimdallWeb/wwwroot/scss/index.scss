@@ -9,8 +9,12 @@
   background-color: $background;
   padding-bottom: 0.75rem; /* extra inner space */
   margin-bottom: 1.75rem; /* space between navbar and next elements */
-  border-bottom: 2.5px solid;
+  border-bottom: 2.75px solid;
   border-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) 1;
+
+  .nav-link {
+    font-size: 1.3rem;
+  }
 
   .nav-link.active {
     color: $primary;
@@ -30,17 +34,17 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  max-width: 700px;
+  max-width: 750px;
 }
 
 //Home Introduce
 #homeIntroduce {
-  max-width: 700px;
+  max-width: 750px;
 }
 
 // Scan Input
 #scanForm {
-  background: $background;
+  background: $background-2;
   max-width: 760px;
   border-radius: 0.5rem;
   width: 100%;
@@ -61,7 +65,7 @@
 // Info Boxes
 #info-boxes {
   display: flex;
-  gap: 1rem;
+  gap: 1.3rem;
   margin-top: 7rem;
   justify-content: center;
   align-items: stretch;
@@ -129,6 +133,10 @@
       }
     }
   }
+}
+
+td {
+  padding: 12px !important;
 }
 
 // findingsModal/technologiesModal table padding fix

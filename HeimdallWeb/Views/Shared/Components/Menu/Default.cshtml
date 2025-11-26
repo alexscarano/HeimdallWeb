@@ -9,7 +9,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="fs-5 navbar-nav nav-underline collapse navbar-collapse justify-content-lg-evenly justify-content-md-end mt-3 mt-md-0 gap-md-2" id="nav-main">
+        <div class="fs-5 navbar-nav nav-underline collapse navbar-collapse justify-content-lg-evenly justify-content-md-between mt-3 mt-md-0 gap-md-2" id="nav-main">
             <div class="nav-item">
                 <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">Escanear</a>
             </div>
@@ -30,7 +30,7 @@
                     <a class="nav-link" asp-area="" asp-controller="History" asp-action="Index">Histórico</a>
                 </div>
 
-                @if (User.IsInRole("1") || User.IsInRole("2"))
+                @if (User.IsInRole("1"))
                 {
                     <div class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="User" asp-action="Statistics">Estatísticas</a>
@@ -39,27 +39,32 @@
 
                 @if (User.IsInRole("2"))
                 {
-                    <div class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="dashboard">Dashboard</a>
+                    <div class="dropdown nav-item">
+                        <a href="#" role="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Administrador</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="dashboard">Dashboard</a>
+                            <a class="dropdown-item" asp-area="" asp-controller="User" asp-action="Statistics">Estatísticas</a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="GerenciarUsuarios">Gerenciar Usuários</a>
+                        </div>
                     </div>
                 }
 
                 <div class="nav-item">
                     <a class="nav-link" role="button" asp-controller="Login" asp-action="Logout">Sair</a>
-                </div>
+                </div>  
             }
             else {
                 <div class="nav-item">
-                    <a class="nav-link" href="#login" role="button" data-bs-toggle="modal" data-bs-target="#login">Login</a>
+                    <a class="nav-link" href="#login" role="button" data-bs-toggle="modal" data-bs-target="#modal-login">Login</a>
                     
-                    <div class="modal fade" id="login">
-                        <div class="modal-dialog text-white-50">
+                    <div class="modal fade" id="modal-login">
+                        <div class="modal-dialog modal-fullscreen-sm-down text-white-50">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h2>Login</h2>
+                                    <h2 class="modal-title">Login</h2>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#login"></button>
                                 </div>
-                                <div class="modal-body">
+                                <div class="modal-body" id="modal-body-login">
                                     <div class="container">
                                         <form class="login" asp-action="Enter" asp-controller="Login" method="post">
                                             <div class="justify-content-center align-items-center">
@@ -73,14 +78,14 @@
                                                     </div>
 
                                                     <div class="mb-5">
-                                                    <label for="password" class="form-label roboto">
+                                                    <label for="password" class="form-label">
                                                         <i class="fa-solid fa-lock"></i> Senha
                                                     </label>
                                                     <input type="password" class="form-control" id="password" name="password" placeholder="Digite sua senha" required>
                                                     </div>
 
                                                     <div class="d-grid mb-3">
-                                                    <button class="btn btn-warning roboto rainbow-button" type="submit">
+                                                    <button class="btn btn-primary" type="submit">
                                                         Entrar
                                                     </button>
                                                     </div>

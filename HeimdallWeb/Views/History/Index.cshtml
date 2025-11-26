@@ -13,20 +13,16 @@
         userIdValue = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 }
 
-<head>
-    <link rel="stylesheet" href="~/css/history-dark.css" asp-append-version="true" />
-</head>
-
 @* TempData handled globally in _Layout.cshtml *@
 
 <input type="hidden" id="userId" name="userId" value="@userIdValue" />
 
 <div class="container mt-3">
-    <div class="shadow-sm rounded p-2 bg-dark">
+    <div class="shadow-sm rounded p-2 bg-dark table-responsive">
         <table class="table table-hover table-dark mb-0">
             @if (Model != null && Model.Items.Any())
             {
-                <thead class="table-dark">
+                <thead class="table-dark normal">
                     <tr class="text-center align-middle">
                         <th scope="col">Site</th>
                         <th scope="col">Achados</th>
@@ -39,13 +35,13 @@
             }
             else
             {
-                <tbody class="alert">
+                <tbody class="alert minus-title">
                     <tr>
                         <td>Nenhum registro encontrado no histórico.</td>
                     </tr>
                 </tbody>
             }
-            <tbody class="table-group-divider" data-bs-theme="dark">
+            <tbody class="table-group-divider minus-title" data-bs-theme="dark">
             @if (Model != null && Model.Items.Any())
             {
                 @foreach (var history in Model.Items)
@@ -140,55 +136,64 @@
             }
 
         <nav class="mt-3">
-            <ul class="pagination justify-content-center">
-                @if (Model.HasPrevious)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize">Anterior</a>
-                    </li>
-                }
+            <div class="pagination justify-content-between">
+                <div class="d-flex">
 
-                @* show first and leading ellipsis if needed *@
-                @if (startPage > 1)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1&pageSize=@Model.PageSize">1</a>
-                    </li>
-                    @if (startPage > 2)
+                    @if (Model.HasPrevious)
                     {
-                        <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize">Anterior</a>
+                        </li>
                     }
-                }
 
-                @for (int i = startPage; i <= endPage; i++)
-                {
-                    <li class="page-item @(i == Model.Page ? "active" : "")">
-                        <a class="page-link" href="?page=@i&pageSize=@Model.PageSize">@i</a>
-                    </li>
-                }
-
-                @* trailing ellipsis and last page if needed *@
-                @if (endPage < Model.TotalPages)
-                {
-                    if (endPage < Model.TotalPages - 1)
+                    @* show first and leading ellipsis if needed *@
+                    @if (startPage > 1)
                     {
-                        <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1&pageSize=@Model.PageSize">1</a>
+                        </li>
+                        @if (startPage > 2)
+                        {
+                            <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                        }
                     }
-                    <li class="page-item">
-                        <a class="page-link" href="?page=@Model.TotalPages&pageSize=@Model.PageSize">@Model.TotalPages</a>
-                    </li>
-                }
 
-                @if (Model.HasNext)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize">Próxima</a>
-                    </li>
-                }
-            </ul>
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == Model.Page ? "active" : "")">
+                            <a class="page-link" href="?page=@i&pageSize=@Model.PageSize">@i</a>
+                        </li>
+                    }
+
+                    @* trailing ellipsis and last page if needed *@
+                    @if (endPage < Model.TotalPages)
+                    {
+                        if (endPage < Model.TotalPages - 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                        }
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@Model.TotalPages&pageSize=@Model.PageSize">@Model.TotalPages</a>
+                        </li>
+                    }
+
+                    @if (Model.HasNext)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize">Próxima</a>
+                        </li>
+                    }
+                </div>
+                <div>
+                    <button class="btn btn-warning fs-5 btn-sm" onclick="exportAllPdf()" title="Exportar todos os sites desta página em PDF">
+                        <i class="fa-solid fa-file-export"></i> Exportar Todos (PDF)
+                    </button>
+                </div>
+            </div>
         </nav>
     }
 </div>
+
 
 @section Scripts {
     <script src="~/js/history.js" asp-append-version="true"></script>

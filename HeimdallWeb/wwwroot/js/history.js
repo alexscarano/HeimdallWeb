@@ -40,7 +40,7 @@ function confirmDelete(historyId) {
             })
                 .then((data) => {
                 if (data.success) {
-                    Swal.fire(`Item Deletado!`, data.message, 'success')
+                    Swal.fire(`Item Deletado!`, data.message, 'success', 'dark',)
                         .then(() => {
                         const rowElement = document.getElementById('row-' + historyId);
                         if (rowElement) {
@@ -155,6 +155,7 @@ function exportSinglePdf(historyId) {
     Swal.fire({
         title: 'Gerando PDF do site...',
         text: 'Por favor aguarde',
+        theme: 'dark',
         allowOutsideClick: false,
         didOpen: () => {
             Swal.showLoading();
@@ -195,6 +196,7 @@ function exportSinglePdf(historyId) {
         Swal.fire({
             title: 'Sucesso!',
             text: 'PDF do site exportado com sucesso!',
+            theme: 'dark',
             icon: 'success',
             timer: 2000,
             showConfirmButton: false
@@ -239,6 +241,7 @@ function exportAllPdf() {
     Swal.fire({
         title: 'Gerando PDF completo...',
         text: 'Por favor aguarde, isso pode levar alguns segundos',
+        theme: 'dark',
         allowOutsideClick: false,
         didOpen: () => {
             Swal.showLoading();
@@ -289,6 +292,7 @@ function exportAllPdf() {
         Swal.fire({
             title: 'Sucesso!',
             text: 'PDF completo exportado com sucesso!',
+            theme: 'dark',
             icon: 'success',
             timer: 2500,
             showConfirmButton: false
