@@ -486,6 +486,27 @@ input::placeholder {
   background: rgba(0, 0, 0, 0.3);
 }
 
+.stat-card {
+  border-radius: 0.25rem;
+  height: 85px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.stat-card .label {
+  display: block;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+.stat-card .value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .swal2-title {
   color: #ffffff;
   font-weight: 600;
