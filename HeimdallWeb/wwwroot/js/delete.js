@@ -10,6 +10,7 @@ $(document).on('click', '#btn-delete', function () {
         title: 'Tem certeza que deseja excluir?',
         text: "Essa ação não poderá ser desfeita!",
         icon: 'warning',
+        theme: 'dark',
         showCancelButton: true,
         confirmButtonText: 'Sim, excluir!',
         cancelButtonText: 'Cancelar'

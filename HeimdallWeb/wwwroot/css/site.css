@@ -607,6 +607,27 @@ input::placeholder {
     width: 92%;
   }
 }
+.swal2-theme-dark .swal2-popup {
+  background: #252525 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+}
+.swal2-theme-dark .swal2-title,
+.swal2-theme-dark .swal2-content,
+.swal2-theme-dark .swal2-footer,
+.swal2-theme-dark .swal2-html-container a {
+  color: #ffffff !important;
+}
+.swal2-theme-dark .swal2-styled {
+  background: transparent !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+.swal2-theme-dark .swal2-icon {
+  box-shadow: none !important;
+}
+
 .alert {
   border: 1px solid rgba(0, 0, 0, 0.18);
   color: #fff;

@@ -168,4 +168,32 @@
         checkAndShowTempDataAlerts();
     }
 })(); // Fecha a IIFE
+// Ensure Swal.fire uses dark theme by default for calls that don't specify it.
+(function(){
+    if (typeof Swal === 'undefined' || !Swal.fire) return;
+    const _originalFire = Swal.fire.bind(Swal);
+    Swal.fire = function(...args){
+        try {
+            if (args.length === 1 && typeof args[0] === 'object' && args[0] !== null) {
+                if (!('theme' in args[0])) args[0].theme = 'dark';
+                return _originalFire(args[0]);
+            }
+            // positional args (title, html/text, icon)
+            if (args.length >= 1) {
+                const title = args[0] || undefined;
+                const htmlOrText = args[1] || undefined;
+                const icon = args[2] || undefined;
+                const opts = { theme: 'dark' };
+                if (title) opts.title = title;
+                if (htmlOrText) opts.text = htmlOrText;
+                if (icon) opts.icon = icon;
+                return _originalFire(opts);
+            }
+            return _originalFire(...args);
+        } catch (e) {
+            return _originalFire(...args);
+        }
+    };
+})();
+//# sourceMappingURL=toast-alerts.js.map
 //# sourceMappingURL=toast-alerts.js.map

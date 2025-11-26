@@ -41,3 +41,30 @@
     width: 92%;
   }
 }
+
+// Ensure SweetAlert2 dark theme option works even if external theme CSS isn't loaded
+.swal2-theme-dark {
+  .swal2-popup {
+    background: $background !important;
+    color: $color !important;
+    border: 1px solid rgba($white, 0.04) !important;
+    box-shadow: 0 10px 30px rgba($black, 0.6) !important;
+  }
+
+  .swal2-title,
+  .swal2-content,
+  .swal2-footer,
+  .swal2-html-container a {
+    color: $color !important;
+  }
+
+  .swal2-styled {
+    background: transparent !important;
+    color: $color !important;
+    border: 1px solid rgba($white, .06) !important;
+  }
+
+  .swal2-icon {
+    box-shadow: none !important;
+  }
+}
