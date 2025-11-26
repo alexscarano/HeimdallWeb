@@ -68,10 +68,62 @@ namespace HeimdallWeb.Helpers
 
             try
             {
-                using var client = new HttpClient();
-                var response = await client.GetAsync(url);
+                using var handler = new HttpClientHandler
+                {
+                    // Seguir redirects automaticamente (301, 302, 307, 308)
+                    AllowAutoRedirect = true,
+                    MaxAutomaticRedirections = 5,
+                    // Aceitar qualquer certificado SSL (útil para testes, mas cuidado em produção)
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+                };
 
-                return response.IsSuccessStatusCode; // 200–299
+                using var client = new HttpClient(handler)
+                {
+                    Timeout = TimeSpan.FromSeconds(10) // Timeout razoável
+                };
+
+                // Configurar headers para simular um browser real
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+                client.DefaultRequestHeaders.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8");
+                client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US,en;q=0.5");
+                client.DefaultRequestHeaders.Connection.ParseAdd("keep-alive");
+                
+                // Usar HEAD request primeiro (mais leve), se falhar tenta GET
+                try
+                {
+                    var headResponse = await client.SendAsync(
+                        new HttpRequestMessage(HttpMethod.Head, url),
+                        HttpCompletionOption.ResponseHeadersRead
+                    );
+                    
+                    // Aceitar status codes de sucesso (2xx) e redirects (3xx)
+                    if (headResponse.IsSuccessStatusCode || 
+                        ((int)headResponse.StatusCode >= 300 && (int)headResponse.StatusCode < 400))
+                    {
+                        return true;
+                    }
+                }
+                catch
+                {
+                    // HEAD pode falhar, tentar GET
+                }
+
+                // Fallback para GET request
+                var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+                
+                // Aceitar 2xx e 3xx como sucesso
+                return response.IsSuccessStatusCode || 
+                       ((int)response.StatusCode >= 300 && (int)response.StatusCode < 400);
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout - considerar inacessível
+                return false;
+            }
+            catch (HttpRequestException)
+            {
+                // Erro de conexão, DNS, SSL, etc.
+                return false;
             }
             catch
             {

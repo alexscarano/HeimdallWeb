@@ -100,7 +100,7 @@ public class HomeController : Controller
                 }
             }
 
-            await _logRepository.AddLog(new LogModel
+            await _logRepository.AddLogImmediate(new LogModel
             {
                 code = LogEventCode.INIT_SCAN,
                 message = "Iniciando processo de varredura",
@@ -111,7 +111,7 @@ public class HomeController : Controller
 
             var historyId = await _scanService.RunScanAndPersist(domainInput, historyModel, HttpContext.RequestAborted);
 
-            await _logRepository.AddLog(new LogModel
+            await _logRepository.AddLogImmediate(new LogModel
             {
                 code = LogEventCode.SCAN_COMPLETED,
                 message = "Scan finalizado com sucesso",
@@ -126,7 +126,7 @@ public class HomeController : Controller
         }
         catch (TimeoutException ex)
         {
-            await _logRepository.AddLog(new LogModel
+            await _logRepository.AddLogImmediate(new LogModel
             {
                 code = LogEventCode.SCAN_ERROR,
                 message = "Erro durante o processo de scan",
@@ -139,7 +139,7 @@ public class HomeController : Controller
         }
         catch (ArgumentException ex)
         {
-            await _logRepository.AddLog(new LogModel
+            await _logRepository.AddLogImmediate(new LogModel
             {
                 code = LogEventCode.SCAN_ERROR,
                 message = "Erro durante o processo de scan",
@@ -152,7 +152,7 @@ public class HomeController : Controller
         }
         catch (OperationCanceledException ex)
         {
-            await _logRepository.AddLog(new LogModel
+            await _logRepository.AddLogImmediate(new LogModel
             {
                 code = LogEventCode.SCAN_ERROR,
                 message = "Erro durante o processo de scan",
@@ -165,7 +165,7 @@ public class HomeController : Controller
         }
         catch (Exception ex)
         {
-            await _logRepository.AddLog(new LogModel
+            await _logRepository.AddLogImmediate(new LogModel
             {
                 code = LogEventCode.UNHANDLED_EXCEPTION,
                 message = "Erro inesperado não tratado",
