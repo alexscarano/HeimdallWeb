@@ -45,7 +45,7 @@
                     </tr>
                 </tbody>
             }
-            <tbody class="table-group-divider">
+            <tbody class="table-group-divider" data-bs-theme="dark">
             @if (Model != null && Model.Items.Any())
             {
                 @foreach (var history in Model.Items)
@@ -76,7 +76,7 @@
         </table>
     </div>
 
-    <div class="modal fade" id="findingsModal" tabindex="-1" aria-labelledby="findingsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="findingsModal" tabindex="-1" aria-labelledby="findingsModalLabel" aria-hidden="true" data-bs-theme="dark">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="technologiesModal" tabindex="-1" aria-labelledby="technologiesModalLabel" aria-hidden="true">
+    <div class="modal fade" id="technologiesModal" tabindex="-1" aria-labelledby="technologiesModalLabel" aria-hidden="true" data-bs-theme="dark">
         <div class="modal-dialog modal-md modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">

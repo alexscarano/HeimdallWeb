@@ -131,6 +131,10 @@ input::placeholder {
   .modal-body {
     background: $background;
   }
+  .modal-body *{
+    text-align: center;
+    color: #E8E5E5;
+  }
   .modal-dialog {
     max-width: 1100px;
   }
@@ -165,14 +169,41 @@ input::placeholder {
 }
 
 // Form Select Styles
-.form-select option {
-  background-color: $background;
+.form-select {
+  option {
+    background-color: $background;
+    
+    &:hover,
+    &:checked {
+      background-color: $primary;
+      color: $white;
+    }
+  }
+
+  &:focus {
+    background-color: rgba($white, .05);
+    border-color: $background-2;
+  }
+
+  &:hover {
+    border-color: $primary;
+    
+    option {
+      &:hover {
+        background-color: $primary;
+        color: $white;
+      }
+    }
+  }
 }
-.form-control:focus,
-.form-select:focus {
+
+// (Reverted) override for `select.form-select.text-light` removed — default theming applies
+
+.form-control:focus {
   background-color: rgba($white, .05);
   border-color: $background-2;
 }
+
 
 // Card Styles
 .small-box {
@@ -223,6 +254,7 @@ input::placeholder {
   }
 }
 
+// NOTE .stat-card + select hover styles per request (keep original theme defaults)
 // Estatísticas pequenas (cards de resumo)
 .stat-card {
   border-radius: .25rem;
