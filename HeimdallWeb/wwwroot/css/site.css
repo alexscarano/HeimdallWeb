@@ -658,6 +658,21 @@ input::placeholder {
   background-color: #c0392b;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38);
 }
+.alert.alert-info {
+  background-color: #303030;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+.alert.alert-info:hover, .alert.alert-info:focus {
+  background-color: rgb(37.8, 37.8, 37.8);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38);
+}
+.alert .empty-state {
+  color: rgba(255, 255, 255, 0.8);
+  background: transparent;
+  font-weight: 600;
+}
 .alert a {
   color: inherit;
 }

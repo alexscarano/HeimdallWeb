@@ -35,6 +35,26 @@
       box-shadow: 0 14px 36px rgba($black, .38);
     }
   }
+  // Dark variant for informational alerts (use on empty states)
+  &.alert-info {
+    background-color: $background-2;
+    color: $color;
+    border: 1px solid rgba($white, 0.03);
+    box-shadow: 0 10px 30px rgba($black, .35), inset 0 1px 0 rgba($white, .02);
+
+    &:hover,
+    &:focus {
+      background-color: darken($background-2, 4%);
+      box-shadow: 0 14px 36px rgba($black, .38);
+    }
+  }
+
+  // Generic empty-state helper for simple table cells / placeholders
+  .empty-state {
+    color: rgba($white, 0.8);
+    background: transparent;
+    font-weight: 600;
+  }
   a {
     color: inherit;
   }
