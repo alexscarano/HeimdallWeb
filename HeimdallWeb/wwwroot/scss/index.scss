@@ -29,17 +29,51 @@
 
 // Home Title
 #homeTitle {
-  background-image: linear-gradient(to left, #a85342, #516fab);
+  /* cores muito escuras e saturadas para alto contraste com #bfbfbf */
+  background-image: linear-gradient(90deg, #1a1a2e 0%, #0f3460 50%, #533483 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
   max-width: 750px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  /* sombra forte para definição em projetor */
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  -webkit-font-smoothing: antialiased;
 }
 
 //Home Introduce
 #homeIntroduce {
   max-width: 750px;
+  /* preto quase puro para máxima legibilidade em projetor */
+  color: #1a1a1a;
+  font-weight: 700;
+  /* sombra sutil para separar do padrão de fundo */
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  
+  span.fst-italic {
+    /* gradiente escuro saturado para destaque mantendo contraste */
+    background: linear-gradient(120deg, #0d4f56 0%, #16697a 50%, #1a1a2e 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 6%;
+      right: 6%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #16697a, transparent);
+      opacity: 1;
+    }
+  }
 }
 
 // Scan Input
