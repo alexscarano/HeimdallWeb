@@ -94,6 +94,34 @@
     display: block;
     animation: spinner 2s linear infinite;
   }
+
+  /* Botão de analisar: combinar com paleta do título (gradiente escuro) */
+  button#analyze,
+  .btn.analyze-btn {
+    background: linear-gradient(90deg, #0f3460 0%, #533483 100%);
+    border: 1px solid rgba(0,0,0,0.25);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(53, 52, 84, 0.28);
+    transition: transform 120ms ease, filter 120ms ease;
+  }
+
+  button#analyze:hover,
+  .btn.analyze-btn:hover {
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+  }
+
+  button#analyze:active,
+  .btn.analyze-btn:active {
+    transform: translateY(0);
+    filter: brightness(0.98);
+  }
+
+  button#analyze:focus,
+  .btn.analyze-btn:focus {
+    outline: 3px solid rgba(81,111,171,0.18);
+    outline-offset: 2px;
+  }
 }
 
 // Info Boxes
