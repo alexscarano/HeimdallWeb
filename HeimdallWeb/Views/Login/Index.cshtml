@@ -1,8 +1,4 @@
-﻿<head>
-    <link rel="stylesheet" href="~/css/login-dark.css" asp-append-version="true" />
-</head>
-
-@model HeimdallWeb.DTO.LoginDTO
+﻿@model HeimdallWeb.DTO.LoginDTO
 
 @{
     ViewData["Title"] = "Login";
@@ -19,15 +15,13 @@
 }
 @* TempData handled globally in _Layout.cshtml *@
 
-<div class="container menu" data-bs-theme="dark">
+
+<div class="container menu d-flex justify-content-center align-items-center" data-bs-theme="dark">
     <div class="row align-items-center">
-        <div class="col-6 mt-5">
-            <img src="~/images/Heimdallr_by_Froelich_Trans.png" alt="imagem-Heimdallr">
-        </div>
         <div class="col-6">
             <form class="login mt-5" asp-action="Enter" asp-controller="Login" method="post">
                 <div class="justify-content-center align-items-center">
-                    <div class="card shadow-lg p-4">
+                    <div class="card shadow-lg p-4 rounded-4" style="max-width: 540px; width: 100vh;">
                         <div class="text-center mb-4">
                             <h2 class="mt-2 acme">Faça Login</h2>
                         </div>
@@ -46,7 +40,7 @@
                             @Html.ValidationMessageFor(x => x.password)
                         </div>
                         <div class="d-grid mb-3">
-                            <button class="btn btn-warning roboto" type="submit">
+                            <button class="btn btn-primary roboto" type="submit">
                                 Entrar
                             </button>
                         </div>
