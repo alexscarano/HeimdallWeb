@@ -90,31 +90,43 @@
     <!-- Cards Secundários -->
     <div class="row">
         <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-            <div class="info-box bg-gradient-primary">
-                <span class="info-box-icon"><i class="fas fa-user-plus"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Novos Usuários (7 dias)</span>
-                    <span class="info-box-number">@Model.UserStats.new_users_last_7_days</span>
+            <div class="card bg-primary text-white shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-user-plus fa-3x opacity-75"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="small">Novos Usuários (7 dias)</div>
+                        <div class="fs-2 fw-bold">@Model.UserStats.new_users_last_7_days</div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-            <div class="info-box bg-gradient-success">
-                <span class="info-box-icon"><i class="fas fa-calendar-alt"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Novos Usuários (30 dias)</span>
-                    <span class="info-box-number">@Model.UserStats.new_users_last_30_days</span>
+            <div class="card bg-success text-white shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-calendar-alt fa-3x opacity-75"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="small">Novos Usuários (30 dias)</div>
+                        <div class="fs-2 fw-bold">@Model.UserStats.new_users_last_30_days</div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-            <div class="info-box bg-gradient-info">
-                <span class="info-box-icon"><i class="fas fa-clock"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Logs Hoje</span>
-                    <span class="info-box-number">@Model.LogsOverview.logs_today</span>
+            <div class="card bg-info text-white shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-clock fa-3x opacity-75"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="small">Logs Hoje</div>
+                        <div class="fs-2 fw-bold">@Model.LogsOverview.logs_today</div>
+                    </div>
                 </div>
             </div>
         </div>
