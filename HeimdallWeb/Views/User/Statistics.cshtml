@@ -118,55 +118,45 @@
                         <h3 class="card-title"><i class="fas fa-shield-alt"></i> Resumo de Vulnerabilidades</h3>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <!-- Total de Vulnerabilidades -->
+                        <div class="row g-3">
+                            <!-- Total de Vulnerabilidades (destaque com borda vermelha) -->
                             <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-                                <div class="info-box bg-gradient-danger">
-                                    <span class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Total de Vulnerabilidades</span>
-                                        <span class="info-box-number">@Model.FindingsSummary.total_findings</span>
+                                <div class="card bg-dark text-white shadow-sm border-start border-3 border-danger stat-card">
+                                    <div class="card-body text-center py-2">
+                                        <div class="small text-muted">Total de Vulnerabilidades</div>
+                                        <div class="fs-4 fw-bold">@Model.FindingsSummary.total_findings</div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Vulnerabilidades Críticas -->
                             <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-                                <div class="info-box bg-danger">
-                                    <span class="info-box-icon"><i class="fas fa-times-circle"></i></span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Críticas</span>
-                                        <span class="info-box-number">
-                                            @Model.FindingsSummary.total_critical 
-                                            <small>(@Model.FindingsSummary.percent_critical.ToString("0.0")%)</small>
-                                        </span>
+                                <div class="card bg-danger text-white shadow-sm stat-card">
+                                    <div class="card-body text-center py-2">
+                                        <div class="small">Críticas</div>
+                                        <div class="fs-5 fw-bold">@Model.FindingsSummary.total_critical</div>
+                                        <div class="small">(@Model.FindingsSummary.percent_critical.ToString("0.0")%)</div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Vulnerabilidades Altas -->
                             <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-                                <div class="info-box bg-warning">
-                                    <span class="info-box-icon"><i class="fas fa-exclamation-circle"></i></span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Altas</span>
-                                        <span class="info-box-number">
-                                            @Model.FindingsSummary.total_high 
-                                            <small>(@Model.FindingsSummary.percent_high.ToString("0.0")%)</small>
-                                        </span>
+                                <div class="card bg-warning text-dark shadow-sm stat-card">
+                                    <div class="card-body text-center py-2">
+                                        <div class="small">Altas</div>
+                                        <div class="fs-5 fw-bold">@Model.FindingsSummary.total_high</div>
+                                        <div class="small">(@Model.FindingsSummary.percent_high.ToString("0.0")%)</div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Vulnerabilidades Médias e Baixas -->
                             <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-                                <div class="info-box bg-info">
-                                    <span class="info-box-icon"><i class="fas fa-info-circle"></i></span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Médias / Baixas</span>
-                                        <span class="info-box-number">
-                                            @Model.FindingsSummary.total_medium / @Model.FindingsSummary.total_low
-                                        </span>
+                                <div class="card bg-info text-dark shadow-sm stat-card">
+                                    <div class="card-body text-center py-2">
+                                        <div class="small">Médias / Baixas</div>
+                                        <div class="fs-5 fw-bold">@Model.FindingsSummary.total_medium / @Model.FindingsSummary.total_low</div>
                                     </div>
                                 </div>
                             </div>

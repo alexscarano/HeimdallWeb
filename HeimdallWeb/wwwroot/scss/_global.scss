@@ -222,3 +222,27 @@ input::placeholder {
     }
   }
 }
+
+// Estatísticas pequenas (cards de resumo)
+.stat-card {
+  border-radius: .25rem;
+  height: 85px; // keep same visual rhythm as .small-box
+  padding: .75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  .label {
+    display: block;
+    color: rgba($white, 0.85);
+    font-size: 0.9rem;
+    margin-bottom: .25rem;
+  }
+
+  .value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+}
