@@ -3,290 +3,17 @@
     ViewData["Title"] = "Resultado do Scan";
 }
 
+
 <head>
     <!-- Prism.js CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" integrity="sha512-vswe+cgvic/XBoF1OcM/TeJ2FW0OofqAVdCZiEYkd6dwGXthvkSFWOoGGJgS2CW70VK5dQM5Oh+7ne47s74VTg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
-
-<style>
-    /* ==== TEMA DARK PARA RESULTADO DO SCAN ==== */
-    
-    /* Container principal */
-    .content-header {
-        background-color: #0a0a0a;
-        padding: 1rem 0;
-        margin-bottom: 1rem;
-    }
-    
-    .content-header h1 {
-        color: #e0e0e0 !important;
-    }
-    
-    .breadcrumb {
-        background-color: transparent;
-    }
-    
-    .breadcrumb-item a {
-        color: #64b5f6 !important;
-    }
-    
-    .breadcrumb-item.active {
-        color: #b0b0b0 !important;
-    }
-    
-    .content {
-        background-color: #0a0a0a;
-        min-height: 100vh;
-        padding: 1rem 0;
-    }
-    
-    /* Cards */
-    .card {
-        background-color: #0f0f0f !important;
-        border: 1px solid #1a1a1a !important;
-        color: #e0e0e0 !important;
-    }
-    
-    .card-header {
-        background-color: #151515 !important;
-        border-bottom: 1px solid #202020 !important;
-        color: #e0e0e0 !important;
-    }
-    
-    .card-title {
-        color: #e0e0e0 !important;
-    }
-    
-    .card-body {
-        background-color: #0f0f0f !important;
-        color: #e0e0e0 !important;
-    }
-    
-    /* Bordas coloridas dos cards */
-    .card-primary {
-        border-top: 3px solid #007bff !important;
-    }
-    
-    .card-success {
-        border-top: 3px solid #28a745 !important;
-    }
-    
-    .card-warning {
-        border-top: 3px solid #ffc107 !important;
-    }
-    
-    .card-danger {
-        border-top: 3px solid #dc3545 !important;
-    }
-    
-    .card-info {
-        border-top: 3px solid #17a2b8 !important;
-    }
-    
-    .card-secondary {
-        border-top: 3px solid #6c757d !important;
-    }
-    
-    .card-dark {
-        border-top: 3px solid #343a40 !important;
-    }
-    
-    /* Tabelas */
-    .table {
-        color: #e0e0e0 !important;
-        background-color: #0f0f0f !important;
-    }
-    
-    .table thead th {
-        background-color: #151515 !important;
-        color: #e0e0e0 !important;
-        border-color: #202020 !important;
-    }
-    
-    .table tbody td {
-        border-color: #1a1a1a !important;
-        color: #d0d0d0 !important;
-    }
-    
-    .table-hover tbody tr:hover {
-        background-color: #1a1a1a !important;
-    }
-    
-    /* Highlighting de linhas */
-    .table-danger {
-        background-color: rgba(220, 53, 69, 0.15) !important;
-    }
-    
-    .table-warning {
-        background-color: rgba(255, 193, 7, 0.15) !important;
-    }
-    
-    .table-info {
-        background-color: rgba(23, 162, 184, 0.15) !important;
-    }
-    
-    /* Badges */
-    .badge {
-        font-weight: 600;
-        padding: 0.35em 0.65em;
-    }
-    
-    .badge-success {
-        background-color: #28a745 !important;
-        color: #fff !important;
-    }
-    
-    .badge-danger {
-        background-color: #dc3545 !important;
-        color: #fff !important;
-    }
-    
-    .badge-warning {
-        background-color: #ffc107 !important;
-        color: #000 !important;
-    }
-    
-    .badge-info {
-        background-color: #17a2b8 !important;
-        color: #fff !important;
-    }
-    
-    .badge-secondary {
-        background-color: #6c757d !important;
-        color: #fff !important;
-    }
-    
-    .badge-light {
-        background-color: #f8f9fa !important;
-        color: #000 !important;
-    }
-    
-    /* Links */
-    a {
-        color: #64b5f6 !important;
-    }
-    
-    a:hover {
-        color: #90caf9 !important;
-    }
-    
-    /* Code blocks */
-    code {
-        background-color: #151515 !important;
-        color: #f8f8f2 !important;
-        padding: 2px 6px;
-        border-radius: 3px;
-    }
-    
-    pre {
-        background-color: #0f0f0f !important;
-        border: 1px solid #202020 !important;
-        color: #e0e0e0 !important;
-    }
-    
-    /* Definition lists */
-    dt {
-        color: #b0b0b0 !important;
-    }
-    
-    dd {
-        color: #e0e0e0 !important;
-    }
-    
-    /* List groups */
-    .list-group-item {
-        background-color: #151515 !important;
-        border-color: #202020 !important;
-        color: #e0e0e0 !important;
-    }
-    
-    /* Botões */
-    .btn-tool {
-        color: #b0b0b0 !important;
-    }
-    
-    .btn-tool:hover {
-        color: #e0e0e0 !important;
-    }
-    
-    .btn-primary {
-        background-color: #007bff !important;
-        border-color: #007bff !important;
-    }
-    
-    .btn-secondary {
-        background-color: #6c757d !important;
-        border-color: #6c757d !important;
-    }
-    
-    .btn-success {
-        background-color: #28a745 !important;
-        border-color: #28a745 !important;
-    }
-    
-    /* Ícones Font Awesome */
-    .fas, .far, .fab {
-        color: inherit;
-    }
-    
-    /* Prism.js ajustes */
-    pre[class*="language-"] {
-        background-color: #0f0f0f !important;
-        border: 1px solid #202020 !important;
-    }
-    
-    /* Alertas/Warning boxes */
-    .alert-warning {
-        background-color: rgba(255, 193, 7, 0.2) !important;
-        border-color: #ffc107 !important;
-        color: #ffc107 !important;
-    }
-    
-    .alert-danger {
-        background-color: rgba(220, 53, 69, 0.2) !important;
-        border-color: #dc3545 !important;
-        color: #dc3545 !important;
-    }
-    
-    .alert-info {
-        background-color: rgba(23, 162, 184, 0.2) !important;
-        border-color: #17a2b8 !important;
-        color: #17a2b8 !important;
-    }
-    
-    /* Text colors específicos */
-    .text-muted {
-        color: #888 !important;
-    }
-    
-    .text-success {
-        color: #28a745 !important;
-    }
-    
-    .text-danger {
-        color: #dc3545 !important;
-    }
-    
-    .text-warning {
-        color: #ffc107 !important;
-    }
-    
-    .text-info {
-        color: #17a2b8 !important;
-    }
-</style>
-
-
-
-
-
-<section class="content">
-    <div class="container-fluid">
+    <div class="container-fluid" data-bs-theme="dark">
         
         <!-- Informações Gerais -->
-        <div class="row">
-            <div class="col-12">
+        <div class="row justify-content-center">
+            <div class="col-lg-9" >
                 <div class="card card-primary card-outline">
                     <div class="card-header">
                         <h3 class="card-title"><i class="fas fa-info-circle"></i> Informações do Scan</h3>
@@ -312,7 +39,7 @@
                                 @if (!string.IsNullOrWhiteSpace(Model.DadosGerais.Servidor))
                                 {
                                     <dt class="col-sm-3">Servidor:</dt>
-                                    <dd class="col-sm-9"><code>@Model.DadosGerais.Servidor</code></dd>
+                                    <dd class="col-sm-9"><code> @Model.DadosGerais.Servidor</code></dd>
                                 }
                                 @if (Model.DadosGerais.RedirecionamentoHTTPS.HasValue)
                                 {
@@ -320,11 +47,11 @@
                                     <dd class="col-sm-9">
                                         @if (Model.DadosGerais.RedirecionamentoHTTPS.Value)
                                         {
-                                            <span class="badge badge-success"><i class="fas fa-check"></i> Sim</span>
+                                            <span class="badge badge-success"> Sim</span>
                                         }
                                         else
                                         {
-                                            <span class="badge badge-warning"><i class="fas fa-times"></i> Não</span>
+                                            <span class="badge badge-warning">Não</span>
                                         }
                                     </dd>
                                 }
@@ -353,11 +80,11 @@
         <!-- SSL/TLS -->
         @if (Model.SSL != null)
         {
-            <div class="row">
-                <div class="col-12">
-                    <div class="card @(Model.SSL.Valido ? "card-success" : "card-warning") card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-lock"></i> SSL/TLS</h3>
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <div class="card card-outline">
+                        <div class="card-header d-flex justify-content-between">
+                            <h3 class="card-title"><i class="fas fa-lock pe-2"></i> SSL/TLS</h3>
                         </div>
                         <div class="card-body">
                             <dl class="row">
@@ -408,22 +135,22 @@
         <!-- Headers HTTP -->
         @if (Model.Headers != null && Model.Headers.Any())
         {
-            <div class="row">
-                <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
                     <div class="card card-info card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-server"></i> Headers HTTP (@Model.Headers.Count)</h3>
+                        <div class="card-header d-flex justify-content-between">
+                            <h3 class="card-title"><i class="fas fa-server pe-2"></i> Headers HTTP (@Model.Headers.Count)</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#headersHttp">
-                                    <i class="fas fa-minus"></i>
+                                    <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body p-0 collapse show" id="headersHttp">
+                        <div class="card-body p-0 collapse" id="headersHttp">
                             <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="width: 30%">Header</th>
+                                        <th>Header</th>
                                         <th>Valor</th>
                                     </tr>
                                 </thead>
@@ -431,8 +158,8 @@
                                     @foreach (var header in Model.Headers)
                                     {
                                         <tr>
-                                            <td><strong>@header.Nome</strong></td>
-                                            <td><code class="text-sm">@header.Valor</code></td>
+                                            <td style="max-width: 1rem;"><strong>@header.Nome</strong></td>
+                                            <td style="max-width: 16rem;"><code>@header.Valor</code></td>
                                         </tr>
                                     }
                                 </tbody>
@@ -446,30 +173,30 @@
         <!-- Security Headers -->
         @if (Model.HeadersSeguranca != null && Model.HeadersSeguranca.Any())
         {
-            <div class="row">
-                <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
                     <div class="card card-warning card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-shield-alt"></i> Security Headers</h3>
+                        <div class="card-header d-flex justify-content-between">
+                            <h3 class="card-title"><i class="fas fa-shield-alt pe-2"></i> Security Headers</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#securityHeaders">
-                                    <i class="fas fa-minus"></i>
+                                    <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body p-0 collapse show" id="securityHeaders">
+                        <div class="card-body p-0 collapse" id="securityHeaders">
                             <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="width: 35%">Header</th>
-                                        <th style="width: 15%">Status</th>
+                                        <th>Header</th>
+                                        <th>Status</th>
                                         <th>Valor</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var header in Model.HeadersSeguranca)
                                     {
-                                        <tr class="@(header.Status == "Ausente" ? "table-warning" : "")">
+                                        <tr class="">
                                             <td><strong>@header.Nome</strong></td>
                                             <td>
                                                 @if (header.Status == "Presente")
@@ -504,18 +231,18 @@
         <!-- Portas Abertas -->
         @if (Model.Portas != null && Model.Portas.Any())
         {
-            <div class="row">
-                <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
                     <div class="card card-danger card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-door-open"></i> Portas Abertas (@Model.Portas.Count)</h3>
+                        <div class="card-header d-flex justify-content-between">
+                            <h3 class="card-title"><i class="fas fa-door-open pe-2"></i> Portas Abertas (@Model.Portas.Count)</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#portasAbertas">
-                                    <i class="fas fa-minus"></i>
+                                    <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body p-0 collapse show" id="portasAbertas">
+                        <div class="card-body p-0 collapse" id="portasAbertas">
                             <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
@@ -529,12 +256,12 @@
                                 <tbody>
                                     @foreach (var porta in Model.Portas)
                                     {
-                                        <tr class="@GetPortRowClass(porta.Severidade)">
+                                        <tr class="">
                                             <td><code>@porta.IP</code></td>
                                             <td><strong>@porta.Porta</strong></td>
                                             <td>@porta.Servico</td>
                                             <td>
-                                                <span class="badge badge-@GetRiskBadge(porta.Severidade)">
+                                                <span class="">
                                                     @porta.Severidade
                                                 </span>
                                             </td>
@@ -552,18 +279,18 @@
         <!-- Caminhos Sensíveis -->
         @if (Model.CaminhosTestados != null && Model.CaminhosTestados.Any())
         {
-            <div class="row">
-                <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
                     <div class="card card-warning card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-folder-open"></i> Caminhos Sensíveis Encontrados (@Model.CaminhosTestados.Count)</h3>
+                        <div class="card-header d-flex justify-content-between">
+                            <h3 class="card-title"><i class="fas fa-folder-open pe-2"></i> Caminhos Sensíveis Encontrados (@Model.CaminhosTestados.Count)</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#caminhosSensiveis">
-                                    <i class="fas fa-minus"></i>
+                                    <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body p-0 collapse show" id="caminhosSensiveis">
+                        <div class="card-body p-0 collapse" id="caminhosSensiveis">
                             <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
@@ -578,7 +305,7 @@
                                     {
                                         <tr>
                                             <td><code>@path.Caminho</code></td>
-                                            <td><span class="badge badge-@GetStatusBadge(path.StatusCode)">@path.StatusCode</span></td>
+                                            <td><span class="">@path.StatusCode</span></td>
                                             <td>@path.Resultado</td>
                                             <td>
                                                 @if (!string.IsNullOrWhiteSpace(path.Evidencia))
@@ -603,18 +330,18 @@
         <!-- Cookies -->
         @if (Model.Cookies != null && Model.Cookies.Any())
         {
-            <div class="row">
-                <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
                     <div class="card card-info card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-cookie-bite"></i> Cookies Detectados (@Model.Cookies.Count)</h3>
+                        <div class="card-header d-flex justify-content-between">
+                            <h3 class="card-title"><i class="fas fa-cookie-bite pe-2"></i> Cookies Detectados (@Model.Cookies.Count)</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#cookiesDetectados">
-                                    <i class="fas fa-minus"></i>
+                                    <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body p-0 collapse show" id="cookiesDetectados">
+                        <div class="card-body p-0 collapse" id="cookiesDetectados">
                             <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
@@ -629,7 +356,7 @@
                                 <tbody>
                                     @foreach (var cookie in Model.Cookies)
                                     {
-                                        <tr class="@GetCookieRowClass(cookie.Risco)">
+                                        <tr class="">
                                             <td><strong>@cookie.Nome</strong></td>
                                             <td>
                                                 @if (cookie.TemSecure)
@@ -652,7 +379,7 @@
                                                 }
                                             </td>
                                             <td><small>@cookie.SameSite</small></td>
-                                            <td><span class="badge badge-@GetRiskBadge(cookie.Risco)">@cookie.Risco</span></td>
+                                            <td><span class="">@cookie.Risco</span></td>
                                             <td><small>@cookie.Descricao</small></td>
                                         </tr>
                                     }
@@ -667,18 +394,18 @@
         <!-- HTTP Redirects -->
         @if (Model.HttpRedirects != null && Model.HttpRedirects.Any())
         {
-            <div class="row">
-                <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
                     <div class="card card-secondary card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-exchange-alt"></i> Análise de HTTP Redirects (@Model.HttpRedirects.Count IPs testados)</h3>
+                        <div class="card-header d-flex justify-content-between">
+                            <h3 class="card-title"><i class="fas fa-exchange-alt pe-2"></i> Análise de HTTP Redirects (@Model.HttpRedirects.Count IPs testados)</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#httpRedirects">
-                                    <i class="fas fa-minus"></i>
+                                    <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body p-0 collapse show" id="httpRedirects">
+                        <div class="card-body p-0 collapse" id="httpRedirects">
                             <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
@@ -743,18 +470,18 @@
         <!-- Robots.txt -->
         @if (Model.Robots != null && Model.Robots.Encontrado)
         {
-            <div class="row">
-                <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
                     <div class="card card-secondary card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-robot"></i> robots.txt</h3>
+                        <div class="card-header d-flex justify-content-between">
+                            <h3 class="card-title"><i class="fas fa-robot pe-2"></i> robots.txt</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#robotsTxt">
-                                    <i class="fas fa-minus"></i>
+                                    <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body collapse show" id="robotsTxt">
+                        <div class="card-body collapse" id="robotsTxt">
                             <dl class="row">
                                 <dt class="col-sm-3">Status:</dt>
                                 <dd class="col-sm-9"><span class="badge badge-success">Encontrado</span></dd>
@@ -776,7 +503,7 @@
                                         <div class="list-group-item list-group-item-action flex-column align-items-start">
                                             <div class="d-flex w-100 justify-content-between">
                                                 <h6 class="mb-1">
-                                                    <span class="badge badge-@GetRiskBadge(alerta.Severidade)">@alerta.Severidade</span>
+                                                    <span class="">@alerta.Severidade</span>
                                                 </h6>
                                             </div>
                                             <p class="mb-1">@alerta.Mensagem</p>
@@ -798,11 +525,11 @@
         }
 
         <!-- JSON Completo com Syntax Highlighting -->
-        <div class="row">
-            <div class="col-12">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
                 <div class="card card-dark card-outline">
-                    <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-code"></i> JSON Completo</h3>
+                    <div class="card-header d-flex justify-content-between">
+                        <h3 class="card-title"><i class="fas fa-code pe-2"></i> JSON Completo</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" onclick="downloadJsonFile()">
                                 <i class="fas fa-download"></i> Baixar
@@ -811,7 +538,7 @@
                                 <i class="fas fa-copy"></i> Copiar
                             </button>
                             <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#jsonCompleto">
-                                <i class="fas fa-minus"></i>
+                                <i class="fas fa-plus"></i>
                             </button>
                         </div>
                     </div>
@@ -823,7 +550,6 @@
         </div>
 
     </div>
-</section>
 
 @section Scripts {
     <!-- Prism.js Core + JSON Language -->
