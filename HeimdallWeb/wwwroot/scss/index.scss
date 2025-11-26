@@ -140,8 +140,8 @@
   th {
     background: $complementary;
   }
-  td,
-  th {
+  td, th {
+    color: $color;
     border: 1px solid rgba($white, 0.06);
   }
 }

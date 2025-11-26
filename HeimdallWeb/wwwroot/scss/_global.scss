@@ -4,6 +4,11 @@
 
 /*=== === === GLOBAL CLASSES === === ===*/
 
+// Texts
+p, span, h1, h2, h3, h4, h5, h6, a, li, label, div, td, th {
+  color: $color;
+}
+
 // Buttons styles
 .btn-outline-success {
   color: $success;
@@ -34,18 +39,17 @@
   }
 }
 
+// Pagination styles
 .pagination {
   .page-link {
     background: rgba($complementary,0.9);
     color: $color;
     border: 1px solid rgba($black, .2);
-
     &:hover {
       background: $background2;
       color: $color;
     }
   }
-
   .page-item.active {
     .page-link {
       background: $background;
@@ -193,6 +197,33 @@ input::placeholder {
     transition: 200ms;
     &:hover{
       background: rgba($black, .30);
+    }
+  }
+}
+
+.info-box {
+  position: relative;
+  border-radius: .25rem;
+  padding: 10px;
+  overflow: hidden;
+  .info-box-icon {
+    color: rgba($black, .15);
+    i {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    margin-bottom: 10px;
+  }
+  .info-box-content{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    .info-box-text {
+      font-size: 1rem;
+    }
+    .info-box-number{
+        font-size: 1.5rem;
+        font-weight: 700;
     }
   }
 }

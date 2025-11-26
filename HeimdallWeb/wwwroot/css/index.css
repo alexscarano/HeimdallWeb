@@ -145,10 +145,10 @@
 #technologiesModal th {
   background: #4a4a4a;
 }
-#findingsModal td,
-#findingsModal th,
+#findingsModal td, #findingsModal th,
 #technologiesModal td,
 #technologiesModal th {
+  color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -208,6 +208,10 @@
   }
 }
 /*=== === === GLOBAL CLASSES === === ===*/
+p, span, h1, h2, h3, h4, h5, h6, a, li, label, div, td, th {
+  color: #ffffff;
+}
+
 .btn-outline-success {
   color: #2a6b6d;
   border-color: rgba(42, 107, 109, 0.85);
@@ -378,6 +382,35 @@ input::placeholder {
 }
 .small-box .small-box-footer:hover {
   background: rgba(0, 0, 0, 0.3);
+}
+
+.info-box {
+  position: relative;
+  border-radius: 0.25rem;
+  padding: 10px;
+  overflow: hidden;
+}
+.info-box .info-box-icon {
+  color: rgba(0, 0, 0, 0.15);
+}
+.info-box .info-box-icon i {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.info-box .info-box-icon {
+  margin-bottom: 10px;
+}
+.info-box .info-box-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.info-box .info-box-content .info-box-text {
+  font-size: 1rem;
+}
+.info-box .info-box-content .info-box-number {
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 :root {

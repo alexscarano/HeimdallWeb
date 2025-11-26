@@ -1,3 +1,5 @@
+@import '_variables-dark.scss';
+
 @font-face {
     font-family: "Roboto";
     src: url('~/Fontes/Roboto/static/Roboto_Condensed-Regular.ttf');
@@ -17,32 +19,29 @@
     font-family: 'Roboto-Serif';
     font-weight: 900;
     font-size: 3.5rem;
+    color: $color;
+}
+
+.normal, .normal-italic, .minus-title {
+    font-family: 'Roboto';
+    color: $color;
 }
 
 
-.normal {
-    font-family: 'Roboto';
+.normal, .normal-italic {
     font-weight: 400;
     font-size: 1.5rem;
 }
-
 .normal-italic {
-    font-family: 'Roboto';
-    font-weight: 400;
-    font-size: 1.5rem;
     font-style: italic;
 }
-
 .minus-title {
-    font-family: 'Roboto';
-    font-weight: 500;
     font-size: 1.25rem;    
 }
-
 .minus {
     font-family: 'Roboto-Mono';
-    font-weight: 300;
     font-size: 1.15rem;
+    color: $color;
 }
 
 @media (max-width: 768px) {
@@ -70,15 +69,6 @@
     .title {
         font-size: 3rem;
     }
-
-    .normal {
-        font-size: 1.2rem;
-    }
-
-    .minus-title {
-        font-size: 1.1rem;    
-    }
-
     .minus {
         font-size: 1rem;
     }

@@ -7,14 +7,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  color: $color;
 }
-html,
-body {
+
+html, body {
   position: relative;
   min-height: 100dvh;
   background-image: url("/images/cartographer.png");
   background-color: $background-image;
-  color: $color;
   font-size: 14px;
 }
 
