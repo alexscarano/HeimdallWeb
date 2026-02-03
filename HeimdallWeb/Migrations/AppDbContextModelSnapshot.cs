@@ -22,6 +22,127 @@ namespace HeimdallWeb.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("HeimdallWeb.Models.AdminIASummaryStats", b =>
+                {
+                    b.Property<decimal>("avg_findings_per_scan")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<long>("critical_last_24h")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("high_last_24h")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("scans_critical_risk")
+                        .HasColumnType("int");
+
+                    b.Property<int>("scans_high_risk")
+                        .HasColumnType("int");
+
+                    b.Property<int>("scans_low_risk")
+                        .HasColumnType("int");
+
+                    b.Property<int>("scans_medium_risk")
+                        .HasColumnType("int");
+
+                    b.Property<long>("total_critical")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("total_findings_all_scans")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("total_high")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("total_low")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("total_medium")
+                        .HasColumnType("bigint");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_admin_ia_summary_stats", (string)null);
+                });
+
+            modelBuilder.Entity("HeimdallWeb.Models.AdminMostVulnerableTarget", b =>
+                {
+                    b.Property<string>("highest_risk_level")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("last_scan_date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("scan_count")
+                        .HasColumnType("int");
+
+                    b.Property<string>("target")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("total_critical")
+                        .HasColumnType("int");
+
+                    b.Property<int>("total_findings")
+                        .HasColumnType("int");
+
+                    b.Property<int>("total_high")
+                        .HasColumnType("int");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_admin_most_vulnerable_targets", (string)null);
+                });
+
+            modelBuilder.Entity("HeimdallWeb.Models.AdminRiskDistributionDaily", b =>
+                {
+                    b.Property<int>("critical_findings")
+                        .HasColumnType("int");
+
+                    b.Property<int>("high_findings")
+                        .HasColumnType("int");
+
+                    b.Property<int>("low_findings")
+                        .HasColumnType("int");
+
+                    b.Property<int>("medium_findings")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("risk_date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("total_summaries")
+                        .HasColumnType("int");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_admin_risk_distribution_daily", (string)null);
+                });
+
+            modelBuilder.Entity("HeimdallWeb.Models.AdminTopCategory", b =>
+                {
+                    b.Property<int>("category_occurrences")
+                        .HasColumnType("int");
+
+                    b.Property<int>("critical_in_category")
+                        .HasColumnType("int");
+
+                    b.Property<int>("high_in_category")
+                        .HasColumnType("int");
+
+                    b.Property<string>("main_category")
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("percentage_of_total")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("total_findings_in_category")
+                        .HasColumnType("int");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_admin_top_categories", (string)null);
+                });
+
             modelBuilder.Entity("HeimdallWeb.Models.DashboardLogsOverview", b =>
                 {
                     b.Property<int>("logs_errors_last_24h")
@@ -164,8 +285,7 @@ namespace HeimdallWeb.Migrations
 
                     b.Property<string>("description")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("evidence")
                         .IsRequired()
@@ -423,6 +543,71 @@ namespace HeimdallWeb.Migrations
                     b.ToTable("tb_technology");
                 });
 
+            modelBuilder.Entity("HeimdallWeb.Models.UserCategoryBreakdown", b =>
+                {
+                    b.Property<int>("category_count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("critical_in_category")
+                        .HasColumnType("int");
+
+                    b.Property<int>("high_in_category")
+                        .HasColumnType("int");
+
+                    b.Property<int>("low_in_category")
+                        .HasColumnType("int");
+
+                    b.Property<string>("main_category")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("medium_in_category")
+                        .HasColumnType("int");
+
+                    b.Property<int>("user_id")
+                        .HasColumnType("int");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_user_category_breakdown", (string)null);
+                });
+
+            modelBuilder.Entity("HeimdallWeb.Models.UserFindingsSummary", b =>
+                {
+                    b.Property<decimal>("percent_critical")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("percent_high")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("percent_low")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("percent_medium")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("total_critical")
+                        .HasColumnType("int");
+
+                    b.Property<int>("total_findings")
+                        .HasColumnType("int");
+
+                    b.Property<int>("total_high")
+                        .HasColumnType("int");
+
+                    b.Property<int>("total_low")
+                        .HasColumnType("int");
+
+                    b.Property<int>("total_medium")
+                        .HasColumnType("int");
+
+                    b.Property<int>("user_id")
+                        .HasColumnType("int");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_user_findings_summary", (string)null);
+                });
+
             modelBuilder.Entity("HeimdallWeb.Models.UserModel", b =>
                 {
                     b.Property<int>("user_id")
@@ -487,6 +672,68 @@ namespace HeimdallWeb.Migrations
                         .HasDatabaseName("ux_tb_user_username");
 
                     b.ToTable("tb_user", (string)null);
+                });
+
+            modelBuilder.Entity("HeimdallWeb.Models.UserRiskTrend", b =>
+                {
+                    b.Property<int>("critical_count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("high_count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("low_count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("medium_count")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("risk_date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("scans_on_date")
+                        .HasColumnType("int");
+
+                    b.Property<int>("user_id")
+                        .HasColumnType("int");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_user_risk_trend", (string)null);
+                });
+
+            modelBuilder.Entity("HeimdallWeb.Models.UserScanSummary", b =>
+                {
+                    b.Property<decimal?>("avg_scan_duration_seconds")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("completed_scans")
+                        .HasColumnType("int");
+
+                    b.Property<int>("failed_scans")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("last_scan_date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("scans_last_30_days")
+                        .HasColumnType("int");
+
+                    b.Property<int>("scans_last_7_days")
+                        .HasColumnType("int");
+
+                    b.Property<int>("total_scans")
+                        .HasColumnType("int");
+
+                    b.Property<int>("unique_targets")
+                        .HasColumnType("int");
+
+                    b.Property<int>("user_id")
+                        .HasColumnType("int");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_user_scan_summary", (string)null);
                 });
 
             modelBuilder.Entity("HeimdallWeb.Models.UserUsageModel", b =>

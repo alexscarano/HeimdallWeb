@@ -137,7 +137,7 @@ namespace HeimdallWeb.Services.IA
 
                 // Envia a requisição POST para o endpoint do Gemini
                 var response = await _httpClient.PostAsync(
-                    $"models/gemini-2.0-flash:generateContent?key={_apiKey}",
+                    $"models/gemini-2.5-flash:generateContent?key={_apiKey}",
                     content
                 );
 

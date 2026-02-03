@@ -13,7 +13,7 @@ namespace HeimdallWeb.Models.Map
                 .HasMaxLength(100);
 
             builder.Property(f => f.description)
-                .HasMaxLength(255)
+                .HasColumnType("text")
                 .IsRequired();
 
             builder.Property(f => f.severity)

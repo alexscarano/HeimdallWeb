@@ -24,7 +24,6 @@ namespace HeimdallWeb.Models
         /// descrição detalhada
         /// </summary>
         [Required]
-        [MaxLength(255)]
         public string description { get; set; } = string.Empty;
 
         /// <summary>

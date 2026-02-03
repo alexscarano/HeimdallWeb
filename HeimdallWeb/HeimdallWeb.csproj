@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +13,9 @@
     <Content Remove="wwwroot\ts\history.ts" />
     <Content Remove="wwwroot\ts\types\Finding.ts" />
     <Content Remove="wwwroot\ts\types\Tecnology.ts" />
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
