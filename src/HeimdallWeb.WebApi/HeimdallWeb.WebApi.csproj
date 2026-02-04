@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\HeimdallWeb.Application\HeimdallWeb.Application.csproj" />
+    <ProjectReference Include="..\HeimdallWeb.Infrastructure\HeimdallWeb.Infrastructure.csproj" />
+    <ProjectReference Include="..\HeimdallWeb.Contracts\HeimdallWeb.Contracts.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
+  </PropertyGroup>
+
+</Project>
