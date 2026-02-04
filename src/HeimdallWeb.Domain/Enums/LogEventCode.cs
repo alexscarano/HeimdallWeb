@@ -1,0 +1,22 @@
+namespace HeimdallWeb.Domain.Enums;
+
+public enum LogEventCode
+{
+    INIT_SCAN,
+    SCAN_COMPLETED,
+    SCAN_ERROR,
+    AI_REQUEST,
+    AI_RESPONSE,
+    AI_RESPONSE_ERROR,
+    PATH_SCAN_STARTED,
+    PATH_SCAN_RESULT,
+    PATH_SUSPECTED_FALLBACK,
+    HEADER_SCAN,
+    COOKIE_SCAN,
+    SSL_SCAN,
+    DB_SAVE_OK,
+    DB_SAVE_ERROR,
+    USER_LOGIN,
+    USER_LOGIN_FAILED,
+    UNHANDLED_EXCEPTION
+}
