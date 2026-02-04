@@ -222,19 +222,63 @@ HeimdallWeb/
 ### **Fase 4: WebApi - Minimal APIs (2-3 dias = 4-6h)**
 
 **Eu gero** (85% automatizado):
-- **5 grupos de endpoints** mapeando controllers MVC:
-  - AuthenticationEndpoints (login, register)
-  - ScanEndpoints (POST scan, GET scans)
-  - HistoryEndpoints (GET list, GET by id, export PDF)
-  - UserEndpoints (CRUD usuários)
-  - DashboardEndpoints (admin + user stats)
-- **Program.cs completo**:
+- **5 classes de organização de endpoints** (padrão Extension Methods + Route Groups):
+  - `Endpoints/AuthenticationEndpoints.cs` (login, register)
+  - `Endpoints/ScanEndpoints.cs` (POST scan, GET scans)
+  - `Endpoints/HistoryEndpoints.cs` (GET list, GET by id, export PDF)
+  - `Endpoints/UserEndpoints.cs` (CRUD usuários)
+  - `Endpoints/DashboardEndpoints.cs` (admin + user stats)
+- **Cada classe endpoint possui:**
+  - Método estático `Map{Grupo}Endpoints(this WebApplication app)`
+  - Route Group com prefixo comum (`/api/v1/{recurso}`)
+  - Tags para Swagger/OpenAPI
+  - Métodos privados para cada endpoint
+  - Validações, autenticação e rate limiting configurados por grupo
+- **Program.cs completo:**
   - JWT authentication (copiar de HostingExtensions)
   - Rate limiting (85 global + 4 scan policy)
-  - CORS para Next.js (localhost:3000)
-  - Swagger/OpenAPI
+  - **⚠️ CORS para Next.js (localhost:3000) com AllowCredentials** - CRÍTICO
+  - Swagger/OpenAPI (apenas development)
+  - Middleware pipeline na ordem correta
 - **Middlewares** (exception handling, logging)
 - **appsettings.json** (connection string PostgreSQL, JWT config)
+
+**Estrutura de Endpoints:**
+```
+src/HeimdallWeb.WebApi/
+├── Program.cs                        # Apenas configuração e registro
+├── Endpoints/                        # 📁 Classes de organização
+│   ├── AuthenticationEndpoints.cs   # POST /login, /register
+│   ├── ScanEndpoints.cs             # POST /scans, GET /scans
+│   ├── HistoryEndpoints.cs          # GET /history, GET /history/{id}
+│   ├── UserEndpoints.cs             # CRUD /users
+│   └── DashboardEndpoints.cs        # GET /dashboard/admin, /dashboard/user
+└── appsettings.json
+```
+
+**Padrão de nomenclatura:**
+- Classe: `{Recurso}Endpoints.cs`
+- Método: `Map{Recurso}Endpoints(this WebApplication app)`
+- Route Group: `/api/v1/{recurso-kebab-case}`
+- Tags Swagger: `"{Recurso}"`
+
+**Organização limpa (✅ PADRÃO):**
+```csharp
+// Program.cs - Apenas registra os grupos
+app.MapAuthenticationEndpoints();
+app.MapScanEndpoints();
+app.MapHistoryEndpoints();
+app.MapUserEndpoints();
+app.MapDashboardEndpoints();
+```
+
+**Anti-pattern (❌ EVITAR):**
+```csharp
+// Program.cs - NÃO colocar todos os endpoints aqui diretamente
+app.MapPost("/api/v1/auth/login", async (LoginRequest req) => { ... });
+app.MapPost("/api/v1/auth/register", async (RegisterRequest req) => { ... });
+// ... 20+ endpoints inline (difícil de manter)
+```
 
 **Você testa** (4-6h):
 - Testar todos endpoints no Postman/Swagger (2h)
@@ -249,6 +293,92 @@ HeimdallWeb/
 - `/Login/Index` → `POST /api/v1/auth/login`
 - `/Admin/Dashboard` → `GET /api/v1/dashboard/admin`
 - (+ 7 outros endpoints)
+
+**⚠️ CONFIGURAÇÃO CORS CRÍTICA:**
+```csharp
+// Program.cs - CORS para Next.js frontend
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(
+            "http://localhost:3000",  // Next.js dev HTTP
+            "https://localhost:3000"  // Next.js dev HTTPS
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials(); // ⚠️ CRÍTICO para cookies JWT HttpOnly
+    });
+});
+
+// Middleware pipeline (ORDEM IMPORTA!)
+app.UseCors();            // 1️⃣ CORS primeiro
+app.UseAuthentication();  // 2️⃣ Depois autenticação
+app.UseAuthorization();   // 3️⃣ Depois autorização
+app.UseRateLimiter();     // 4️⃣ Rate limiting por último
+```
+
+**Exemplo Completo de Endpoint Class:**
+```csharp
+// Endpoints/AuthenticationEndpoints.cs
+namespace HeimdallWeb.WebApi.Endpoints;
+
+public static class AuthenticationEndpoints
+{
+    public static RouteGroupBuilder MapAuthenticationEndpoints(this WebApplication app)
+    {
+        var group = app.MapGroup("/api/v1/auth")
+            .WithTags("Authentication")
+            .WithOpenApi();
+
+        group.MapPost("/login", Login)
+            .AllowAnonymous()
+            .Produces<LoginResponse>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized);
+
+        group.MapPost("/register", Register)
+            .AllowAnonymous()
+            .Produces<RegisterResponse>(StatusCodes.Status201Created);
+
+        return group;
+    }
+
+    private static async Task<IResult> Login(
+        LoginRequest request,
+        ILoginCommandHandler handler,
+        HttpContext context)
+    {
+        var result = await handler.Handle(request);
+
+        // Set JWT cookie
+        context.Response.Cookies.Append("authHeimdallCookie", result.Token,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddHours(24)
+            });
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> Register(
+        RegisterRequest request,
+        IRegisterUserCommandHandler handler)
+    {
+        var result = await handler.Handle(request);
+        return Results.Created($"/api/v1/users/{result.UserId}", result);
+    }
+}
+```
+
+**Benefícios desta abordagem:**
+- ✅ Program.cs limpo (apenas configuração)
+- ✅ Endpoints organizados por funcionalidade
+- ✅ Fácil manutenção e testabilidade
+- ✅ Route Groups evitam repetição de prefixos
+- ✅ Métodos privados reutilizáveis
 
 **Arquivos críticos:**
 - `HeimdallWebOld/Extensions/HostingExtensions.cs`
@@ -394,24 +524,26 @@ HeimdallWeb/
 
 ### API
 11. ❌ Não usar controllers (Minimal APIs é o padrão)
-12. ❌ Não retornar entities (sempre DTOs)
-13. ❌ Não ignorar validação (usar FluentValidation)
-14. ❌ Não skipar versionamento (usar `/api/v1/`)
-15. ❌ Não expor erros internos (RFC 7807 Problem Details)
+12. ❌ Não colocar todos endpoints no Program.cs (usar classes de organização)
+13. ❌ Não retornar entities (sempre DTOs)
+14. ❌ Não ignorar validação (usar FluentValidation)
+15. ❌ Não skipar versionamento (usar `/api/v1/`)
+16. ❌ Não expor erros internos (RFC 7807 Problem Details)
+17. ❌ Não usar AllowAnyOrigin() com AllowCredentials() (não funciona)
 
 ### Frontend
-16. ❌ Não usar Pages Router (App Router é o futuro)
-17. ❌ Não misturar SSR/CSR aleatoriamente (saber quando usar Server Components)
-18. ❌ Não fazer fetch em Client Components (Server Components ou React Query)
-19. ❌ Não armazenar JWT em localStorage (HttpOnly cookies apenas)
-20. ❌ Não usar CSS-in-JS (TailwindCSS é mais rápido)
+18. ❌ Não usar Pages Router (App Router é o futuro)
+19. ❌ Não misturar SSR/CSR aleatoriamente (saber quando usar Server Components)
+20. ❌ Não fazer fetch em Client Components (Server Components ou React Query)
+21. ❌ Não armazenar JWT em localStorage (HttpOnly cookies apenas)
+22. ❌ Não usar CSS-in-JS (TailwindCSS é mais rápido)
 
 ### Testing
-21. ❌ Não skipar integration tests (unit tests não bastam)
-22. ❌ Não testar detalhes de implementação (testar comportamento)
-23. ❌ Não mockar tudo (usar DB real em integration tests - Testcontainers)
-24. ❌ Não ignorar E2E tests (critical paths precisam de E2E)
-25. ❌ Não testar lógica de UI isolada (usar React Testing Library)
+23. ❌ Não skipar integration tests (unit tests não bastam)
+24. ❌ Não testar detalhes de implementação (testar comportamento)
+25. ❌ Não mockar tudo (usar DB real em integration tests - Testcontainers)
+26. ❌ Não ignorar E2E tests (critical paths precisam de E2E)
+27. ❌ Não testar lógica de UI isolada (usar React Testing Library)
 
 ---
 
@@ -439,15 +571,22 @@ HeimdallWeb/
 - Gero todos handlers (ExecuteScan, Login, etc) (2h)
 - Gero validators (FluentValidation) (1h)
 - Gero DTOs Request/Response (1h)
-- Gero todos endpoints Minimal APIs (2h)
-- Gero Program.cs completo (JWT, rate limiting, CORS) (1h)
+- **Gero 5 classes de organização de endpoints** (2h):
+  - `AuthenticationEndpoints.cs` com Route Group `/api/v1/auth`
+  - `ScanEndpoints.cs` com Route Group `/api/v1/scans`
+  - `HistoryEndpoints.cs` com Route Group `/api/v1/history`
+  - `UserEndpoints.cs` com Route Group `/api/v1/users`
+  - `DashboardEndpoints.cs` com Route Group `/api/v1/dashboard`
+- Gero Program.cs limpo (apenas registros: `app.Map*Endpoints()`) (1h)
+- Configuro JWT, rate limiting, CORS com AllowCredentials (incluso no Program.cs)
 
 **Você faz**:
 - Revisar lógica dos handlers críticos (1h)
 - Testar todos endpoints no Postman/Swagger (1.5h)
+- ⚠️ Validar CORS funcionando do navegador (fetch com credentials: 'include') (30min)
 - Validar autenticação + rate limiting funcionando (30min)
 
-**Deliverable**: API REST completa e funcional
+**Deliverable**: API REST completa e funcional com endpoints organizados
 
 ---
 
@@ -600,9 +739,59 @@ HeimdallWeb/
 
 1. **Revisar este plano** com stakeholders
 2. **Criar repositórios Git** (backend monorepo + frontend separado)
-3. **Setup ambiente de desenvolvimento** (PostgreSQL, Node.js, .NET 9)
-4. **Iniciar Fase 1**: Criar projeto Domain
-5. **Sprints semanais**: Review + retrospectiva
+3. ✅ **Setup ambiente de desenvolvimento** (PostgreSQL, Node.js, .NET 10) - Concluído 2026-02-04
+4. ✅ **Criar estrutura de projetos** (.NET 10, 8 projetos + solution) - Concluído 2026-02-04
+5. **Iniciar Fase 1**: Criar projeto Domain ⏳ PRÓXIMA FASE
+6. **Sprints semanais**: Review + retrospectiva
+
+---
+
+## 🏗️ Status de Implementação
+
+### ✅ Infraestrutura de Projetos (Concluído - 2026-02-04)
+
+**Criado:**
+- ✅ Solution `HeimdallWeb.sln` com 9 projetos
+- ✅ `src/HeimdallWeb.Domain/` - .NET 10.0 Class Library
+- ✅ `src/HeimdallWeb.Contracts/` - .NET 10.0 Class Library
+- ✅ `src/HeimdallWeb.Application/` - .NET 10.0 Class Library
+- ✅ `src/HeimdallWeb.Infrastructure/` - .NET 10.0 Class Library
+- ✅ `src/HeimdallWeb.WebApi/` - .NET 10.0 Web API
+- ✅ `tests/HeimdallWeb.Domain.Tests/` - xUnit Test Project
+- ✅ `tests/HeimdallWeb.Application.Tests/` - xUnit Test Project
+- ✅ `tests/HeimdallWeb.IntegrationTests/` - xUnit Test Project
+
+**Dependências configuradas:**
+- ✅ Application → Domain, Contracts
+- ✅ Infrastructure → Domain, Application
+- ✅ WebApi → Application, Infrastructure, Contracts
+- ✅ Projetos de teste → Respectivos projetos de aplicação
+
+**Compilação:**
+- ✅ Build succeeded (0 errors)
+- ✅ Todos os projetos .NET 10 compilam sem warnings
+
+**Documentação:**
+- ✅ `MIGRATION_STRUCTURE.md` criado com arquitetura detalhada
+
+---
+
+### ✅ Atualização do Plano - Fase 4 (Concluído - 2026-02-04)
+
+**Atualizado:**
+- ✅ Fase 4 agora especifica **classes de organização de endpoints**
+- ✅ Adicionada estrutura de diretórios `Endpoints/` com 5 classes
+- ✅ Definido padrão Extension Methods + Route Groups
+- ✅ Adicionada configuração CORS crítica com `AllowCredentials()`
+- ✅ Incluído exemplo completo de `AuthenticationEndpoints.cs`
+- ✅ Documentada ordem correta do middleware pipeline
+- ✅ Anti-patterns atualizados (não colocar endpoints no Program.cs)
+
+**Benefícios:**
+- 🎯 Plano mais específico e detalhado para Fase 4
+- 📁 Estrutura de código organizada e escalável
+- ✅ Padrão claro a ser seguido na implementação
+- 🚀 Program.cs limpo (apenas configuração)
 
 ---
 
