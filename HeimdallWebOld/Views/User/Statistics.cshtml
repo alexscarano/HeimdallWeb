@@ -1,0 +1,207 @@
+@model HeimdallWeb.ViewModels.UserStatisticsViewModel
+@{
+    ViewData["Title"] = "Minhas Estatísticas";
+}
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<!-- Resumo Geral de Scans -->
+<div class="container-lg">
+    @if (Model.ScanSummary == null)
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Você ainda não realizou nenhum scan. Comece agora mesmo!
+        </div>
+    }
+    else
+    {
+        <div class="row mb-4">
+            <!-- Card: Total de Scans -->
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@Model.ScanSummary.total_scans</h3>
+                        <p>Total de Scans</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="small-box-footer">
+                        <span class="badge bg-success">@Model.ScanSummary.completed_scans Completos</span>
+                        <span class="badge bg-danger">@Model.ScanSummary.failed_scans Falhos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Alvos Escaneados -->
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>@Model.ScanSummary.unique_targets</h3>
+                        <p>Alvos Únicos</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="small-box-footer">
+                        @{
+                            var avgTime = Model.ScanSummary.avg_scan_duration_seconds ?? 0m;
+                            var minutes = (int)(avgTime / 60);
+                            var seconds = avgTime - minutes * 60;
+                            var secondsStr = seconds.ToString("00");
+                            var avgDisplay = $"{minutes}:{secondsStr}";
+                        }
+                        Tempo médio: @(avgDisplay)s
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Scans Recentes (7 dias) -->
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                <div class="small-box bg-warning">
+                    <div class="inner" style="color: white;">
+                        <h3 style="color: white;">@Model.ScanSummary.scans_last_7_days</h3>
+                        <p style="color: white;">Scans (7 dias)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <div class="small-box-footer" style="color: white;">
+                        @Model.ScanSummary.scans_last_30_days nos últimos 30 dias
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Último Scan -->
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                <div class="small-box bg-secondary">
+                    <div class="inner">
+                        @if (Model.ScanSummary.last_scan_date.HasValue)
+                        {
+                            var daysSince = (DateTime.Now - Model.ScanSummary.last_scan_date.Value).Days;
+                            <h3>@daysSince</h3>
+                            <p>Dias desde último scan</p>
+                        }
+                        else
+                        {
+                            <h3>-</h3>
+                            <p>Nenhum scan realizado</p>
+                        }
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="small-box-footer">
+                        @if (Model.ScanSummary.last_scan_date.HasValue)
+                        {
+                            <text>@Model.ScanSummary.last_scan_date.Value.ToString("dd/MM/yyyy HH:mm")</text>
+                        }
+                        else
+                        {
+                            <text>-</text>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Resumo de Vulnerabilidades -->
+    @if (Model.FindingsSummary != null)
+    {
+        <div class="row mb-4" data-bs-theme="dark">
+            <div class="col-12">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-shield-alt"></i> Resumo de Vulnerabilidades</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Total de Vulnerabilidades (destaque com borda vermelha) -->
+                            <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                                <div class="card bg-dark text-white shadow-sm border-start border-3 border-danger stat-card">
+                                    <div class="card-body text-center py-2">
+                                        <div class="small text-muted">Total de Vulnerabilidades</div>
+                                        <div class="fs-4 fw-bold">@Model.FindingsSummary.total_findings</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Vulnerabilidades Críticas -->
+                            <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                                <div class="card bg-danger text-white shadow-sm stat-card">
+                                    <div class="card-body text-center py-2">
+                                        <div class="small">Críticas</div>
+                                        <div class="fs-5 fw-bold">@Model.FindingsSummary.total_critical</div>
+                                        <div class="small">(@Model.FindingsSummary.percent_critical.ToString("0.0")%)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Vulnerabilidades Altas -->
+                            <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                                <div class="card bg-warning text-dark shadow-sm stat-card">
+                                    <div class="card-body text-center py-2">
+                                        <div class="small">Altas</div>
+                                        <div class="fs-5 fw-bold">@Model.FindingsSummary.total_high</div>
+                                        <div class="small">(@Model.FindingsSummary.percent_high.ToString("0.0")%)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Vulnerabilidades Médias e Baixas -->
+                            <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                                <div class="card bg-info text-dark shadow-sm stat-card">
+                                    <div class="card-body text-center py-2">
+                                        <div class="small">Médias / Baixas</div>
+                                        <div class="fs-5 fw-bold">@Model.FindingsSummary.total_medium / @Model.FindingsSummary.total_low</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Distribuição de Severidade -->
+                        <div class="row mt-3">
+                            <div class="col-lg-6 col-md-12">
+                                <canvas id="severityChart"></canvas>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <canvas id="categoryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Tendência de Riscos (30 dias) -->
+    @if (Model.RiskTrend != null && Model.RiskTrend.Any())
+    {
+        <div class="row mb-4" data-bs-theme="dark">
+            <div class="col-12">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-chart-line"></i> Tendência de Vulnerabilidades (30 dias)</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="riskTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+<!-- Scripts para os gráficos (dados injetados; lógica em arquivo externo) -->
+<script>
+    window.__userStatsData = {
+        findingsSummary: @Html.Raw(Json.Serialize(Model.FindingsSummary)),
+        categoryBreakdown: @Html.Raw(Json.Serialize(Model.CategoryBreakdown)),
+        riskTrend: @Html.Raw(Json.Serialize(Model.RiskTrend))
+    };
+</script>
+<script src="~/js/user.statistics.js"></script>

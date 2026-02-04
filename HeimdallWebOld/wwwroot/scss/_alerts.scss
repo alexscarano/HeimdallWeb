@@ -1,0 +1,69 @@
+// Imports
+@import "_variables-dark.scss";
+
+// Alert styles
+.alert {
+  border: 1px solid rgba($black, .18);
+  color: $alert-color;
+  border-radius: 0.5rem;
+  padding: 0.9rem 2.6rem 0.9rem 1rem;
+  font-weight: 600;
+  position: relative;
+  margin: 1.2rem auto 0;
+  width: min(50vw, 500px);
+  text-align: center;
+  letter-spacing: 0.2px;
+  line-height: 1.25;
+  font-size: 0.95rem;
+  box-shadow: 0 10px 30px rgba($black, .35), inset 0 1px 0 rgba($white, .02);
+  transition: background-color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
+  &.alert-success {
+    background-color: $alert-success-bg;
+
+    &:hover,
+    &:focus {
+      background-color: $alert-success-bg-soft;
+      box-shadow: 0 14px 36px rgba($black, .38);
+    }
+  }
+  &.alert-error {
+    background-color: $alert-danger-bg;
+
+    &:hover,
+    &:focus {
+      background-color: $alert-danger-bg-soft;
+      box-shadow: 0 14px 36px rgba($black, .38);
+    }
+  }
+  // Dark variant for informational alerts (use on empty states)
+  &.alert-info {
+    background-color: $background-2;
+    color: $color;
+    border: 1px solid rgba($white, 0.03);
+    box-shadow: 0 10px 30px rgba($black, .35), inset 0 1px 0 rgba($white, .02);
+
+    &:hover,
+    &:focus {
+      background-color: darken($background-2, 4%);
+      box-shadow: 0 14px 36px rgba($black, .38);
+    }
+  }
+
+  // Generic empty-state helper for simple table cells / placeholders
+  .empty-state {
+    color: rgba($white, 0.8);
+    background: transparent;
+    font-weight: 600;
+  }
+  a {
+    color: inherit;
+  }
+}
+@media (max-width: 576px) {
+  .alert {
+    width: calc(100% - 1.2rem);
+    margin: 0.6rem auto;
+    transform: none;
+    font-size: 0.92rem;
+  }
+}

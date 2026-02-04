@@ -1,0 +1,80 @@
+@model UserModel
+@{
+    ViewData["Title"] = "Registrar";
+}
+
+@* TempData handled globally in _Layout.cshtml *@
+
+<div class="container card-color mt-5 d-flex justify-content-center align-items-center flex-grow-1" data-bs-theme="dark">
+
+    <div class="card shadow-lg p-4 rounded-4" style="max-width: 500px; width: 100vh;">
+    <div class="text-center mb-4">
+        <h2 class="mt-2 acme">Crie sua conta</h2>
+    </div>
+
+    <form asp-controller="User" asp-action="Register" method="post">
+        <div class="mb-3">
+        <label for="username" class="form-label roboto">
+            <i class="fa-solid fa-user"></i> Usuário
+        </label>
+        @Html.ValidationMessageFor(x => x.username)
+        @* Mensagem de validação (teste) do model, mudar para algo mais bonito depois *@
+        <input type="text" class="form-control" name="username" asp-for="username" id="username" placeholder="Escolha um nome de usuário" required>
+        <ul class="regras mt-2">
+            <li>Não pode ter espaço</li>
+            <li>No mínimo 6 caracteres, no máximo 30</li>
+        </ul>
+        </div>
+
+        <div class="mb-3">
+        <label for="email" class="form-label roboto">
+            <i class="fa-solid fa-envelope"></i> Email
+        </label>
+        <input type="email" class="form-control" asp-for="email" id="email" name="email" placeholder="Digite seu email" required>
+        @Html.ValidationMessageFor(x => x.email)
+        </div>
+
+        <div class="mb-3">
+        <label for="password" class="form-label roboto">
+            <i class="fa-solid fa-lock"></i> Senha
+        </label>
+            <div class="input-group">
+                <input type="password" class="form-control" asp-for="password" id="password_hide" name="password" placeholder="Crie uma senha válida" required>
+                @Html.ValidationMessageFor(x => x.password)
+                <span class="input-group-text rounded-end-3" id="hide_eye"><i class="bi bi-eye-fill" onclick="showPassword()"></i></span>
+                <span class="input-group-text rounded-end-3 d-none" id="show_eye"><i class="bi bi-eye-slash-fill" onclick="showPassword()"></i></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+        <label for="confirmPassword" class="form-label roboto">
+            <i class="fa-solid fa-lock"></i> Confirmar Senha
+        </label>
+        <div class="input-group">
+            <input type="password" class="form-control" asp-for="confirm_password" id="confirm_password" name="confirm_password" placeholder="Confirme sua senha" required>
+            @Html.ValidationMessageFor(x => x.confirm_password)
+            <span class="input-group-text rounded-end-3" id="confirm_hide_eye"><i class="bi bi-eye-fill" onclick="showConfirmPassword()"></i></span>
+            <span class="input-group-text rounded-end-3 d-none" id="confirm_show_eye"><i class="bi bi-eye-slash-fill" onclick="showConfirmPassword()"></i></span>
+        </div>
+        <ul class="regras mt-2">
+            <li>No mínimo 8 caracteres</li>
+            <li>Pelo menos um caractere especial</li>
+            <li>Pelo menos um número</li>
+        </ul>
+        </div>
+
+        <div class="d-grid mb-3">
+        <button class="btn btn-primary roboto" type="submit">
+            Cadastrar
+        </button>
+        </div>
+
+        <div class="text-center">
+            <small class="roboto">Já tem uma conta? <a asp-area="" asp-controller="Login" asp-action="Index" class="roboto">Faça login</a></small>
+        </div>
+    </form>
+    </div>
+</div>
+
+
+<script src="~/js/eye.js" asp-append-version="true"></script>

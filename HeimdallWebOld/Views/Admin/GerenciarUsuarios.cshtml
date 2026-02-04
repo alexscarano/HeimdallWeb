@@ -1,0 +1,235 @@
+@model HeimdallWeb.Models.Map.PaginatedResult<UserModel>
+@{
+    ViewData["Title"] = "Gerenciar Usuários";
+}
+
+<head>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<!-- Filtros Avançados -->
+<div class="container">
+    <form method="get" id="filterForm" class="d-flex flex-column flex-md-row gap-3 p-3 bg-dark rounded-3 shadow-sm">
+        <!-- Busca textual -->
+        <div class="flex-fill">
+            <input type="text" name="where" id="where" class="form-control bg-transparent text-light border-secondary" placeholder="Pesquisar (Login/Email)..." value="@ViewData["CurrentSearch"]" />
+        </div>
+
+        <!-- Filtro Status -->
+        <div class="flex-fill">
+            <select name="isActive" id="isActive" class="form-select bg-transparent text-light border-secondary">
+                <option value="">Todos Status</option>
+                @{ var __isActiveSel = ViewData["IsActive"]?.ToString(); }
+                @if (__isActiveSel == "True") {
+                    <option value="true" selected>Ativo</option>
+                } else {
+                    <option value="true">Ativo</option>
+                }
+                @if (__isActiveSel == "False") {
+                    <option value="false" selected>Bloqueado</option>
+                } else {
+                    <option value="false">Bloqueado</option>
+                }
+            </select>
+        </div>
+
+        <!-- Filtro Tipo de Usuário -->
+        <div class="flex-fill">
+            <select name="isAdmin" id="isAdmin" class="form-select bg-transparent text-light border-secondary">
+                <option value="">Todos Tipos</option>
+                @{ var __isAdminSel = ViewData["IsAdmin"]?.ToString(); }
+                @if (__isAdminSel == "False") {
+                    <option value="false" selected>Usuário</option>
+                } else {
+                    <option value="false">Usuário</option>
+                }
+                @if (__isAdminSel == "True") {
+                    <option value="true" selected>Admin</option>
+                } else {
+                    <option value="true">Admin</option>
+                }
+            </select>
+        </div>
+
+        <!-- Data Criação (De) -->
+        <div class="flex-fill">
+            <input type="date" name="createdFrom" id="createdFrom" class="form-control bg-transparent text-light border-secondary" value="@ViewData["CreatedFrom"]" />
+        </div>
+
+        <!-- Data Criação (Até) -->
+        <div class="flex-fill">
+            <input type="date" name="createdTo" id="createdTo" class="form-control bg-transparent text-light border-secondary" value="@ViewData["CreatedTo"]" />
+        </div>
+
+        <!-- Botões -->
+        <div class="flex-fill d-flex justify-content-end justify-content-md-start gap-3">
+            <button type="submit" class="btn btn-outline-primary btn-sm" title="Filtrar">
+                <i class="fas fa-search"></i>
+            </button>
+            <a href="@Url.Action("GerenciarUsuarios", "Admin")" class="btn btn-outline-secondary btn-sm" title="Limpar Filtros">
+                <i class="fas fa-times"></i>
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <div class="table-responsive shadow-sm rounded bg-dark text-light p-2">
+        <table class="table table-hover table-dark mb-0">
+            @if (Model != null && Model.Items.Any())
+            {
+                <thead class="table-dark">
+                <tr class="text-center align-middle">
+                    <th scope="col">ID</th>
+                    <th scope="col">Login</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Criado em</th>
+                    <th scope="col">Ações</th>
+                </tr>
+                </thead>
+            }
+
+            <tbody class="table-group-divider">
+                @if (Model != null && Model.Items.Any())
+                {
+                    foreach (UserModel? user in Model.Items)
+                    {
+                        <tr id="row-@user.user_id" class="text-center align-middle">
+                            <td>@user.user_id</td>
+                            <td class="text-start text-light">@user.username</td>
+                            <td class="text-start text-light">@user.email</td>
+                            <td>
+                                @if (user.is_active)
+                                {
+                                    <span class="badge bg-success"><i class="fas fa-check-circle"></i> Ativo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger"><i class="fas fa-times-circle"></i> Bloqueado</span>
+                                }
+                            </td>
+                            <td>
+                                @if (user.user_type == 2)
+                                {
+                                    <span class="badge bg-warning text-dark"><i class="fas fa-shield-alt"></i> Admin</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info"><i class="fas fa-user"></i> Usuário</span>
+                                }
+                            </td>
+                            <td>@user.created_at.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    @if (user.user_type == 1)
+                                    {
+                                        @if (user.is_active)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-warning" onclick="toggleUserStatus(@user.user_id, false)" title="Bloquear usuário">
+                                                <i class="fas fa-lock"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-sm btn-success" onclick="toggleUserStatus(@user.user_id, true)" title="Desbloquear usuário">
+                                                <i class="fas fa-unlock"></i>
+                                            </button>
+                                        }
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="confirmDeleteUser(@user.user_id)" title="Excluir usuário">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-sm btn-secondary" disabled title="Admins não podem ser bloqueados/deletados">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7">Nenhum registro encontrado no painel.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row justify-content-between">
+        <div class="row">
+            <div class="col">
+                @if (Model.TotalPages > 1)
+                {
+                        int maxPagesToShow = 10;
+                        int startPage = Math.Max(1, Model.Page - maxPagesToShow / 2);
+                        int endPage = startPage + maxPagesToShow - 1;
+                        if (endPage > Model.TotalPages)
+                        {
+                            endPage = Model.TotalPages;
+                            startPage = Math.Max(1, endPage - maxPagesToShow + 1);
+                        }
+                    
+
+                    <nav>
+                        <ul class="pagination">
+                            @if (Model.HasPrevious)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Anterior</a>
+                                </li>
+                            }
+
+                            @if (startPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">1</a>
+                                </li>
+                                @if (startPage > 2)
+                                {
+                                    <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                                }
+                            }
+
+                            @for (int i = startPage; i <= endPage; i++)
+                            {
+                                <li class="page-item @(i == Model.Page ? "active" : "")">
+                                    <a class="page-link" href="?page=@i&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">@i</a>
+                                </li>
+                            }
+
+                            @if (endPage < Model.TotalPages)
+                            {
+                                if (endPage < Model.TotalPages - 1)
+                                {
+                                    <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                                }
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=@Model.TotalPages&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">@Model.TotalPages</a>
+                                </li>
+                            }
+
+                            @if (Model.HasNext)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize&where=@ViewData["CurrentSearch"]">Próxima</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/gerenciar-usuarios.js" asp-append-version="true"></script>
+}

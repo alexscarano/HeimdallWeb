@@ -1,0 +1,166 @@
+@model HeimdallWeb.ViewModels.UserEditViewModel
+@{
+    ViewData["Title"] = "Perfil";
+}
+
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+</head>
+
+<div class="container my-3" data-bs-theme="dark">
+    <div class="edit-panel w-100 d-flex flex-column flex-md-row gap-4" id="profileContainer">
+        <div class="d-flex flex-column align-items-center gap-3">
+            <div class="d-flex flex-column align-items-center gap-3">
+                @* Get the correct path of profile image. *@
+                @{
+                    var img = Url.Content(string.IsNullOrWhiteSpace(Model.UpdateUser.profile_image_path)
+                        ? "~/uploads/users/default_user_image.png"
+                        : Model.UpdateUser.profile_image_path);
+                }
+                <div style="height: 250px; width: 250px;" class="overflow-hidden rounded-circle d-flex justify-content-center align-items-center">
+                    <img src="@img" alt="User Image" width="250"/>
+                </div>
+                <h4>@@@(Model.UpdateUser.username)</h4>
+            </div>
+
+            <div class="w-100">
+                <div class="d-none d-md-block">
+                    <ul class="nav nav-underline flex-column nav-fill" id="perfilDesktopTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab"
+                                    data-bs-target="#perfil" type="button" role="tab">
+                                Perfil
+                            </button>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#excluir"
+                                    type="button" role="tab">
+                                Excluir Conta
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="d-block d-md-none">
+                    <ul class="nav nav-underline nav-fill" id="perfilMobileTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab"
+                                    data-bs-target="#perfil" type="button" role="tab">
+                                Perfil
+                            </button>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#excluir"
+                                    type="button" role="tab">
+                                Excluir Conta
+                            </button>
+                        </li>
+                    </ul>
+                    <hr class="my-1">
+                </div>
+            </div>
+        </div>
+        <div class="tab-content d-flex w-100" id="perfilTabsContent">
+            <div class="tab-pane fade active show w-100" id="perfil" role="tabpanel">
+                <form asp-controller="User" asp-action="Profile" method="post" enctype="multipart/form-data" autocomplete="off">
+                    <div class="mb-4">
+                        <h2>Perfil</h2>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    @* Dummy hidden fields to reduce browser autofill interference *@
+                    <input type="text" name="__fakeusernameremembered" style="position:absolute; left:-10000px; top:auto; width:1px; height:1px;" autocomplete="username" />
+                    <input type="password" name="__fakepasswordremembered" style="position:absolute; left:-10000px; top:auto; width:1px; height:1px;" autocomplete="new-password" />
+                    <input type="hidden" asp-for="UpdateUser.user_id"/>
+
+                    <div class="mb-3">
+                        <label asp-for="UpdateUser.username" class="form-label">Login</label>
+                        <input asp-for="UpdateUser.username" class="form-control" placeholder="Digite o nome do Usuário" autocomplete="off" />
+                        @Html.ValidationMessageFor(x => x.UpdateUser.username)
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="UpdateUser.email" class="form-label">E-mail</label>
+                        <input asp-for="UpdateUser.email" class="form-control" placeholder="Digite o email do Usuário" autocomplete="off" />
+                        @Html.ValidationMessageFor(x => x.UpdateUser.email)
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="UpdateUser.password" class="form-label">Senha</label>
+                        <input asp-for="UpdateUser.password" class="form-control" placeholder="Nova senha (deixe em branco para manter)" autocomplete="new-password" />
+                        @Html.ValidationMessageFor(x => x.UpdateUser.password)
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="UpdateUser.confirm_password" class="form-label">Confirmar senha</label>
+                        <input asp-for="UpdateUser.confirm_password" class="form-control" placeholder="Confirme a senha" autocomplete="new-password" />
+                        @Html.ValidationMessageFor(x => x.UpdateUser.confirm_password)
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ProfileImage" class="form-label">Imagem de Perfil (opcional)</label>
+                        <input asp-for="ProfileImage" type="file" class="form-control" id="profileImageInput"/>
+                    </div>
+
+                    <div class="d-flex w-100 justify-content-end gap-2">
+                        <button type="submit" class="btn btn-outline-success" name="action" value="update">Salvar alterações</button>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade w-100" id="excluir" role="tabpanel">
+                <form id="deleteForm" asp-action="Profile" asp-controller="User" method="post">
+                    <div class="row mb-4">
+                        <h2><i class="bi bi-exclamation-circle"></i> Excluir Conta</h2></div>
+                    <div class="row">
+                        <p>Essa ação não pode ser desfeita. Confirme sua senha para continuar:</p></div>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="UpdateUser.user_id"/>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="DeleteUser.password" class="form-label">Senha</label>
+                        <input asp-for="DeleteUser.password" class="form-control" placeholder="Senha da sua conta" type="password" required/>
+                        @Html.ValidationMessageFor(x => x.DeleteUser.password)
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="DeleteUser.confirm_password" class="form-label">Confirmar senha</label>
+                        <input asp-for="DeleteUser.confirm_password" class="form-control" placeholder="Confirmar senha da sua conta" type="password" required/>
+                        @Html.ValidationMessageFor(x => x.DeleteUser.confirm_password)
+                    </div>
+
+
+                    <div class="form-check mb-5">
+                        <input asp-for="DeleteUser.confirm_delete" class="form-check-input" type="checkbox" required/>
+                        <label asp-for="DeleteUser.confirm_delete" class="form-check-label">
+                            Confirmo que desejo excluir minha conta permanentemente.
+                        </label>
+                        @Html.ValidationMessageFor(x => x.DeleteUser.confirm_delete)
+                    </div>
+
+                    <div class="d-flex w-100 justify-content-end">
+                        <button type="submit" class="btn btn-outline-danger" name="action" value="delete"><i class="bi bi-x-circle"></i> Excluir Conta</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="cropperModal" tabindex="-1" data-bs-backdrop="static"
+         data-bs-keyboard="false">>
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="img-container" style="max-height: 503px;">
+                        <img id="imageToCrop" alt="Image not found!" style="max-width: 100%;" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="cropBtn" class="btn btn-primary">Recortar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {<script src="~/js/cropImage.js"></script>}
