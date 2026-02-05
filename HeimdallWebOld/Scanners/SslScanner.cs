@@ -20,9 +20,7 @@ namespace HeimdallWeb.Scanners
             {
                 var target = NetworkUtils.RemoveHttpString(targetRaw);
                 var results = new JArray();
-
-                Console.WriteLine("[SslScanner] Verificando certificado SSL/TLS");
-
+                
                     foreach (var port in _ports)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
