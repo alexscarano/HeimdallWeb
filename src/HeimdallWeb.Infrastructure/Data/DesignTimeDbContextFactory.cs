@@ -15,8 +15,8 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
 
         // Default connection string for development
         // This will be overridden by actual configuration at runtime
-        var connectionString = "Host=localhost;Database=heimdallweb;Username=postgres;Password=postgres";
-
+        var connectionString = "Host=localhost;Database=db_heimdall;Username=postgres;Password=root";
+    
         optionsBuilder.UseNpgsql(connectionString);
 
         return new AppDbContext(optionsBuilder.Options);

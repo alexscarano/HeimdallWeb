@@ -31,6 +31,27 @@ Before starting, ensure you have:
 - ✅ EF Core CLI tools: `dotnet tool install --global dotnet-ef`
 - ✅ Connection string configured in `appsettings.json`
 
+### Required NuGet Packages
+
+**Infrastructure project:**
+```bash
+cd src/HeimdallWeb.Infrastructure
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+dotnet add package Microsoft.EntityFrameworkCore.Design
+```
+
+**WebApi project (for migrations):**
+```bash
+cd src/HeimdallWeb.WebApi
+dotnet add package Microsoft.EntityFrameworkCore.Design
+```
+
+**Complete package list:**
+- `Npgsql.EntityFrameworkCore.PostgreSQL` (Infrastructure)
+- `Microsoft.EntityFrameworkCore.Design` (Infrastructure + WebApi)
+- `Microsoft.EntityFrameworkCore` (already referenced via Infrastructure)
+- `Microsoft.EntityFrameworkCore.Relational` 
+
 ---
 
 ## 🗄️ Part 1: PostgreSQL Setup (30 minutes)
@@ -62,7 +83,8 @@ Download from: https://www.postgresql.org/download/windows/
 
 ```bash
 # Access PostgreSQL as superuser
-sudo -u postgres psql
+psql -u postgres 
+#senha é root
 
 # Inside psql prompt:
 ```
@@ -72,13 +94,13 @@ sudo -u postgres psql
 CREATE DATABASE heimdallweb;
 
 -- Create user
-CREATE USER heimdall WITH PASSWORD 'your_secure_password_here';
+CREATE USER heimdall WITH PASSWORD 'heimdall';
 
 -- Grant privileges
-GRANT ALL PRIVILEGES ON DATABASE heimdallweb TO heimdall;
+GRANT ALL PRIVILEGES ON DATABASE db_heimdall TO heimdall;
 
 -- Connect to database
-\c heimdallweb
+\c db_heimdall 
 
 -- Grant schema privileges
 GRANT ALL ON SCHEMA public TO heimdall;
@@ -89,7 +111,7 @@ GRANT ALL ON SCHEMA public TO heimdall;
 
 **✅ Verification:**
 ```bash
-psql -h localhost -U heimdall -d heimdallweb -c "SELECT version();"
+psql -h localhost -U heimdall -d db_heimdall -c "SELECT version();"
 # Expected: PostgreSQL version information
 ```
 
@@ -102,7 +124,7 @@ Edit `src/HeimdallWeb.WebApi/appsettings.Development.json`:
 ```json
 {
   "ConnectionStrings": {
-    "AppDbConnectionString": "Host=localhost;Database=heimdallweb;Username=heimdall;Password=your_secure_password_here;Port=5432"
+    "AppDbConnectionString": "Host=localhost;Database=db_heimdall;Username=heimdall;Password=heimdall;Port=5432"
   }
 }
 ```
@@ -112,7 +134,7 @@ Edit `src/HeimdallWeb.WebApi/appsettings.Development.json`:
 ```bash
 cd src/HeimdallWeb.WebApi
 dotnet user-secrets init
-dotnet user-secrets set "ConnectionStrings:AppDbConnectionString" "Host=localhost;Database=heimdallweb;Username=heimdall;Password=your_password;Port=5432"
+dotnet user-secrets set "ConnectionStrings:AppDbConnectionString" "Host=localhost;Database=db_heimdall;Username=heimdall;Password=heimdall;Port=5432"
 ```
 
 ---
@@ -192,7 +214,7 @@ Done.
 ### Step 4: Verify Database Schema
 
 ```bash
-psql -h localhost -U heimdall -d heimdallweb
+psql -h localhost -U heimdall -d db_heimdall 
 ```
 
 ```sql
@@ -274,7 +296,7 @@ psql -h localhost -U heimdall -d heimdallweb
 
 Connect to PostgreSQL:
 ```bash
-psql -h localhost -U heimdall -d heimdallweb
+psql -h localhost -U heimdall -d db_heimdall 
 ```
 
 Execute each VIEW creation script:
@@ -937,37 +959,37 @@ SELECT count(*) FROM pg_stat_activity WHERE datname = 'heimdallweb';
 After completing all tests, verify:
 
 ### Database Setup
-- [ ] PostgreSQL installed and running
-- [ ] Database `heimdallweb` created
-- [ ] User `heimdall` created with correct privileges
-- [ ] Connection string configured
+- [X] PostgreSQL installed and running
+- [X] Database `heimdallweb` created
+- [X] User `heimdall` created with correct privileges
+- [X] Connection string configured
 
 ### Migrations
-- [ ] Initial migration created successfully
-- [ ] Migration applied without errors
-- [ ] All 7 tables exist in database
-- [ ] JSONB column type correct in `tb_history`
-- [ ] GIN index exists on `raw_json_result`
-- [ ] All indexes created (email, target, FKs, timestamps)
+- [X] Initial migration created successfully
+- [X] Migration applied without errors
+- [X] All 7 tables exist in database
+- [X] JSONB column type correct in `tb_history`
+- [X] GIN index exists on `raw_json_result`
+- [X] All indexes created (email, target, FKs, timestamps)
 
 ### SQL VIEWs
-- [ ] All 14 VIEWs created successfully
-- [ ] No SQL syntax errors
-- [ ] Each VIEW returns expected columns
-- [ ] Test data inserted successfully
-- [ ] Each VIEW tested with SELECT query
-- [ ] Results match expected output
-- [ ] Complex VIEWs (05, 06, 09, 12) validated carefully
-- [ ] Performance acceptable (< 500ms)
+- [X] All 14 VIEWs created successfully
+- [X] No SQL syntax errors
+- [X] Each VIEW returns expected columns
+- [X] Test data inserted successfully
+- [X] Each VIEW tested with SELECT query
+- [X] Results match expected output
+- [X] Complex VIEWs (05, 06, 09, 12) validated carefully
+- [X] Performance acceptable (< 500ms)
 
 ### Repositories
-- [ ] UserRepository: CREATE, READ (by ID, by email), UPDATE, EXISTS
-- [ ] ScanHistoryRepository: JSONB storage and retrieval
-- [ ] FindingRepository: Severity enum handled correctly
-- [ ] TechnologyRepository: Basic CRUD
-- [ ] IASummaryRepository: Basic CRUD
-- [ ] AuditLogRepository: Log level enum
-- [ ] UserUsageRepository: Date-based queries
+- [X] UserRepository: CREATE, READ (by ID, by email), UPDATE, EXISTS
+- [X] ScanHistoryRepository: JSONB storage and retrieval
+- [X] FindingRepository: Severity enum handled correctly
+- [X] TechnologyRepository: Basic CRUD
+- [X] IASummaryRepository: Basic CRUD
+- [X] AuditLogRepository: Log level enum
+- [X] UserUsageRepository: Date-based queries
 
 ### UnitOfWork
 - [ ] Transaction commit works
@@ -977,7 +999,7 @@ After completing all tests, verify:
 
 ### Performance
 - [ ] AsNoTracking() improves query performance
-- [ ] GIN index improves JSONB queries
+- [X] GIN index improves JSONB queries
 - [ ] Include() prevents N+1 queries
 - [ ] Connection pooling active
 
