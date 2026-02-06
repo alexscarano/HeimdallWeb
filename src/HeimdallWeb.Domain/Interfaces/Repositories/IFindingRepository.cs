@@ -21,4 +21,19 @@ public interface IFindingRepository
     /// Adds multiple findings in a single operation.
     /// </summary>
     Task AddRangeAsync(IEnumerable<Finding> findings, CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets all findings for a specific user (across all their scan histories).
+    /// </summary>
+    Task<IEnumerable<Finding>> GetByUserIdAsync(int userId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets all findings in the system (admin only).
+    /// </summary>
+    Task<IEnumerable<Finding>> GetAllAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// Counts total findings for a specific user.
+    /// </summary>
+    Task<int> CountByUserIdAsync(int userId, CancellationToken ct = default);
 }

@@ -82,6 +82,18 @@ public class User
     }
 
     /// <summary>
+    /// Updates the user's active status.
+    /// </summary>
+    public void UpdateStatus(bool isActive)
+    {
+        if (IsActive == isActive)
+            return;
+
+        IsActive = isActive;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
     /// Updates the user's password hash.
     /// </summary>
     public void UpdatePassword(string hashedPassword)
@@ -114,6 +126,15 @@ public class User
             throw new ValidationException("Username must be between 6 and 30 characters.");
 
         Username = username;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Updates the email address.
+    /// </summary>
+    public void UpdateEmail(EmailAddress email)
+    {
+        Email = email ?? throw new ArgumentNullException(nameof(email));
         UpdatedAt = DateTime.UtcNow;
     }
 }

@@ -47,4 +47,30 @@ public class FindingRepository : IFindingRepository
         await _context.Findings.AddRangeAsync(findings, ct);
         // SaveChanges will be called by UnitOfWork
     }
+
+    public async Task<IEnumerable<Finding>> GetByUserIdAsync(int userId, CancellationToken ct = default)
+    {
+        return await _context.Findings
+            .AsNoTracking()
+            .Include(f => f.History)
+            .Where(f => f.History != null && f.History.UserId == userId)
+            .OrderByDescending(f => f.CreatedAt)
+            .ToListAsync(ct);
+    }
+
+    public async Task<IEnumerable<Finding>> GetAllAsync(CancellationToken ct = default)
+    {
+        return await _context.Findings
+            .AsNoTracking()
+            .OrderByDescending(f => f.CreatedAt)
+            .ToListAsync(ct);
+    }
+
+    public async Task<int> CountByUserIdAsync(int userId, CancellationToken ct = default)
+    {
+        return await _context.Findings
+            .AsNoTracking()
+            .Include(f => f.History)
+            .CountAsync(f => f.History != null && f.History.UserId == userId, ct);
+    }
 }

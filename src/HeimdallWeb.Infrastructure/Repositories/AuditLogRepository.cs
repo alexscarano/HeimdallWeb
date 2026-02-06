@@ -37,4 +37,46 @@ public class AuditLogRepository : IAuditLogRepository
             .Take(count)
             .ToListAsync(ct);
     }
+
+    public async Task<(IEnumerable<AuditLog> Logs, int TotalCount)> GetPaginatedAsync(
+        int page,
+        int pageSize,
+        string? level = null,
+        DateTime? startDate = null,
+        DateTime? endDate = null,
+        CancellationToken ct = default)
+    {
+        var query = _context.AuditLogs
+            .AsNoTracking()
+            .Include(l => l.User)
+            .AsQueryable();
+
+        // Apply filters
+        if (!string.IsNullOrWhiteSpace(level))
+        {
+            query = query.Where(l => l.Level == level);
+        }
+
+        if (startDate.HasValue)
+        {
+            query = query.Where(l => l.Timestamp >= startDate.Value);
+        }
+
+        if (endDate.HasValue)
+        {
+            query = query.Where(l => l.Timestamp <= endDate.Value);
+        }
+
+        // Get total count before pagination
+        var totalCount = await query.CountAsync(ct);
+
+        // Apply pagination and ordering
+        var logs = await query
+            .OrderByDescending(l => l.Timestamp)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(ct);
+
+        return (logs, totalCount);
+    }
 }
