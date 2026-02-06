@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HeimdallWeb.Domain\HeimdallWeb.Domain.csproj" />
-    <ProjectReference Include="..\HeimdallWeb.Application\HeimdallWeb.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

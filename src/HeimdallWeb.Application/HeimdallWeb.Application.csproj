@@ -3,6 +3,26 @@
   <ItemGroup>
     <ProjectReference Include="..\HeimdallWeb.Domain\HeimdallWeb.Domain.csproj" />
     <ProjectReference Include="..\HeimdallWeb.Contracts\HeimdallWeb.Contracts.csproj" />
+    <ProjectReference Include="..\HeimdallWeb.Infrastructure\HeimdallWeb.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.9.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="QuestPDF" Version="2025.7.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ASHelpers">
+      <HintPath>..\..\dlls\ASHelpers.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Extensions\" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -129,4 +129,4 @@ publish/
 # Keep secrets out of repository. Use `dotnet user-secrets` for development and environment variables / Key Vault for production.
 /HeimdallWeb/wwwroot/uploads
 bin/*
-obj/*
+src/HeimdallWeb.WebApi/bin\\Debug/
