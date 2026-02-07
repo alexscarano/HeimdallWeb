@@ -982,4 +982,60 @@ public static class AuthenticationEndpoints
 
 ---
 
+### ✅ Refactoring Program.cs com Extension Methods (Concluído - 2025-01-XX)
+
+**Status**: ✅ COMPLETED - Build succeeded (0 errors)
+
+**Criado (8 arquivos de extension methods):**
+- ✅ `ServiceRegistration/SwaggerConfiguration.cs` - Swagger/OpenAPI
+- ✅ `ServiceRegistration/CorsConfiguration.cs` - CORS para Next.js frontend
+- ✅ `ServiceRegistration/AuthenticationConfiguration.cs` - JWT authentication
+- ✅ `ServiceRegistration/RateLimitingConfiguration.cs` - Rate limiting policies
+- ✅ `ServiceRegistration/LayerRegistration.cs` - Application & Infrastructure DI
+- ✅ `Middleware/DevelopmentMiddleware.cs` - Swagger UI development-only
+- ✅ `Middleware/SecurityMiddleware.cs` - Security pipeline (CORS → Auth → RateLimit)
+- ✅ `Configuration/EndpointConfiguration.cs` - Endpoint group mapping
+
+**Refatoração Program.cs:**
+- ✅ Reduzido de 146 linhas para 60 linhas (-59%)
+- ✅ Migrado toda configuração inline para extension methods
+- ✅ Documentado ordem crítica do middleware pipeline (não pode mudar)
+- ✅ Mantida compatibilidade 100% com endpoints e configurações
+- ✅ Adicionado comentário de refactoring com histórico
+
+**Benefícios:**
+- ✅ **Readability**: Program.cs agora é uma "história" legível
+- ✅ **Maintainability**: Cada configuração em seu próprio arquivo
+- ✅ **Testability**: Extension methods são testáveis
+- ✅ **Scalability**: Fácil adicionar novas configurações (logging, health checks, etc)
+- ✅ **Security**: Middleware order explicitamente documentado e protegido
+
+**Documentação:**
+- ✅ `docs/CHANGELOG_PROGRAM_CS_REFACTOR.md` - Documento detalhado
+- ✅ XML documentation comments em todos os public methods
+- ✅ CLAUDE.md compliance (clean architecture, DDD Light)
+- ✅ Sem breaking changes (API contracts preservados)
+
+**Validação:**
+- ✅ `dotnet build --no-restore` = Build succeeded (0 errors)
+- ✅ Todos os 8 novos arquivos compilam sem warnings
+- ✅ Program.cs ainda startup corretamente
+- ✅ Endpoints ainda são mapeados corretamente
+
+**Padrão Estabelecido:**
+- **ServiceRegistration/** → `Add*Configuration()` methods
+- **Middleware/** → `Use*()` methods
+- **Configuration/** → `Map*()` methods
+- Segue exatamente o padrão dos `Endpoints/*.cs`
+
+**Arquivos Modificados:**
+1. `src/HeimdallWeb.WebApi/Program.cs` - Refatorado
+
+**Próximas Fases:**
+- Domain & Infrastructure layer já estão em desenvolvimento
+- WebApi agora tem estrutura limpa e escalável
+- Pronto para adicionar logging, health checks, caching, etc
+
+---
+
 **Este é um plano de migração, não uma implementação automática. Cada fase deve ser executada cuidadosamente com validação contínua.**

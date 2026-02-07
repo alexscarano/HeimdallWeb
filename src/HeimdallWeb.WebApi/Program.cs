@@ -1,145 +1,61 @@
-using System.Text;
-using System.Threading.RateLimiting;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using HeimdallWeb.Application;
-using HeimdallWeb.Infrastructure;
-using HeimdallWeb.WebApi.Endpoints;
+/*
+ * 
+ * Configuration is now split into extension methods organized by responsibility:
+ * 
+ * ServiceRegistration/: Registers DI services
+ *   - SwaggerConfiguration.cs: API documentation
+ *   - CorsConfiguration.cs: CORS for Next.js frontend
+ *   - AuthenticationConfiguration.cs: JWT authentication
+ *   - RateLimitingConfiguration.cs: Request throttling
+ *   - LayerRegistration.cs: Application & Infrastructure layers
+ * 
+ * Middleware/: Middleware pipeline configuration
+ *   - DevelopmentMiddleware.cs: Development-only services (Swagger)
+ *   - SecurityMiddleware.cs: Security pipeline (CORS, Auth, AuthZ, RateLimit)
+ * 
+ * Configuration/: Endpoint mapping
+ *   - EndpointConfiguration.cs: Maps all Minimal API endpoints
+ */
+
+using HeimdallWeb.WebApi.ServiceRegistration;
+using HeimdallWeb.WebApi.Middleware;
+using HeimdallWeb.WebApi.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ===== Services Configuration =====
+// ===== SERVICE REGISTRATION =====
+// Register all services using extension methods organized by concern
 
-// Add API Explorer and Swagger (development only)
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Cookie", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-    {
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-        In = Microsoft.OpenApi.Models.ParameterLocation.Cookie,
-        Name = "authHeimdallCookie",
-        Description = "JWT token stored in cookie (set automatically after /api/v1/auth/login)"
-    });
+// Documentation & Client UI
+builder.Services.AddSwaggerConfiguration();
 
-    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-    {
-        {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-            {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                    Id = "Cookie"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
+// Network Security & CORS
+builder.Services.AddCorsConfiguration();
 
-// CORS for Next.js frontend (localhost:3000) - CRITICAL
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials(); // Important for JWT cookies
-    });
-});
+// Authentication & Authorization
+builder.Services.AddJwtAuthenticationConfiguration(builder.Configuration);
+builder.Services.AddAuthorizationConfiguration();
 
-// JWT Authentication
-var jwtKey = builder.Configuration["Jwt:Key"]
-    ?? throw new InvalidOperationException("JWT Key not configured");
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "HeimdallWeb";
-var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "HeimdallWebUsers";
+// Request Throttling
+builder.Services.AddRateLimitingConfiguration();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtIssuer,
-            ValidAudience = jwtAudience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-        };
+// Application Layers (DDD + Repository Pattern)
+builder.Services.AddApplicationLayer();
+builder.Services.AddInfrastructureLayer(builder.Configuration);
 
-        // Support JWT from cookie (authHeimdallCookie)
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                context.Token = context.Request.Cookies["authHeimdallCookie"];
-                return Task.CompletedTask;
-            }
-        };
-    });
-
-builder.Services.AddAuthorization();
-
-// Rate Limiting
-builder.Services.AddRateLimiter(options =>
-{
-    // Global rate limit: 85 requests/minute per IP
-    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-            factory: _ => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 85,
-                Window = TimeSpan.FromMinutes(1)
-            }));
-
-    // Scan-specific rate limit: 4 requests/minute per IP
-    options.AddPolicy("ScanPolicy", context =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-            factory: _ => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 4,
-                Window = TimeSpan.FromMinutes(1)
-            }));
-});
-
-// Application Layer (19 handlers, 9 validators, 3 services)
-builder.Services.AddApplication();
-
-// Infrastructure Layer (DbContext, Repositories, UnitOfWork)
-builder.Services.AddInfrastructure(builder.Configuration);
-
-// ===== Middleware Pipeline =====
+// ===== BUILD & CONFIGURE MIDDLEWARE PIPELINE =====
 
 var app = builder.Build();
 
-// Development-only middleware
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "HeimdallWeb API v1");
-    });
-}
+// Development-only services (Swagger UI)
+app.UseSwaggerDevelopment();
 
-app.UseHttpsRedirection();
+// Security middleware pipeline (order is CRITICAL - DO NOT CHANGE)
+// Order: HTTPS → CORS → Authentication → Authorization → RateLimiting
+app.UseSecurityMiddlewarePipeline();
 
-// MIDDLEWARE PIPELINE - ORDER MATTERS!
-app.UseCors();            // 1️⃣ CORS first
-app.UseAuthentication();  // 2️⃣ Then authentication
-app.UseAuthorization();   // 3️⃣ Then authorization
-app.UseRateLimiter();     // 4️⃣ Rate limiting last
-
-// ===== Endpoint Registration (5 classes) =====
-app.MapAuthenticationEndpoints();
-app.MapScanEndpoints();
-app.MapHistoryEndpoints();
-app.MapUserEndpoints();
-app.MapDashboardEndpoints();
+// ===== ENDPOINT REGISTRATION =====
+// All Minimal API endpoints (grouped by domain concern)
+app.MapAllEndpoints();
 
 app.Run();
