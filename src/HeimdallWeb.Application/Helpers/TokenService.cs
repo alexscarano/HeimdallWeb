@@ -27,6 +27,8 @@ public static class TokenService
                 new Claim(ClaimTypes.Role, ((int)user.UserType).ToString())
             }),
             Expires = DateTime.UtcNow.AddHours(12),
+            Issuer = config["Jwt:Issuer"] ?? "HeimdallWeb",
+            Audience = config["Jwt:Audience"] ?? "HeimdallWebUsers",
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)

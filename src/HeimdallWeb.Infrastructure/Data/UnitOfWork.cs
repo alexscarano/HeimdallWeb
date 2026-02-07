@@ -56,6 +56,37 @@ public class UnitOfWork : IUnitOfWork
         return await _context.SaveChangesAsync(ct);
     }
 
+    /// <summary>
+    /// Executes a transactional operation with retry support.
+    /// Use this method instead of manual BeginTransaction/Commit/Rollback.
+    /// </summary>
+    public async Task<T> ExecuteInTransactionAsync<T>(
+        Func<CancellationToken, Task<T>> operation,
+        CancellationToken ct = default)
+    {
+        var strategy = _context.Database.CreateExecutionStrategy();
+        
+        return await strategy.ExecuteAsync(
+            state: operation,
+            operation: async (dbContext, op, cancellationToken) =>
+            {
+                await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+                try
+                {
+                    var result = await op(cancellationToken);
+                    await transaction.CommitAsync(cancellationToken);
+                    return result;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    throw;
+                }
+            },
+            verifySucceeded: null,
+            cancellationToken: ct);
+    }
+
     public async Task BeginTransactionAsync(CancellationToken ct = default)
     {
         if (_transaction != null)

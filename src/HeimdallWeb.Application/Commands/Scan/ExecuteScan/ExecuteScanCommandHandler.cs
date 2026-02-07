@@ -181,7 +181,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
         // Run all scanners
-        var scanResultJson = await _scannerService.RunAllScannersAsync(target, linkedCts.Token);
+            var scanResultJson = await _scannerService.RunAllScannersAsync(target, linkedCts.Token);
 
         // Preprocess JSON (normalize timestamps, headers, SSL results, etc.)
         PreProcessScanResults(ref scanResultJson);
@@ -191,6 +191,9 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
 
         // Call Gemini AI for vulnerability analysis
         var aiResponse = await _geminiService.AnalyzeScanResultsAsync(scanResultJson, linkedCts.Token);
+
+        // Sanitize AI response (may contain quotes/escapes from scan data)
+        PreProcessScanResults(ref aiResponse);
 
         // Log AI response
         await LogAIResponseAsync(userId, remoteIp, CancellationToken.None);
@@ -216,53 +219,50 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         string remoteIp,
         CancellationToken ct)
     {
-        await _unitOfWork.BeginTransactionAsync(ct);
-
         try
         {
-            // Create ScanHistory entity
-            var scanTarget = ScanTarget.Create(target);
-            var scanHistory = new ScanHistory(scanTarget, userId);
-            scanHistory.CompleteScan(duration, scanResultJson, aiSummary);
+            return await _unitOfWork.ExecuteInTransactionAsync(async (cancellationToken) =>
+            {
+                // Create ScanHistory entity
+                var scanTarget = ScanTarget.Create(target);
+                var scanHistory = new ScanHistory(scanTarget, userId);
+                scanHistory.CompleteScan(duration, scanResultJson, aiSummary);
 
-            // Add to repository
-            var createdHistory = await _unitOfWork.ScanHistories.AddAsync(scanHistory, ct);
-            await _unitOfWork.SaveChangesAsync(ct); // Generate HistoryId
+                // Add to repository
+                var createdHistory = await _unitOfWork.ScanHistories.AddAsync(scanHistory, cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken); // Generate HistoryId
 
-            var historyId = createdHistory.HistoryId;
+                var historyId = createdHistory.HistoryId;
 
-            // Parse AI response to save findings and technologies
-            await ParseAndSaveFindingsAsync(historyId, aiResponseJson, ct);
-            await ParseAndSaveTechnologiesAsync(historyId, aiResponseJson, ct);
-            await ParseAndSaveIASummaryAsync(historyId, aiResponseJson, ct);
+                // Parse AI response to save findings and technologies
+                await ParseAndSaveFindingsAsync(historyId, aiResponseJson, cancellationToken);
+                await ParseAndSaveTechnologiesAsync(historyId, aiResponseJson, cancellationToken);
+                await ParseAndSaveIASummaryAsync(historyId, aiResponseJson, cancellationToken);
 
-            // Update UserUsage (increment request count)
-            await UpdateUserUsageAsync(userId, ct);
+                // Update UserUsage (increment request count)
+                await UpdateUserUsageAsync(userId, cancellationToken);
 
-            // Log success
-            await _unitOfWork.AuditLogs.AddAsync(new AuditLog(
-                code: LogEventCode.DB_SAVE_OK,
-                level: "Info",
-                message: "Scan results saved successfully",
-                source: "ExecuteScanCommandHandler",
-                userId: userId,
-                historyId: historyId,
-                remoteIp: remoteIp
-            ), ct);
+                // Log success
+                await _unitOfWork.AuditLogs.AddAsync(new AuditLog(
+                    code: LogEventCode.DB_SAVE_OK,
+                    level: "Info",
+                    message: "Scan results saved successfully",
+                    source: "ExecuteScanCommandHandler",
+                    userId: userId,
+                    historyId: historyId,
+                    remoteIp: remoteIp
+                ), cancellationToken);
 
-            // Commit transaction
-            await _unitOfWork.SaveChangesAsync(ct);
-            await _unitOfWork.CommitTransactionAsync(ct);
+                // Final save
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return historyId;
+                return historyId;
+            }, ct);
         }
         catch (Exception ex)
         {
-            await _unitOfWork.RollbackTransactionAsync(ct);
-
             // Log error outside transaction
             await LogDatabaseErrorAsync(userId, remoteIp, ex.Message, CancellationToken.None);
-
             throw;
         }
     }
@@ -570,13 +570,48 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
 
     /// <summary>
     /// Preprocesses scan results JSON (normalizes timestamps, headers, SSL results, ports, redirects).
-    /// Simplified version - full implementation should use JsonPreprocessor class.
+    /// Removes null bytes and control characters that break PostgreSQL JSONB.
     /// </summary>
     private void PreProcessScanResults(ref string jsonString)
     {
-        // TODO: Implement full preprocessing logic from JsonPreprocessor
-        // For now, basic validation
         if (string.IsNullOrWhiteSpace(jsonString))
+        {
             jsonString = "{}";
+            return;
+        }
+
+        // STEP 1: Remove null bytes in ALL forms
+        // - Real null bytes: \0 (char 0)
+        // - Unicode escape in C#: \u0000
+        // - JSON escape sequence: \\u0000 (literal string in JSON)
+        jsonString = jsonString
+            .Replace("\u0000", "")       // Real null byte (char 0)
+            .Replace("\0", "")           // Alternative null byte notation
+            .Replace("\\u0000", "");     // Escaped null in JSON strings
+
+        // STEP 2: Remove other problematic escape sequences
+        // PostgreSQL JSONB doesn't accept \u0001 through \u001F (except \t \n \r)
+        for (int i = 1; i <= 31; i++)
+        {
+            if (i == 9 || i == 10 || i == 13) continue; // Skip \t \n \r
+            
+            // Remove both real control chars and JSON escape sequences
+            var escapeSeq = $"\\u{i:x4}";
+            jsonString = jsonString.Replace(escapeSeq, "");
+        }
+
+        // STEP 3: Remove actual control characters from the string
+        var cleaned = new System.Text.StringBuilder(jsonString.Length);
+        foreach (char c in jsonString)
+        {
+            // Allow: printable chars (≥32), tabs (9), newlines (10), carriage returns (13)
+            if (c >= 32 || c == '\t' || c == '\n' || c == '\r')
+            {
+                cleaned.Append(c);
+            }
+            // Skip: other control characters (0-8, 11-12, 14-31)
+        }
+
+        jsonString = cleaned.ToString();
     }
 }

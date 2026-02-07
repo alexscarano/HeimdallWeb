@@ -25,6 +25,14 @@ public interface IUnitOfWork : IDisposable
     Task<int> SaveChangesAsync(CancellationToken ct = default);
 
     /// <summary>
+    /// Executes a transactional operation with retry support.
+    /// Recommended for PostgreSQL with EnableRetryOnFailure.
+    /// </summary>
+    Task<T> ExecuteInTransactionAsync<T>(
+        Func<CancellationToken, Task<T>> operation,
+        CancellationToken ct = default);
+
+    /// <summary>
     /// Begins a new database transaction.
     /// </summary>
     Task BeginTransactionAsync(CancellationToken ct = default);

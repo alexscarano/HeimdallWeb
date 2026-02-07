@@ -12,7 +12,31 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add API Explorer and Swagger (development only)
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Cookie", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        In = Microsoft.OpenApi.Models.ParameterLocation.Cookie,
+        Name = "authHeimdallCookie",
+        Description = "JWT token stored in cookie (set automatically after /api/v1/auth/login)"
+    });
+
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Cookie"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 // CORS for Next.js frontend (localhost:3000) - CRITICAL
 builder.Services.AddCors(options =>

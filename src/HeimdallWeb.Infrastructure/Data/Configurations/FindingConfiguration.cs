@@ -48,7 +48,7 @@ public class FindingConfiguration : IEntityTypeConfiguration<Finding>
 
         builder.Property(f => f.Recommendation)
             .HasColumnName("recommendation")
-            .HasMaxLength(255)
+            .HasMaxLength(1000) // Increased from 255 for longer AI recommendations
             .IsRequired();
 
         builder.Property(f => f.CreatedAt)
