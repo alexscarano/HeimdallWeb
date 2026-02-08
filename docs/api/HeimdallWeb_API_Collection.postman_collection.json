@@ -124,14 +124,14 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}"
+              "raw": "{\n  \"emailOrLogin\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/v1/auth/login",
               "host": ["{{base_url}}"],
               "path": ["api", "v1", "auth", "login"]
             },
-            "description": "Login with email and password. Returns JWT token in cookie and response body."
+            "description": "Login with email/username and password. Returns JWT token in cookie and response body."
           },
           "response": []
         },
@@ -235,14 +235,47 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"updated{{$timestamp}}\",\n  \"email\": \"updated{{$timestamp}}@example.com\"\n}"
+              "raw": "{\n  \"newUsername\": \"updated{{$timestamp}}\",\n  \"newEmail\": \"updated{{$timestamp}}@example.com\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/v1/users/{{user_id}}",
               "host": ["{{base_url}}"],
               "path": ["api", "v1", "users", "{{user_id}}"]
             },
-            "description": "Update user profile (username and/or email)."
+            "description": "Update user profile (username and/or email). Fields are optional."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Test@1234\",\n  \"newPassword\": \"NewTest@1234\",\n  \"confirmPassword\": \"NewTest@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/{{user_id}}/password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "{{user_id}}", "password"]
+            },
+            "description": "Update user password. Requires current password verification. New password must meet strength requirements: min 8 chars, uppercase, lowercase, number, special character."
           },
           "response": []
         },
@@ -268,7 +301,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"base64Image\": \"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\",\n  \"fileName\": \"profile.png\"\n}"
+              "raw": "{\n  \"imageBase64\": \"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/v1/users/{{user_id}}/profile-image",
@@ -293,27 +326,28 @@
               ]
             },
             "method": "DELETE",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"password\": \"Test@1234\"\n}"
-            },
+            "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/users/{{user_id}}",
+              "raw": "{{base_url}}/api/v1/users/{{user_id}}?password=Test@1234&confirmDelete=true",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "{{user_id}}"]
+              "path": ["api", "v1", "users", "{{user_id}}"],
+              "query": [
+                {
+                  "key": "password",
+                  "value": "Test@1234"
+                },
+                {
+                  "key": "confirmDelete",
+                  "value": "true"
+                }
+              ]
             },
-            "description": "Delete user account. Requires password confirmation. Cascade deletes all user data."
+            "description": "Delete user account. Requires password and confirmDelete=true as query parameters. Cascade deletes all user data."
           },
           "response": []
         }
       ],
-      "description": "User profile management: view, update, upload image, delete account"
+      "description": "User profile management: view, update, change password, upload image, delete account"
     },
     {
       "name": "03 - Scans",
