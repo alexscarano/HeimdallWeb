@@ -111,21 +111,28 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
             var user = await _unitOfWork.Users.GetByPublicIdAsync(command.UserId, CancellationToken.None);
             var userInternalId = user?.UserId ?? 0;
 
-            // Save incomplete scan record
-            await SaveIncompleteScanAsync(
+            // Save incomplete scan record and get its PublicId
+            var incompleteHistoryId = await SaveIncompleteScanAsync(
                 userInternalId,
                 normalizedTarget,
                 stopwatch.Elapsed,
                 command.RemoteIp,
                 "Scan timeout or user cancellation",
-                cancellationToken);
+                CancellationToken.None);
 
-            await LogScanErrorAsync(userInternalId, command.RemoteIp, ex.Message, cancellationToken);
+            await LogScanErrorAsync(userInternalId, command.RemoteIp, ex.Message, CancellationToken.None);
 
-            if (cancellationToken.IsCancellationRequested)
-                throw new Common.Exceptions.ApplicationException("Scan was cancelled by the user.");
-
-            throw new TimeoutException("Scan took too long and was cancelled (max 75 seconds).");
+            // Return incomplete scan instead of throwing
+            return new ExecuteScanResponse(
+                HistoryId: incompleteHistoryId,
+                Target: normalizedTarget,
+                Summary: cancellationToken.IsCancellationRequested 
+                    ? "Scan was cancelled by the user." 
+                    : "Scan took too long and was cancelled (max 75 seconds).",
+                Duration: stopwatch.Elapsed,
+                HasCompleted: false,
+                CreatedDate: DateTime.UtcNow
+            );
         }
         catch (Exception ex)
         {
@@ -135,18 +142,26 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
             var user = await _unitOfWork.Users.GetByPublicIdAsync(command.UserId, CancellationToken.None);
             var userInternalId = user?.UserId ?? 0;
 
-            // Save incomplete scan record
-            await SaveIncompleteScanAsync(
+            // Save incomplete scan record and get its PublicId
+            var incompleteHistoryId = await SaveIncompleteScanAsync(
                 userInternalId,
                 normalizedTarget,
                 stopwatch.Elapsed,
                 command.RemoteIp,
                 $"Error: {ex.Message}",
-                cancellationToken);
+                CancellationToken.None);
 
-            await LogScanErrorAsync(userInternalId, command.RemoteIp, ex.Message, cancellationToken);
+            await LogScanErrorAsync(userInternalId, command.RemoteIp, ex.Message, CancellationToken.None);
 
-            throw;
+            // Return incomplete scan instead of throwing
+            return new ExecuteScanResponse(
+                HistoryId: incompleteHistoryId,
+                Target: normalizedTarget,
+                Summary: $"Error: {ex.Message}",
+                Duration: stopwatch.Elapsed,
+                HasCompleted: false,
+                CreatedDate: DateTime.UtcNow
+            );
         }
     }
 
@@ -198,7 +213,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
         // Run all scanners
-            var scanResultJson = await _scannerService.RunAllScannersAsync(target, linkedCts.Token);
+        var scanResultJson = await _scannerService.RunAllScannersAsync(target, linkedCts.Token);
 
         // Preprocess JSON (normalize timestamps, headers, SSL results, etc.)
         PreProcessScanResults(ref scanResultJson);
@@ -287,8 +302,9 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
 
     /// <summary>
     /// Saves an incomplete scan record (due to timeout or error).
+    /// Returns the PublicId of the created history, or Guid.Empty if save failed.
     /// </summary>
-    private async Task SaveIncompleteScanAsync(
+    private async Task<Guid> SaveIncompleteScanAsync(
         int userId, 
         string target, 
         TimeSpan duration, 
@@ -302,12 +318,15 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
             var scanHistory = new ScanHistory(scanTarget, userId);
             scanHistory.MarkAsIncomplete(summary);
 
-            await _unitOfWork.ScanHistories.AddAsync(scanHistory, ct);
+            var createdHistory = await _unitOfWork.ScanHistories.AddAsync(scanHistory, ct);
             await _unitOfWork.SaveChangesAsync(ct);
+            
+            return createdHistory.PublicId;
         }
         catch
         {
-            // Ignore errors when saving incomplete scan records
+            // If save fails, return empty Guid (caller should handle appropriately)
+            return Guid.Empty;
         }
     }
 
