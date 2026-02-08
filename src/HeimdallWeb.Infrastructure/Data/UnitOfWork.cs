@@ -1,6 +1,7 @@
 using HeimdallWeb.Domain.Interfaces;
 using HeimdallWeb.Domain.Interfaces.Repositories;
 using HeimdallWeb.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace HeimdallWeb.Infrastructure.Data;
@@ -53,6 +54,17 @@ public class UnitOfWork : IUnitOfWork
 
     public IUserStatisticsViewRepository UserStatisticsViews =>
         _userStatisticsViews ??= new UserStatisticsViewRepository(_context);
+    
+    // Raw query support for VIEWs
+    public IQueryable<T> QueryView<T>() where T : class
+    {
+        return _context.Set<T>().AsNoTracking();
+    }
+    
+    public async Task<List<T>> ExecuteQueryAsync<T>(string sql, CancellationToken ct = default) where T : class
+    {
+        return await _context.Set<T>().FromSqlRaw(sql).ToListAsync(ct);
+    }
 
     // Transaction Methods
     public async Task<int> SaveChangesAsync(CancellationToken ct = default)

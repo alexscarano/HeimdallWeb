@@ -3,6 +3,8 @@ using HeimdallWeb.Application.Common.Interfaces;
 using HeimdallWeb.Application.DTOs.Admin;
 using HeimdallWeb.Domain.Enums;
 using HeimdallWeb.Domain.Interfaces;
+using HeimdallWeb.Infrastructure.Data.Views.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace HeimdallWeb.Application.Queries.Admin.GetAdminDashboard;
 
@@ -107,10 +109,24 @@ public class GetAdminDashboardQueryHandler : IQueryHandler<GetAdminDashboardQuer
             FindingsCount: h.Findings.Count
         )).ToList();
 
-        // Trends (simplified - return empty lists for Phase 3)
-        // Can be enhanced later with SQL VIEWs
-        var scanTrend = new List<TrendItem>();
-        var userRegistrationTrend = new List<TrendItem>();
+        // Get trends from SQL VIEWs (already filtered to last 30 days in VIEW)
+        var scanTrendData = await _unitOfWork.QueryView<DashboardScanTrendDaily>()
+            .OrderBy(t => t.ScanDate) // Ascending for chart display
+            .ToListAsync(cancellationToken);
+        
+        var scanTrend = scanTrendData.Select(t => new TrendItem(
+            Date: t.ScanDate.ToString("yyyy-MM-dd"),
+            Count: t.ScanCount
+        )).ToList();
+        
+        var userRegistrationTrendData = await _unitOfWork.QueryView<DashboardUserRegistrationTrend>()
+            .OrderBy(t => t.RegistrationDate) // Ascending for chart display
+            .ToListAsync(cancellationToken);
+        
+        var userRegistrationTrend = userRegistrationTrendData.Select(t => new TrendItem(
+            Date: t.RegistrationDate.ToString("yyyy-MM-dd"),
+            Count: t.NewUsers
+        )).ToList();
 
         return new AdminDashboardResponse(
             UserStats: userStats,

@@ -41,8 +41,8 @@ public class ToggleUserStatusCommandHandler : ICommandHandler<ToggleUserStatusCo
             throw new ForbiddenException("Only administrators can toggle user status");
         }
 
-        // Get target user from database by PublicId
-        var user = await _unitOfWork.Users.GetByPublicIdAsync(request.UserId, ct);
+        // Get target user from database by PublicId (WITH tracking for update)
+        var user = await _unitOfWork.Users.GetByPublicIdForUpdateAsync(request.UserId, ct);
         if (user is null)
         {
             throw new NotFoundException("User", request.UserId);

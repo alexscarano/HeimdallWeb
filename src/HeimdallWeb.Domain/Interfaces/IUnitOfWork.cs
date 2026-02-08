@@ -17,6 +17,18 @@ public interface IUnitOfWork : IDisposable
     IAuditLogRepository AuditLogs { get; }
     IUserUsageRepository UserUsages { get; }
     IUserStatisticsViewRepository UserStatisticsViews { get; }
+    
+    // Raw query support for SQL VIEWs
+    /// <summary>
+    /// Executes a raw SQL query and returns results as a list.
+    /// Used for querying SQL VIEWs that don't have repository methods.
+    /// </summary>
+    Task<List<T>> ExecuteQueryAsync<T>(string sql, CancellationToken ct = default) where T : class;
+    
+    /// <summary>
+    /// Queries a SQL VIEW by type. Used for VIEWs mapped in DbContext.
+    /// </summary>
+    IQueryable<T> QueryView<T>() where T : class;
 
     // Transaction Methods
     /// <summary>
