@@ -30,6 +30,27 @@ public class ScanHistoryRepository : IScanHistoryRepository
             .FirstOrDefaultAsync(h => h.HistoryId == historyId, ct);
     }
 
+    public async Task<ScanHistory?> GetByPublicIdAsync(Guid publicId, CancellationToken ct = default)
+    {
+        return await _context.ScanHistories
+            .AsNoTracking()
+            .Include(h => h.Findings)
+            .Include(h => h.Technologies)
+            .Include(h => h.IASummaries)
+            .FirstOrDefaultAsync(h => h.PublicId == publicId, ct);
+    }
+
+    public async Task<ScanHistory?> GetByPublicIdWithIncludesAsync(Guid publicId, CancellationToken ct = default)
+    {
+        return await _context.ScanHistories
+            .AsNoTracking()
+            .Include(h => h.User)
+            .Include(h => h.Findings)
+            .Include(h => h.Technologies)
+            .Include(h => h.IASummaries)
+            .FirstOrDefaultAsync(h => h.PublicId == publicId, ct);
+    }
+
     public async Task<IEnumerable<ScanHistory>> GetByUserIdAsync(int userId, CancellationToken ct = default)
     {
         return await _context.ScanHistories
@@ -100,7 +121,7 @@ public class ScanHistoryRepository : IScanHistoryRepository
         var items = await query
             .OrderByDescending(h => h.CreatedDate)
             .Select(h => new ScanHistorySummaryResponse(
-                h.HistoryId,
+                h.PublicId,
                 h.Target.Value,
                 h.CreatedDate,
                 h.Duration != null ? ((TimeSpan)h.Duration).ToString(@"hh\:mm\:ss") : null,

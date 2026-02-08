@@ -24,6 +24,11 @@ public class ScanHistoryConfiguration : IEntityTypeConfiguration<ScanHistory>
             .HasColumnName("history_id")
             .ValueGeneratedOnAdd();
 
+        builder.Property(h => h.PublicId)
+            .HasColumnName("public_id")
+            .HasColumnType("uuid")
+            .IsRequired();
+
         // ScanTarget Value Object Conversion
         builder.Property(h => h.Target)
             .HasColumnName("target")
@@ -112,5 +117,9 @@ public class ScanHistoryConfiguration : IEntityTypeConfiguration<ScanHistory>
         builder.HasIndex(h => h.RawJsonResult)
             .HasDatabaseName("ix_tb_history_raw_json_gin")
             .HasMethod("gin"); // PostgreSQL GIN index for fast JSONB queries
+
+        builder.HasIndex(h => h.PublicId)
+            .IsUnique()
+            .HasDatabaseName("ux_tb_history_public_id");
     }
 }

@@ -63,19 +63,23 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
             // Step 2: Check rate limiting (daily quota)
             await CheckRateLimitAsync(command.UserId, cancellationToken);
 
+            // Resolve user PublicId to get internal UserId for FK operations
+            var user = await _unitOfWork.Users.GetByPublicIdAsync(command.UserId, cancellationToken);
+            var userInternalId = user!.UserId; // Already validated in step 1
+
             // Step 3: Log scan initialization
-            await LogScanInitializationAsync(command.UserId, normalizedTarget, command.RemoteIp, cancellationToken);
+            await LogScanInitializationAsync(userInternalId, normalizedTarget, command.RemoteIp, cancellationToken);
 
             // Step 4: Run security scanners with timeout (75 seconds)
             var (scanResultJson, aiSummary, aiResponseJson) = await RunScannersAndAnalyzeAsync(
                 normalizedTarget,
-                command.UserId,
+                userInternalId,
                 command.RemoteIp,
                 cancellationToken);
 
             // Step 5: Save scan results to database within a transaction
-            var historyId = await SaveScanResultsAsync(
-                command.UserId,
+            var historyPublicId = await SaveScanResultsAsync(
+                userInternalId,
                 normalizedTarget,
                 scanResultJson,
                 aiSummary,
@@ -86,11 +90,12 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
 
             stopwatch.Stop();
 
-            // Step 6: Log successful completion
-            await LogScanCompletionAsync(command.UserId, historyId, command.RemoteIp, cancellationToken);
+            // Step 6: Log successful completion (need to resolve historyPublicId to internal ID for logging)
+            var history = await _unitOfWork.ScanHistories.GetByPublicIdAsync(historyPublicId, cancellationToken);
+            await LogScanCompletionAsync(userInternalId, history!.HistoryId, command.RemoteIp, cancellationToken);
 
             return new ExecuteScanResponse(
-                HistoryId: historyId,
+                HistoryId: historyPublicId,
                 Target: normalizedTarget,
                 Summary: aiSummary,
                 Duration: stopwatch.Elapsed,
@@ -102,16 +107,20 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         {
             stopwatch.Stop();
 
+            // Resolve user for logging in error cases
+            var user = await _unitOfWork.Users.GetByPublicIdAsync(command.UserId, CancellationToken.None);
+            var userInternalId = user?.UserId ?? 0;
+
             // Save incomplete scan record
             await SaveIncompleteScanAsync(
-                command.UserId,
+                userInternalId,
                 normalizedTarget,
                 stopwatch.Elapsed,
                 command.RemoteIp,
                 "Scan timeout or user cancellation",
                 cancellationToken);
 
-            await LogScanErrorAsync(command.UserId, command.RemoteIp, ex.Message, cancellationToken);
+            await LogScanErrorAsync(userInternalId, command.RemoteIp, ex.Message, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested)
                 throw new Common.Exceptions.ApplicationException("Scan was cancelled by the user.");
@@ -122,16 +131,20 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         {
             stopwatch.Stop();
 
+            // Resolve user for logging in error cases
+            var user = await _unitOfWork.Users.GetByPublicIdAsync(command.UserId, CancellationToken.None);
+            var userInternalId = user?.UserId ?? 0;
+
             // Save incomplete scan record
             await SaveIncompleteScanAsync(
-                command.UserId,
+                userInternalId,
                 normalizedTarget,
                 stopwatch.Elapsed,
                 command.RemoteIp,
                 $"Error: {ex.Message}",
                 cancellationToken);
 
-            await LogScanErrorAsync(command.UserId, command.RemoteIp, ex.Message, cancellationToken);
+            await LogScanErrorAsync(userInternalId, command.RemoteIp, ex.Message, cancellationToken);
 
             throw;
         }
@@ -141,12 +154,12 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
     /// Validates that the user exists and is active.
     /// Throws ApplicationException if user is blocked or not found.
     /// </summary>
-    private async Task ValidateUserAsync(int userId, CancellationToken ct)
+    private async Task ValidateUserAsync(Guid userPublicId, CancellationToken ct)
     {
-        var user = await _unitOfWork.Users.GetByIdAsync(userId, ct);
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(userPublicId, ct);
         
         if (user == null)
-            throw new NotFoundException("User", userId);
+            throw new NotFoundException("User", userPublicId);
 
         if (!user.IsActive)
             throw new Common.Exceptions.ApplicationException("Your account is blocked. Please contact the administrator.");
@@ -156,15 +169,15 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
     /// Checks if the user has exceeded their daily quota.
     /// Admins bypass this check.
     /// </summary>
-    private async Task CheckRateLimitAsync(int userId, CancellationToken ct)
+    private async Task CheckRateLimitAsync(Guid userPublicId, CancellationToken ct)
     {
-        var user = await _unitOfWork.Users.GetByIdAsync(userId, ct);
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(userPublicId, ct);
         var isAdmin = user?.UserType == UserType.Admin;
 
         if (isAdmin)
             return; // Admins have no quota limits
 
-        var usage = await _unitOfWork.UserUsages.GetByUserAndDateAsync(userId, DateTime.UtcNow.Date, ct);
+        var usage = await _unitOfWork.UserUsages.GetByUserAndDateAsync(user!.UserId, DateTime.UtcNow.Date, ct);
         var currentCount = usage?.RequestCounts ?? 0;
 
         if (currentCount >= _maxDailyRequests)
@@ -212,8 +225,9 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
     /// <summary>
     /// Saves all scan results to the database within a transaction.
     /// Includes ScanHistory, Findings, Technologies, IASummary, UserUsage, and AuditLog.
+    /// Returns the PublicId of the created history.
     /// </summary>
-    private async Task<int> SaveScanResultsAsync(
+    private async Task<Guid> SaveScanResultsAsync(
         int userId,
         string target,
         string scanResultJson,
@@ -234,7 +248,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
 
                 // Add to repository
                 var createdHistory = await _unitOfWork.ScanHistories.AddAsync(scanHistory, cancellationToken);
-                await _unitOfWork.SaveChangesAsync(cancellationToken); // Generate HistoryId
+                await _unitOfWork.SaveChangesAsync(cancellationToken); // Generate HistoryId and PublicId
 
                 var historyId = createdHistory.HistoryId;
 
@@ -260,7 +274,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 // Final save
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return historyId;
+                return createdHistory.PublicId; // Return PublicId instead of HistoryId
             }, ct);
         }
         catch (Exception ex)

@@ -5,11 +5,11 @@ namespace HeimdallWeb.Application.DTOs.Scan;
 /// Includes all related entities: findings, technologies, and AI summary.
 /// </summary>
 public record ScanHistoryDetailResponse(
-    int HistoryId,
+    Guid HistoryId,
     string Target,
     string? RawJsonResult,
     DateTime CreatedDate,
-    int UserId,
+    Guid UserId,
     string? Duration,  // String format (e.g., "00:02:15")
     bool HasCompleted,
     string? Summary,

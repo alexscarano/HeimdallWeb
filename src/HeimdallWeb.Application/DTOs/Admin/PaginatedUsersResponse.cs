@@ -18,7 +18,7 @@ public record PaginatedUsersResponse(
 /// Individual user list item with scan/findings counts.
 /// </summary>
 public record UserListItemResponse(
-    int UserId,
+    Guid UserId,
     string Username,
     string Email,
     int UserType,

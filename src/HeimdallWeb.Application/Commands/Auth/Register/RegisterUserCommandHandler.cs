@@ -110,7 +110,7 @@ public class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand, R
         await LogSuccessfulRegistrationAsync(createdUser.UserId, usernameInput, emailInput, request.RemoteIp, ct);
 
         return new RegisterUserResponse(
-            UserId: createdUser.UserId,
+            UserId: createdUser.PublicId,
             Username: createdUser.Username,
             Email: createdUser.Email.Value,
             UserType: (int)createdUser.UserType,

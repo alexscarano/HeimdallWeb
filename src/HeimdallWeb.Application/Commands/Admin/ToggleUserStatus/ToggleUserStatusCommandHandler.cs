@@ -41,11 +41,11 @@ public class ToggleUserStatusCommandHandler : ICommandHandler<ToggleUserStatusCo
             throw new ForbiddenException("Only administrators can toggle user status");
         }
 
-        // Get target user from database
-        var user = await _unitOfWork.Users.GetByIdAsync(request.UserId, ct);
+        // Get target user from database by PublicId
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(request.UserId, ct);
         if (user is null)
         {
-            throw new NotFoundException($"User with ID {request.UserId} not found");
+            throw new NotFoundException("User", request.UserId);
         }
 
         // BUSINESS RULE: Cannot toggle admin users
@@ -65,7 +65,7 @@ public class ToggleUserStatusCommandHandler : ICommandHandler<ToggleUserStatusCo
         await LogUserStatusToggleAsync(user.UserId, user.Username, oldStatus, request.IsActive, ct);
 
         return new ToggleUserStatusResponse(
-            UserId: user.UserId,
+            UserId: user.PublicId,
             Username: user.Username,
             IsActive: user.IsActive
         );

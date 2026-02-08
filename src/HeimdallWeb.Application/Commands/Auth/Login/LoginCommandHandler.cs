@@ -88,7 +88,7 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
         await LogSuccessfulLoginAsync(user.UserId, request.RemoteIp, ct);
 
         return new LoginResponse(
-            UserId: user.UserId,
+            UserId: user.PublicId,
             Username: user.Username,
             Email: user.Email.Value,
             UserType: (int)user.UserType,

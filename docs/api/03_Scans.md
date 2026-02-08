@@ -60,7 +60,7 @@ Cookie: authHeimdallCookie=<token>
 
 ```json
 {
-  "historyId": 16,
+  "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
   "target": "https://example.com",
   "summary": "O site example.com apresenta diversas configurações de segurança ausentes ou inadequadas...",
   "duration": "00:00:30.2018947",
@@ -73,7 +73,7 @@ Cookie: authHeimdallCookie=<token>
 - `Location: /api/v1/scan-histories/{historyId}`
 
 **Fields**:
-- `historyId`: Unique scan ID (use to retrieve detailed results)
+- `historyId`: Unique scan ID (UUID v7, use to retrieve detailed results)
 - `target`: Normalized target URL
 - `summary`: AI-generated summary (Portuguese, from Gemini API)
 - `duration`: Scan execution time (format: `HH:MM:SS.mmmmmmm`)
@@ -93,7 +93,7 @@ curl -X POST http://localhost:5110/api/v1/scans \
 **Response**:
 ```json
 {
-  "historyId": 16,
+  "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
   "target": "https://example.com",
   "summary": "O site example.com apresenta diversas configurações de segurança ausentes ou inadequadas, incluindo a falta de vários cabeçalhos de segurança críticos, a exposição de portas de painel de controle, e a ausência de redirecionamento HTTP para HTTPS. O certificado SSL é válido, mas próximo da expiração.",
   "duration": "00:00:30.2018947",
@@ -105,7 +105,7 @@ curl -X POST http://localhost:5110/api/v1/scans \
 **Retrieve full scan results**:
 ```bash
 # Get detailed findings, technologies, and AI analysis
-curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/16
+curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be
 ```
 
 **Different target examples**:
@@ -247,7 +247,7 @@ Cookie: authHeimdallCookie=<token>
 {
   "items": [
     {
-      "historyId": 16,
+      "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
       "target": "example.com",
       "createdDate": "2026-02-08T14:17:58.076109Z",
       "duration": "00:00:30",
@@ -287,7 +287,7 @@ curl -b cookies.txt "http://localhost:5110/api/v1/scans?page=1&pageSize=10"
 {
   "items": [
     {
-      "historyId": 16,
+      "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
       "target": "example.com",
       "createdDate": "2026-02-08T14:17:58.076109Z",
       "duration": "00:00:30",
@@ -316,11 +316,11 @@ curl -b cookies.txt "http://localhost:5110/api/v1/scans?page=2&pageSize=5"
 ```json
 {
   "items": [
-    {"historyId": 11, "target": "site6.com", ...},
-    {"historyId": 10, "target": "site7.com", ...},
-    {"historyId": 9, "target": "site8.com", ...},
-    {"historyId": 8, "target": "site9.com", ...},
-    {"historyId": 7, "target": "site10.com", ...}
+    {"historyId": "019c3e5d-0b1a-7292-0001-000000000001", "target": "site6.com", ...},
+    {"historyId": "019c3e5d-0b1a-7292-0002-000000000002", "target": "site7.com", ...},
+    {"historyId": "019c3e5d-0b1a-7292-0003-000000000003", "target": "site8.com", ...},
+    {"historyId": "019c3e5d-0b1a-7292-0004-000000000004", "target": "site9.com", ...},
+    {"historyId": "019c3e5d-0b1a-7292-0005-000000000005", "target": "site10.com", ...}
   ],
   "page": 2,
   "pageSize": 5,
@@ -526,7 +526,7 @@ done
 - Scans are **permanently stored** in database
 - Raw JSON results are saved (all scanner outputs)
 - AI summaries are cached (no re-analysis on retrieval)
-- Use `DELETE /api/v1/scan-histories/{id}` to remove
+- Use `DELETE /api/v1/scan-histories/{uuid}` to remove
 
 ### Scan Ownership
 - Users can **only see** their own scans

@@ -9,7 +9,7 @@ namespace HeimdallWeb.Application.Queries.Scan.ExportSingleHistoryPdf;
 /// <param name="RequestingUserId">The user requesting the export (for ownership verification)</param>
 /// <param name="Username">The username to display in the PDF footer</param>
 public record ExportSingleHistoryPdfQuery(
-    int HistoryId,
-    int RequestingUserId,
+    Guid HistoryId,
+    Guid RequestingUserId,
     string Username
 );

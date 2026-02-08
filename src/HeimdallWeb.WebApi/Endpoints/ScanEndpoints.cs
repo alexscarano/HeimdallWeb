@@ -28,7 +28,7 @@ public static class ScanEndpoints
         ICommandHandler<ExecuteScanCommand, ExecuteScanResponse> handler,
         HttpContext context)
     {
-        var userId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
         var remoteIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
         // Create command with userId from JWT token and remote IP
@@ -45,7 +45,7 @@ public static class ScanEndpoints
         IQueryHandler<GetUserScanHistoriesQuery, PaginatedScanHistoriesResponse> handler,
         HttpContext context)
     {
-        var userId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
 
         // Apply default pagination values if not provided or invalid
         var finalPage = page.HasValue && page.Value > 0 ? page.Value : 1;

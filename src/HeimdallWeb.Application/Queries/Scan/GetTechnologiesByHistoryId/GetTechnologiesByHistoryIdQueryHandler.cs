@@ -24,23 +24,23 @@ public class GetTechnologiesByHistoryIdQueryHandler : IQueryHandler<GetTechnolog
 
     public async Task<IEnumerable<TechnologyResponse>> Handle(GetTechnologiesByHistoryIdQuery query, CancellationToken cancellationToken = default)
     {
-        // Verify scan history exists
-        var scanHistory = await _unitOfWork.ScanHistories.GetByIdAsync(query.HistoryId, cancellationToken);
+        // Verify scan history exists by PublicId
+        var scanHistory = await _unitOfWork.ScanHistories.GetByPublicIdAsync(query.HistoryId, cancellationToken);
 
         if (scanHistory == null)
-            throw new NotFoundException($"Scan history with ID {query.HistoryId} not found");
+            throw new NotFoundException("Scan history", query.HistoryId);
 
         // Verify ownership (users can only view their own technologies, admins can view any)
-        var user = await _unitOfWork.Users.GetByIdAsync(query.RequestingUserId, cancellationToken);
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(query.RequestingUserId, cancellationToken);
 
         if (user == null)
             throw new NotFoundException("User", query.RequestingUserId);
 
-        if (user.UserType != UserType.Admin && scanHistory.UserId != query.RequestingUserId)
+        if (user.UserType != UserType.Admin && scanHistory.UserId != user.UserId)
             throw new ForbiddenException("You can only view technologies from your own scan history");
 
-        // Get technologies
-        var technologies = await _unitOfWork.Technologies.GetByHistoryIdAsync(query.HistoryId, cancellationToken);
+        // Get technologies using internal HistoryId
+        var technologies = await _unitOfWork.Technologies.GetByHistoryIdAsync(scanHistory.HistoryId, cancellationToken);
 
         // Order by Category, then by Name
         var orderedTechnologies = technologies

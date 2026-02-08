@@ -10,7 +10,7 @@ namespace HeimdallWeb.Application.Commands.Admin.DeleteUserByAdmin;
 /// - Cannot delete yourself (RequestingUserId != UserId)
 /// </summary>
 public record DeleteUserByAdminCommand(
-    int UserId,
+    Guid UserId,
     UserType RequestingUserType,
-    int RequestingUserId
+    Guid RequestingUserId
 );

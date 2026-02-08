@@ -22,13 +22,15 @@ public class GetUserStatisticsQueryHandler : IQueryHandler<GetUserStatisticsQuer
 
     public async Task<UserStatisticsResponse> Handle(GetUserStatisticsQuery query, CancellationToken cancellationToken = default)
     {
-        // Verify user exists
-        var user = await _unitOfWork.Users.GetByIdAsync(query.UserId, cancellationToken);
+        // Verify user exists and resolve to internal ID
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(query.UserId, cancellationToken);
         if (user == null)
             throw new NotFoundException("User", query.UserId);
 
+        var userInternalId = user.UserId; // Use internal ID for FK queries
+
         // Get all scan histories for user
-        var scanHistories = (await _unitOfWork.ScanHistories.GetByUserIdAsync(query.UserId, cancellationToken)).ToList();
+        var scanHistories = (await _unitOfWork.ScanHistories.GetByUserIdAsync(userInternalId, cancellationToken)).ToList();
 
         // Calculate scan statistics
         var totalScans = scanHistories.Count;
@@ -52,7 +54,7 @@ public class GetUserStatisticsQueryHandler : IQueryHandler<GetUserStatisticsQuer
             : null;
 
         // Get all findings for user
-        var findings = (await _unitOfWork.Findings.GetByUserIdAsync(query.UserId, cancellationToken)).ToList();
+        var findings = (await _unitOfWork.Findings.GetByUserIdAsync(userInternalId, cancellationToken)).ToList();
 
         // Calculate findings statistics
         var totalFindings = findings.Count;
@@ -63,14 +65,14 @@ public class GetUserStatisticsQueryHandler : IQueryHandler<GetUserStatisticsQuer
         var informationalFindings = findings.Count(f => f.Severity == SeverityLevel.Informational);
 
         // Risk trend from SQL VIEW (last 30 days)
-        var riskTrendData = await _unitOfWork.UserStatisticsViews.GetUserRiskTrendAsync(query.UserId, cancellationToken);
+        var riskTrendData = await _unitOfWork.UserStatisticsViews.GetUserRiskTrendAsync(userInternalId, cancellationToken);
         var riskTrend = riskTrendData.Select(r => new RiskTrendItem(
             Date: r.RiskDate.ToString("yyyy-MM-dd"),
             FindingsCount: r.CriticalCount + r.HighCount + r.MediumCount + r.LowCount + r.InformationalCount
         )).ToList();
 
         // Category breakdown from SQL VIEW
-        var categoryData = await _unitOfWork.UserStatisticsViews.GetUserCategoryBreakdownAsync(query.UserId, cancellationToken);
+        var categoryData = await _unitOfWork.UserStatisticsViews.GetUserCategoryBreakdownAsync(userInternalId, cancellationToken);
         var categoryBreakdown = categoryData.Select(c => new CategoryBreakdownItem(
             Category: c.Category,
             Count: c.CategoryCount

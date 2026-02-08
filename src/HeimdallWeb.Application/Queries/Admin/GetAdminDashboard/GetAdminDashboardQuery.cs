@@ -12,7 +12,7 @@ namespace HeimdallWeb.Application.Queries.Admin.GetAdminDashboard;
 /// <param name="LogStartDate">Filter logs by start date (optional)</param>
 /// <param name="LogEndDate">Filter logs by end date (optional)</param>
 public record GetAdminDashboardQuery(
-    int RequestingUserId,
+    Guid RequestingUserId,
     int LogPage = 1,
     int LogPageSize = 10,
     string? LogLevel = null,

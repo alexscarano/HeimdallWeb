@@ -5,6 +5,6 @@ namespace HeimdallWeb.Application.Commands.Scan.DeleteScanHistory;
 /// Users can only delete their own scan history for security.
 /// </summary>
 public record DeleteScanHistoryCommand(
-    int HistoryId,
-    int RequestingUserId
+    Guid HistoryId,
+    Guid RequestingUserId
 );

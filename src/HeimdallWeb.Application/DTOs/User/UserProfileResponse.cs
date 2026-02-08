@@ -12,7 +12,7 @@ namespace HeimdallWeb.Application.DTOs.User;
 /// <param name="ProfileImage">Profile image URL (optional)</param>
 /// <param name="CreatedAt">Account creation timestamp</param>
 public record UserProfileResponse(
-    int UserId,
+    Guid UserId,
     string Username,
     string Email,
     int UserType,

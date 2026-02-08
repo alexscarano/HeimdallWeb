@@ -4,7 +4,7 @@ namespace HeimdallWeb.Application.DTOs.Auth;
 /// Response DTO for successful login.
 /// </summary>
 public record LoginResponse(
-    int UserId,
+    Guid UserId,
     string Username,
     string Email,
     int UserType,

@@ -7,5 +7,5 @@ namespace HeimdallWeb.Application.Queries.User.GetUserStatistics;
 /// </summary>
 /// <param name="UserId">The user ID to retrieve statistics for</param>
 public record GetUserStatisticsQuery(
-    int UserId
+    Guid UserId
 );

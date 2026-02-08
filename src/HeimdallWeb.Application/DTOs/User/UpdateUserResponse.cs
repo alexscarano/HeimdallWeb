@@ -5,7 +5,7 @@ namespace HeimdallWeb.Application.DTOs.User;
 /// Contains updated user profile information.
 /// </summary>
 public record UpdateUserResponse(
-    int UserId,
+    Guid UserId,
     string Username,
     string Email,
     int UserType,

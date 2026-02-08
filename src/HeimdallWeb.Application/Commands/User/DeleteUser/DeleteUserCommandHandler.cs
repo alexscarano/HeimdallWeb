@@ -39,17 +39,17 @@ public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand, Delet
         // Security check: 
         // - Admins can delete regular users (UserType = 1) but NOT other admins
         // - Regular users can only delete themselves (with password)
-        var requestingUser = await _unitOfWork.Users.GetByIdAsync(request.RequestingUserId, ct);
+        var requestingUser = await _unitOfWork.Users.GetByPublicIdAsync(request.RequestingUserId, ct);
         if (requestingUser is null)
         {
             throw new UnauthorizedException("Invalid requesting user");
         }
 
         // Get target user to check their type
-        var targetUser = await _unitOfWork.Users.GetByIdAsync(request.UserId, ct);
+        var targetUser = await _unitOfWork.Users.GetByPublicIdAsync(request.UserId, ct);
         if (targetUser is null)
         {
-            throw new NotFoundException($"User with ID {request.UserId} not found");
+            throw new NotFoundException("User", request.UserId);
         }
 
         bool isAdmin = requestingUser.UserType == UserType.Admin;
@@ -78,13 +78,13 @@ public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand, Delet
         await _unitOfWork.SaveChangesAsync(ct);
 
         // Log account deletion
-        await LogAccountDeletionAsync(targetUser.UserId, targetUser.Username, request.RequestingUserId, isAdmin, ct);
+        await LogAccountDeletionAsync(targetUser.UserId, targetUser.Username, requestingUser.UserId, isAdmin, ct);
 
         return new DeleteUserResponse(
             Message: isAdmin && !isDeletingSelf 
                 ? $"User '{targetUser.Username}' deleted successfully by admin"
                 : "Account deleted successfully",
-            UserId: targetUser.UserId
+            UserId: targetUser.PublicId
         );
     }
 

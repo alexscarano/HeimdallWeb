@@ -87,7 +87,7 @@ curl -X POST http://localhost:5110/api/v1/auth/login \
 **Response**:
 ```json
 {
-  "userId": 1,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "yourname",
   "email": "user@example.com",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -98,7 +98,7 @@ curl -X POST http://localhost:5110/api/v1/auth/login \
 **Step 2: Use Cookie for Subsequent Requests**
 ```bash
 # Cookie automatically included
-curl -b cookies.txt http://localhost:5110/api/v1/users/1/profile
+curl -b cookies.txt http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile
 ```
 
 **Or Use Bearer Token**
@@ -108,7 +108,7 @@ TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
 # Include in Authorization header
 curl -H "Authorization: Bearer $TOKEN" \
-  http://localhost:5110/api/v1/users/1/profile
+  http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile
 ```
 
 ### Cookie Configuration
@@ -133,7 +133,7 @@ Path: /
 **Decoded payload**:
 ```json
 {
-  "sub": "1",                    // User ID
+  "sub": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",  // User ID (UUID v7)
   "unique_name": "yourname",     // Username
   "email": "user@example.com",   // Email
   "role": "1",                   // UserType (1=Regular, 2=Admin)
@@ -350,9 +350,9 @@ curl -b regular_user_cookies.txt \
 
 **4. Resource Not Found**:
 ```bash
-curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/99999
+curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-0000-7292-0000-000000000000
 # Response: HTTP 404
-# {"statusCode":404,"message":"Scan history with ID 99999 not found","errors":null}
+# {"statusCode":404,"message":"Scan history not found","errors":null}
 ```
 
 **5. Duplicate Email**:
@@ -372,12 +372,12 @@ curl -X POST http://localhost:5110/api/v1/auth/register \
 
 ```json
 {
-  "userId": 1,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "alexandrescarano",
   "email": "alexandrescarano@gmail.com",
   "userType": 2,
   "isActive": true,
-  "profileImage": "uploads/profiles/1_20260207230250.jpg",
+  "profileImage": "uploads/profiles/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50_20260207230250.jpg",
   "createdAt": "2026-02-06T19:41:42.60754Z"
 }
 ```
@@ -387,11 +387,13 @@ curl -X POST http://localhost:5110/api/v1/auth/register \
 - `isActive`: `true` = Active, `false` = Blocked
 - `profileImage`: Relative path or `null`
 
+> **Note**: All entity IDs (`userId`, `historyId`, `findingId`, `technologyId`) use UUID v7 format (time-ordered). Example: `019c3e5b-3fe1-7e25-a3ea-2b443e65bb50`
+
 ### Scan History Model
 
 ```json
 {
-  "historyId": 16,
+  "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
   "target": "example.com",
   "createdDate": "2026-02-08T14:17:58.076109Z",
   "duration": "00:00:30",
@@ -411,13 +413,13 @@ curl -X POST http://localhost:5110/api/v1/auth/register \
 
 ```json
 {
-  "findingId": 56,
+  "findingId": "019c3e5d-2a1b-7292-a123-65ceaee964be",
   "type": "Headers de Segurança",
   "description": "O cabeçalho Content-Security-Policy (CSP) está ausente...",
   "severity": 3,
   "evidence": "\"Content-Security-Policy\" na lista de headers ausentes.",
   "recommendation": "Configure uma política de segurança...",
-  "historyId": 16,
+  "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
   "createdAt": "2026-02-08T14:17:58.114176Z"
 }
 ```
@@ -433,12 +435,12 @@ curl -X POST http://localhost:5110/api/v1/auth/register \
 
 ```json
 {
-  "technologyId": 28,
+  "technologyId": "019c3e5d-3b2c-7292-b234-76ceaee964be",
   "name": "Cloudflare",
   "version": null,
   "category": "CDN",
   "description": "Cloudflare é uma rede de entrega...",
-  "historyId": 16,
+  "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
   "createdAt": "2026-02-08T14:17:58.127592Z"
 }
 ```
@@ -460,7 +462,7 @@ REGISTER=$(curl -s -X POST http://localhost:5110/api/v1/auth/register \
   -d '{"username":"newuser","email":"newuser@example.com","password":"Secure@123"}')
 
 USER_ID=$(echo $REGISTER | jq -r '.userId')
-echo "Registered user ID: $USER_ID"
+echo "Registered user ID: $USER_ID"  # UUID v7 format
 
 # 2. Login
 curl -X POST http://localhost:5110/api/v1/auth/login \
@@ -475,7 +477,7 @@ SCAN=$(curl -s -X POST http://localhost:5110/api/v1/scans \
   -d '{"target":"https://example.com"}')
 
 HISTORY_ID=$(echo $SCAN | jq -r '.historyId')
-echo "Scan started with ID: $HISTORY_ID"
+echo "Scan started with ID: $HISTORY_ID"  # UUID v7 format
 
 # 4. Wait for scan to complete (30 seconds)
 echo "Waiting for scan to complete..."
@@ -618,7 +620,7 @@ curl -s -b admin_cookies.txt \
 
 # Count findings by severity
 curl -s -b cookies.txt \
-  http://localhost:5110/api/v1/scan-histories/16/findings \
+  http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/findings \
   | jq 'group_by(.severity) | map({severity: .[0].severity, count: length})'
 ```
 
@@ -637,7 +639,7 @@ curl -v -X POST http://localhost:5110/api/v1/auth/login \
 # Save response body and headers
 curl -D headers.txt -o response.json \
   -b cookies.txt \
-  http://localhost:5110/api/v1/scan-histories/16
+  http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be
 ```
 
 ---
@@ -650,30 +652,30 @@ curl -D headers.txt -o response.json \
 - `POST /api/v1/auth/logout` - Logout and clear cookie
 
 ### Users (6 endpoints)
-- `GET /api/v1/users/{id}/profile` - Get user profile
-- `GET /api/v1/users/{id}/statistics` - Get user statistics
-- `PUT /api/v1/users/{id}` - Update user profile
-- `PATCH /api/v1/users/{id}/password` - Update user password
-- `POST /api/v1/users/{id}/profile-image` - Upload profile image
-- `DELETE /api/v1/users/{id}` - Delete user account
+- `GET /api/v1/users/{uuid}/profile` - Get user profile
+- `GET /api/v1/users/{uuid}/statistics` - Get user statistics
+- `PUT /api/v1/users/{uuid}` - Update user profile
+- `PATCH /api/v1/users/{uuid}/password` - Update user password
+- `POST /api/v1/users/{uuid}/profile-image` - Upload profile image
+- `DELETE /api/v1/users/{uuid}` - Delete user account
 
 ### Scans (2 endpoints)
 - `POST /api/v1/scans` - Execute security scan
 - `GET /api/v1/scans` - List scan histories (paginated)
 
 ### History (6 endpoints)
-- `GET /api/v1/scan-histories/{id}` - Get scan details
-- `GET /api/v1/scan-histories/{id}/findings` - Get vulnerabilities
-- `GET /api/v1/scan-histories/{id}/technologies` - Get detected technologies
-- `GET /api/v1/scan-histories/{id}/export` - Export scan to PDF
+- `GET /api/v1/scan-histories/{uuid}` - Get scan details
+- `GET /api/v1/scan-histories/{uuid}/findings` - Get vulnerabilities
+- `GET /api/v1/scan-histories/{uuid}/technologies` - Get detected technologies
+- `GET /api/v1/scan-histories/{uuid}/export` - Export scan to PDF
 - `GET /api/v1/scan-histories/export` - Export all scans to PDF
-- `DELETE /api/v1/scan-histories/{id}` - Delete scan history
+- `DELETE /api/v1/scan-histories/{uuid}` - Delete scan history
 
 ### Admin (4 endpoints)
 - `GET /api/v1/dashboard/admin` - Admin dashboard stats
 - `GET /api/v1/dashboard/users` - List all users (admin)
-- `PATCH /api/v1/admin/users/{id}/status` - Toggle user status
-- `DELETE /api/v1/admin/users/{id}` - Delete user by admin
+- `PATCH /api/v1/admin/users/{uuid}/status` - Toggle user status
+- `DELETE /api/v1/admin/users/{uuid}` - Delete user by admin
 
 **Total: 21 endpoints**
 

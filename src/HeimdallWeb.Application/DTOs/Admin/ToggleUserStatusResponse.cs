@@ -5,7 +5,7 @@ namespace HeimdallWeb.Application.DTOs.Admin;
 /// Returns updated user status information.
 /// </summary>
 public record ToggleUserStatusResponse(
-    int UserId,
+    Guid UserId,
     string Username,
     bool IsActive
 );

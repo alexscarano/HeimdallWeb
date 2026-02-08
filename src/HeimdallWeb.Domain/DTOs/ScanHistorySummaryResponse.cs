@@ -5,10 +5,10 @@ namespace HeimdallWeb.Domain.DTOs;
 /// Lighter version without full JSON data.
 /// </summary>
 public record ScanHistorySummaryResponse(
-    int HistoryId,
+    Guid HistoryId,
     string Target,
     DateTime CreatedDate,
-    string? Duration,  // String format (e.g., "00:02:15")
+    string? Duration,
     bool HasCompleted,
     string? Summary,
     int FindingsCount,

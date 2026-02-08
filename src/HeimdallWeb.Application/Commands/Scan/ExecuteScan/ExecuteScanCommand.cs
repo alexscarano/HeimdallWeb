@@ -8,6 +8,6 @@ namespace HeimdallWeb.Application.Commands.Scan.ExecuteScan;
 /// </summary>
 public record ExecuteScanCommand(
     string Target,
-    int UserId,
+    Guid UserId,
     string RemoteIp
 );

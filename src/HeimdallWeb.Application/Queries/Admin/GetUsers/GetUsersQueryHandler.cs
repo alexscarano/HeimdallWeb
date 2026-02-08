@@ -23,7 +23,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsersQuery, PaginatedUsersR
     public async Task<PaginatedUsersResponse> Handle(GetUsersQuery query, CancellationToken cancellationToken = default)
     {
         // Verify requesting user is admin
-        var requestingUser = await _unitOfWork.Users.GetByIdAsync(query.RequestingUserId, cancellationToken);
+        var requestingUser = await _unitOfWork.Users.GetByPublicIdAsync(query.RequestingUserId, cancellationToken);
         if (requestingUser == null)
             throw new NotFoundException("User", query.RequestingUserId);
 
@@ -56,7 +56,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsersQuery, PaginatedUsersR
             var findingsCount = await _unitOfWork.Findings.CountByUserIdAsync(user.UserId, cancellationToken);
 
             usersList.Add(new UserListItemResponse(
-                UserId: user.UserId,
+                UserId: user.PublicId,
                 Username: user.Username,
                 Email: user.Email.Value,
                 UserType: (int)user.UserType,

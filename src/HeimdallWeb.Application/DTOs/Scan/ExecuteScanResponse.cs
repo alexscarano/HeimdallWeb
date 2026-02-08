@@ -4,7 +4,7 @@ namespace HeimdallWeb.Application.DTOs.Scan;
 /// Response DTO for scan execution.
 /// </summary>
 public record ExecuteScanResponse(
-    int HistoryId,
+    Guid HistoryId,
     string Target,
     string Summary,
     TimeSpan Duration,

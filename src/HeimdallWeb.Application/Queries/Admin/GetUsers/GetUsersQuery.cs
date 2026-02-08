@@ -14,7 +14,7 @@ namespace HeimdallWeb.Application.Queries.Admin.GetUsers;
 /// <param name="CreatedFrom">Filter by created date from (optional)</param>
 /// <param name="CreatedTo">Filter by created date to (optional)</param>
 public record GetUsersQuery(
-    int RequestingUserId,
+    Guid RequestingUserId,
     int Page = 1,
     int PageSize = 10,
     string? SearchTerm = null,

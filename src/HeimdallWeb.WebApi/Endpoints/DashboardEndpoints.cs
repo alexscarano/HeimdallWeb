@@ -27,8 +27,8 @@ public static class DashboardEndpoints
         dashboardGroup.MapGet("/users", GetUsers);
 
         // Admin commands
-        adminGroup.MapPatch("/users/{id:int}/status", ToggleUserStatus);
-        adminGroup.MapDelete("/users/{id:int}", DeleteUserByAdmin);
+        adminGroup.MapPatch("/users/{id:guid}/status", ToggleUserStatus);
+        adminGroup.MapDelete("/users/{id:guid}", DeleteUserByAdmin);
 
         return dashboardGroup;
     }
@@ -42,7 +42,7 @@ public static class DashboardEndpoints
         IQueryHandler<GetAdminDashboardQuery, AdminDashboardResponse> handler,
         HttpContext context)
     {
-        var userId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
 
         // Default pagination values
         if (logPage <= 0) logPage = 1;
@@ -73,7 +73,7 @@ public static class DashboardEndpoints
         IQueryHandler<GetUsersQuery, PaginatedUsersResponse> handler,
         HttpContext context)
     {
-        var adminUserId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var adminUserId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
 
         // Default pagination values
         if (page <= 0) page = 1;
@@ -96,7 +96,7 @@ public static class DashboardEndpoints
     }
 
     private static async Task<IResult> ToggleUserStatus(
-        int id,
+        Guid id,
         [FromBody] ToggleUserStatusCommand request,
         ICommandHandler<ToggleUserStatusCommand, ToggleUserStatusResponse> handler,
         HttpContext context)
@@ -112,11 +112,11 @@ public static class DashboardEndpoints
     }
 
     private static async Task<IResult> DeleteUserByAdmin(
-        int id,
+        Guid id,
         ICommandHandler<DeleteUserByAdminCommand, DeleteUserByAdminResponse> handler,
         HttpContext context)
     {
-        var adminUserId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var adminUserId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
         var userTypeString = context.User.FindFirst(ClaimTypes.Role)?.Value ?? "1";
         var userType = (UserType)int.Parse(userTypeString);
 

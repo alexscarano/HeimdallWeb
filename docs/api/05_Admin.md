@@ -12,8 +12,8 @@
 |--------|----------|-------------|---------------|------------|
 | GET | `/api/v1/dashboard/admin` | Get admin dashboard with stats & logs | ✅ Yes | ✅ Admin |
 | GET | `/api/v1/dashboard/users` | List all users with stats (paginated) | ✅ Yes | ✅ Admin |
-| PATCH | `/api/v1/admin/users/{id}/status` | Activate/deactivate user account | ✅ Yes | ✅ Admin |
-| DELETE | `/api/v1/admin/users/{id}` | Delete user by admin (no password required) | ✅ Yes | ✅ Admin |
+| PATCH | `/api/v1/admin/users/{uuid}/status` | Activate/deactivate user account | ✅ Yes | ✅ Admin |
+| DELETE | `/api/v1/admin/users/{uuid}` | Delete user by admin (no password required) | ✅ Yes | ✅ Admin |
 
 ---
 
@@ -95,12 +95,12 @@ Cookie: authHeimdallCookie=<admin_token>
   "logs": {
     "items": [
       {
-        "logId": 199,
+        "logId": "019c3e5e-1a2b-7292-e567-89ceaee964be",
         "timestamp": "2026-02-08T14:33:42.331924Z",
         "level": "Warning",
         "source": "ToggleUserStatusCommandHandler",
         "message": "User status toggled by admin",
-        "userId": 12,
+        "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
         "username": "scantest1770560247",
         "remoteIp": null
       }
@@ -112,10 +112,10 @@ Cookie: authHeimdallCookie=<admin_token>
   },
   "recentActivity": [
     {
-      "historyId": 16,
+      "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
       "target": "example.com",
       "createdDate": "2026-02-08T14:17:58.076109Z",
-      "userId": 12,
+      "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
       "username": "scantest1770560247",
       "hasCompleted": true,
       "findingsCount": 11
@@ -314,7 +314,7 @@ Cookie: authHeimdallCookie=<admin_token>
 {
   "users": [
     {
-      "userId": 12,
+      "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
       "username": "scantest1770560247",
       "email": "scantest1770560247@example.com",
       "userType": 1,
@@ -325,12 +325,12 @@ Cookie: authHeimdallCookie=<admin_token>
       "findingsCount": 11
     },
     {
-      "userId": 2,
+      "userId": "019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c",
       "username": "alexandrescarano",
       "email": "alexandrescarano@gmail.com",
       "userType": 2,
       "isActive": true,
-      "profileImage": "uploads/profiles/2_20260207230250.jpg",
+      "profileImage": "uploads/profiles/019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c_20260207230250.jpg",
       "createdAt": "2026-02-06T19:41:42.60754Z",
       "scanCount": 7,
       "findingsCount": 31
@@ -364,7 +364,7 @@ curl -b admin_cookies.txt \
 {
   "users": [
     {
-      "userId": 12,
+      "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
       "username": "scantest1770560247",
       "email": "scantest1770560247@example.com",
       "userType": 1,
@@ -480,7 +480,7 @@ curl "http://localhost:5110/api/v1/dashboard/users?page=1&pageSize=10"
 
 ---
 
-## 3. PATCH /api/v1/admin/users/{id}/status
+## 3. PATCH /api/v1/admin/users/{uuid}/status
 
 **Description**: Activate or deactivate a user account. When deactivated (`isActive = false`):
 - User cannot login (authentication fails)
@@ -502,7 +502,7 @@ Content-Type: application/json
 ```
 
 **URL Parameters**:
-- `id` (integer, required) - User ID to update
+- `uuid` (string (UUID v7), required) - User ID to update
 
 **Body**:
 ```json
@@ -517,7 +517,7 @@ Content-Type: application/json
 
 ```json
 {
-  "userId": 12,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "scantest1770560247",
   "isActive": false
 }
@@ -528,7 +528,7 @@ Content-Type: application/json
 ```bash
 # Deactivate user (block account)
 curl -X PATCH -b admin_cookies.txt \
-  http://localhost:5110/api/v1/admin/users/12/status \
+  http://localhost:5110/api/v1/admin/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/status \
   -H "Content-Type: application/json" \
   -d '{"isActive":false}'
 ```
@@ -536,7 +536,7 @@ curl -X PATCH -b admin_cookies.txt \
 **Response**:
 ```json
 {
-  "userId": 12,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "scantest1770560247",
   "isActive": false
 }
@@ -556,7 +556,7 @@ curl -X POST http://localhost:5110/api/v1/auth/login \
 ```bash
 # Restore user access
 curl -X PATCH -b admin_cookies.txt \
-  http://localhost:5110/api/v1/admin/users/12/status \
+  http://localhost:5110/api/v1/admin/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/status \
   -H "Content-Type: application/json" \
   -d '{"isActive":true}'
 ```
@@ -564,7 +564,7 @@ curl -X PATCH -b admin_cookies.txt \
 **Response**:
 ```json
 {
-  "userId": 12,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "scantest1770560247",
   "isActive": true
 }
@@ -574,7 +574,11 @@ curl -X PATCH -b admin_cookies.txt \
 ```bash
 #!/bin/bash
 # Deactivate multiple users
-USER_IDS=(5 7 9)
+USER_IDS=(
+  "019c3e5b-6e4f-7e25-d567-5f6a7b8c9d0e"
+  "019c3e5b-7f50-7e25-e678-6a7b8c9d0e1f"
+  "019c3e5b-8061-7e25-f789-7b8c9d0e1f20"
+)
 
 for id in "${USER_IDS[@]}"; do
   echo "Deactivating user $id..."
@@ -593,7 +597,7 @@ done
 **Request**:
 ```bash
 curl -X PATCH -b admin_cookies.txt \
-  http://localhost:5110/api/v1/admin/users/99999/status \
+  http://localhost:5110/api/v1/admin/users/019c3e5b-0000-7e25-0000-000000000000/status \
   -H "Content-Type: application/json" \
   -d '{"isActive":false}'
 ```
@@ -602,7 +606,7 @@ curl -X PATCH -b admin_cookies.txt \
 ```json
 {
   "statusCode": 404,
-  "message": "User with ID 99999 not found",
+  "message": "User not found",
   "errors": null
 }
 ```
@@ -614,7 +618,7 @@ curl -X PATCH -b admin_cookies.txt \
 **Request**:
 ```bash
 curl -X PATCH -b regular_user_cookies.txt \
-  http://localhost:5110/api/v1/admin/users/12/status \
+  http://localhost:5110/api/v1/admin/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/status \
   -H "Content-Type: application/json" \
   -d '{"isActive":false}'
 ```
@@ -635,7 +639,7 @@ curl -X PATCH -b regular_user_cookies.txt \
 **Request**:
 ```bash
 curl -X PATCH \
-  http://localhost:5110/api/v1/admin/users/12/status \
+  http://localhost:5110/api/v1/admin/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/status \
   -H "Content-Type: application/json" \
   -d '{"isActive":false}'
 ```
@@ -644,9 +648,9 @@ curl -X PATCH \
 
 ---
 
-## 4. DELETE /api/v1/admin/users/{id}
+## 4. DELETE /api/v1/admin/users/{uuid}
 
-**Description**: **Permanently delete** a user account by admin. Unlike regular user self-deletion (`DELETE /api/v1/users/{id}`), this endpoint:
+**Description**: **Permanently delete** a user account by admin. Unlike regular user self-deletion (`DELETE /api/v1/users/{uuid}`), this endpoint:
 - **Does NOT require password** (admin override)
 - **Cannot delete admin users** (admins cannot delete other admins)
 - **Cascade deletes** all user data:
@@ -672,7 +676,7 @@ Cookie: authHeimdallCookie=<admin_token>
 ```
 
 **URL Parameters**:
-- `id` (integer, required) - User ID to delete
+- `uuid` (string (UUID v7), required) - User ID to delete
 
 ### Response Success
 
@@ -685,7 +689,7 @@ Cookie: authHeimdallCookie=<admin_token>
 ```bash
 # Delete user by admin
 curl -X DELETE -b admin_cookies.txt \
-  http://localhost:5110/api/v1/admin/users/12 \
+  http://localhost:5110/api/v1/admin/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50 \
   -w "\nHTTP Status: %{http_code}\n"
 ```
 
@@ -699,7 +703,7 @@ HTTP Status: 204
 # Try to get deleted user from user list
 curl -s -b admin_cookies.txt \
   "http://localhost:5110/api/v1/dashboard/users?page=1&pageSize=100&search=scantest" \
-  | jq '.users[] | select(.userId == 12)'
+  | jq '.users[] | select(.userId == "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50")'
 # Output: (empty - user not found)
 ```
 
@@ -759,14 +763,14 @@ fi
 **Request**:
 ```bash
 curl -X DELETE -b admin_cookies.txt \
-  http://localhost:5110/api/v1/admin/users/99999
+  http://localhost:5110/api/v1/admin/users/019c3e5b-0000-7e25-0000-000000000000
 ```
 
 **Response**: `HTTP 404 Not Found`
 ```json
 {
   "statusCode": 404,
-  "message": "User with ID 99999 not found",
+  "message": "User not found",
   "errors": null
 }
 ```
@@ -778,7 +782,7 @@ curl -X DELETE -b admin_cookies.txt \
 **Request**:
 ```bash
 curl -X DELETE -b regular_user_cookies.txt \
-  http://localhost:5110/api/v1/admin/users/10
+  http://localhost:5110/api/v1/admin/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50
 ```
 
 **Response**: `HTTP 403 Forbidden`
@@ -798,7 +802,7 @@ curl -X DELETE -b regular_user_cookies.txt \
 
 **Request**:
 ```bash
-curl -X DELETE http://localhost:5110/api/v1/admin/users/10
+curl -X DELETE http://localhost:5110/api/v1/admin/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50
 ```
 
 **Response**: `HTTP 401 Unauthorized` (empty body)
@@ -812,7 +816,7 @@ curl -X DELETE http://localhost:5110/api/v1/admin/users/10
 **Request**:
 ```bash
 # Get admin user ID
-ADMIN_ID=2
+ADMIN_ID="019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c"
 
 # Attempt deletion
 curl -X DELETE -b admin_cookies.txt \
@@ -889,7 +893,7 @@ echo "Found user: $(echo $USER | jq -r '.username')"
 # 2. Review user activity
 curl -s -b admin_cookies.txt \
   "http://localhost:5110/api/v1/scans?page=1&pageSize=100" \
-  | jq ".items[] | select(.userId == $USER_ID)"
+  | jq ".items[] | select(.userId == \"$USER_ID\")"
 
 # 3. Block user
 echo "Blocking user $USER_ID..."
@@ -903,14 +907,14 @@ curl -X PATCH -b admin_cookies.txt \
 ```bash
 #!/bin/bash
 # GDPR compliance: Export all user data before deletion
-USER_ID=12
+USER_ID="019c3e5b-3fe1-7e25-a3ea-2b443e65bb50"
 
 echo "Exporting data for user $USER_ID..."
 
 # 1. Get user profile
 curl -s -b admin_cookies.txt \
   "http://localhost:5110/api/v1/dashboard/users?page=1&pageSize=100" \
-  | jq ".users[] | select(.userId == $USER_ID)" \
+  | jq ".users[] | select(.userId == \"$USER_ID\")" \
   > user_${USER_ID}_profile.json
 
 # 2. Export all scans
@@ -953,7 +957,7 @@ echo "Exported to user_${USER_ID}_profile.json and user_${USER_ID}_scans.pdf"
 
 **Blocking vs Deletion**:
 - **Block** (`PATCH /status`): Reversible, preserves all data, prevents login
-- **Delete** (`DELETE /users/{id}`): Irreversible, removes all data, GDPR compliant
+- **Delete** (`DELETE /users/{uuid}`): Irreversible, removes all data, GDPR compliant
 
 **Recommendation**: Block users first, delete only after confirmation period (e.g., 30 days).
 
@@ -1042,4 +1046,4 @@ All admin endpoints tested on **2026-02-08**:
 **Last Tested**: 2026-02-08 14:34 UTC  
 **Tested By**: DocuEngineer  
 **Environment**: localhost:5110 (Development)  
-**Admin User**: alexandrescarano@gmail.com (userId: 2, userType: 2)
+**Admin User**: alexandrescarano@gmail.com (userId: 019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c, userType: 2)

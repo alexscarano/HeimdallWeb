@@ -7,10 +7,10 @@ public class UpdatePasswordCommandValidator : AbstractValidator<UpdatePasswordCo
     public UpdatePasswordCommandValidator()
     {
         RuleFor(x => x.UserId)
-            .GreaterThan(0).WithMessage("User ID must be greater than 0");
+            .NotEmpty().WithMessage("User ID is required");
 
         RuleFor(x => x.RequestingUserId)
-            .GreaterThan(0).WithMessage("Requesting User ID must be greater than 0");
+            .NotEmpty().WithMessage("Requesting User ID is required");
 
         // Security: user can only update their own password
         RuleFor(x => x)

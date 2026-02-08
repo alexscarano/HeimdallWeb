@@ -6,6 +6,6 @@ namespace HeimdallWeb.Application.DTOs.Admin;
 /// </summary>
 public record DeleteUserByAdminResponse(
     bool Success,
-    int DeletedUserId,
+    Guid DeletedUserId,
     string DeletedUsername
 );

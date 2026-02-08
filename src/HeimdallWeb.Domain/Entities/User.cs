@@ -10,6 +10,7 @@ namespace HeimdallWeb.Domain.Entities;
 public class User
 {
     public int UserId { get; private set; }
+    public Guid PublicId { get; private set; }
     public string Username { get; private set; } = string.Empty;
     public EmailAddress Email { get; private set; } = null!;
     public string PasswordHash { get; private set; } = string.Empty;
@@ -49,6 +50,7 @@ public class User
         if (string.IsNullOrWhiteSpace(passwordHash))
             throw new ValidationException("Password hash cannot be empty.");
 
+        PublicId = Guid.CreateVersion7();
         Username = username;
         Email = email ?? throw new ArgumentNullException(nameof(email));
         PasswordHash = passwordHash;

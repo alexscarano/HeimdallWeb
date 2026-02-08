@@ -47,11 +47,18 @@ public class DeleteUserByAdminCommandHandler : ICommandHandler<DeleteUserByAdmin
             throw new ValidationException("UserId", "Cannot delete yourself");
         }
 
-        // Get target user from database
-        var user = await _unitOfWork.Users.GetByIdAsync(request.UserId, ct);
+        // Resolve requesting user to get internal ID for logging
+        var requestingUser = await _unitOfWork.Users.GetByPublicIdAsync(request.RequestingUserId, ct);
+        if (requestingUser is null)
+        {
+            throw new UnauthorizedException("Invalid requesting user");
+        }
+
+        // Get target user from database by PublicId
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(request.UserId, ct);
         if (user is null)
         {
-            throw new NotFoundException($"User with ID {request.UserId} not found");
+            throw new NotFoundException("User", request.UserId);
         }
 
         // BUSINESS RULE: Cannot delete admin users
@@ -61,18 +68,20 @@ public class DeleteUserByAdminCommandHandler : ICommandHandler<DeleteUserByAdmin
         }
 
         var deletedUsername = user.Username;
-        var deletedUserId = user.UserId;
+        var deletedUserPublicId = user.PublicId;
+        var deletedUserInternalId = user.UserId; // Keep for logging
+        var requestingUserInternalId = requestingUser.UserId; // For logging
 
         // Delete user
         await _unitOfWork.Users.DeleteAsync(user.UserId, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
         // Log deletion
-        await LogUserDeletionByAdminAsync(deletedUserId, deletedUsername, request.RequestingUserId, ct);
+        await LogUserDeletionByAdminAsync(deletedUserInternalId, deletedUsername, requestingUserInternalId, ct);
 
         return new DeleteUserByAdminResponse(
             Success: true,
-            DeletedUserId: deletedUserId,
+            DeletedUserId: deletedUserPublicId,
             DeletedUsername: deletedUsername
         );
     }

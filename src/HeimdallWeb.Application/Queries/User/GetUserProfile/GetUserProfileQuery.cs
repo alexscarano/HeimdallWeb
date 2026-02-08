@@ -7,5 +7,5 @@ namespace HeimdallWeb.Application.Queries.User.GetUserProfile;
 /// </summary>
 /// <param name="UserId">The user ID to retrieve profile for</param>
 public record GetUserProfileQuery(
-    int UserId
+    Guid UserId
 );

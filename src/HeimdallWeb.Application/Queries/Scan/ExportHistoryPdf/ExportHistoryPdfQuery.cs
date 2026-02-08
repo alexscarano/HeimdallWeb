@@ -7,6 +7,6 @@ namespace HeimdallWeb.Application.Queries.Scan.ExportHistoryPdf;
 /// <param name="UserId">The user ID to export scan histories for</param>
 /// <param name="Username">The username to display in the PDF footer</param>
 public record ExportHistoryPdfQuery(
-    int UserId,
+    Guid UserId,
     string Username
 );

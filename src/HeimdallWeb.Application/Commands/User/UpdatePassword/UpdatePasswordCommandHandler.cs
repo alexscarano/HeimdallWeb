@@ -39,11 +39,11 @@ public class UpdatePasswordCommandHandler : ICommandHandler<UpdatePasswordComman
             throw new ForbiddenException("You can only update your own password");
         }
 
-        // Get user from database
-        var user = await _unitOfWork.Users.GetByIdAsync(command.UserId, ct);
+        // Get user from database by PublicId
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(command.UserId, ct);
         if (user is null)
         {
-            throw new NotFoundException($"User with ID {command.UserId} not found");
+            throw new NotFoundException("User", command.UserId);
         }
 
         // Verify current password

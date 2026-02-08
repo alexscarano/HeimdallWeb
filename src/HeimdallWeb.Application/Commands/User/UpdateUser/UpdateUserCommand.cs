@@ -5,8 +5,8 @@ namespace HeimdallWeb.Application.Commands.User.UpdateUser;
 /// Users can only update their own profiles for security.
 /// </summary>
 public record UpdateUserCommand(
-    int UserId,
-    int RequestingUserId,
+    Guid UserId,
+    Guid RequestingUserId,
     string? NewUsername,
     string? NewEmail
 );

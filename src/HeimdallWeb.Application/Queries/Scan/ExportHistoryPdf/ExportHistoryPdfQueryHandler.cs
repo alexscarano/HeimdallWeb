@@ -26,13 +26,15 @@ public class ExportHistoryPdfQueryHandler : IQueryHandler<ExportHistoryPdfQuery,
 
     public async Task<PdfExportResponse> Handle(ExportHistoryPdfQuery query, CancellationToken cancellationToken = default)
     {
-        // Validate user exists
-        var user = await _unitOfWork.Users.GetByIdAsync(query.UserId, cancellationToken);
+        // Validate user exists and resolve to internal ID
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(query.UserId, cancellationToken);
         if (user == null)
             throw new NotFoundException("User", query.UserId);
 
+        var userInternalId = user.UserId; // Use internal ID for FK query
+
         // Get all scan histories with includes
-        var histories = await _unitOfWork.ScanHistories.GetAllByUserIdWithIncludesAsync(query.UserId, cancellationToken);
+        var histories = await _unitOfWork.ScanHistories.GetAllByUserIdWithIncludesAsync(userInternalId, cancellationToken);
 
         var historiesList = histories.ToList();
 

@@ -8,10 +8,10 @@ public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
     public UpdateUserCommandValidator()
     {
         RuleFor(x => x.UserId)
-            .GreaterThan(0).WithMessage("User ID must be greater than 0");
+            .NotEmpty().WithMessage("User ID is required");
 
         RuleFor(x => x.RequestingUserId)
-            .GreaterThan(0).WithMessage("Requesting User ID must be greater than 0");
+            .NotEmpty().WithMessage("Requesting User ID is required");
 
         // Security check: user can only update themselves
         RuleFor(x => x)

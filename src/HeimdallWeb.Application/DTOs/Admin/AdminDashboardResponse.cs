@@ -58,7 +58,7 @@ public record LogItem(
     string Level,
     string Source,
     string Message,
-    int? UserId,
+    Guid? UserId,
     string? Username,
     string? RemoteIp
 );
@@ -67,10 +67,10 @@ public record LogItem(
 /// Recent scan activity item.
 /// </summary>
 public record RecentActivityItem(
-    int HistoryId,
+    Guid HistoryId,
     string Target,
     DateTime CreatedDate,
-    int UserId,
+    Guid UserId,
     string Username,
     bool HasCompleted,
     int FindingsCount

@@ -10,16 +10,16 @@
 
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
-| GET | `/api/v1/users/{id}/profile` | Get user profile information | ✅ Yes |
-| GET | `/api/v1/users/{id}/statistics` | Get user scan statistics | ✅ Yes |
-| PUT | `/api/v1/users/{id}` | Update user profile (username/email) | ✅ Yes |
-| PATCH | `/api/v1/users/{id}/password` | Update user password | ✅ Yes |
-| POST | `/api/v1/users/{id}/profile-image` | Upload profile image (base64) | ✅ Yes |
-| DELETE | `/api/v1/users/{id}` | Delete user account | ✅ Yes |
+| GET | `/api/v1/users/{uuid}/profile` | Get user profile information | ✅ Yes |
+| GET | `/api/v1/users/{uuid}/statistics` | Get user scan statistics | ✅ Yes |
+| PUT | `/api/v1/users/{uuid}` | Update user profile (username/email) | ✅ Yes |
+| PATCH | `/api/v1/users/{uuid}/password` | Update user password | ✅ Yes |
+| POST | `/api/v1/users/{uuid}/profile-image` | Upload profile image (base64) | ✅ Yes |
+| DELETE | `/api/v1/users/{uuid}` | Delete user account | ✅ Yes |
 
 ---
 
-## 1. GET /api/v1/users/{id}/profile
+## 1. GET /api/v1/users/{uuid}/profile
 
 **Description**: Retrieve user profile information.
 
@@ -30,7 +30,7 @@
 ### Request
 
 **Path Parameters**:
-- `id` (integer, required) - User ID
+- `uuid` (string (UUID v7), required) - User ID
 
 **Headers**:
 ```
@@ -43,7 +43,7 @@ Cookie: authHeimdallCookie=<token>
 
 ```json
 {
-  "userId": 10,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "testdoc1770559796",
   "email": "testdoc1770559796@example.com",
   "userType": 1,
@@ -63,13 +63,13 @@ Cookie: authHeimdallCookie=<token>
 
 ```bash
 # Get own profile
-curl -b cookies.txt http://localhost:5110/api/v1/users/10/profile
+curl -b cookies.txt http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile
 ```
 
 **Response**:
 ```json
 {
-  "userId": 10,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "testdoc1770559796",
   "email": "testdoc1770559796@example.com",
   "userType": 1,
@@ -85,7 +85,7 @@ curl -b cookies.txt http://localhost:5110/api/v1/users/10/profile
 
 **Request**:
 ```bash
-curl http://localhost:5110/api/v1/users/10/profile
+curl http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile
 ```
 
 **Response**: `HTTP 401 Unauthorized` (empty body)
@@ -96,21 +96,21 @@ curl http://localhost:5110/api/v1/users/10/profile
 
 **Request**:
 ```bash
-curl -b cookies.txt http://localhost:5110/api/v1/users/99999/profile
+curl -b cookies.txt http://localhost:5110/api/v1/users/019c3e5b-0000-7e25-0000-000000000000/profile
 ```
 
 **Response**: `HTTP 404 Not Found`
 ```json
 {
   "statusCode": 404,
-  "message": "Entity 'User' with key '99999' was not found.",
+  "message": "Entity 'User' not found.",
   "errors": null
 }
 ```
 
 ---
 
-## 2. GET /api/v1/users/{id}/statistics
+## 2. GET /api/v1/users/{uuid}/statistics
 
 **Description**: Get user's scan statistics (total scans, findings breakdown, risk trends).
 
@@ -121,7 +121,7 @@ curl -b cookies.txt http://localhost:5110/api/v1/users/99999/profile
 ### Request
 
 **Path Parameters**:
-- `id` (integer, required) - User ID
+- `uuid` (string (UUID v7), required) - User ID
 
 **Headers**:
 ```
@@ -160,7 +160,7 @@ Cookie: authHeimdallCookie=<token>
 
 ```bash
 # Get user statistics
-curl -b cookies.txt http://localhost:5110/api/v1/users/10/statistics
+curl -b cookies.txt http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/statistics
 ```
 
 **Response**:
@@ -194,14 +194,14 @@ curl -b cookies.txt http://localhost:5110/api/v1/users/10/statistics
 
 **Request**:
 ```bash
-curl http://localhost:5110/api/v1/users/10/statistics
+curl http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/statistics
 ```
 
 **Response**: `HTTP 401 Unauthorized` (empty body)
 
 ---
 
-## 3. PUT /api/v1/users/{id}
+## 3. PUT /api/v1/users/{uuid}
 
 **Description**: Update user profile (username and/or email).
 
@@ -212,7 +212,7 @@ curl http://localhost:5110/api/v1/users/10/statistics
 ### Request
 
 **Path Parameters**:
-- `id` (integer, required) - User ID
+- `uuid` (string (UUID v7), required) - User ID
 
 **Headers**:
 ```
@@ -236,7 +236,7 @@ Cookie: authHeimdallCookie=<token>
 
 ```json
 {
-  "userId": 10,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "updated1770559982",
   "email": "updated1770559982@example.com",
   "userType": 1,
@@ -248,7 +248,7 @@ Cookie: authHeimdallCookie=<token>
 
 ```bash
 # Update both username and email
-curl -X PUT http://localhost:5110/api/v1/users/10 \
+curl -X PUT http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50 \
   -b cookies.txt \
   -H "Content-Type: application/json" \
   -d '{
@@ -260,7 +260,7 @@ curl -X PUT http://localhost:5110/api/v1/users/10 \
 **Response**:
 ```json
 {
-  "userId": 10,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "mynewusername",
   "email": "newemail@example.com",
   "userType": 1,
@@ -270,7 +270,7 @@ curl -X PUT http://localhost:5110/api/v1/users/10 \
 
 **Update only username**:
 ```bash
-curl -X PUT http://localhost:5110/api/v1/users/10 \
+curl -X PUT http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50 \
   -b cookies.txt \
   -H "Content-Type: application/json" \
   -d '{"newUsername": "mynewusername"}'
@@ -278,7 +278,7 @@ curl -X PUT http://localhost:5110/api/v1/users/10 \
 
 **Update only email**:
 ```bash
-curl -X PUT http://localhost:5110/api/v1/users/10 \
+curl -X PUT http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50 \
   -b cookies.txt \
   -H "Content-Type: application/json" \
   -d '{"newEmail": "newemail@example.com"}'
@@ -290,7 +290,7 @@ curl -X PUT http://localhost:5110/api/v1/users/10 \
 
 **Request**:
 ```bash
-curl -X PUT http://localhost:5110/api/v1/users/10 \
+curl -X PUT http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50 \
   -b cookies.txt \
   -H "Content-Type: application/json" \
   -d '{
@@ -314,8 +314,8 @@ curl -X PUT http://localhost:5110/api/v1/users/10 \
 
 **Request**:
 ```bash
-# User ID 10 trying to update user ID 2
-curl -X PUT http://localhost:5110/api/v1/users/2 \
+# User ID 019c3e5b-3fe1-7e25-a3ea-2b443e65bb50 trying to update user 019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c
+curl -X PUT http://localhost:5110/api/v1/users/019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c \
   -b cookies.txt \
   -H "Content-Type: application/json" \
   -d '{"newUsername": "hacker", "newEmail": "hacker@example.com"}'
@@ -334,7 +334,7 @@ curl -X PUT http://localhost:5110/api/v1/users/2 \
 
 ---
 
-## 4. PATCH /api/v1/users/{id}/password
+## 4. PATCH /api/v1/users/{uuid}/password
 
 **Description**: Update the authenticated user's password. Requires current password verification.
 
@@ -347,7 +347,7 @@ curl -X PUT http://localhost:5110/api/v1/users/2 \
 **URL Parameters**:
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| id | int | Yes | User ID (must match authenticated user) |
+| uuid | string (UUID v7) | Yes | User ID (must match authenticated user) |
 
 **Body** (JSON):
 | Field | Type | Required | Validation |
@@ -360,7 +360,7 @@ curl -X PUT http://localhost:5110/api/v1/users/2 \
 
 #### ✅ Success - Password Updated
 ```bash
-curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
+curl -s -X PATCH http://localhost:5110/api/v1/users/019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c/password \
   -H "Content-Type: application/json" \
   -b cookies.txt \
   -d '{
@@ -379,7 +379,7 @@ curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
 
 #### ❌ Error - Wrong Current Password
 ```bash
-curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
+curl -s -X PATCH http://localhost:5110/api/v1/users/019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c/password \
   -H "Content-Type: application/json" \
   -b cookies.txt \
   -d '{
@@ -402,7 +402,7 @@ curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
 
 #### ❌ Error - Weak New Password
 ```bash
-curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
+curl -s -X PATCH http://localhost:5110/api/v1/users/019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c/password \
   -H "Content-Type: application/json" \
   -b cookies.txt \
   -d '{
@@ -430,7 +430,7 @@ curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
 
 #### ❌ Error - Passwords Don't Match
 ```bash
-curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
+curl -s -X PATCH http://localhost:5110/api/v1/users/019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c/password \
   -H "Content-Type: application/json" \
   -b cookies.txt \
   -d '{
@@ -453,7 +453,7 @@ curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
 
 #### ❌ Error - Not Authenticated
 ```bash
-curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
+curl -s -X PATCH http://localhost:5110/api/v1/users/019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c/password \
   -H "Content-Type: application/json" \
   -d '{
     "currentPassword": "Admin@123",
@@ -476,7 +476,7 @@ curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
 
 ---
 
-## 5. POST /api/v1/users/{id}/profile-image
+## 5. POST /api/v1/users/{uuid}/profile-image
 
 **Description**: Upload a profile image (base64 encoded).
 
@@ -487,7 +487,7 @@ curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
 ### Request
 
 **Path Parameters**:
-- `id` (integer, required) - User ID
+- `uuid` (string (UUID v7), required) - User ID
 
 **Headers**:
 ```
@@ -514,8 +514,8 @@ Cookie: authHeimdallCookie=<token>
 
 ```json
 {
-  "userId": 10,
-  "profileImagePath": "uploads/profiles/10_20260208141302.jpg"
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
+  "profileImagePath": "uploads/profiles/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50_20260208141302.jpg"
 }
 ```
 
@@ -527,7 +527,7 @@ Cookie: authHeimdallCookie=<token>
 # Upload a 1x1 red pixel PNG (for testing)
 BASE64_IMAGE="iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
 
-curl -X POST http://localhost:5110/api/v1/users/10/profile-image \
+curl -X POST http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile-image \
   -b cookies.txt \
   -H "Content-Type: application/json" \
   -d "{\"imageBase64\":\"$BASE64_IMAGE\"}"
@@ -536,8 +536,8 @@ curl -X POST http://localhost:5110/api/v1/users/10/profile-image \
 **Response**:
 ```json
 {
-  "userId": 10,
-  "profileImagePath": "uploads/profiles/10_20260208141302.jpg"
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
+  "profileImagePath": "uploads/profiles/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50_20260208141302.jpg"
 }
 ```
 
@@ -547,7 +547,7 @@ curl -X POST http://localhost:5110/api/v1/users/10/profile-image \
 IMAGE_BASE64=$(base64 -w 0 myprofile.jpg)
 
 # Upload
-curl -X POST http://localhost:5110/api/v1/users/10/profile-image \
+curl -X POST http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile-image \
   -b cookies.txt \
   -H "Content-Type: application/json" \
   -d "{\"imageBase64\":\"$IMAGE_BASE64\"}"
@@ -559,7 +559,7 @@ curl -X POST http://localhost:5110/api/v1/users/10/profile-image \
 
 **Request**:
 ```bash
-curl -X POST http://localhost:5110/api/v1/users/10/profile-image \
+curl -X POST http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile-image \
   -b cookies.txt \
   -H "Content-Type: application/json" \
   -d '{"imageBase64":"invalid_base64!!!"}'
@@ -580,7 +580,7 @@ curl -X POST http://localhost:5110/api/v1/users/10/profile-image \
 
 **Request**:
 ```bash
-curl -X POST http://localhost:5110/api/v1/users/10/profile-image \
+curl -X POST http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile-image \
   -H "Content-Type: application/json" \
   -d '{"imageBase64":"iVBORw0KGgo..."}'
 ```
@@ -589,7 +589,7 @@ curl -X POST http://localhost:5110/api/v1/users/10/profile-image \
 
 ---
 
-## 6. DELETE /api/v1/users/{id}
+## 6. DELETE /api/v1/users/{uuid}
 
 **Description**: Delete a user account and all associated data (scans, findings, logs).
 
@@ -603,7 +603,7 @@ curl -X POST http://localhost:5110/api/v1/users/10/profile-image \
 ### Request
 
 **Path Parameters**:
-- `id` (integer, required) - User ID
+- `uuid` (string (UUID v7), required) - User ID
 
 **Query Parameters**:
 - `confirmDelete` (boolean, required) - Must be `true` to proceed
@@ -621,7 +621,7 @@ Cookie: authHeimdallCookie=<token>
 ```json
 {
   "message": "User deleted successfully",
-  "userId": 11
+  "userId": "019c3e5b-5c3d-7e25-c3d4-4e5f6a7b8c9d"
 }
 ```
 
@@ -633,7 +633,7 @@ Cookie: authHeimdallCookie=<token>
 
 ```bash
 # Delete own account with password confirmation
-curl -X DELETE "http://localhost:5110/api/v1/users/10?confirmDelete=true&password=Test@1234" \
+curl -X DELETE "http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50?confirmDelete=true&password=Test@1234" \
   -b cookies.txt
 ```
 
@@ -641,14 +641,14 @@ curl -X DELETE "http://localhost:5110/api/v1/users/10?confirmDelete=true&passwor
 ```json
 {
   "message": "User deleted successfully",
-  "userId": 10
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50"
 }
 ```
 
 **Verification** (subsequent requests will fail):
 ```bash
 # This will now return 401 Unauthorized
-curl -b cookies.txt http://localhost:5110/api/v1/users/10/profile
+curl -b cookies.txt http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile
 ```
 
 ---
@@ -657,7 +657,7 @@ curl -b cookies.txt http://localhost:5110/api/v1/users/10/profile
 
 ```bash
 # Admin deletes a regular user without password
-curl -X DELETE "http://localhost:5110/api/v1/users/11?confirmDelete=true" \
+curl -X DELETE "http://localhost:5110/api/v1/users/019c3e5b-5c3d-7e25-c3d4-4e5f6a7b8c9d?confirmDelete=true" \
   -b admin_cookies.txt
 ```
 
@@ -665,7 +665,7 @@ curl -X DELETE "http://localhost:5110/api/v1/users/11?confirmDelete=true" \
 ```json
 {
   "message": "User deleted successfully",
-  "userId": 11
+  "userId": "019c3e5b-5c3d-7e25-c3d4-4e5f6a7b8c9d"
 }
 ```
 
@@ -675,7 +675,7 @@ curl -X DELETE "http://localhost:5110/api/v1/users/11?confirmDelete=true" \
 
 **Request**:
 ```bash
-curl -X DELETE "http://localhost:5110/api/v1/users/10?confirmDelete=true" \
+curl -X DELETE "http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50?confirmDelete=true" \
   -b cookies.txt
 ```
 
@@ -696,7 +696,7 @@ curl -X DELETE "http://localhost:5110/api/v1/users/10?confirmDelete=true" \
 
 **Request**:
 ```bash
-curl -X DELETE "http://localhost:5110/api/v1/users/10?confirmDelete=true&password=WrongPassword123" \
+curl -X DELETE "http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50?confirmDelete=true&password=WrongPassword123" \
   -b cookies.txt
 ```
 
@@ -716,7 +716,7 @@ curl -X DELETE "http://localhost:5110/api/v1/users/10?confirmDelete=true&passwor
 **Request**:
 ```bash
 # Regular user trying to delete admin account
-curl -X DELETE "http://localhost:5110/api/v1/users/2?confirmDelete=true&password=Test@1234" \
+curl -X DELETE "http://localhost:5110/api/v1/users/019c3e5b-4a12-7e25-b1c2-3d4e5f6a7b8c?confirmDelete=true&password=Test@1234" \
   -b cookies.txt
 ```
 
@@ -747,7 +747,7 @@ curl -X DELETE "http://localhost:5110/api/v1/users/2?confirmDelete=true&password
 | Regular User | ✅ Allow | ❌ Forbidden |
 | Admin | ✅ Allow | ❌ Forbidden |
 
-**Note**: Even admins cannot update other users' profiles. Use admin endpoints (`PATCH /api/v1/admin/users/{id}/status`) to modify user status.
+**Note**: Even admins cannot update other users' profiles. Use admin endpoints (`PATCH /api/v1/admin/users/{uuid}/status`) to modify user status.
 
 ### Delete Account
 | User Type | Own Account | Other Regular Users | Other Admins |

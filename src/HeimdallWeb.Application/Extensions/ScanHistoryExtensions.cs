@@ -18,11 +18,11 @@ public static class ScanHistoryExtensions
     public static ScanHistoryDetailResponse ToDetailDto(this ScanHistory scanHistory)
     {
         return new ScanHistoryDetailResponse(
-            HistoryId: scanHistory.HistoryId,
+            HistoryId: scanHistory.PublicId,
             Target: scanHistory.Target.Value, // ScanTarget is a Value Object
             RawJsonResult: scanHistory.RawJsonResult,
             CreatedDate: scanHistory.CreatedDate,
-            UserId: scanHistory.UserId,
+            UserId: scanHistory.User?.PublicId ?? Guid.Empty,
             Duration: scanHistory.Duration?.Value.ToString(@"hh\:mm\:ss"), // ScanDuration is a Value Object (TimeSpan)
             HasCompleted: scanHistory.HasCompleted,
             Summary: scanHistory.Summary,
@@ -41,7 +41,7 @@ public static class ScanHistoryExtensions
     public static ExecuteScanResponse ToExecuteScanDto(this ScanHistory scanHistory)
     {
         return new ExecuteScanResponse(
-            HistoryId: scanHistory.HistoryId,
+            HistoryId: scanHistory.PublicId,
             Target: scanHistory.Target.Value,
             Summary: scanHistory.Summary,
             Duration: scanHistory.Duration?.Value ?? TimeSpan.Zero, // TimeSpan directly, default to Zero if null
@@ -59,7 +59,7 @@ public static class ScanHistoryExtensions
     public static ScanHistorySummaryResponse ToSummaryDto(this ScanHistory scanHistory)
     {
         return new ScanHistorySummaryResponse(
-            HistoryId: scanHistory.HistoryId,
+            HistoryId: scanHistory.PublicId,
             Target: scanHistory.Target.Value,
             CreatedDate: scanHistory.CreatedDate,
             Duration: scanHistory.Duration?.Value.ToString(@"hh\:mm\:ss"),

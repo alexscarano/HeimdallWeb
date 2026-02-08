@@ -29,13 +29,15 @@
     },
     {
       "key": "user_id",
-      "value": "",
-      "type": "string"
+      "value": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
+      "type": "string",
+      "description": "UUID v7 format - auto-set by Login/Register test scripts"
     },
     {
       "key": "history_id",
-      "value": "",
-      "type": "string"
+      "value": "019c3e5d-166b-7292-9844-54ceaee964be",
+      "type": "string",
+      "description": "UUID v7 format - auto-set by Execute Scan test script"
     },
     {
       "key": "admin_email",

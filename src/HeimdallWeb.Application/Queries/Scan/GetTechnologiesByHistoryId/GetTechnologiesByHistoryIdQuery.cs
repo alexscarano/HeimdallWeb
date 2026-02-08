@@ -7,6 +7,6 @@ namespace HeimdallWeb.Application.Queries.Scan.GetTechnologiesByHistoryId;
 /// <param name="HistoryId">The scan history ID</param>
 /// <param name="RequestingUserId">The user requesting the data (for ownership verification)</param>
 public record GetTechnologiesByHistoryIdQuery(
-    int HistoryId,
-    int RequestingUserId
+    Guid HistoryId,
+    Guid RequestingUserId
 );

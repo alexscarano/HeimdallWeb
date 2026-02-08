@@ -6,5 +6,5 @@ namespace HeimdallWeb.Application.DTOs.User;
 /// </summary>
 public record DeleteUserResponse(
     string Message,
-    int UserId
+    Guid UserId
 );

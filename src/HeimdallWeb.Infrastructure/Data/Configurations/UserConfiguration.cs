@@ -24,6 +24,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("user_id")
             .ValueGeneratedOnAdd();
 
+        builder.Property(u => u.PublicId)
+            .HasColumnName("public_id")
+            .HasColumnType("uuid")
+            .IsRequired();
+
         // Properties
         builder.Property(u => u.Username)
             .HasColumnName("username")
@@ -97,5 +102,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasIndex(u => u.CreatedAt)
             .HasDatabaseName("ix_tb_user_created_at");
+
+        builder.HasIndex(u => u.PublicId)
+            .IsUnique()
+            .HasDatabaseName("ux_tb_user_public_id");
     }
 }

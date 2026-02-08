@@ -23,7 +23,7 @@ public class GetAdminDashboardQueryHandler : IQueryHandler<GetAdminDashboardQuer
     public async Task<AdminDashboardResponse> Handle(GetAdminDashboardQuery query, CancellationToken cancellationToken = default)
     {
         // Verify requesting user is admin
-        var requestingUser = await _unitOfWork.Users.GetByIdAsync(query.RequestingUserId, cancellationToken);
+        var requestingUser = await _unitOfWork.Users.GetByPublicIdAsync(query.RequestingUserId, cancellationToken);
         if (requestingUser == null)
             throw new NotFoundException("User", query.RequestingUserId);
 
@@ -79,7 +79,7 @@ public class GetAdminDashboardQueryHandler : IQueryHandler<GetAdminDashboardQuer
             Level: l.Level,
             Source: l.Source ?? string.Empty,
             Message: l.Message,
-            UserId: l.UserId,
+            UserId: l.User?.PublicId,
             Username: l.User?.Username,
             RemoteIp: l.RemoteIp
         )).ToList();
@@ -98,10 +98,10 @@ public class GetAdminDashboardQueryHandler : IQueryHandler<GetAdminDashboardQuer
         var recentScans = await _unitOfWork.ScanHistories.GetRecentAsync(10, cancellationToken);
 
         var recentActivity = recentScans.Select(h => new RecentActivityItem(
-            HistoryId: h.HistoryId,
+            HistoryId: h.PublicId,
             Target: h.Target.Value,
             CreatedDate: h.CreatedDate,
-            UserId: h.UserId,
+            UserId: h.User?.PublicId ?? Guid.Empty,
             Username: h.User?.Username ?? "Unknown",
             HasCompleted: h.HasCompleted,
             FindingsCount: h.Findings.Count

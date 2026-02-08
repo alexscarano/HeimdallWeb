@@ -21,7 +21,7 @@ public static class TokenService
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.PublicId.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Email, user.Email.Value),
                 new Claim(ClaimTypes.Role, ((int)user.UserType).ToString())
@@ -39,12 +39,12 @@ public static class TokenService
         return tokenHandler.WriteToken(token);
     }
 
-    public static int? GetUserIdFromClaims(ClaimsPrincipal user)
+    public static Guid? GetUserIdFromClaims(ClaimsPrincipal user)
     {
         var sub = user.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
                   ?? user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (int.TryParse(sub, out var id))
+        if (Guid.TryParse(sub, out var id))
             return id;
 
         return null;

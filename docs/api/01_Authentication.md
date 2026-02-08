@@ -46,7 +46,7 @@ Content-Type: application/json
 
 ```json
 {
-  "userId": 10,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "testdoc1770559796",
   "email": "testdoc1770559796@example.com",
   "userType": 1,
@@ -80,7 +80,7 @@ curl -X POST http://localhost:5110/api/v1/auth/register \
 **Response**:
 ```json
 {
-  "userId": 10,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "newuser123",
   "email": "newuser@example.com",
   "userType": 1,
@@ -224,7 +224,7 @@ Content-Type: application/json
 
 ```json
 {
-  "userId": 10,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "testdoc1770559796",
   "email": "testdoc1770559796@example.com",
   "userType": 1,
@@ -266,7 +266,7 @@ curl -X POST http://localhost:5110/api/v1/auth/login \
 **Response**:
 ```json
 {
-  "userId": 10,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "username": "newuser123",
   "email": "newuser@example.com",
   "userType": 1,
@@ -278,7 +278,7 @@ curl -X POST http://localhost:5110/api/v1/auth/login \
 **Using the cookie in subsequent requests**:
 ```bash
 # Use the saved cookie for authenticated requests
-curl -b cookies.txt http://localhost:5110/api/v1/users/10/profile
+curl -b cookies.txt http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile
 ```
 
 ### Error Scenarios
@@ -372,7 +372,7 @@ curl -X POST http://localhost:5110/api/v1/auth/logout \
 **Verification** (subsequent request should fail):
 ```bash
 # This should now return 401 Unauthorized
-curl -b cookies.txt http://localhost:5110/api/v1/users/10/profile
+curl -b cookies.txt http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile
 ```
 
 ### Error Scenarios
@@ -396,7 +396,7 @@ The JWT token returned by `/register` and `/login` contains the following claims
 
 ```json
 {
-  "sub": "10",                              // User ID
+  "sub": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",  // User ID (UUID v7)
   "unique_name": "newuser123",              // Username
   "email": "newuser@example.com",           // Email
   "role": "1",                              // UserType (1=Regular, 2=Admin)
@@ -440,7 +440,7 @@ curl -c cookies.txt -X POST http://localhost:5110/api/v1/auth/login \
   -d '{"emailOrLogin":"user@example.com","password":"Test@1234"}'
 
 # Use cookie in subsequent requests
-curl -b cookies.txt http://localhost:5110/api/v1/users/10/profile
+curl -b cookies.txt http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile
 ```
 
 **Bearer token-based** (mobile app/SPA):
@@ -453,7 +453,7 @@ TOKEN=$(curl -s -X POST http://localhost:5110/api/v1/auth/login \
 
 # Use token in Authorization header
 curl -H "Authorization: Bearer $TOKEN" \
-  http://localhost:5110/api/v1/users/10/profile
+  http://localhost:5110/api/v1/users/019c3e5b-3fe1-7e25-a3ea-2b443e65bb50/profile
 ```
 
 ### Security Considerations

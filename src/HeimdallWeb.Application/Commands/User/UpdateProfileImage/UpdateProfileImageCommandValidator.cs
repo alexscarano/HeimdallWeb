@@ -9,10 +9,10 @@ public class UpdateProfileImageCommandValidator : AbstractValidator<UpdateProfil
     public UpdateProfileImageCommandValidator()
     {
         RuleFor(x => x.UserId)
-            .GreaterThan(0).WithMessage("User ID must be greater than 0");
+            .NotEmpty().WithMessage("User ID is required");
 
         RuleFor(x => x.RequestingUserId)
-            .GreaterThan(0).WithMessage("Requesting user ID must be greater than 0");
+            .NotEmpty().WithMessage("Requesting user ID is required");
 
         RuleFor(x => x)
             .Must(x => x.UserId == x.RequestingUserId)

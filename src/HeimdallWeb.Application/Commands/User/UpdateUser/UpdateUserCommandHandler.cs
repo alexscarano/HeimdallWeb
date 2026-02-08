@@ -42,11 +42,11 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, Updat
             throw new ForbiddenException("You can only update your own profile");
         }
 
-        // Get user from database
-        var user = await _unitOfWork.Users.GetByIdAsync(request.UserId, ct);
+        // Get user from database by PublicId
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(request.UserId, ct);
         if (user is null)
         {
-            throw new NotFoundException($"User with ID {request.UserId} not found");
+            throw new NotFoundException("User", request.UserId);
         }
 
         var isUpdated = false;
@@ -58,7 +58,7 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, Updat
 
             // Check if username is already taken by another user
             var existingUserWithUsername = await _unitOfWork.Users
-                .GetByUsernameAsync(trimmedUsername, request.UserId, ct);
+                .GetByUsernameAsync(trimmedUsername, user.UserId, ct);
 
             if (existingUserWithUsername is not null)
             {
@@ -78,7 +78,7 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, Updat
 
             // Check if email is already taken by another user
             var existingUserWithEmail = await _unitOfWork.Users
-                .GetByEmailAsync(emailAddress, request.UserId, ct);
+                .GetByEmailAsync(emailAddress, user.UserId, ct);
 
             if (existingUserWithEmail is not null)
             {
@@ -101,7 +101,7 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, Updat
         }
 
         return new UpdateUserResponse(
-            UserId: user.UserId,
+            UserId: user.PublicId,
             Username: user.Username,
             Email: user.Email.Value,
             UserType: (int)user.UserType,

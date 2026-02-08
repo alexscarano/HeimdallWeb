@@ -7,10 +7,10 @@ public class DeleteUserCommandValidator : AbstractValidator<DeleteUserCommand>
     public DeleteUserCommandValidator()
     {
         RuleFor(x => x.UserId)
-            .GreaterThan(0).WithMessage("User ID must be greater than 0");
+            .NotEmpty().WithMessage("User ID is required");
 
         RuleFor(x => x.RequestingUserId)
-            .GreaterThan(0).WithMessage("Requesting User ID must be greater than 0");
+            .NotEmpty().WithMessage("Requesting User ID is required");
 
         // Password is optional for admins deleting other users
         // But required when user deletes their own account

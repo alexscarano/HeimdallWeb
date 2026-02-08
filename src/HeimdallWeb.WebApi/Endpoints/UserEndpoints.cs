@@ -19,18 +19,18 @@ public static class UserEndpoints
             .WithTags("Users")
             .RequireAuthorization();
 
-        group.MapGet("/{id:int}/profile", GetUserProfile);
-        group.MapGet("/{id:int}/statistics", GetUserStatistics);
-        group.MapPut("/{id:int}", UpdateUser);
-        group.MapPatch("/{id:int}/password", UpdatePassword);
-        group.MapDelete("/{id:int}", DeleteUser);
-        group.MapPost("/{id:int}/profile-image", UpdateProfileImage);
+        group.MapGet("/{id:guid}/profile", GetUserProfile);
+        group.MapGet("/{id:guid}/statistics", GetUserStatistics);
+        group.MapPut("/{id:guid}", UpdateUser);
+        group.MapPatch("/{id:guid}/password", UpdatePassword);
+        group.MapDelete("/{id:guid}", DeleteUser);
+        group.MapPost("/{id:guid}/profile-image", UpdateProfileImage);
 
         return group;
     }
 
     private static async Task<IResult> GetUserProfile(
-        int id,
+        Guid id,
         IQueryHandler<GetUserProfileQuery, UserProfileResponse> handler)
     {
         var query = new GetUserProfileQuery(id);
@@ -40,7 +40,7 @@ public static class UserEndpoints
     }
 
     private static async Task<IResult> GetUserStatistics(
-        int id,
+        Guid id,
         IQueryHandler<GetUserStatisticsQuery, UserStatisticsResponse> handler)
     {
         var query = new GetUserStatisticsQuery(id);
@@ -50,12 +50,12 @@ public static class UserEndpoints
     }
 
     private static async Task<IResult> UpdateUser(
-        int id,
+        Guid id,
         [FromBody] UpdateUserCommand request,
         ICommandHandler<UpdateUserCommand, UpdateUserResponse> handler,
         HttpContext context)
     {
-        var authenticatedUserId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var authenticatedUserId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
 
         // Create command with authenticated user context
         var command = new UpdateUserCommand(
@@ -71,12 +71,12 @@ public static class UserEndpoints
     }
 
     private static async Task<IResult> UpdatePassword(
-        int id,
+        Guid id,
         [FromBody] UpdatePasswordCommand request,
         ICommandHandler<UpdatePasswordCommand, UpdatePasswordResponse> handler,
         HttpContext context)
     {
-        var authenticatedUserId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var authenticatedUserId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
 
         // Create command with authenticated user context
         var command = new UpdatePasswordCommand(
@@ -93,13 +93,13 @@ public static class UserEndpoints
     }
 
     private static async Task<IResult> DeleteUser(
-        int id,
+        Guid id,
         ICommandHandler<DeleteUserCommand, DeleteUserResponse> handler,
         HttpContext context,
         string? password = null,
         bool confirmDelete = false)
     {
-        var authenticatedUserId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var authenticatedUserId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
 
         // For admin users, password confirmation may not be required
         // For regular users, they must provide their password to delete their own account
@@ -110,12 +110,12 @@ public static class UserEndpoints
     }
 
     private static async Task<IResult> UpdateProfileImage(
-        int id,
+        Guid id,
         [FromBody] UpdateProfileImageCommand request,
         ICommandHandler<UpdateProfileImageCommand, UpdateProfileImageResponse> handler,
         HttpContext context)
     {
-        var authenticatedUserId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var authenticatedUserId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
 
         // Create command with authenticated user context
         var command = new UpdateProfileImageCommand(

@@ -5,6 +5,6 @@ namespace HeimdallWeb.Application.DTOs.User;
 /// Returns updated profile image path.
 /// </summary>
 public record UpdateProfileImageResponse(
-    int UserId,
+    Guid UserId,
     string ProfileImagePath
 );

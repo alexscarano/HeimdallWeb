@@ -101,7 +101,7 @@ public class RepositoryIntegrationTests : IDisposable
             userId: user.UserId
         );
         
-        scan.CompleteScan(duration, "JSONB test summary", "eu dou a bunda para vários homens");
+        scan.CompleteScan(duration, "JSONB test summary", "Teste JSON");
 
         var created = await repo.AddAsync(scan);
         await _context.SaveChangesAsync();

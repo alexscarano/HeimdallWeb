@@ -35,24 +35,24 @@ public class DeleteScanHistoryCommandHandler : ICommandHandler<DeleteScanHistory
             throw new ValidationException(errors);
         }
 
-        // Get scan history from database
-        var scanHistory = await _unitOfWork.ScanHistories.GetByIdAsync(request.HistoryId, ct);
+        // Get scan history from database by PublicId
+        var scanHistory = await _unitOfWork.ScanHistories.GetByPublicIdAsync(request.HistoryId, ct);
         if (scanHistory is null)
         {
-            throw new NotFoundException($"Scan history with ID {request.HistoryId} not found");
+            throw new NotFoundException("Scan history", request.HistoryId);
         }
 
         // SECURITY: 
         // - Regular users can only delete their own scans
         // - Admins can delete any scan
-        var requestingUser = await _unitOfWork.Users.GetByIdAsync(request.RequestingUserId, ct);
+        var requestingUser = await _unitOfWork.Users.GetByPublicIdAsync(request.RequestingUserId, ct);
         if (requestingUser is null)
         {
             throw new UnauthorizedException("Invalid requesting user");
         }
 
         bool isAdmin = requestingUser.UserType == UserType.Admin;
-        bool isOwner = scanHistory.UserId == request.RequestingUserId;
+        bool isOwner = scanHistory.UserId == requestingUser.UserId; // Compare internal IDs
 
         if (!isAdmin && !isOwner)
         {
@@ -60,17 +60,19 @@ public class DeleteScanHistoryCommandHandler : ICommandHandler<DeleteScanHistory
         }
 
         var target = scanHistory.Target;
+        var historyInternalId = scanHistory.HistoryId; // For internal delete operation
+        var requestingUserInternalId = requestingUser.UserId; // For logging
 
         // Delete scan history
-        await _unitOfWork.ScanHistories.DeleteAsync(request.HistoryId, ct);
+        await _unitOfWork.ScanHistories.DeleteAsync(historyInternalId, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
         // Log deletion
-        await LogScanHistoryDeletionAsync(request.HistoryId, request.RequestingUserId, target, ct);
+        await LogScanHistoryDeletionAsync(historyInternalId, requestingUserInternalId, target, ct);
 
         return new DeleteScanHistoryResponse(
             Success: true,
-            HistoryId: request.HistoryId,
+            HistoryId: request.HistoryId, // Return the PublicId
             Target: target
         );
     }

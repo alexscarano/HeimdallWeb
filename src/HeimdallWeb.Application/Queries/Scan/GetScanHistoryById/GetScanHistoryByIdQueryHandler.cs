@@ -24,25 +24,25 @@ public class GetScanHistoryByIdQueryHandler : IQueryHandler<GetScanHistoryByIdQu
 
     public async Task<ScanHistoryDetailResponse> Handle(GetScanHistoryByIdQuery query, CancellationToken cancellationToken = default)
     {
-        // Get scan history with all includes
-        var scanHistory = await _unitOfWork.ScanHistories.GetByIdWithIncludesAsync(query.HistoryId, cancellationToken);
+        // Get scan history with all includes by PublicId
+        var scanHistory = await _unitOfWork.ScanHistories.GetByPublicIdWithIncludesAsync(query.HistoryId, cancellationToken);
 
         if (scanHistory == null)
-            throw new NotFoundException($"Scan history with ID {query.HistoryId} not found");
+            throw new NotFoundException("Scan history", query.HistoryId);
 
         // Verify ownership (users can only view their own scans, admins can view any)
-        var user = await _unitOfWork.Users.GetByIdAsync(query.RequestingUserId, cancellationToken);
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(query.RequestingUserId, cancellationToken);
 
         if (user == null)
             throw new NotFoundException("User", query.RequestingUserId);
 
-        if (user.UserType != UserType.Admin && scanHistory.UserId != query.RequestingUserId)
+        if (user.UserType != UserType.Admin && scanHistory.UserId != user.UserId)
             throw new ForbiddenException("You can only view your own scan history");
 
-        // Get related entities
-        var findings = await _unitOfWork.Findings.GetByHistoryIdAsync(query.HistoryId, cancellationToken);
-        var technologies = await _unitOfWork.Technologies.GetByHistoryIdAsync(query.HistoryId, cancellationToken);
-        var iaSummary = await _unitOfWork.IASummaries.GetByHistoryIdAsync(query.HistoryId, cancellationToken);
+        // Get related entities using internal HistoryId
+        var findings = await _unitOfWork.Findings.GetByHistoryIdAsync(scanHistory.HistoryId, cancellationToken);
+        var technologies = await _unitOfWork.Technologies.GetByHistoryIdAsync(scanHistory.HistoryId, cancellationToken);
+        var iaSummary = await _unitOfWork.IASummaries.GetByHistoryIdAsync(scanHistory.HistoryId, cancellationToken);
 
         // Map to response DTOs
         var findingResponses = findings.Select(f => new FindingResponse(
@@ -93,11 +93,11 @@ public class GetScanHistoryByIdQueryHandler : IQueryHandler<GetScanHistoryByIdQu
         }
 
         return new ScanHistoryDetailResponse(
-            HistoryId: scanHistory.HistoryId,
+            HistoryId: scanHistory.PublicId,
             Target: scanHistory.Target.Value,
             RawJsonResult: scanHistory.RawJsonResult,
             CreatedDate: scanHistory.CreatedDate,
-            UserId: scanHistory.UserId,
+            UserId: scanHistory.User?.PublicId ?? Guid.Empty,
             Duration: durationString,
             HasCompleted: scanHistory.HasCompleted,
             Summary: scanHistory.Summary,

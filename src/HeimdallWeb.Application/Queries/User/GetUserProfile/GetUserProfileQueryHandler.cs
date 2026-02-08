@@ -22,15 +22,15 @@ public class GetUserProfileQueryHandler : IQueryHandler<GetUserProfileQuery, Use
 
     public async Task<UserProfileResponse> Handle(GetUserProfileQuery query, CancellationToken cancellationToken = default)
     {
-        // Get user by ID
-        var user = await _unitOfWork.Users.GetByIdAsync(query.UserId, cancellationToken);
+        // Get user by PublicId
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(query.UserId, cancellationToken);
 
         if (user == null)
             throw new NotFoundException("User", query.UserId);
 
         // Map to response DTO
         return new UserProfileResponse(
-            UserId: user.UserId,
+            UserId: user.PublicId,
             Username: user.Username,
             Email: user.Email.Value,
             UserType: (int)user.UserType,

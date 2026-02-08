@@ -6,8 +6,8 @@ namespace HeimdallWeb.Application.Commands.User.DeleteUser;
 /// Users can only delete their own accounts.
 /// </summary>
 public record DeleteUserCommand(
-    int UserId,
-    int RequestingUserId,
+    Guid UserId,
+    Guid RequestingUserId,
     string Password,
     bool ConfirmDelete
 );

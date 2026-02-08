@@ -19,22 +19,22 @@ public static class HistoryEndpoints
             .WithTags("Scan History")
             .RequireAuthorization();
 
-        group.MapGet("/{id:int}", GetScanHistoryById);
-        group.MapGet("/{id:int}/findings", GetFindings);
-        group.MapGet("/{id:int}/technologies", GetTechnologies);
-        group.MapGet("/{id:int}/export", ExportSinglePdf);
+        group.MapGet("/{id:guid}", GetScanHistoryById);
+        group.MapGet("/{id:guid}/findings", GetFindings);
+        group.MapGet("/{id:guid}/technologies", GetTechnologies);
+        group.MapGet("/{id:guid}/export", ExportSinglePdf);
         group.MapGet("/export", ExportAllPdf);
-        group.MapDelete("/{id:int}", DeleteScanHistory);
+        group.MapDelete("/{id:guid}", DeleteScanHistory);
 
         return group;
     }
 
     private static async Task<IResult> GetScanHistoryById(
-        int id,
+        Guid id,
         IQueryHandler<GetScanHistoryByIdQuery, ScanHistoryDetailResponse> handler,
         HttpContext context)
     {
-        var userId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
 
         var query = new GetScanHistoryByIdQuery(id, userId);
         var result = await handler.Handle(query);
@@ -43,11 +43,11 @@ public static class HistoryEndpoints
     }
 
     private static async Task<IResult> GetFindings(
-        int id,
+        Guid id,
         IQueryHandler<GetFindingsByHistoryIdQuery, IEnumerable<FindingResponse>> handler,
         HttpContext context)
     {
-        var userId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
 
         var query = new GetFindingsByHistoryIdQuery(id, userId);
         var result = await handler.Handle(query);
@@ -56,11 +56,11 @@ public static class HistoryEndpoints
     }
 
     private static async Task<IResult> GetTechnologies(
-        int id,
+        Guid id,
         IQueryHandler<GetTechnologiesByHistoryIdQuery, IEnumerable<TechnologyResponse>> handler,
         HttpContext context)
     {
-        var userId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
 
         var query = new GetTechnologiesByHistoryIdQuery(id, userId);
         var result = await handler.Handle(query);
@@ -69,11 +69,11 @@ public static class HistoryEndpoints
     }
 
     private static async Task<IResult> ExportSinglePdf(
-        int id,
+        Guid id,
         IQueryHandler<ExportSingleHistoryPdfQuery, PdfExportResponse> handler,
         HttpContext context)
     {
-        var userId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
         var username = context.User.Identity?.Name ?? "Anonymous";
 
         var query = new ExportSingleHistoryPdfQuery(id, userId, username);
@@ -89,7 +89,7 @@ public static class HistoryEndpoints
         IQueryHandler<ExportHistoryPdfQuery, PdfExportResponse> handler,
         HttpContext context)
     {
-        var userId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
         var username = context.User.Identity?.Name ?? "Anonymous";
 
         var query = new ExportHistoryPdfQuery(userId, username);
@@ -102,11 +102,11 @@ public static class HistoryEndpoints
     }
 
     private static async Task<IResult> DeleteScanHistory(
-        int id,
+        Guid id,
         ICommandHandler<DeleteScanHistoryCommand, DeleteScanHistoryResponse> handler,
         HttpContext context)
     {
-        var userId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
 
         var command = new DeleteScanHistoryCommand(id, userId);
         await handler.Handle(command);

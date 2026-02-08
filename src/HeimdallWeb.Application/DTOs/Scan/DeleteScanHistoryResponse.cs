@@ -6,6 +6,6 @@ namespace HeimdallWeb.Application.DTOs.Scan;
 /// </summary>
 public record DeleteScanHistoryResponse(
     bool Success,
-    int HistoryId,
+    Guid HistoryId,
     string Target
 );

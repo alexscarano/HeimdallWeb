@@ -16,7 +16,7 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
             .Must(BeValidUrlOrIp).WithMessage("Target must be a valid URL or IP address");
 
         RuleFor(x => x.UserId)
-            .GreaterThan(0).WithMessage("Invalid user ID");
+            .NotEmpty().WithMessage("User ID is required");
 
         RuleFor(x => x.RemoteIp)
             .NotEmpty().WithMessage("Remote IP address is required")

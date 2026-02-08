@@ -4,10 +4,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace HeimdallWeb.Infrastructure.Data.Migrations
+namespace HeimdallWeb.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialPostgreSQLMigration : Migration
+    public partial class InitialWithPublicIds : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,6 +18,7 @@ namespace HeimdallWeb.Infrastructure.Data.Migrations
                 {
                     user_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    public_id = table.Column<Guid>(type: "uuid", nullable: false),
                     username = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     email = table.Column<string>(type: "character varying(75)", maxLength: 75, nullable: false),
                     password = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
@@ -38,6 +39,7 @@ namespace HeimdallWeb.Infrastructure.Data.Migrations
                 {
                     history_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    public_id = table.Column<Guid>(type: "uuid", nullable: false),
                     target = table.Column<string>(type: "character varying(75)", maxLength: 75, nullable: false),
                     raw_json_result = table.Column<string>(type: "jsonb", nullable: false),
                     summary = table.Column<string>(type: "text", nullable: false),
@@ -88,7 +90,7 @@ namespace HeimdallWeb.Infrastructure.Data.Migrations
                     description = table.Column<string>(type: "text", nullable: false),
                     severity = table.Column<short>(type: "smallint", nullable: false),
                     evidence = table.Column<string>(type: "text", nullable: false),
-                    recommendation = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    recommendation = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     history_id = table.Column<int>(type: "integer", nullable: true)
                 },
@@ -231,6 +233,12 @@ namespace HeimdallWeb.Infrastructure.Data.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
+                name: "ux_tb_history_public_id",
+                table: "tb_history",
+                column: "public_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_tb_ia_summary_created_date",
                 table: "tb_ia_summary",
                 column: "created_date");
@@ -299,6 +307,12 @@ namespace HeimdallWeb.Infrastructure.Data.Migrations
                 name: "ux_tb_user_email",
                 table: "tb_user",
                 column: "email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ux_tb_user_public_id",
+                table: "tb_user",
+                column: "public_id",
                 unique: true);
 
             migrationBuilder.CreateIndex(

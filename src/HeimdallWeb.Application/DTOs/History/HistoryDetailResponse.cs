@@ -4,14 +4,14 @@ namespace HeimdallWeb.Application.DTOs.History;
 /// Response DTO for detailed scan history with findings and technologies.
 /// </summary>
 public record HistoryDetailResponse(
-    int HistoryId,
+    Guid HistoryId,
     string Target,
     string? Summary,
     string? RawJsonResult,
     TimeSpan Duration,
     bool HasCompleted,
     DateTime CreatedDate,
-    int UserId,
+    Guid UserId,
     IReadOnlyList<FindingResponse> Findings,
     IReadOnlyList<TechnologyResponse> Technologies
 );

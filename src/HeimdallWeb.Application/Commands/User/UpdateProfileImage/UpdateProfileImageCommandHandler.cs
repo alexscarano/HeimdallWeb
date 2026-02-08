@@ -52,11 +52,11 @@ public class UpdateProfileImageCommandHandler : ICommandHandler<UpdateProfileIma
             throw new ForbiddenException("You can only update your own profile image");
         }
 
-        // Get user from database WITH TRACKING (so EF Core can save changes)
-        var user = await _unitOfWork.Users.GetByIdForUpdateAsync(request.UserId, ct);
+        // Get user from database WITH TRACKING by PublicId (so EF Core can save changes)
+        var user = await _unitOfWork.Users.GetByPublicIdForUpdateAsync(request.UserId, ct);
         if (user is null)
         {
-            throw new NotFoundException($"User with ID {request.UserId} not found");
+            throw new NotFoundException("User", request.UserId);
         }
 
         // Decode Base64 to byte array
@@ -137,7 +137,7 @@ public class UpdateProfileImageCommandHandler : ICommandHandler<UpdateProfileIma
         await _unitOfWork.SaveChangesAsync(ct);
 
         return new UpdateProfileImageResponse(
-            UserId: user.UserId,
+            UserId: user.PublicId,
             ProfileImagePath: relativePath
         );
     }

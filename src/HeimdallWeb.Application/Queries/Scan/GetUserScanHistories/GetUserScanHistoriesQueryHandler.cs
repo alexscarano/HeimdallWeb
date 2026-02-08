@@ -24,10 +24,12 @@ public class GetUserScanHistoriesQueryHandler : IQueryHandler<GetUserScanHistori
 
     public async Task<PaginatedScanHistoriesResponse> Handle(GetUserScanHistoriesQuery query, CancellationToken cancellationToken = default)
     {
-        // Validate user exists
-        var user = await _unitOfWork.Users.GetByIdAsync(query.UserId, cancellationToken);
+        // Validate user exists and resolve to internal ID
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(query.UserId, cancellationToken);
         if (user == null)
             throw new NotFoundException("User", query.UserId);
+
+        var userInternalId = user.UserId; // Use internal ID for FK query
 
         // Enforce page size limits
         var page = Math.Max(1, query.Page);
@@ -35,7 +37,7 @@ public class GetUserScanHistoriesQueryHandler : IQueryHandler<GetUserScanHistori
 
         // Get paginated histories with counts already included (N+1 problem solved)
         var (summaryResponses, totalCount) = await _unitOfWork.ScanHistories.GetByUserIdPaginatedAsync(
-            query.UserId,
+            userInternalId,
             page,
             pageSize,
             cancellationToken);

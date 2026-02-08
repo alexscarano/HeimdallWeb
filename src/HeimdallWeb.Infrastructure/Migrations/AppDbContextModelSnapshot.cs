@@ -3,20 +3,17 @@ using System;
 using HeimdallWeb.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace HeimdallWeb.Infrastructure.Data.Migrations
+namespace HeimdallWeb.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260205222240_InitialPostgreSQLMigration")]
-    partial class InitialPostgreSQLMigration
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,8 +127,8 @@ namespace HeimdallWeb.Infrastructure.Data.Migrations
 
                     b.Property<string>("Recommendation")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
                         .HasColumnName("recommendation");
 
                     b.Property<short>("Severity")
@@ -266,6 +263,10 @@ namespace HeimdallWeb.Infrastructure.Data.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("has_completed");
 
+                    b.Property<Guid>("PublicId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("public_id");
+
                     b.Property<string>("RawJsonResult")
                         .IsRequired()
                         .HasColumnType("jsonb")
@@ -294,6 +295,10 @@ namespace HeimdallWeb.Infrastructure.Data.Migrations
 
                     b.HasIndex("HasCompleted")
                         .HasDatabaseName("ix_tb_history_has_completed");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_tb_history_public_id");
 
                     b.HasIndex("RawJsonResult")
                         .HasDatabaseName("ix_tb_history_raw_json_gin");
@@ -400,6 +405,10 @@ namespace HeimdallWeb.Infrastructure.Data.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("profile_image");
 
+                    b.Property<Guid>("PublicId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("public_id");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -425,6 +434,10 @@ namespace HeimdallWeb.Infrastructure.Data.Migrations
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasDatabaseName("ux_tb_user_email");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_tb_user_public_id");
 
                     b.HasIndex("Username")
                         .IsUnique()
@@ -470,6 +483,85 @@ namespace HeimdallWeb.Infrastructure.Data.Migrations
                         .HasDatabaseName("ix_tb_user_usage_user_id_date");
 
                     b.ToTable("tb_user_usage", (string)null);
+                });
+
+            modelBuilder.Entity("HeimdallWeb.Domain.Entities.Views.UserCategoryBreakdown", b =>
+                {
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("category");
+
+                    b.Property<int>("CategoryCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("category_count");
+
+                    b.Property<int>("CriticalInCategory")
+                        .HasColumnType("integer")
+                        .HasColumnName("critical_in_category");
+
+                    b.Property<int>("HighInCategory")
+                        .HasColumnType("integer")
+                        .HasColumnName("high_in_category");
+
+                    b.Property<int>("InformationalInCategory")
+                        .HasColumnType("integer")
+                        .HasColumnName("informational_in_category");
+
+                    b.Property<int>("LowInCategory")
+                        .HasColumnType("integer")
+                        .HasColumnName("low_in_category");
+
+                    b.Property<int>("MediumInCategory")
+                        .HasColumnType("integer")
+                        .HasColumnName("medium_in_category");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_user_category_breakdown", (string)null);
+                });
+
+            modelBuilder.Entity("HeimdallWeb.Domain.Entities.Views.UserRiskTrend", b =>
+                {
+                    b.Property<int>("CriticalCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("critical_count");
+
+                    b.Property<int>("HighCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("high_count");
+
+                    b.Property<int>("InformationalCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("informational_count");
+
+                    b.Property<int>("LowCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("low_count");
+
+                    b.Property<int>("MediumCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("medium_count");
+
+                    b.Property<DateTime>("RiskDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("risk_date");
+
+                    b.Property<int>("ScansOnDate")
+                        .HasColumnType("integer")
+                        .HasColumnName("scans_on_date");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_user_risk_trend", (string)null);
                 });
 
             modelBuilder.Entity("HeimdallWeb.Domain.Entities.AuditLog", b =>

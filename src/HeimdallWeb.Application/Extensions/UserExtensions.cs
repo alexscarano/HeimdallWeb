@@ -16,7 +16,7 @@ public static class UserExtensions
     public static UserProfileResponse ToProfileDto(this User user)
     {
         return new UserProfileResponse(
-            UserId: user.UserId,
+            UserId: user.PublicId,
             Username: user.Username,
             Email: user.Email.Value, // EmailAddress is a Value Object
             UserType: (int)user.UserType,

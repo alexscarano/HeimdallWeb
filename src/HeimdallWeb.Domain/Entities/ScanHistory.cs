@@ -9,6 +9,7 @@ namespace HeimdallWeb.Domain.Entities;
 public class ScanHistory
 {
     public int HistoryId { get; private set; }
+    public Guid PublicId { get; private set; }
     public ScanTarget Target { get; private set; } = null!;
     public string RawJsonResult { get; private set; } = string.Empty;
     public string Summary { get; private set; } = string.Empty;
@@ -36,6 +37,7 @@ public class ScanHistory
     /// </summary>
     public ScanHistory(ScanTarget target, int userId)
     {
+        PublicId = Guid.CreateVersion7();
         Target = target ?? throw new ArgumentNullException(nameof(target));
         UserId = userId;
         HasCompleted = false;

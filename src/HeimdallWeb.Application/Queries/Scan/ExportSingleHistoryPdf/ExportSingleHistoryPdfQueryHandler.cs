@@ -27,19 +27,19 @@ public class ExportSingleHistoryPdfQueryHandler : IQueryHandler<ExportSingleHist
 
     public async Task<PdfExportResponse> Handle(ExportSingleHistoryPdfQuery query, CancellationToken cancellationToken = default)
     {
-        // Get scan history with all includes
-        var scanHistory = await _unitOfWork.ScanHistories.GetByIdWithIncludesAsync(query.HistoryId, cancellationToken);
+        // Get scan history with all includes by PublicId
+        var scanHistory = await _unitOfWork.ScanHistories.GetByPublicIdWithIncludesAsync(query.HistoryId, cancellationToken);
 
         if (scanHistory == null)
-            throw new NotFoundException($"Scan history with ID {query.HistoryId} not found");
+            throw new NotFoundException("Scan history", query.HistoryId);
 
         // Verify ownership (users can only export their own scans, admins can export any)
-        var user = await _unitOfWork.Users.GetByIdAsync(query.RequestingUserId, cancellationToken);
+        var user = await _unitOfWork.Users.GetByPublicIdAsync(query.RequestingUserId, cancellationToken);
 
         if (user == null)
             throw new NotFoundException("User", query.RequestingUserId);
 
-        if (user.UserType != UserType.Admin && scanHistory.UserId != query.RequestingUserId)
+        if (user.UserType != UserType.Admin && scanHistory.UserId != user.UserId)
             throw new ForbiddenException("You can only export your own scan history");
 
         // Generate PDF for single scan

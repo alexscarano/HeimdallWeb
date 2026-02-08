@@ -14,6 +14,16 @@ public interface IScanHistoryRepository
     Task<ScanHistory?> GetByIdAsync(int historyId, CancellationToken ct = default);
 
     /// <summary>
+    /// Gets a scan history record by its public UUID.
+    /// </summary>
+    Task<ScanHistory?> GetByPublicIdAsync(Guid publicId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets a scan history record by its public UUID with all includes.
+    /// </summary>
+    Task<ScanHistory?> GetByPublicIdWithIncludesAsync(Guid publicId, CancellationToken ct = default);
+
+    /// <summary>
     /// Gets all scan history records for a specific user.
     /// </summary>
     Task<IEnumerable<ScanHistory>> GetByUserIdAsync(int userId, CancellationToken ct = default);

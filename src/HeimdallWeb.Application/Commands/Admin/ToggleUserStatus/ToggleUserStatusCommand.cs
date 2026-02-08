@@ -9,7 +9,7 @@ namespace HeimdallWeb.Application.Commands.Admin.ToggleUserStatus;
 /// - Cannot toggle admin users
 /// </summary>
 public record ToggleUserStatusCommand(
-    int UserId,
+    Guid UserId,
     bool IsActive,
     UserType RequestingUserType
 );

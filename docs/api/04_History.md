@@ -10,16 +10,16 @@
 
 | Method | Endpoint | Description | Auth Required | Admin Only |
 |--------|----------|-------------|---------------|------------|
-| GET | `/api/v1/scan-histories/{id}` | Get complete scan details | ✅ Yes | ❌ No |
-| GET | `/api/v1/scan-histories/{id}/findings` | Get vulnerabilities found | ✅ Yes | ❌ No |
-| GET | `/api/v1/scan-histories/{id}/technologies` | Get detected technologies | ✅ Yes | ❌ No |
-| GET | `/api/v1/scan-histories/{id}/export` | Export single scan to PDF | ✅ Yes | ❌ No |
+| GET | `/api/v1/scan-histories/{uuid}` | Get complete scan details | ✅ Yes | ❌ No |
+| GET | `/api/v1/scan-histories/{uuid}/findings` | Get vulnerabilities found | ✅ Yes | ❌ No |
+| GET | `/api/v1/scan-histories/{uuid}/technologies` | Get detected technologies | ✅ Yes | ❌ No |
+| GET | `/api/v1/scan-histories/{uuid}/export` | Export single scan to PDF | ✅ Yes | ❌ No |
 | GET | `/api/v1/scan-histories/export` | Export all user scans to PDF | ✅ Yes | ❌ No |
-| DELETE | `/api/v1/scan-histories/{id}` | Delete scan history | ✅ Yes | ❌ No |
+| DELETE | `/api/v1/scan-histories/{uuid}` | Delete scan history | ✅ Yes | ❌ No |
 
 ---
 
-## 1. GET /api/v1/scan-histories/{id}
+## 1. GET /api/v1/scan-histories/{uuid}
 
 **Description**: Retrieve complete details of a specific scan, including:
 - Target URL and metadata
@@ -42,7 +42,7 @@ Cookie: authHeimdallCookie=<token>
 ```
 
 **URL Parameters**:
-- `id` (integer, required) - Scan history ID (from POST /api/v1/scans response)
+- `uuid` (string (UUID v7), required) - Scan history ID (from POST /api/v1/scans response)
 
 ### Response Success
 
@@ -50,39 +50,39 @@ Cookie: authHeimdallCookie=<token>
 
 ```json
 {
-  "historyId": 16,
+  "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
   "target": "example.com",
   "rawJsonResult": "{\"ips\": [\"104.18.26.120\", \"104.18.27.120\"], \"robots\": {...}, \"target\": \"https://example.com\", ...}",
   "createdDate": "2026-02-08T14:17:58.076109Z",
-  "userId": 12,
+  "userId": "019c3e5b-3fe1-7e25-a3ea-2b443e65bb50",
   "duration": "00:00:30",
   "hasCompleted": true,
   "summary": "O site example.com apresenta diversas configurações...",
   "findings": [
     {
-      "findingId": 56,
+      "findingId": "019c3e5d-2a1b-7292-a123-65ceaee964be",
       "type": "Headers de Segurança",
       "description": "O cabeçalho Content-Security-Policy (CSP) está ausente...",
       "severity": 3,
       "evidence": "\"Content-Security-Policy\" na lista de headers ausentes.",
       "recommendation": "Configure uma política de segurança...",
-      "historyId": 16,
+      "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
       "createdAt": "2026-02-08T14:17:58.114176Z"
     }
   ],
   "technologies": [
     {
-      "technologyId": 28,
+      "technologyId": "019c3e5d-3b2c-7292-b234-76ceaee964be",
       "name": "Cloudflare",
       "version": null,
       "category": "CDN",
       "description": "Cloudflare é uma rede de entrega de conteúdo...",
-      "historyId": 16,
+      "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
       "createdAt": "2026-02-08T14:17:58.127592Z"
     }
   ],
   "iaSummary": {
-    "iaSummaryId": 10,
+    "iaSummaryId": "019c3e5d-4c3d-7292-c345-87ceaee964be",
     "summaryText": "O site example.com apresenta diversas...",
     "mainCategory": "Security Scan",
     "overallRisk": "High",
@@ -91,7 +91,7 @@ Cookie: authHeimdallCookie=<token>
     "findingsHigh": 2,
     "findingsMedium": 4,
     "findingsLow": 4,
-    "historyId": 16,
+    "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
     "createdDate": "2026-02-08T14:17:58.137265Z"
   }
 }
@@ -108,20 +108,20 @@ Cookie: authHeimdallCookie=<token>
 
 ```bash
 # Get complete scan details
-curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/16
+curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be
 ```
 
 **Response** (truncated for readability):
 ```json
 {
-  "historyId": 16,
+  "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
   "target": "example.com",
   "duration": "00:00:30",
   "hasCompleted": true,
   "summary": "O site example.com apresenta diversas configurações de segurança ausentes...",
   "findings": [
     {
-      "findingId": 56,
+      "findingId": "019c3e5d-2a1b-7292-a123-65ceaee964be",
       "type": "Headers de Segurança",
       "description": "O cabeçalho Content-Security-Policy (CSP) está ausente. Sem CSP, o navegador não tem instruções sobre quais recursos podem ser carregados, tornando o site mais vulnerável a ataques de Cross-Site Scripting (XSS) e injeção de dados.",
       "severity": 3,
@@ -131,7 +131,7 @@ curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/16
   ],
   "technologies": [
     {
-      "technologyId": 28,
+      "technologyId": "019c3e5d-3b2c-7292-b234-76ceaee964be",
       "name": "Cloudflare",
       "version": null,
       "category": "CDN",
@@ -152,17 +152,17 @@ curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/16
 **Parse raw JSON for detailed scanner results**:
 ```bash
 # Get scan details and parse rawJsonResult
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16 \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be \
   | jq -r '.rawJsonResult' \
   | jq '.'
 
 # Extract specific scanner results
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16 \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be \
   | jq -r '.rawJsonResult' \
   | jq '.resultsSslScanner'
 
 # Get IP addresses discovered
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16 \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be \
   | jq -r '.rawJsonResult' \
   | jq '.ips'
 ```
@@ -173,14 +173,14 @@ curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16 \
 
 **Request**:
 ```bash
-curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/99999
+curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-0000-7292-0000-000000000000
 ```
 
 **Response**: `HTTP 404 Not Found`
 ```json
 {
   "statusCode": 404,
-  "message": "Scan history with ID 99999 not found",
+  "message": "Scan history not found",
   "errors": null
 }
 ```
@@ -191,7 +191,7 @@ curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/99999
 
 **Request**:
 ```bash
-curl http://localhost:5110/api/v1/scan-histories/16
+curl http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be
 ```
 
 **Response**: `HTTP 401 Unauthorized` (empty body)
@@ -205,7 +205,7 @@ curl http://localhost:5110/api/v1/scan-histories/16
 **Request**:
 ```bash
 # User A trying to access User B's scan
-curl -b user_a_cookies.txt http://localhost:5110/api/v1/scan-histories/16
+curl -b user_a_cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be
 ```
 
 **Expected Response**: `HTTP 403 Forbidden`
@@ -214,7 +214,7 @@ curl -b user_a_cookies.txt http://localhost:5110/api/v1/scan-histories/16
 
 ---
 
-## 2. GET /api/v1/scan-histories/{id}/findings
+## 2. GET /api/v1/scan-histories/{uuid}/findings
 
 **Description**: Retrieve only the vulnerabilities (findings) for a specific scan. More lightweight than fetching the full scan details.
 
@@ -229,7 +229,7 @@ Cookie: authHeimdallCookie=<token>
 ```
 
 **URL Parameters**:
-- `id` (integer, required) - Scan history ID
+- `uuid` (string (UUID v7), required) - Scan history ID
 
 ### Response Success
 
@@ -238,23 +238,23 @@ Cookie: authHeimdallCookie=<token>
 ```json
 [
   {
-    "findingId": 56,
+    "findingId": "019c3e5d-2a1b-7292-a123-65ceaee964be",
     "type": "Headers de Segurança",
     "description": "O cabeçalho Content-Security-Policy (CSP) está ausente. Sem CSP, o navegador não tem instruções sobre quais recursos podem ser carregados, tornando o site mais vulnerável a ataques de Cross-Site Scripting (XSS) e injeção de dados.",
     "severity": 3,
     "evidence": "\"Content-Security-Policy\" na lista de headers ausentes.",
     "recommendation": "Configure uma política de segurança de conteúdo robusta para mitigar XSS e outras injeções de cliente, restringindo as fontes de conteúdo permitidas.",
-    "historyId": 16,
+    "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
     "createdAt": "2026-02-08T14:17:58.114176Z"
   },
   {
-    "findingId": 55,
+    "findingId": "019c3e5d-2a1b-7292-a124-65ceaee964be",
     "type": "Headers de Segurança",
     "description": "O cabeçalho Strict-Transport-Security (HSTS) está ausente. Isso permite que navegadores acessem o site via HTTP antes de serem redirecionados para HTTPS, abrindo uma janela para ataques de downgrade e sequestro de sessão.",
     "severity": 3,
     "evidence": "\"Strict-Transport-Security\" na lista de headers ausentes.",
     "recommendation": "Implemente o cabeçalho HSTS com um 'max-age' adequado e, idealmente, com a diretiva 'includeSubDomains' e 'preload'.",
-    "historyId": 16,
+    "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
     "createdAt": "2026-02-08T14:17:58.114108Z"
   }
 ]
@@ -272,22 +272,22 @@ Cookie: authHeimdallCookie=<token>
 ### Example curl (Happy Path)
 
 ```bash
-# Get all findings for scan 16
-curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/16/findings
+# Get all findings for scan
+curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/findings
 ```
 
 **Filter by severity** (client-side):
 ```bash
 # Get only Critical and High findings
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16/findings \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/findings \
   | jq '[.[] | select(.severity >= 3)]'
 
 # Count findings by severity
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16/findings \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/findings \
   | jq 'group_by(.severity) | map({severity: .[0].severity, count: length})'
 
 # Get only missing security headers
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16/findings \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/findings \
   | jq '[.[] | select(.type == "Headers de Segurança")]'
 ```
 
@@ -297,14 +297,14 @@ curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16/findings \
 
 **Request**:
 ```bash
-curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/99999/findings
+curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-0000-7292-0000-000000000000/findings
 ```
 
 **Response**: `HTTP 404 Not Found`
 ```json
 {
   "statusCode": 404,
-  "message": "Scan history with ID 99999 not found",
+  "message": "Scan history not found",
   "errors": null
 }
 ```
@@ -315,7 +315,7 @@ curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/99999/findings
 
 **Request**:
 ```bash
-curl http://localhost:5110/api/v1/scan-histories/16/findings
+curl http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/findings
 ```
 
 **Response**: `HTTP 401 Unauthorized` (empty body)
@@ -335,7 +335,7 @@ curl http://localhost:5110/api/v1/scan-histories/16/findings
 
 ---
 
-## 3. GET /api/v1/scan-histories/{id}/technologies
+## 3. GET /api/v1/scan-histories/{uuid}/technologies
 
 **Description**: Retrieve only the detected technologies for a specific scan. Useful for technology stack analysis and inventory.
 
@@ -350,7 +350,7 @@ Cookie: authHeimdallCookie=<token>
 ```
 
 **URL Parameters**:
-- `id` (integer, required) - Scan history ID
+- `uuid` (string (UUID v7), required) - Scan history ID
 
 ### Response Success
 
@@ -359,12 +359,12 @@ Cookie: authHeimdallCookie=<token>
 ```json
 [
   {
-    "technologyId": 28,
+    "technologyId": "019c3e5d-3b2c-7292-b234-76ceaee964be",
     "name": "Cloudflare",
     "version": null,
     "category": "CDN",
     "description": "Cloudflare é uma rede de entrega de conteúdo (CDN), mitigação de DDoS e provedor de serviços de segurança. Atua como um proxy reverso, protegendo websites de ameaças comuns e otimizando a performance. Embora ofereça segurança robusta, a configuração inadequada de seus serviços pode levar a vulnerabilidades, como a exposição de IPs de origem ou falhas na imposição de HTTPS.",
-    "historyId": 16,
+    "historyId": "019c3e5d-166b-7292-9844-54ceaee964be",
     "createdAt": "2026-02-08T14:17:58.127592Z"
   }
 ]
@@ -383,21 +383,21 @@ Cookie: authHeimdallCookie=<token>
 
 ```bash
 # Get all detected technologies
-curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/16/technologies
+curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/technologies
 ```
 
 **Filter by category** (client-side):
 ```bash
 # Get only CDNs
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16/technologies \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/technologies \
   | jq '[.[] | select(.category == "CDN")]'
 
 # List technology names only
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16/technologies \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/technologies \
   | jq '[.[].name]'
 
 # Count technologies by category
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16/technologies \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/technologies \
   | jq 'group_by(.category) | map({category: .[0].category, count: length})'
 ```
 
@@ -407,14 +407,14 @@ curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16/technologi
 
 **Request**:
 ```bash
-curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/99999/technologies
+curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-0000-7292-0000-000000000000/technologies
 ```
 
 **Response**: `HTTP 404 Not Found`
 ```json
 {
   "statusCode": 404,
-  "message": "Scan history with ID 99999 not found",
+  "message": "Scan history not found",
   "errors": null
 }
 ```
@@ -425,7 +425,7 @@ curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/99999/technologi
 
 **Request**:
 ```bash
-curl http://localhost:5110/api/v1/scan-histories/16/technologies
+curl http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/technologies
 ```
 
 **Response**: `HTTP 401 Unauthorized` (empty body)
@@ -445,7 +445,7 @@ curl http://localhost:5110/api/v1/scan-histories/16/technologies
 
 ---
 
-## 4. GET /api/v1/scan-histories/{id}/export
+## 4. GET /api/v1/scan-histories/{uuid}/export
 
 **Description**: Export a single scan to a professionally formatted PDF report. The PDF includes:
 - Executive summary with risk classification
@@ -468,7 +468,7 @@ Cookie: authHeimdallCookie=<token>
 ```
 
 **URL Parameters**:
-- `id` (integer, required) - Scan history ID
+- `uuid` (string (UUID v7), required) - Scan history ID
 
 ### Response Success
 
@@ -478,7 +478,7 @@ Cookie: authHeimdallCookie=<token>
 **Headers**:
 ```
 Content-Type: application/pdf
-Content-Disposition: attachment; filename="scan-report-16.pdf"
+Content-Disposition: attachment; filename="scan-report-019c3e5d-166b-7292-9844-54ceaee964be.pdf"
 ```
 
 **Body**: Binary PDF file
@@ -488,21 +488,21 @@ Content-Disposition: attachment; filename="scan-report-16.pdf"
 ```bash
 # Download PDF report
 curl -b cookies.txt \
-  http://localhost:5110/api/v1/scan-histories/16/export \
-  -o scan-report-16.pdf
+  http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/export \
+  -o scan-report.pdf
 
 # Verify it's a valid PDF
-file scan-report-16.pdf
-# Output: scan-report-16.pdf: PDF document, version 1.7, 6 page(s)
+file scan-report.pdf
+# Output: scan-report.pdf: PDF document, version 1.7, 6 page(s)
 
 # Open PDF (Linux)
-xdg-open scan-report-16.pdf
+xdg-open scan-report.pdf
 
 # Open PDF (macOS)
-open scan-report-16.pdf
+open scan-report.pdf
 
 # Open PDF (Windows)
-start scan-report-16.pdf
+start scan-report.pdf
 ```
 
 **Check PDF metadata**:
@@ -511,7 +511,7 @@ start scan-report-16.pdf
 sudo apt-get install poppler-utils
 
 # Get PDF info
-pdfinfo scan-report-16.pdf
+pdfinfo scan-report.pdf
 ```
 
 **Expected output**:
@@ -531,7 +531,7 @@ File size:      245 KB
 **Request**:
 ```bash
 curl -b cookies.txt \
-  http://localhost:5110/api/v1/scan-histories/99999/export \
+  http://localhost:5110/api/v1/scan-histories/019c3e5d-0000-7292-0000-000000000000/export \
   -o report.pdf
 ```
 
@@ -540,7 +540,7 @@ curl -b cookies.txt \
 ```json
 {
   "statusCode": 404,
-  "message": "Scan history with ID 99999 not found",
+  "message": "Scan history not found",
   "errors": null
 }
 ```
@@ -553,7 +553,7 @@ curl -b cookies.txt \
 
 **Request**:
 ```bash
-curl http://localhost:5110/api/v1/scan-histories/16/export \
+curl http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be/export \
   -o report.pdf
 ```
 
@@ -651,7 +651,7 @@ curl http://localhost:5110/api/v1/scan-histories/export \
 
 ---
 
-## 6. DELETE /api/v1/scan-histories/{id}
+## 6. DELETE /api/v1/scan-histories/{uuid}
 
 **Description**: Permanently delete a scan history and all associated data:
 - Scan metadata
@@ -678,7 +678,7 @@ Cookie: authHeimdallCookie=<token>
 ```
 
 **URL Parameters**:
-- `id` (integer, required) - Scan history ID to delete
+- `uuid` (string (UUID v7), required) - Scan history ID to delete
 
 ### Response Success
 
@@ -687,7 +687,7 @@ Cookie: authHeimdallCookie=<token>
 ```json
 {
   "message": "Scan history deleted successfully",
-  "historyId": 17
+  "historyId": "019c3e5d-5d4e-7292-d456-98ceaee964be"
 }
 ```
 
@@ -696,31 +696,31 @@ Cookie: authHeimdallCookie=<token>
 ```bash
 # Delete scan history
 curl -X DELETE -b cookies.txt \
-  http://localhost:5110/api/v1/scan-histories/17
+  http://localhost:5110/api/v1/scan-histories/019c3e5d-5d4e-7292-d456-98ceaee964be
 
 # Verify deletion (should return 404)
 curl -b cookies.txt \
-  http://localhost:5110/api/v1/scan-histories/17
+  http://localhost:5110/api/v1/scan-histories/019c3e5d-5d4e-7292-d456-98ceaee964be
 ```
 
 **Response**:
 ```json
 {
   "message": "Scan history deleted successfully",
-  "historyId": 17
+  "historyId": "019c3e5d-5d4e-7292-d456-98ceaee964be"
 }
 ```
 
 **Verification** (should fail):
 ```bash
-curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/17
+curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-5d4e-7292-d456-98ceaee964be
 ```
 
 **Response**: `HTTP 404 Not Found`
 ```json
 {
   "statusCode": 404,
-  "message": "Scan history with ID 17 not found",
+  "message": "Scan history not found",
   "errors": null
 }
 ```
@@ -729,7 +729,12 @@ curl -b cookies.txt http://localhost:5110/api/v1/scan-histories/17
 ```bash
 #!/bin/bash
 # Delete all scans from list
-SCAN_IDS=(12 13 14 15)
+SCAN_IDS=(
+  "019c3e5d-0b1a-7292-0001-000000000001"
+  "019c3e5d-0b1a-7292-0002-000000000002"
+  "019c3e5d-0b1a-7292-0003-000000000003"
+  "019c3e5d-0b1a-7292-0004-000000000004"
+)
 
 for id in "${SCAN_IDS[@]}"; do
   echo "Deleting scan $id..."
@@ -746,14 +751,14 @@ done
 **Request**:
 ```bash
 curl -X DELETE -b cookies.txt \
-  http://localhost:5110/api/v1/scan-histories/99999
+  http://localhost:5110/api/v1/scan-histories/019c3e5d-0000-7292-0000-000000000000
 ```
 
 **Response**: `HTTP 404 Not Found`
 ```json
 {
   "statusCode": 404,
-  "message": "Scan history with ID 99999 not found",
+  "message": "Scan history not found",
   "errors": null
 }
 ```
@@ -768,7 +773,7 @@ curl -X DELETE -b cookies.txt \
 ```bash
 # User A trying to delete scan belonging to User B
 curl -X DELETE -b user_a_cookies.txt \
-  http://localhost:5110/api/v1/scan-histories/16
+  http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be
 ```
 
 **Expected Response**: `HTTP 403 Forbidden`
@@ -781,7 +786,7 @@ curl -X DELETE -b user_a_cookies.txt \
 
 **Request**:
 ```bash
-curl -X DELETE http://localhost:5110/api/v1/scan-histories/16
+curl -X DELETE http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be
 ```
 
 **Response**: `HTTP 401 Unauthorized` (empty body)
@@ -906,17 +911,17 @@ The `rawJsonResult` field contains comprehensive scanner outputs:
 **Parsing examples**:
 ```bash
 # Extract SSL certificate expiration
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16 \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be \
   | jq -r '.rawJsonResult' \
   | jq '.resultsSslScanner[0].daysToExpire'
 
 # List all open ports
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16 \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be \
   | jq -r '.rawJsonResult' \
   | jq '.resultsPortScanner[] | select(.open == true) | .port'
 
 # Check if HSTS is present
-curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16 \
+curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/019c3e5d-166b-7292-9844-54ceaee964be \
   | jq -r '.rawJsonResult' \
   | jq '.securityHeaders.missing | contains(["Strict-Transport-Security"])'
 ```
@@ -969,17 +974,17 @@ curl -s -b cookies.txt http://localhost:5110/api/v1/scan-histories/16 \
 
 ### Performance Considerations
 
-**GET full scan details** (`/api/v1/scan-histories/{id}`):
+**GET full scan details** (`/api/v1/scan-histories/{uuid}`):
 - Includes `rawJsonResult` (can be 50-100KB per scan)
 - Parse JSON client-side for performance
 - Use specialized endpoints (findings, technologies) for lighter payloads
 
-**GET findings only** (`/api/v1/scan-histories/{id}/findings`):
+**GET findings only** (`/api/v1/scan-histories/{uuid}/findings`):
 - Faster than full scan details
 - Returns only vulnerability array
 - Recommended for dashboard lists
 
-**GET technologies only** (`/api/v1/scan-histories/{id}/technologies`):
+**GET technologies only** (`/api/v1/scan-histories/{uuid}/technologies`):
 - Lightweight response
 - Use for technology inventory/statistics
 
@@ -1068,4 +1073,4 @@ All history endpoints tested on **2026-02-08**:
 **Last Tested**: 2026-02-08 14:30 UTC  
 **Tested By**: DocuEngineer  
 **Environment**: localhost:5110 (Development)  
-**Test Scans**: historyId 16 (example.com), historyId 17 (httpbin.org, deleted)
+**Test Scans**: historyId 019c3e5d-166b-7292-9844-54ceaee964be (example.com), historyId 019c3e5d-5d4e-7292-d456-98ceaee964be (httpbin.org, deleted)

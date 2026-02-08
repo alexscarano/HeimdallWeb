@@ -6,7 +6,7 @@ namespace HeimdallWeb.Application.Commands.User.UpdateProfileImage;
 /// Security: Users can only update their own profile image.
 /// </summary>
 public record UpdateProfileImageCommand(
-    int UserId,
+    Guid UserId,
     string ImageBase64,
-    int RequestingUserId
+    Guid RequestingUserId
 );

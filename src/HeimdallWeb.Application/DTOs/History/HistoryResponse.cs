@@ -4,11 +4,11 @@ namespace HeimdallWeb.Application.DTOs.History;
 /// Response DTO for scan history.
 /// </summary>
 public record HistoryResponse(
-    int HistoryId,
+    Guid HistoryId,
     string Target,
     string? Summary,
     TimeSpan Duration,
     bool HasCompleted,
     DateTime CreatedDate,
-    int UserId
+    Guid UserId
 );

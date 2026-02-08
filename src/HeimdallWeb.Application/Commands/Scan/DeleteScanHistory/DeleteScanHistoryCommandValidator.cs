@@ -7,9 +7,9 @@ public class DeleteScanHistoryCommandValidator : AbstractValidator<DeleteScanHis
     public DeleteScanHistoryCommandValidator()
     {
         RuleFor(x => x.HistoryId)
-            .GreaterThan(0).WithMessage("History ID must be greater than 0");
+            .NotEmpty().WithMessage("History ID is required");
 
         RuleFor(x => x.RequestingUserId)
-            .GreaterThan(0).WithMessage("Requesting user ID must be greater than 0");
+            .NotEmpty().WithMessage("Requesting user ID is required");
     }
 }
