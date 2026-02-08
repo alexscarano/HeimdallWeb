@@ -149,10 +149,12 @@ public class UserRepository : IUserRepository
         // Apply filters
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
-            var searchLower = searchTerm.ToLower();
+            // PostgreSQL ILIKE for case-insensitive search
+            // Avoids translation issues with Value Objects (.Email.Value)
+            var searchPattern = $"%{searchTerm}%";
             query = query.Where(u =>
-                u.Username.ToLower().Contains(searchLower) ||
-                u.Email.Value.ToLower().Contains(searchLower));
+                EF.Functions.ILike(u.Username, searchPattern) ||
+                EF.Functions.ILike(u.Email, searchPattern));
         }
 
         if (isActive.HasValue)
