@@ -358,10 +358,20 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         try
         {
             using var doc = JsonDocument.Parse(aiResponseJson);
-            var achados = doc.RootElement.GetProperty("achados");
+            
+            // Check if "achados" property exists
+            if (!doc.RootElement.TryGetProperty("achados", out var achadosElement))
+            {
+                // Log warning: AI response doesn't contain findings array
+                await LogParsingWarningAsync(
+                    historyId, 
+                    "AI response missing 'achados' property - findings not saved", 
+                    ct);
+                return;
+            }
 
             var findings = new List<Finding>();
-            foreach (var achado in achados.EnumerateArray())
+            foreach (var achado in achadosElement.EnumerateArray())
             {
                 var descricao = achado.GetProperty("descricao").GetString() ?? "";
                 var categoria = achado.GetProperty("categoria").GetString() ?? "";
@@ -382,11 +392,20 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
             }
 
             if (findings.Any())
+            {
                 await _unitOfWork.Findings.AddRangeAsync(findings, ct);
+                
+                // Log success
+                await LogParsingSuccessAsync(
+                    historyId, 
+                    $"Successfully parsed and saved {findings.Count} findings", 
+                    ct);
+            }
         }
-        catch
+        catch (Exception ex)
         {
-            // If parsing fails, just skip findings (non-critical)
+            // Log error but don't fail the scan
+            await LogParsingErrorAsync(historyId, ex.Message, ct);
         }
     }
 
@@ -578,6 +597,45 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
             details: errorDetails,
             userId: userId,
             remoteIp: remoteIp
+        ), ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+    }
+
+    private async Task LogParsingWarningAsync(int historyId, string details, CancellationToken ct)
+    {
+        await _unitOfWork.AuditLogs.AddAsync(new AuditLog(
+            code: LogEventCode.SCAN_COMPLETED,
+            level: "Warning",
+            message: "AI findings parsing warning",
+            source: "ExecuteScanCommandHandler.ParseAndSaveFindingsAsync",
+            details: details,
+            historyId: historyId
+        ), ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+    }
+
+    private async Task LogParsingSuccessAsync(int historyId, string details, CancellationToken ct)
+    {
+        await _unitOfWork.AuditLogs.AddAsync(new AuditLog(
+            code: LogEventCode.SCAN_COMPLETED,
+            level: "Info",
+            message: "Findings parsed successfully",
+            source: "ExecuteScanCommandHandler.ParseAndSaveFindingsAsync",
+            details: details,
+            historyId: historyId
+        ), ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+    }
+
+    private async Task LogParsingErrorAsync(int historyId, string errorMessage, CancellationToken ct)
+    {
+        await _unitOfWork.AuditLogs.AddAsync(new AuditLog(
+            code: LogEventCode.SCAN_ERROR,
+            level: "Error",
+            message: "Findings parsing failed",
+            source: "ExecuteScanCommandHandler.ParseAndSaveFindingsAsync",
+            details: $"Error: {errorMessage}",
+            historyId: historyId
         ), ct);
         await _unitOfWork.SaveChangesAsync(ct);
     }
