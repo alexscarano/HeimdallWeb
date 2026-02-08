@@ -30,7 +30,7 @@
 TOKEN=$(curl -s -c cookies.txt \
   -X POST http://localhost:5110/api/v1/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@example.com","password":"Admin@123"}' \
+  -d '{"emailOrLogin":"admin@example.com","password":"Admin@123"}' \
   | jq -r '.token')
 
 # Decode JWT (requires jq and base64)
@@ -547,7 +547,7 @@ curl -X PATCH -b admin_cookies.txt \
 # Attempt login with deactivated account
 curl -X POST http://localhost:5110/api/v1/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"scantest1770560247@example.com","password":"Test@1234"}'
+  -d '{"emailOrLogin":"scantest1770560247@example.com","password":"Test@1234"}'
 ```
 
 **Expected Response**: `HTTP 400 Bad Request` or `HTTP 401 Unauthorized`

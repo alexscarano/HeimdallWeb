@@ -61,8 +61,8 @@
                 "exec": [
                   "if (pm.response.code === 201) {",
                   "    const response = pm.response.json();",
-                  "    pm.environment.set('user_id', response.userId);",
-                  "    pm.environment.set('jwt_token', response.token);",
+                  "    pm.collectionVariables.set('user_id', response.userId);",
+                  "    pm.collectionVariables.set('jwt_token', response.token);",
                   "    pm.test('User registered successfully', () => {",
                   "        pm.expect(response).to.have.property('userId');",
                   "        pm.expect(response).to.have.property('token');",
@@ -103,8 +103,8 @@
                 "exec": [
                   "if (pm.response.code === 200) {",
                   "    const response = pm.response.json();",
-                  "    pm.environment.set('jwt_token', response.token);",
-                  "    pm.environment.set('user_id', response.userId);",
+                  "    pm.collectionVariables.set('jwt_token', response.token);",
+                  "    pm.collectionVariables.set('user_id', response.userId);",
                   "    pm.test('Login successful', () => {",
                   "        pm.expect(response).to.have.property('token');",
                   "    });",
@@ -361,7 +361,7 @@
                 "exec": [
                   "if (pm.response.code === 201) {",
                   "    const response = pm.response.json();",
-                  "    pm.environment.set('history_id', response.historyId);",
+                  "    pm.collectionVariables.set('history_id', response.historyId);",
                   "    pm.test('Scan started successfully', () => {",
                   "        pm.expect(response).to.have.property('historyId');",
                   "    });",

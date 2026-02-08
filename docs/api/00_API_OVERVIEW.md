@@ -45,7 +45,7 @@ curl -X POST http://localhost:5110/api/v1/auth/register \
 curl -X POST http://localhost:5110/api/v1/auth/login \
   -c cookies.txt \
   -H "Content-Type: application/json" \
-  -d '{"email":"you@example.com","password":"YourPass@123"}'
+  -d '{"emailOrLogin":"you@example.com","password":"YourPass@123"}'
 
 # 3. Execute a security scan
 curl -X POST http://localhost:5110/api/v1/scans \
@@ -81,7 +81,7 @@ curl -b cookies.txt http://localhost:5110/api/v1/scans?page=1&pageSize=10
 curl -X POST http://localhost:5110/api/v1/auth/login \
   -c cookies.txt \
   -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"Pass@123"}'
+  -d '{"emailOrLogin":"user@example.com","password":"Pass@123"}'
 ```
 
 **Response**:
@@ -466,7 +466,7 @@ echo "Registered user ID: $USER_ID"
 curl -X POST http://localhost:5110/api/v1/auth/login \
   -c cookies.txt \
   -H "Content-Type: application/json" \
-  -d '{"email":"newuser@example.com","password":"Secure@123"}'
+  -d '{"emailOrLogin":"newuser@example.com","password":"Secure@123"}'
 
 # 3. Execute scan
 SCAN=$(curl -s -X POST http://localhost:5110/api/v1/scans \
@@ -499,7 +499,7 @@ TARGETS=(
 curl -X POST http://localhost:5110/api/v1/auth/login \
   -c cookies.txt \
   -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"Pass@123"}'
+  -d '{"emailOrLogin":"user@example.com","password":"Pass@123"}'
 
 # Scan each target (respect rate limit: 4/min = 15s intervals)
 for target in "${TARGETS[@]}"; do
@@ -529,7 +529,7 @@ echo "All scans queued. Wait 30-60 seconds for completion."
 curl -X POST http://localhost:5110/api/v1/auth/login \
   -c cookies.txt \
   -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"Pass@123"}'
+  -d '{"emailOrLogin":"user@example.com","password":"Pass@123"}'
 
 # Export all scans to PDF
 curl -b cookies.txt \
@@ -548,7 +548,7 @@ echo "Exported to all-scans-$(date +%Y%m%d).pdf"
 curl -X POST http://localhost:5110/api/v1/auth/login \
   -c admin_cookies.txt \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@example.com","password":"Admin@123"}'
+  -d '{"emailOrLogin":"admin@example.com","password":"Admin@123"}'
 
 # Get dashboard stats
 DASHBOARD=$(curl -s -b admin_cookies.txt \
@@ -579,7 +579,7 @@ fi
 curl -X POST http://localhost:5110/api/v1/auth/login \
   -c cookies.txt \
   -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"Pass@123"}'
+  -d '{"emailOrLogin":"user@example.com","password":"Pass@123"}'
 
 # Get all scans
 SCANS=$(curl -s -b cookies.txt \
@@ -601,7 +601,7 @@ echo "$SCANS" | jq '.items[] | select(.findingsCount > 5) | {target, findingsCou
 curl -X POST http://localhost:5110/api/v1/auth/login \
   -c cookies.txt \
   -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"Pass@123"}'
+  -d '{"emailOrLogin":"user@example.com","password":"Pass@123"}'
 
 # Reuse cookies in subsequent requests
 curl -b cookies.txt http://localhost:5110/api/v1/scans?page=1&pageSize=10
@@ -629,7 +629,7 @@ curl -s -b cookies.txt \
 # Show full HTTP headers and response
 curl -v -X POST http://localhost:5110/api/v1/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"Pass@123"}'
+  -d '{"emailOrLogin":"user@example.com","password":"Pass@123"}'
 ```
 
 **Save response for inspection**:
@@ -649,10 +649,11 @@ curl -D headers.txt -o response.json \
 - `POST /api/v1/auth/login` - Login and get JWT token
 - `POST /api/v1/auth/logout` - Logout and clear cookie
 
-### Users (5 endpoints)
+### Users (6 endpoints)
 - `GET /api/v1/users/{id}/profile` - Get user profile
 - `GET /api/v1/users/{id}/statistics` - Get user statistics
 - `PUT /api/v1/users/{id}` - Update user profile
+- `PATCH /api/v1/users/{id}/password` - Update user password
 - `POST /api/v1/users/{id}/profile-image` - Upload profile image
 - `DELETE /api/v1/users/{id}` - Delete user account
 
@@ -674,14 +675,14 @@ curl -D headers.txt -o response.json \
 - `PATCH /api/v1/admin/users/{id}/status` - Toggle user status
 - `DELETE /api/v1/admin/users/{id}` - Delete user by admin
 
-**Total: 20 endpoints**
+**Total: 21 endpoints**
 
 ---
 
 ## ✅ API Status
 
 **All endpoints operational** - No known issues.  
-**Testing**: 100% success rate (20/20 endpoints fully compliant)  
+**Testing**: 100% success rate (21/21 endpoints fully compliant)  
 **Last Validated**: 2026-02-08
 
 ### Previous Issues (All Resolved)

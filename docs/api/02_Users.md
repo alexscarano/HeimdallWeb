@@ -13,6 +13,7 @@
 | GET | `/api/v1/users/{id}/profile` | Get user profile information | ✅ Yes |
 | GET | `/api/v1/users/{id}/statistics` | Get user scan statistics | ✅ Yes |
 | PUT | `/api/v1/users/{id}` | Update user profile (username/email) | ✅ Yes |
+| PATCH | `/api/v1/users/{id}/password` | Update user password | ✅ Yes |
 | POST | `/api/v1/users/{id}/profile-image` | Upload profile image (base64) | ✅ Yes |
 | DELETE | `/api/v1/users/{id}` | Delete user account | ✅ Yes |
 
@@ -333,7 +334,149 @@ curl -X PUT http://localhost:5110/api/v1/users/2 \
 
 ---
 
-## 4. POST /api/v1/users/{id}/profile-image
+## 4. PATCH /api/v1/users/{id}/password
+
+**Description**: Update the authenticated user's password. Requires current password verification.
+
+**Authentication**: Required (JWT cookie or Bearer token)  
+**Rate Limiting**: Not applied  
+**Authorization**: Users can only update their own password (ID must match JWT claim)
+
+### Request
+
+**URL Parameters**:
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| id | int | Yes | User ID (must match authenticated user) |
+
+**Body** (JSON):
+| Field | Type | Required | Validation |
+|-------|------|----------|------------|
+| currentPassword | string | Yes | Must match current password |
+| newPassword | string | Yes | Min 8 chars, uppercase, lowercase, digit, special char |
+| confirmNewPassword | string | Yes | Must match newPassword |
+
+### curl Examples
+
+#### ✅ Success - Password Updated
+```bash
+curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
+  -H "Content-Type: application/json" \
+  -b cookies.txt \
+  -d '{
+    "currentPassword": "Admin@123",
+    "newPassword": "NewAdmin@456",
+    "confirmNewPassword": "NewAdmin@456"
+  }'
+```
+
+**Response**: `HTTP 200 OK`
+```json
+{
+  "message": "Password updated successfully"
+}
+```
+
+#### ❌ Error - Wrong Current Password
+```bash
+curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
+  -H "Content-Type: application/json" \
+  -b cookies.txt \
+  -d '{
+    "currentPassword": "WrongPassword@123",
+    "newPassword": "NewAdmin@456",
+    "confirmNewPassword": "NewAdmin@456"
+  }'
+```
+
+**Response**: `HTTP 400 Bad Request`
+```json
+{
+  "statusCode": 400,
+  "message": "One or more validation errors occurred.",
+  "errors": {
+    "CurrentPassword": ["Current password is incorrect"]
+  }
+}
+```
+
+#### ❌ Error - Weak New Password
+```bash
+curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
+  -H "Content-Type: application/json" \
+  -b cookies.txt \
+  -d '{
+    "currentPassword": "Admin@123",
+    "newPassword": "weak",
+    "confirmNewPassword": "weak"
+  }'
+```
+
+**Response**: `HTTP 400 Bad Request`
+```json
+{
+  "statusCode": 400,
+  "message": "One or more validation errors occurred.",
+  "errors": {
+    "NewPassword": [
+      "Password must be at least 8 characters",
+      "Password must contain at least one uppercase letter",
+      "Password must contain at least one digit",
+      "Password must contain at least one special character (!@#$%^&*)"
+    ]
+  }
+}
+```
+
+#### ❌ Error - Passwords Don't Match
+```bash
+curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
+  -H "Content-Type: application/json" \
+  -b cookies.txt \
+  -d '{
+    "currentPassword": "Admin@123",
+    "newPassword": "NewAdmin@456",
+    "confirmNewPassword": "DifferentPass@789"
+  }'
+```
+
+**Response**: `HTTP 400 Bad Request`
+```json
+{
+  "statusCode": 400,
+  "message": "One or more validation errors occurred.",
+  "errors": {
+    "ConfirmNewPassword": ["Passwords do not match"]
+  }
+}
+```
+
+#### ❌ Error - Not Authenticated
+```bash
+curl -s -X PATCH http://localhost:5110/api/v1/users/2/password \
+  -H "Content-Type: application/json" \
+  -d '{
+    "currentPassword": "Admin@123",
+    "newPassword": "NewAdmin@456",
+    "confirmNewPassword": "NewAdmin@456"
+  }'
+```
+
+**Response**: `HTTP 401 Unauthorized` (empty body)
+
+### Error Summary
+
+| Scenario | Status | Error Key |
+|----------|--------|-----------|
+| Wrong current password | 400 | `CurrentPassword` |
+| Weak new password | 400 | `NewPassword` |
+| Passwords don't match | 400 | `ConfirmNewPassword` |
+| Not authenticated | 401 | - |
+| Wrong user ID | 403 | - |
+
+---
+
+## 5. POST /api/v1/users/{id}/profile-image
 
 **Description**: Upload a profile image (base64 encoded).
 
@@ -446,7 +589,7 @@ curl -X POST http://localhost:5110/api/v1/users/10/profile-image \
 
 ---
 
-## 5. DELETE /api/v1/users/{id}
+## 6. DELETE /api/v1/users/{id}
 
 **Description**: Delete a user account and all associated data (scans, findings, logs).
 
@@ -664,13 +807,17 @@ All user endpoints tested on **2026-02-08**:
 | PUT update - Happy path | 200 OK | 200 OK | ✅ PASS |
 | PUT update - Duplicate email | 400 Bad Request | 400 Bad Request | ✅ PASS |
 | PUT update - Forbidden | 400 Bad Request | 400 Bad Request | ✅ PASS |
+| PATCH password - Happy path | 200 OK | 200 OK | ✅ PASS |
+| PATCH password - Wrong current | 400 Bad Request | 400 Bad Request | ✅ PASS |
+| PATCH password - Weak password | 400 Bad Request | 400 Bad Request | ✅ PASS |
+| PATCH password - Mismatch | 400 Bad Request | 400 Bad Request | ✅ PASS |
 | POST image - Happy path | 200 OK | 200 OK | ✅ PASS |
 | POST image - Invalid base64 | 400 Bad Request | 400 Bad Request | ✅ PASS |
 | DELETE - No password | 400 Bad Request | 400 Bad Request | ✅ PASS |
 | DELETE - Wrong password | 401 Unauthorized | 401 Unauthorized | ✅ PASS |
 | DELETE by admin - Success | 200 OK | 200 OK | ✅ PASS |
 
-**Success Rate**: 13/13 (100%) ✅
+**Success Rate**: 17/17 (100%) ✅
 
 ---
 
