@@ -1,11 +1,12 @@
+using System.Net;
 using System.Text.RegularExpressions;
 using HeimdallWeb.Domain.Exceptions;
 
 namespace HeimdallWeb.Domain.ValueObjects;
 
 /// <summary>
-/// Value Object representing a validated and normalized scan target (domain/URL).
-/// Ensures the target is a valid domain or URL and normalizes it for consistency.
+/// Value Object representing a validated and normalized scan target (domain/URL/IP).
+/// Ensures the target is a valid domain, URL, or IP address and normalizes it for consistency.
 /// </summary>
 public sealed class ScanTarget : IEquatable<ScanTarget>
 {
@@ -17,6 +18,10 @@ public sealed class ScanTarget : IEquatable<ScanTarget>
         @"^(https?://)?([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}(/.*)?$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+    private static readonly Regex IPv4Regex = new(
+        @"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        RegexOptions.Compiled);
+
     public string Value { get; }
 
     private ScanTarget(string value)
@@ -27,8 +32,9 @@ public sealed class ScanTarget : IEquatable<ScanTarget>
     /// <summary>
     /// Creates a new ScanTarget instance with validation and normalization.
     /// Removes protocol, www prefix, and trailing slashes.
+    /// Accepts domains, URLs, and IPv4 addresses.
     /// </summary>
-    /// <param name="target">The domain or URL to validate</param>
+    /// <param name="target">The domain, URL, or IP address to validate</param>
     /// <returns>A validated and normalized ScanTarget instance</returns>
     /// <exception cref="ValidationException">Thrown when target format is invalid</exception>
     public static ScanTarget Create(string target)
@@ -40,9 +46,10 @@ public sealed class ScanTarget : IEquatable<ScanTarget>
 
         var normalized = NormalizeTarget(target.Trim());
 
-        if (!DomainRegex.IsMatch(normalized) && !UrlRegex.IsMatch(normalized))
+        // Accept IPv4 addresses, domains, or URLs
+        if (!IPv4Regex.IsMatch(normalized) && !DomainRegex.IsMatch(normalized) && !UrlRegex.IsMatch(normalized))
         {
-            throw new ValidationException($"Scan target '{target}' is not a valid domain or URL.");
+            throw new ValidationException($"Scan target '{target}' is not a valid domain, URL, or IP address.");
         }
 
         return new ScanTarget(normalized);
