@@ -7,6 +7,7 @@ using HeimdallWeb.Application.Commands.Auth.Register;
 using HeimdallWeb.Application.Commands.Scan.DeleteScanHistory;
 using HeimdallWeb.Application.Commands.Scan.ExecuteScan;
 using HeimdallWeb.Application.Commands.User.DeleteUser;
+using HeimdallWeb.Application.Commands.User.UpdatePassword;
 using HeimdallWeb.Application.Commands.User.UpdateProfileImage;
 using HeimdallWeb.Application.Commands.User.UpdateUser;
 using HeimdallWeb.Application.Common.Interfaces;
@@ -73,6 +74,7 @@ public static class DependencyInjection
 
         // User Commands (3)
         services.AddScoped<ICommandHandler<UpdateUserCommand, UpdateUserResponse>, UpdateUserCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdatePasswordCommand, UpdatePasswordResponse>, UpdatePasswordCommandHandler>();
         services.AddScoped<ICommandHandler<DeleteUserCommand, DeleteUserResponse>, DeleteUserCommandHandler>();
         services.AddScoped<ICommandHandler<UpdateProfileImageCommand, UpdateProfileImageResponse>, UpdateProfileImageCommandHandler>();
 

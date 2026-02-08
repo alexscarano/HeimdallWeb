@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using HeimdallWeb.Application.Commands.User.UpdateUser;
+using HeimdallWeb.Application.Commands.User.UpdatePassword;
 using HeimdallWeb.Application.Commands.User.DeleteUser;
 using HeimdallWeb.Application.Commands.User.UpdateProfileImage;
 using HeimdallWeb.Application.Queries.User.GetUserProfile;
@@ -21,6 +22,7 @@ public static class UserEndpoints
         group.MapGet("/{id:int}/profile", GetUserProfile);
         group.MapGet("/{id:int}/statistics", GetUserStatistics);
         group.MapPut("/{id:int}", UpdateUser);
+        group.MapPatch("/{id:int}/password", UpdatePassword);
         group.MapDelete("/{id:int}", DeleteUser);
         group.MapPost("/{id:int}/profile-image", UpdateProfileImage);
 
@@ -61,6 +63,28 @@ public static class UserEndpoints
             authenticatedUserId,
             request.NewUsername,
             request.NewEmail
+        );
+
+        var result = await handler.Handle(command);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> UpdatePassword(
+        int id,
+        [FromBody] UpdatePasswordCommand request,
+        ICommandHandler<UpdatePasswordCommand, UpdatePasswordResponse> handler,
+        HttpContext context)
+    {
+        var authenticatedUserId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+        // Create command with authenticated user context
+        var command = new UpdatePasswordCommand(
+            id,
+            authenticatedUserId,
+            request.CurrentPassword,
+            request.NewPassword,
+            request.ConfirmPassword
         );
 
         var result = await handler.Handle(command);
