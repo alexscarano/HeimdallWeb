@@ -30,13 +30,15 @@ public class ScanHistoryConfiguration : IEntityTypeConfiguration<ScanHistory>
             .IsRequired();
 
         // ScanTarget Value Object Conversion
+        // Write: Validates target (rejects IPs/localhost)
+        // Read: Permissive (accepts historical data with IPs)
         builder.Property(h => h.Target)
             .HasColumnName("target")
             .IsRequired()
             .HasMaxLength(75)
             .HasConversion(
-                target => target.Value,
-                value => ScanTarget.Create(value));
+                target => target.Value,                      // Write: serialize
+                value => ScanTarget.CreateFromDatabase(value)); // Read: no validation
 
         // JSONB for PostgreSQL (JSON for MySQL compatibility)
         builder.Property(h => h.RawJsonResult)

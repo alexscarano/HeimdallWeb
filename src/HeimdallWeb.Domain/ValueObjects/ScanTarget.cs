@@ -30,6 +30,7 @@ public sealed class ScanTarget : IEquatable<ScanTarget>
     /// Creates a new ScanTarget instance with validation and normalization.
     /// Removes protocol, www prefix, and trailing slashes.
     /// Accepts ONLY public domains and URLs - IP addresses and localhost are rejected.
+    /// USE THIS for user input validation.
     /// </summary>
     /// <param name="target">The domain or URL to validate (IP addresses and localhost NOT allowed)</param>
     /// <returns>A validated and normalized ScanTarget instance</returns>
@@ -61,6 +62,26 @@ public sealed class ScanTarget : IEquatable<ScanTarget>
             throw new ValidationException($"Scan target '{target}' is not a valid domain or URL.");
         }
 
+        return new ScanTarget(normalized);
+    }
+
+    /// <summary>
+    /// Creates ScanTarget from database value WITHOUT validation.
+    /// Used by EF Core Value Converter to read historical data (may contain IPs from before validation rules).
+    /// ⚠️ FOR EF CORE USE ONLY - Do NOT use for user input validation (use Create() instead).
+    /// </summary>
+    /// <param name="value">Raw value from database</param>
+    /// <returns>ScanTarget instance without validation</returns>
+    public static ScanTarget CreateFromDatabase(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ValidationException("Scan target cannot be empty.");
+        }
+
+        // No validation - accept whatever is in the database (including IPs, localhost)
+        // Historical data may have formats that current rules reject
+        var normalized = NormalizeTarget(value.Trim());
         return new ScanTarget(normalized);
     }
 
