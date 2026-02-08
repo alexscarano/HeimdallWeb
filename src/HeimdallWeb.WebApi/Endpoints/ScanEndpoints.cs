@@ -40,18 +40,18 @@ public static class ScanEndpoints
     }
 
     private static async Task<IResult> GetUserScans(
-        [FromQuery] int page,
-        [FromQuery] int pageSize,
+        [FromQuery] int? page,
+        [FromQuery] int? pageSize,
         IQueryHandler<GetUserScanHistoriesQuery, PaginatedScanHistoriesResponse> handler,
         HttpContext context)
     {
         var userId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
-        // Default pagination values
-        if (page <= 0) page = 1;
-        if (pageSize <= 0 || pageSize > 100) pageSize = 10;
+        // Apply default pagination values if not provided or invalid
+        var finalPage = page.HasValue && page.Value > 0 ? page.Value : 1;
+        var finalPageSize = pageSize.HasValue && pageSize.Value > 0 && pageSize.Value <= 100 ? pageSize.Value : 10;
 
-        var query = new GetUserScanHistoriesQuery(userId, page, pageSize);
+        var query = new GetUserScanHistoriesQuery(userId, finalPage, finalPageSize);
         var result = await handler.Handle(query);
 
         return Results.Ok(result);

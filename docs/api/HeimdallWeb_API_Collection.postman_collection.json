@@ -1,0 +1,720 @@
+{
+  "info": {
+    "name": "HeimdallWeb API",
+    "description": "Complete API collection for HeimdallWeb security scanning application.\n\n**Features:**\n- User authentication and management\n- Security vulnerability scanning\n- Scan history and reporting\n- Admin dashboard\n\n**Authentication:** JWT token stored in cookie `authHeimdallCookie`\n\n**Base URL:** http://localhost:5110\n**API Version:** v1\n**Last Updated:** 2026-02-08",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "heimdallweb-api-v1",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5110",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "history_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_email",
+      "value": "alexandrescarano@gmail.com",
+      "type": "string"
+    },
+    {
+      "key": "admin_password",
+      "value": "Admin@123",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('user_id', response.userId);",
+                  "    pm.environment.set('jwt_token', response.token);",
+                  "    pm.test('User registered successfully', () => {",
+                  "        pm.expect(response).to.have.property('userId');",
+                  "        pm.expect(response).to.have.property('token');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser{{$timestamp}}\",\n  \"email\": \"testuser{{$timestamp}}@example.com\",\n  \"password\": \"Test@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "register"]
+            },
+            "description": "Register a new user account. Requires unique username and email."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('jwt_token', response.token);",
+                  "    pm.environment.set('user_id', response.userId);",
+                  "    pm.test('Login successful', () => {",
+                  "        pm.expect(response).to.have.property('token');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Login with email and password. Returns JWT token in cookie and response body."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            },
+            "description": "Logout and clear authentication cookie."
+          },
+          "response": []
+        }
+      ],
+      "description": "User authentication endpoints: register, login, logout"
+    },
+    {
+      "name": "02 - Users",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/{{user_id}}/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "{{user_id}}", "profile"]
+            },
+            "description": "Get user profile information. Users can only access their own profile."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Statistics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/{{user_id}}/statistics",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "{{user_id}}", "statistics"]
+            },
+            "description": "Get user statistics including total scans, findings, and risk distribution."
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"updated{{$timestamp}}\",\n  \"email\": \"updated{{$timestamp}}@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "{{user_id}}"]
+            },
+            "description": "Update user profile (username and/or email)."
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Profile Image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"base64Image\": \"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\",\n  \"fileName\": \"profile.png\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/{{user_id}}/profile-image",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "{{user_id}}", "profile-image"]
+            },
+            "description": "Upload profile image as base64-encoded string. Accepts PNG, JPG, JPEG."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User Account",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"Test@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "{{user_id}}"]
+            },
+            "description": "Delete user account. Requires password confirmation. Cascade deletes all user data."
+          },
+          "response": []
+        }
+      ],
+      "description": "User profile management: view, update, upload image, delete account"
+    },
+    {
+      "name": "03 - Scans",
+      "item": [
+        {
+          "name": "Execute Scan",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('history_id', response.historyId);",
+                  "    pm.test('Scan started successfully', () => {",
+                  "        pm.expect(response).to.have.property('historyId');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target\": \"https://example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/scans",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "scans"]
+            },
+            "description": "Execute security scan on target URL. Scan takes ~20-30 seconds. Rate limit: 4/minute."
+          },
+          "response": []
+        },
+        {
+          "name": "List Scan Histories",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/scans?page=1&pageSize=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "scans"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "List user's scan histories with pagination. Returns summary with findings count."
+          },
+          "response": []
+        }
+      ],
+      "description": "Execute security scans and list scan histories"
+    },
+    {
+      "name": "04 - History",
+      "item": [
+        {
+          "name": "Get Scan Details",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/scan-histories/{{history_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "scan-histories", "{{history_id}}"]
+            },
+            "description": "Get complete scan details including raw JSON, findings, technologies, and AI summary."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Findings",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/scan-histories/{{history_id}}/findings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "scan-histories", "{{history_id}}", "findings"]
+            },
+            "description": "Get vulnerabilities found in scan. Returns array sorted by severity."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Technologies",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/scan-histories/{{history_id}}/technologies",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "scan-histories", "{{history_id}}", "technologies"]
+            },
+            "description": "Get detected technologies from scan."
+          },
+          "response": []
+        },
+        {
+          "name": "Export Scan to PDF",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/scan-histories/{{history_id}}/export",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "scan-histories", "{{history_id}}", "export"]
+            },
+            "description": "Export single scan to PDF report. Returns binary PDF file."
+          },
+          "response": []
+        },
+        {
+          "name": "Export All Scans to PDF",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/scan-histories/export",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "scan-histories", "export"]
+            },
+            "description": "Export all user's scans to single PDF file."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Scan History",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/scan-histories/{{history_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "scan-histories", "{{history_id}}"]
+            },
+            "description": "Permanently delete scan history and all associated data."
+          },
+          "response": []
+        }
+      ],
+      "description": "Detailed scan results, findings, technologies, PDF export, deletion"
+    },
+    {
+      "name": "05 - Admin",
+      "item": [
+        {
+          "name": "Get Admin Dashboard",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/dashboard/admin?logPage=1&logPageSize=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "dashboard", "admin"],
+              "query": [
+                {
+                  "key": "logPage",
+                  "value": "1"
+                },
+                {
+                  "key": "logPageSize",
+                  "value": "20"
+                },
+                {
+                  "key": "logLevel",
+                  "value": "Warning",
+                  "disabled": true
+                },
+                {
+                  "key": "logStartDate",
+                  "value": "2026-02-01T00:00:00Z",
+                  "disabled": true
+                },
+                {
+                  "key": "logEndDate",
+                  "value": "2026-02-08T23:59:59Z",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get admin dashboard with system statistics, logs, and recent activity. Admin only."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/dashboard/users?page=1&pageSize=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "dashboard", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "test",
+                  "disabled": true
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "isAdmin",
+                  "value": "false",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "List all users with statistics and filtering. Admin only."
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle User Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users/{{user_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "users", "{{user_id}}", "status"]
+            },
+            "description": "Activate or deactivate user account. Admin only."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User by Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "users", "{{user_id}}"]
+            },
+            "description": "Delete user by admin (no password required). Cannot delete admin users. Admin only."
+          },
+          "response": []
+        }
+      ],
+      "description": "Admin dashboard, user management, status control. Requires admin role."
+    }
+  ]
+}

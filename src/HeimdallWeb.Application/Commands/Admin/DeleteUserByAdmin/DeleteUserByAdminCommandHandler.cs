@@ -21,6 +21,12 @@ public class DeleteUserByAdminCommandHandler : ICommandHandler<DeleteUserByAdmin
 
     public async Task<DeleteUserByAdminResponse> Handle(DeleteUserByAdminCommand request, CancellationToken ct = default)
     {
+        // SECURITY: Verify requesting user is Admin (must be first check)
+        if (request.RequestingUserType != UserType.Admin)
+        {
+            throw new ForbiddenException("Only administrators can delete users");
+        }
+
         // Validate input
         var validator = new DeleteUserByAdminCommandValidator();
         var validationResult = await validator.ValidateAsync(request, ct);
@@ -35,13 +41,7 @@ public class DeleteUserByAdminCommandHandler : ICommandHandler<DeleteUserByAdmin
             throw new ValidationException(errors);
         }
 
-        // SECURITY: Verify requesting user is Admin
-        if (request.RequestingUserType != UserType.Admin)
-        {
-            throw new ForbiddenException("Only administrators can delete users");
-        }
-
-        // BUSINESS RULE: Cannot delete yourself
+        // BUSINESS RULE: Cannot delete yourself (already validated above, redundant check)
         if (request.UserId == request.RequestingUserId)
         {
             throw new ValidationException("UserId", "Cannot delete yourself");

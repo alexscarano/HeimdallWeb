@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
+using FluentValidation;
 using HeimdallWeb.Application.Common.Exceptions;
 using HeimdallWeb.Application.Common.Interfaces;
 using HeimdallWeb.Application.DTOs.Scan;
@@ -48,6 +49,9 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
 
     public async Task<ExecuteScanResponse> Handle(ExecuteScanCommand command, CancellationToken cancellationToken = default)
     {
+        // Validate command before executing
+        var validator = new ExecuteScanCommandValidator();
+        await validator.ValidateAndThrowAsync(command, cancellationToken);
         var stopwatch = Stopwatch.StartNew();
         var normalizedTarget = NormalizeUrl(command.Target);
 

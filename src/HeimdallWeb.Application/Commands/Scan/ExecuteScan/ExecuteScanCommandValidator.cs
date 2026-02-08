@@ -32,20 +32,33 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
         if (System.Net.IPAddress.TryParse(target, out _))
             return true;
 
-        // Try to parse as URL
+        // Try to parse as URL with explicit scheme
         if (Uri.TryCreate(target, UriKind.Absolute, out var uriResult))
         {
-            return uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps;
+            if (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)
+            {
+                // Ensure host is valid (not just a string without dots or proper domain)
+                return !string.IsNullOrWhiteSpace(uriResult.Host) && 
+                       (uriResult.Host.Contains('.') || uriResult.Host == "localhost");
+            }
         }
 
-        // Try to parse as URL without scheme
-        var withScheme = target.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-                         target.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
-            ? target
-            : $"https://{target}";
+        // Try to parse as domain/hostname without scheme (add https:// prefix)
+        if (!target.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
+            !target.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            var withScheme = $"https://{target}";
+            
+            if (Uri.TryCreate(withScheme, UriKind.Absolute, out var uriResult2) &&
+                (uriResult2.Scheme == Uri.UriSchemeHttp || uriResult2.Scheme == Uri.UriSchemeHttps))
+            {
+                // Validate domain has at least one dot (e.g., example.com) or is localhost
+                return !string.IsNullOrWhiteSpace(uriResult2.Host) && 
+                       (uriResult2.Host.Contains('.') || uriResult2.Host == "localhost");
+            }
+        }
 
-        return Uri.TryCreate(withScheme, UriKind.Absolute, out var uriResult2) &&
-               (uriResult2.Scheme == Uri.UriSchemeHttp || uriResult2.Scheme == Uri.UriSchemeHttps);
+        return false;
     }
 
     private bool BeValidIp(string ip)
