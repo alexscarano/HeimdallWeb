@@ -89,8 +89,15 @@
             },
             "url": {
               "raw": "{{base_url}}/api/v1/auth/register",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "register"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
             },
             "description": "Register a new user account. Requires unique username and email."
           },
@@ -130,8 +137,15 @@
             },
             "url": {
               "raw": "{{base_url}}/api/v1/auth/login",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "login"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
             },
             "description": "Login with email/username and password. Returns JWT token in cookie and response body."
           },
@@ -154,8 +168,15 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/auth/logout",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "logout"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
             },
             "description": "Logout and clear authentication cookie."
           },
@@ -184,8 +205,16 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/users/{{user_id}}/profile",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "{{user_id}}", "profile"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{user_id}}",
+                "profile"
+              ]
             },
             "description": "Get user profile information. Users can only access their own profile."
           },
@@ -208,8 +237,16 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/users/{{user_id}}/statistics",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "{{user_id}}", "statistics"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{user_id}}",
+                "statistics"
+              ]
             },
             "description": "Get user statistics including total scans, findings, and risk distribution."
           },
@@ -241,8 +278,15 @@
             },
             "url": {
               "raw": "{{base_url}}/api/v1/users/{{user_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "{{user_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{user_id}}"
+              ]
             },
             "description": "Update user profile (username and/or email). Fields are optional."
           },
@@ -274,8 +318,16 @@
             },
             "url": {
               "raw": "{{base_url}}/api/v1/users/{{user_id}}/password",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "{{user_id}}", "password"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{user_id}}",
+                "password"
+              ]
             },
             "description": "Update user password. Requires current password verification. New password must meet strength requirements: min 8 chars, uppercase, lowercase, number, special character."
           },
@@ -307,8 +359,16 @@
             },
             "url": {
               "raw": "{{base_url}}/api/v1/users/{{user_id}}/profile-image",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "{{user_id}}", "profile-image"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{user_id}}",
+                "profile-image"
+              ]
             },
             "description": "Upload profile image as base64-encoded string. Accepts PNG, JPG, JPEG."
           },
@@ -331,8 +391,15 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/users/{{user_id}}?password=Test@1234&confirmDelete=true",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "{{user_id}}"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{user_id}}"
+              ],
               "query": [
                 {
                   "key": "password",
@@ -397,12 +464,326 @@
             },
             "url": {
               "raw": "{{base_url}}/api/v1/scans",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "scans"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scans"
+              ]
             },
-            "description": "Execute security scan on target URL. Scan takes ~20-30 seconds. Rate limit: 4/minute."
+            "description": "Execute security scan on target domain/URL. Only domain names accepted (IPs resolved automatically via DNS). Scan takes ~20-30 seconds. Rate limit: 4/minute."
           },
           "response": []
+        },
+        {
+          "name": "Execute Scan - Invalid Domain",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target\": \"https://invalid-domain-that-does-not-exist-12345.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/scans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scans"
+              ]
+            },
+            "description": "Expected: 400 Bad Request - Domain does not exist (DNS resolution fails). Validation is IMMEDIATE (~200ms)."
+          },
+          "response": [
+            {
+              "name": "400 - Invalid Domain",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"target\": \"https://invalid-domain-12345.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scans",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scans"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"One or more validation errors occurred.\",\n  \"errors\": {\n    \"Target\": [\n      \"Target domain does not exist or cannot be resolved. Please verify the domain is correct.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Execute Scan - Invalid Format",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target\": \"not-a-valid-url\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/scans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scans"
+              ]
+            },
+            "description": "Expected: 400 Bad Request - Invalid URL format."
+          },
+          "response": [
+            {
+              "name": "400 - Invalid Format",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"target\": \"not-a-valid-url\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scans",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scans"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"One or more validation errors occurred.\",\n  \"errors\": {\n    \"Target\": [\n      \"Target must be a valid URL or IP address\",\n      \"Target domain does not exist or cannot be resolved. Please verify the domain is correct.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Execute Scan - IP Address (Rejected)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target\": \"8.8.8.8\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/scans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scans"
+              ]
+            },
+            "description": "Expected: 400 Bad Request - IP addresses NOT accepted. System resolves IPs via DNS automatically."
+          },
+          "response": [
+            {
+              "name": "400 - IP Not Accepted",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"target\": \"8.8.8.8\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scans",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scans"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"One or more validation errors occurred.\",\n  \"errors\": {\n    \"Target\": [\n      \"Target must be a valid domain or URL (IP addresses not accepted)\",\n      \"Target domain does not exist or cannot be resolved. Please verify the domain is correct.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Execute Scan - Empty Target",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/scans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scans"
+              ]
+            },
+            "description": "Expected: 400 Bad Request - Target is required."
+          },
+          "response": [
+            {
+              "name": "400 - Empty Target",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"target\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scans",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scans"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"One or more validation errors occurred.\",\n  \"errors\": {\n    \"Target\": [\n      \"Target URL or IP address is required\",\n      \"Target must be a valid URL or IP address\",\n      \"Target domain does not exist or cannot be resolved. Please verify the domain is correct.\"\n    ]\n  }\n}"
+            }
+          ]
         },
         {
           "name": "List Scan Histories",
@@ -421,8 +802,14 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/scans?page=1&pageSize=10",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "scans"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scans"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -439,7 +826,7 @@
           "response": []
         }
       ],
-      "description": "Execute security scans and list scan histories"
+      "description": "Execute security scans on domains (NOT IPs). Fail-fast DNS validation rejects invalid domains in ~200ms."
     },
     {
       "name": "04 - History",
@@ -461,8 +848,15 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/scan-histories/{{history_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "scan-histories", "{{history_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scan-histories",
+                "{{history_id}}"
+              ]
             },
             "description": "Get complete scan details including raw JSON, findings, technologies, and AI summary."
           },
@@ -485,8 +879,16 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/scan-histories/{{history_id}}/findings",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "scan-histories", "{{history_id}}", "findings"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scan-histories",
+                "{{history_id}}",
+                "findings"
+              ]
             },
             "description": "Get vulnerabilities found in scan. Returns array sorted by severity."
           },
@@ -509,8 +911,16 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/scan-histories/{{history_id}}/technologies",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "scan-histories", "{{history_id}}", "technologies"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scan-histories",
+                "{{history_id}}",
+                "technologies"
+              ]
             },
             "description": "Get detected technologies from scan."
           },
@@ -533,8 +943,16 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/scan-histories/{{history_id}}/export",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "scan-histories", "{{history_id}}", "export"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scan-histories",
+                "{{history_id}}",
+                "export"
+              ]
             },
             "description": "Export single scan to PDF report. Returns binary PDF file."
           },
@@ -557,8 +975,15 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/scan-histories/export",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "scan-histories", "export"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scan-histories",
+                "export"
+              ]
             },
             "description": "Export all user's scans to single PDF file."
           },
@@ -581,8 +1006,15 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/scan-histories/{{history_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "scan-histories", "{{history_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scan-histories",
+                "{{history_id}}"
+              ]
             },
             "description": "Permanently delete scan history and all associated data."
           },
@@ -611,8 +1043,15 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/dashboard/admin?logPage=1&logPageSize=20",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "dashboard", "admin"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "dashboard",
+                "admin"
+              ],
               "query": [
                 {
                   "key": "logPage",
@@ -660,8 +1099,15 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/dashboard/users?page=1&pageSize=10",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "dashboard", "users"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "dashboard",
+                "users"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -718,8 +1164,17 @@
             },
             "url": {
               "raw": "{{base_url}}/api/v1/admin/users/{{user_id}}/status",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "admin", "users", "{{user_id}}", "status"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users",
+                "{{user_id}}",
+                "status"
+              ]
             },
             "description": "Activate or deactivate user account. Admin only."
           },
@@ -742,8 +1197,16 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/api/v1/admin/users/{{user_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "admin", "users", "{{user_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users",
+                "{{user_id}}"
+              ]
             },
             "description": "Delete user by admin (no password required). Cannot delete admin users. Admin only."
           },

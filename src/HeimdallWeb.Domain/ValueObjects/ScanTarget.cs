@@ -5,8 +5,9 @@ using HeimdallWeb.Domain.Exceptions;
 namespace HeimdallWeb.Domain.ValueObjects;
 
 /// <summary>
-/// Value Object representing a validated and normalized scan target (domain/URL/IP).
-/// Ensures the target is a valid domain, URL, or IP address and normalizes it for consistency.
+/// Value Object representing a validated and normalized scan target (domain/URL only).
+/// IP addresses are NOT accepted - system resolves IPs automatically via DNS.
+/// Ensures the target is a valid domain or URL and normalizes it for consistency.
 /// </summary>
 public sealed class ScanTarget : IEquatable<ScanTarget>
 {
@@ -18,10 +19,6 @@ public sealed class ScanTarget : IEquatable<ScanTarget>
         @"^(https?://)?([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}(/.*)?$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    private static readonly Regex IPv4Regex = new(
-        @"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
-        RegexOptions.Compiled);
-
     public string Value { get; }
 
     private ScanTarget(string value)
@@ -32,11 +29,11 @@ public sealed class ScanTarget : IEquatable<ScanTarget>
     /// <summary>
     /// Creates a new ScanTarget instance with validation and normalization.
     /// Removes protocol, www prefix, and trailing slashes.
-    /// Accepts domains, URLs, and IPv4 addresses.
+    /// Accepts ONLY domains and URLs - IP addresses are rejected (system resolves IPs via DNS automatically).
     /// </summary>
-    /// <param name="target">The domain, URL, or IP address to validate</param>
+    /// <param name="target">The domain or URL to validate (IP addresses NOT allowed)</param>
     /// <returns>A validated and normalized ScanTarget instance</returns>
-    /// <exception cref="ValidationException">Thrown when target format is invalid</exception>
+    /// <exception cref="ValidationException">Thrown when target format is invalid or is an IP address</exception>
     public static ScanTarget Create(string target)
     {
         if (string.IsNullOrWhiteSpace(target))
@@ -46,10 +43,16 @@ public sealed class ScanTarget : IEquatable<ScanTarget>
 
         var normalized = NormalizeTarget(target.Trim());
 
-        // Accept IPv4 addresses, domains, or URLs
-        if (!IPv4Regex.IsMatch(normalized) && !DomainRegex.IsMatch(normalized) && !UrlRegex.IsMatch(normalized))
+        // Reject IP addresses - only accept domains/URLs
+        if (IPAddress.TryParse(normalized, out _))
         {
-            throw new ValidationException($"Scan target '{target}' is not a valid domain, URL, or IP address.");
+            throw new ValidationException($"IP addresses are not accepted. Please provide a domain name (e.g., 'example.com'). System resolves IPs automatically via DNS.");
+        }
+
+        // Accept domains or URLs only
+        if (!DomainRegex.IsMatch(normalized) && !UrlRegex.IsMatch(normalized))
+        {
+            throw new ValidationException($"Scan target '{target}' is not a valid domain or URL.");
         }
 
         return new ScanTarget(normalized);

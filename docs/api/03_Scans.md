@@ -48,11 +48,17 @@ Cookie: authHeimdallCookie=<token>
 }
 ```
 
-**Target Requirements**:
-- Must be a valid URL
-- HTTP or HTTPS protocol
-- Can include port (e.g., `https://example.com:8443`)
-- Domain must be resolvable
+**Target Requirements** (Fail-Fast Validation):
+- ✅ **Valid URL format**: Must be a properly formatted URL (e.g., `https://example.com`)
+- ✅ **Domain name only**: Only domains/URLs accepted (e.g., `example.com`, `api.example.com`)
+- ✅ **Domain must exist**: DNS resolution check (rejects non-existent domains instantly)
+- ✅ **Protocol**: HTTP or HTTPS (auto-added if omitted)
+- ✅ **Custom ports**: Supported (e.g., `https://example.com:8443`)
+- ❌ **IP addresses NOT allowed**: `8.8.8.8`, `192.168.1.1` rejected - system resolves IPs via DNS automatically
+- ❌ **Localhost NOT allowed**: Cannot scan `localhost` or `127.0.0.1`
+- ❌ **Maximum length**: 500 characters
+
+**Validation is IMMEDIATE** (~200ms) - invalid domains are rejected **before** scan execution (no 75-second timeout).
 
 ### Response Success
 
@@ -127,32 +133,70 @@ curl -X POST http://localhost:5110/api/v1/scans \
   -b cookies.txt \
   -H "Content-Type: application/json" \
   -d '{"target":"https://api.example.com"}'
+
+# Scan domain without protocol (https:// auto-added)
+curl -X POST http://localhost:5110/api/v1/scans \
+  -b cookies.txt \
+  -H "Content-Type: application/json" \
+  -d '{"target":"example.com"}'
 ```
 
 ### Error Scenarios
 
-#### 1. Invalid URL Format
+#### 1. Invalid Domain (Non-Existent)
 
 **Request**:
 ```bash
 curl -X POST http://localhost:5110/api/v1/scans \
   -b cookies.txt \
   -H "Content-Type: application/json" \
-  -d '{"target":"not-a-url"}'
+  -d '{"target":"https://this-domain-does-not-exist-12345.com"}'
 ```
 
-**Response**: `HTTP 500 Internal Server Error`
+**Response**: `HTTP 400 Bad Request`
 ```json
 {
-  "statusCode": 500,
-  "message": "An unexpected error occurred. Please try again later.",
-  "errors": null
+  "statusCode": 400,
+  "message": "One or more validation errors occurred.",
+  "errors": {
+    "Target": [
+      "Target domain does not exist or cannot be resolved. Please verify the domain is correct."
+    ]
+  }
+}
+```
+
+**Why**: DNS resolution fails immediately (~200ms) - domain doesn't exist. This prevents wasting 75 seconds on an unreachable target.
+
+---
+
+#### 2. Invalid URL Format
+
+**Request**:
+```bash
+curl -X POST http://localhost:5110/api/v1/scans \
+  -b cookies.txt \
+  -H "Content-Type: application/json" \
+  -d '{"target":"not-a-valid-url"}'
+```
+
+**Response**: `HTTP 400 Bad Request`
+```json
+{
+  "statusCode": 400,
+  "message": "One or more validation errors occurred.",
+  "errors": {
+    "Target": [
+      "Target must be a valid URL or IP address",
+      "Target domain does not exist or cannot be resolved. Please verify the domain is correct."
+    ]
+  }
 }
 ```
 
 ---
 
-#### 2. Empty Target Field
+#### 3. Empty Target
 
 **Request**:
 ```bash
@@ -162,18 +206,77 @@ curl -X POST http://localhost:5110/api/v1/scans \
   -d '{"target":""}'
 ```
 
-**Response**: `HTTP 500 Internal Server Error`
+**Response**: `HTTP 400 Bad Request`
 ```json
 {
-  "statusCode": 500,
-  "message": "An unexpected error occurred. Please try again later.",
-  "errors": null
+  "statusCode": 400,
+  "message": "One or more validation errors occurred.",
+  "errors": {
+    "Target": [
+      "Target URL or IP address is required",
+      "Target must be a valid URL or IP address",
+      "Target domain does not exist or cannot be resolved. Please verify the domain is correct."
+    ]
+  }
 }
 ```
 
 ---
 
-#### 3. Not Authenticated
+#### 4. Target Too Long
+
+**Request**:
+```bash
+curl -X POST http://localhost:5110/api/v1/scans \
+  -b cookies.txt \
+  -H "Content-Type: application/json" \
+  -d '{"target":"https://very-long-domain-name-'$(python3 -c "print('a'*500)")'.com"}'
+```
+
+**Response**: `HTTP 400 Bad Request`
+```json
+{
+  "statusCode": 400,
+  "message": "One or more validation errors occurred.",
+  "errors": {
+    "Target": [
+      "Target URL is too long (max 500 characters)"
+    ]
+  }
+}
+```
+
+---
+
+#### 5. IP Address (Not Accepted)
+
+**Request**:
+```bash
+curl -X POST http://localhost:5110/api/v1/scans \
+  -b cookies.txt \
+  -H "Content-Type: application/json" \
+  -d '{"target":"8.8.8.8"}'
+```
+
+**Response**: `HTTP 400 Bad Request`
+```json
+{
+  "statusCode": 400,
+  "message": "One or more validation errors occurred.",
+  "errors": {
+    "Target": [
+      "Target must be a valid domain or URL (IP addresses not accepted)",
+      "Target domain does not exist or cannot be resolved. Please verify the domain is correct."
+    ]
+  }
+}
+```
+
+**Why**: IP addresses are not accepted as user input. The system resolves domain names to IP addresses automatically via DNS. Use domain names instead (e.g., `dns.google` instead of `8.8.8.8`).
+
+---
+
+#### 6. Not Authenticated
 
 **Request**:
 ```bash
@@ -186,7 +289,7 @@ curl -X POST http://localhost:5110/api/v1/scans \
 
 ---
 
-#### 4. Rate Limit Exceeded (429)
+#### 7. Rate Limit Exceeded (429)
 
 **Scenario**: More than 4 scan requests in 1 minute from same IP
 

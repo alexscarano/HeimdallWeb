@@ -13,9 +13,9 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
     public ExecuteScanCommandValidator()
     {
         RuleFor(x => x.Target)
-            .NotEmpty().WithMessage("Target URL or IP address is required")
+            .NotEmpty().WithMessage("Target URL or domain is required")
             .MaximumLength(500).WithMessage("Target URL is too long (max 500 characters)")
-            .Must(BeValidUrlOrIp).WithMessage("Target must be a valid URL or IP address")
+            .Must(BeValidUrlOrIp).WithMessage("Target must be a valid domain or URL (IP addresses not accepted)")
             .Must(BeResolvableHost).WithMessage("Target domain does not exist or cannot be resolved. Please verify the domain is correct.");
 
         RuleFor(x => x.UserId)
@@ -27,16 +27,17 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
     }
 
     /// <summary>
-    /// Validates URL/IP syntax (format check).
+    /// Validates URL/domain syntax (format check).
+    /// IP addresses are NOT accepted - only domains/URLs (IPs resolved automatically via DNS).
     /// </summary>
     private bool BeValidUrlOrIp(string target)
     {
         if (string.IsNullOrWhiteSpace(target))
             return false;
 
-        // Try to parse as IP address
+        // Reject raw IP addresses - only domains allowed
         if (NetworkUtils.IsIPAddress(target))
-            return true;
+            return false;
 
         // Try to parse as URL with NetworkUtils
         var normalized = NetworkUtils.NormalizeUrl(target);
@@ -45,7 +46,11 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
 
         if (NetworkUtils.IsValidUrl(normalized, out var uriResult))
         {
-            // Ensure host is valid (not just a string without dots or proper domain)
+            // Ensure host is valid domain (not IP address)
+            if (NetworkUtils.IsIPAddress(uriResult.Host))
+                return false;
+
+            // Ensure host has proper domain format (not just a string without dots)
             return !string.IsNullOrWhiteSpace(uriResult.Host) && 
                    (uriResult.Host.Contains('.') || uriResult.Host == "localhost");
         }
@@ -54,9 +59,8 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
     }
 
     /// <summary>
-    /// Validates that the domain/host can be resolved via DNS.
-    /// For IPs, this always returns true (no DNS needed).
-    /// For domains, performs DNS lookup to verify existence.
+    /// Validates that the domain can be resolved via DNS.
+    /// IP addresses are rejected in BeValidUrlOrIp - only domains accepted here.
     /// </summary>
     private bool BeResolvableHost(string target)
     {
@@ -65,10 +69,6 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
 
         try
         {
-            // If it's already an IP address, it's resolvable
-            if (NetworkUtils.IsIPAddress(target))
-                return true;
-
             // Normalize the URL first
             var normalized = NetworkUtils.NormalizeUrl(target);
             if (string.IsNullOrEmpty(normalized))
@@ -79,11 +79,16 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
             if (string.IsNullOrWhiteSpace(host))
                 return false;
 
+            // Reject IP addresses (should be caught in BeValidUrlOrIp)
+            if (NetworkUtils.IsIPAddress(host))
+                return false;
+
             // Localhost is always valid
             if (host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
                 return true;
 
             // Try DNS resolution - this will throw if domain doesn't exist
+            // DNS resolution automatically gets IP addresses
             var addresses = NetworkUtils.GetIPv4Addresses(normalized);
             return addresses != null && addresses.Length > 0;
         }
