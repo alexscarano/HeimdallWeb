@@ -62,10 +62,19 @@ public class GetUserStatisticsQueryHandler : IQueryHandler<GetUserStatisticsQuer
         var lowFindings = findings.Count(f => f.Severity == SeverityLevel.Low);
         var informationalFindings = findings.Count(f => f.Severity == SeverityLevel.Informational);
 
-        // Risk trend and category breakdown (simplified - return empty lists for Phase 3)
-        // Can be enhanced later with SQL VIEWs or more complex queries
-        var riskTrend = new List<RiskTrendItem>();
-        var categoryBreakdown = new List<CategoryBreakdownItem>();
+        // Risk trend from SQL VIEW (last 30 days)
+        var riskTrendData = await _unitOfWork.UserStatisticsViews.GetUserRiskTrendAsync(query.UserId, cancellationToken);
+        var riskTrend = riskTrendData.Select(r => new RiskTrendItem(
+            Date: r.RiskDate.ToString("yyyy-MM-dd"),
+            FindingsCount: r.CriticalCount + r.HighCount + r.MediumCount + r.LowCount + r.InformationalCount
+        )).ToList();
+
+        // Category breakdown from SQL VIEW
+        var categoryData = await _unitOfWork.UserStatisticsViews.GetUserCategoryBreakdownAsync(query.UserId, cancellationToken);
+        var categoryBreakdown = categoryData.Select(c => new CategoryBreakdownItem(
+            Category: c.Category,
+            Count: c.CategoryCount
+        )).ToList();
 
         return new UserStatisticsResponse(
             TotalScans: totalScans,

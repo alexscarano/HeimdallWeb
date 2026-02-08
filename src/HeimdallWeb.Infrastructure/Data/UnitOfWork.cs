@@ -22,6 +22,7 @@ public class UnitOfWork : IUnitOfWork
     private IIASummaryRepository? _iaSummaries;
     private IAuditLogRepository? _auditLogs;
     private IUserUsageRepository? _userUsages;
+    private IUserStatisticsViewRepository? _userStatisticsViews;
 
     public UnitOfWork(AppDbContext context)
     {
@@ -49,6 +50,9 @@ public class UnitOfWork : IUnitOfWork
 
     public IUserUsageRepository UserUsages =>
         _userUsages ??= new UserUsageRepository(_context);
+
+    public IUserStatisticsViewRepository UserStatisticsViews =>
+        _userStatisticsViews ??= new UserStatisticsViewRepository(_context);
 
     // Transaction Methods
     public async Task<int> SaveChangesAsync(CancellationToken ct = default)

@@ -16,6 +16,7 @@ public interface IUnitOfWork : IDisposable
     IIASummaryRepository IASummaries { get; }
     IAuditLogRepository AuditLogs { get; }
     IUserUsageRepository UserUsages { get; }
+    IUserStatisticsViewRepository UserStatisticsViews { get; }
 
     // Transaction Methods
     /// <summary>
