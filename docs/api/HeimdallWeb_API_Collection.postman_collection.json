@@ -704,7 +704,84 @@
                   "value": "application/json; charset=utf-8"
                 }
               ],
-              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"One or more validation errors occurred.\",\n  \"errors\": {\n    \"Target\": [\n      \"Target must be a valid domain or URL (IP addresses not accepted)\",\n      \"Target domain does not exist or cannot be resolved. Please verify the domain is correct.\"\n    ]\n  }\n}"
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"One or more validation errors occurred.\",\n  \"errors\": {\n    \"Target\": [\n      \"Target must be a valid domain or URL (localhost and IP addresses not accepted)\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Execute Scan - Localhost (Rejected)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target\": \"localhost\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/scans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scans"
+              ]
+            },
+            "description": "Expected: 400 Bad Request - Localhost NOT accepted. Only public domains allowed."
+          },
+          "response": [
+            {
+              "name": "400 - Localhost Rejected",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"target\": \"localhost\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scans",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scans"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"One or more validation errors occurred.\",\n  \"errors\": {\n    \"Target\": [\n      \"Target must be a valid domain or URL (localhost and IP addresses not accepted)\"\n    ]\n  }\n}"
             }
           ]
         },
@@ -826,7 +903,7 @@
           "response": []
         }
       ],
-      "description": "Execute security scans on domains (NOT IPs). Fail-fast DNS validation rejects invalid domains in ~200ms."
+      "description": "Execute security scans on PUBLIC domains only. Localhost and IPs rejected. Single, specific error messages (no duplicates)."
     },
     {
       "name": "04 - History",

@@ -50,15 +50,17 @@ Cookie: authHeimdallCookie=<token>
 
 **Target Requirements** (Fail-Fast Validation):
 - ✅ **Valid URL format**: Must be a properly formatted URL (e.g., `https://example.com`)
-- ✅ **Domain name only**: Only domains/URLs accepted (e.g., `example.com`, `api.example.com`)
+- ✅ **Public domain only**: Only public domains/URLs accepted (e.g., `example.com`, `api.example.com`)
 - ✅ **Domain must exist**: DNS resolution check (rejects non-existent domains instantly)
 - ✅ **Protocol**: HTTP or HTTPS (auto-added if omitted)
 - ✅ **Custom ports**: Supported (e.g., `https://example.com:8443`)
 - ❌ **IP addresses NOT allowed**: `8.8.8.8`, `192.168.1.1` rejected - system resolves IPs via DNS automatically
-- ❌ **Localhost NOT allowed**: Cannot scan `localhost` or `127.0.0.1`
+- ❌ **Localhost NOT allowed**: `localhost`, `127.0.0.1`, `http://localhost` all rejected
 - ❌ **Maximum length**: 500 characters
 
 **Validation is IMMEDIATE** (~200ms) - invalid domains are rejected **before** scan execution (no 75-second timeout).
+
+**Error messages are SINGLE and SPECIFIC** - no duplicates, clear indication of what's wrong.
 
 ### Response Success
 
@@ -248,7 +250,34 @@ curl -X POST http://localhost:5110/api/v1/scans \
 
 ---
 
-#### 5. IP Address (Not Accepted)
+#### 5. Localhost (Not Accepted)
+
+**Request**:
+```bash
+curl -X POST http://localhost:5110/api/v1/scans \
+  -b cookies.txt \
+  -H "Content-Type: application/json" \
+  -d '{"target":"localhost"}'
+```
+
+**Response**: `HTTP 400 Bad Request`
+```json
+{
+  "statusCode": 400,
+  "message": "One or more validation errors occurred.",
+  "errors": {
+    "Target": [
+      "Target must be a valid domain or URL (localhost and IP addresses not accepted)"
+    ]
+  }
+}
+```
+
+**Why**: Localhost (and `127.0.0.1`, `http://localhost:5000`, etc.) is not accepted. Only public domains can be scanned. This prevents users from scanning internal/local services.
+
+---
+
+#### 6. IP Address (Not Accepted)
 
 **Request**:
 ```bash
@@ -265,8 +294,7 @@ curl -X POST http://localhost:5110/api/v1/scans \
   "message": "One or more validation errors occurred.",
   "errors": {
     "Target": [
-      "Target must be a valid domain or URL (IP addresses not accepted)",
-      "Target domain does not exist or cannot be resolved. Please verify the domain is correct."
+      "Target must be a valid domain or URL (localhost and IP addresses not accepted)"
     ]
   }
 }
@@ -276,7 +304,7 @@ curl -X POST http://localhost:5110/api/v1/scans \
 
 ---
 
-#### 6. Not Authenticated
+#### 7. Not Authenticated
 
 **Request**:
 ```bash
@@ -289,7 +317,7 @@ curl -X POST http://localhost:5110/api/v1/scans \
 
 ---
 
-#### 7. Rate Limit Exceeded (429)
+#### 8. Rate Limit Exceeded (429)
 
 **Scenario**: More than 4 scan requests in 1 minute from same IP
 

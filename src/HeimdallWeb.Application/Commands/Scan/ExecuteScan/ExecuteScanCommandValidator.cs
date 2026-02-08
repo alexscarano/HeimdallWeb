@@ -7,6 +7,7 @@ namespace HeimdallWeb.Application.Commands.Scan.ExecuteScan;
 /// Validator for ExecuteScanCommand.
 /// Validates target URL format, DNS resolution, user ID, and remote IP format.
 /// Fails fast if domain doesn't exist (prevents 75-second timeout).
+/// Localhost and IP addresses are NOT allowed.
 /// </summary>
 public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
 {
@@ -15,8 +16,13 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
         RuleFor(x => x.Target)
             .NotEmpty().WithMessage("Target URL or domain is required")
             .MaximumLength(500).WithMessage("Target URL is too long (max 500 characters)")
-            .Must(BeValidUrlOrIp).WithMessage("Target must be a valid domain or URL (IP addresses not accepted)")
-            .Must(BeResolvableHost).WithMessage("Target domain does not exist or cannot be resolved. Please verify the domain is correct.");
+            .Must(BeValidUrlOrIp).WithMessage("Target must be a valid domain or URL (localhost and IP addresses not accepted)")
+            .DependentRules(() =>
+            {
+                // Only check DNS if format is valid (avoids duplicate error messages)
+                RuleFor(x => x.Target)
+                    .Must(BeResolvableHost).WithMessage("Target domain does not exist or cannot be resolved. Please verify the domain is correct.");
+            });
 
         RuleFor(x => x.UserId)
             .NotEmpty().WithMessage("User ID is required");
@@ -28,7 +34,7 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
 
     /// <summary>
     /// Validates URL/domain syntax (format check).
-    /// IP addresses are NOT accepted - only domains/URLs (IPs resolved automatically via DNS).
+    /// IP addresses and localhost are NOT accepted - only public domains/URLs.
     /// </summary>
     private bool BeValidUrlOrIp(string target)
     {
@@ -46,13 +52,16 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
 
         if (NetworkUtils.IsValidUrl(normalized, out var uriResult))
         {
-            // Ensure host is valid domain (not IP address)
+            // Reject localhost explicitly
+            if (uriResult.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            // Reject IP addresses in URL
             if (NetworkUtils.IsIPAddress(uriResult.Host))
                 return false;
 
-            // Ensure host has proper domain format (not just a string without dots)
-            return !string.IsNullOrWhiteSpace(uriResult.Host) && 
-                   (uriResult.Host.Contains('.') || uriResult.Host == "localhost");
+            // Ensure host has proper domain format (must have dots for TLD)
+            return !string.IsNullOrWhiteSpace(uriResult.Host) && uriResult.Host.Contains('.');
         }
 
         return false;
@@ -60,7 +69,7 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
 
     /// <summary>
     /// Validates that the domain can be resolved via DNS.
-    /// IP addresses are rejected in BeValidUrlOrIp - only domains accepted here.
+    /// Assumes BeValidUrlOrIp already validated format (no localhost/IPs here).
     /// </summary>
     private bool BeResolvableHost(string target)
     {
@@ -73,19 +82,6 @@ public class ExecuteScanCommandValidator : AbstractValidator<ExecuteScanCommand>
             var normalized = NetworkUtils.NormalizeUrl(target);
             if (string.IsNullOrEmpty(normalized))
                 return false;
-
-            // Extract host from URL
-            var host = NetworkUtils.RemoveHttpString(normalized);
-            if (string.IsNullOrWhiteSpace(host))
-                return false;
-
-            // Reject IP addresses (should be caught in BeValidUrlOrIp)
-            if (NetworkUtils.IsIPAddress(host))
-                return false;
-
-            // Localhost is always valid
-            if (host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
-                return true;
 
             // Try DNS resolution - this will throw if domain doesn't exist
             // DNS resolution automatically gets IP addresses

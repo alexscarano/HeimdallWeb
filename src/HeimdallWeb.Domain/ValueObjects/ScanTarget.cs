@@ -29,11 +29,11 @@ public sealed class ScanTarget : IEquatable<ScanTarget>
     /// <summary>
     /// Creates a new ScanTarget instance with validation and normalization.
     /// Removes protocol, www prefix, and trailing slashes.
-    /// Accepts ONLY domains and URLs - IP addresses are rejected (system resolves IPs via DNS automatically).
+    /// Accepts ONLY public domains and URLs - IP addresses and localhost are rejected.
     /// </summary>
-    /// <param name="target">The domain or URL to validate (IP addresses NOT allowed)</param>
+    /// <param name="target">The domain or URL to validate (IP addresses and localhost NOT allowed)</param>
     /// <returns>A validated and normalized ScanTarget instance</returns>
-    /// <exception cref="ValidationException">Thrown when target format is invalid or is an IP address</exception>
+    /// <exception cref="ValidationException">Thrown when target is invalid, is an IP, or is localhost</exception>
     public static ScanTarget Create(string target)
     {
         if (string.IsNullOrWhiteSpace(target))
@@ -43,10 +43,16 @@ public sealed class ScanTarget : IEquatable<ScanTarget>
 
         var normalized = NormalizeTarget(target.Trim());
 
+        // Reject localhost explicitly
+        if (normalized.Equals("localhost", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ValidationException("Localhost is not accepted. Please provide a public domain name (e.g., 'example.com').");
+        }
+
         // Reject IP addresses - only accept domains/URLs
         if (IPAddress.TryParse(normalized, out _))
         {
-            throw new ValidationException($"IP addresses are not accepted. Please provide a domain name (e.g., 'example.com'). System resolves IPs automatically via DNS.");
+            throw new ValidationException("IP addresses are not accepted. Please provide a domain name (e.g., 'example.com'). System resolves IPs automatically via DNS.");
         }
 
         // Accept domains or URLs only
