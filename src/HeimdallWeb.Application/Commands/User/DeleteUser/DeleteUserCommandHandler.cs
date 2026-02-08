@@ -36,47 +36,69 @@ public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand, Delet
             throw new ValidationException(errors);
         }
 
-        // Security check: verify user can only delete themselves
-        if (request.UserId != request.RequestingUserId)
+        // Security check: 
+        // - Admins can delete regular users (UserType = 1) but NOT other admins
+        // - Regular users can only delete themselves (with password)
+        var requestingUser = await _unitOfWork.Users.GetByIdAsync(request.RequestingUserId, ct);
+        if (requestingUser is null)
         {
-            throw new ForbiddenException("You can only delete your own account");
+            throw new UnauthorizedException("Invalid requesting user");
         }
 
-        // Get user from database
-        var user = await _unitOfWork.Users.GetByIdAsync(request.UserId, ct);
-        if (user is null)
+        // Get target user to check their type
+        var targetUser = await _unitOfWork.Users.GetByIdAsync(request.UserId, ct);
+        if (targetUser is null)
         {
             throw new NotFoundException($"User with ID {request.UserId} not found");
         }
 
-        // Verify password
-        if (!PasswordUtils.VerifyPassword(request.Password, user.PasswordHash))
+        bool isAdmin = requestingUser.UserType == UserType.Admin;
+        bool isDeletingSelf = request.UserId == request.RequestingUserId;
+        bool targetIsAdmin = targetUser.UserType == UserType.Admin;
+
+        if (!isAdmin && !isDeletingSelf)
+        {
+            throw new ForbiddenException("You can only delete your own account");
+        }
+
+        // Admin cannot delete other admins
+        if (isAdmin && targetIsAdmin && !isDeletingSelf)
+        {
+            throw new ForbiddenException("Admins cannot delete other admin accounts");
+        }
+
+        // Verify password (only required if user is deleting their own account)
+        if (isDeletingSelf && !PasswordUtils.VerifyPassword(request.Password, targetUser.PasswordHash))
         {
             throw new UnauthorizedException("Invalid password. Account deletion cancelled.");
         }
 
         // Delete user
-        await _unitOfWork.Users.DeleteAsync(user.UserId, ct);
+        await _unitOfWork.Users.DeleteAsync(targetUser.UserId, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
         // Log account deletion
-        await LogAccountDeletionAsync(user.UserId, user.Username, ct);
+        await LogAccountDeletionAsync(targetUser.UserId, targetUser.Username, request.RequestingUserId, isAdmin, ct);
 
         return new DeleteUserResponse(
-            Message: "Account deleted successfully",
-            UserId: user.UserId
+            Message: isAdmin && !isDeletingSelf 
+                ? $"User '{targetUser.Username}' deleted successfully by admin"
+                : "Account deleted successfully",
+            UserId: targetUser.UserId
         );
     }
 
-    private async Task LogAccountDeletionAsync(int userId, string username, CancellationToken ct)
+    private async Task LogAccountDeletionAsync(int userId, string username, int requestingUserId, bool deletedByAdmin, CancellationToken ct)
     {
         var log = new Domain.Entities.AuditLog(
             code: LogEventCode.USER_ACCOUNT_DELETED,
             level: "Warning",
-            message: "User account deleted",
+            message: deletedByAdmin ? "User account deleted by admin" : "User account self-deleted",
             source: "DeleteUserCommandHandler",
-            details: $"User '{username}' (ID: {userId}) deleted their account",
-            userId: userId
+            details: deletedByAdmin 
+                ? $"User '{username}' (ID: {userId}) was deleted by admin (ID: {requestingUserId})"
+                : $"User '{username}' (ID: {userId}) deleted their own account",
+            userId: requestingUserId
         );
 
         await _unitOfWork.AuditLogs.AddAsync(log, ct);

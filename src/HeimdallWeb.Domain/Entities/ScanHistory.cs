@@ -18,17 +18,12 @@ public class ScanHistory
     public int UserId { get; private set; }
 
     // Navigation properties (collections)
-    private readonly List<Finding> _findings = new();
-    public IReadOnlyCollection<Finding> Findings => _findings.AsReadOnly();
-
-    private readonly List<Technology> _technologies = new();
-    public IReadOnlyCollection<Technology> Technologies => _technologies.AsReadOnly();
-
-    private readonly List<IASummary> _iaSummaries = new();
-    public IReadOnlyCollection<IASummary> IASummaries => _iaSummaries.AsReadOnly();
-
-    private readonly List<AuditLog> _auditLogs = new();
-    public IReadOnlyCollection<AuditLog> AuditLogs => _auditLogs.AsReadOnly();
+    // Note: Using ICollection instead of IReadOnlyCollection to allow EF Core materialization
+    // Domain logic should not modify these collections directly outside of aggregate methods
+    public ICollection<Finding> Findings { get; private set; } = new List<Finding>();
+    public ICollection<Technology> Technologies { get; private set; } = new List<Technology>();
+    public ICollection<IASummary> IASummaries { get; private set; } = new List<IASummary>();
+    public ICollection<AuditLog> AuditLogs { get; private set; } = new List<AuditLog>();
 
     // Navigation property (parent)
     public User? User { get; private set; }

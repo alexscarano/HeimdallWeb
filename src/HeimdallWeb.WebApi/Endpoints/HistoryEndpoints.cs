@@ -111,6 +111,6 @@ public static class HistoryEndpoints
         var command = new DeleteScanHistoryCommand(id, userId);
         await handler.Handle(command);
 
-        return Results.NoContent();
+        return Results.Ok(new { message = "Scan history deleted successfully", historyId = id });
     }
 }

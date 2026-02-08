@@ -12,15 +12,12 @@ public class DeleteUserCommandValidator : AbstractValidator<DeleteUserCommand>
         RuleFor(x => x.RequestingUserId)
             .GreaterThan(0).WithMessage("Requesting User ID must be greater than 0");
 
-        // Security check: user can only delete themselves
-        RuleFor(x => x)
-            .Must(cmd => cmd.UserId == cmd.RequestingUserId)
-            .WithMessage("You can only delete your own account")
-            .WithName("Authorization");
-
+        // Password is optional for admins deleting other users
+        // But required when user deletes their own account
         RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("Password is required for account deletion")
-            .MinimumLength(6).WithMessage("Password must be at least 6 characters");
+            .NotEmpty()
+            .When(x => x.UserId == x.RequestingUserId)
+            .WithMessage("Password is required when deleting your own account");
 
         RuleFor(x => x.ConfirmDelete)
             .Must(x => x == true).WithMessage("Delete confirmation is required")

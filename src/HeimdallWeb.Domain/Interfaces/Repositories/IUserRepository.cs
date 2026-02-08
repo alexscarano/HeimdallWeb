@@ -14,6 +14,12 @@ public interface IUserRepository
     Task<User?> GetByIdAsync(int userId, CancellationToken ct = default);
 
     /// <summary>
+    /// Gets a user by their unique identifier FOR UPDATE (with tracking).
+    /// Use this method when you need to modify the entity.
+    /// </summary>
+    Task<User?> GetByIdForUpdateAsync(int userId, CancellationToken ct = default);
+
+    /// <summary>
     /// Gets a user by their email address.
     /// </summary>
     Task<User?> GetByEmailAsync(EmailAddress email, CancellationToken ct = default);

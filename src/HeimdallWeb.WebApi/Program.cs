@@ -50,6 +50,9 @@ var app = builder.Build();
 // Development-only services (Swagger UI)
 app.UseSwaggerDevelopment();
 
+// Global exception handler (must be early in pipeline to catch all exceptions)
+app.UseGlobalExceptionHandler();
+
 // Security middleware pipeline (order is CRITICAL - DO NOT CHANGE)
 // Order: HTTPS → CORS → Authentication → Authorization → RateLimiting
 app.UseSecurityMiddlewarePipeline();

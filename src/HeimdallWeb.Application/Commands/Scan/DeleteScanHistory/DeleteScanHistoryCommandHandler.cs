@@ -42,8 +42,19 @@ public class DeleteScanHistoryCommandHandler : ICommandHandler<DeleteScanHistory
             throw new NotFoundException($"Scan history with ID {request.HistoryId} not found");
         }
 
-        // SECURITY: Verify ownership - users can only delete their own scans
-        if (scanHistory.UserId != request.RequestingUserId)
+        // SECURITY: 
+        // - Regular users can only delete their own scans
+        // - Admins can delete any scan
+        var requestingUser = await _unitOfWork.Users.GetByIdAsync(request.RequestingUserId, ct);
+        if (requestingUser is null)
+        {
+            throw new UnauthorizedException("Invalid requesting user");
+        }
+
+        bool isAdmin = requestingUser.UserType == UserType.Admin;
+        bool isOwner = scanHistory.UserId == request.RequestingUserId;
+
+        if (!isAdmin && !isOwner)
         {
             throw new ForbiddenException("You can only delete your own scan history");
         }
@@ -71,7 +82,7 @@ public class DeleteScanHistoryCommandHandler : ICommandHandler<DeleteScanHistory
             level: "Info",
             message: "Scan history deleted",
             source: "DeleteScanHistoryCommandHandler",
-            details: $"History ID: {historyId}, Target: {target}",
+            details: $"History ID: {historyId}, Target: {target}, Deleted by User ID: {userId}",
             userId: userId
         );
 

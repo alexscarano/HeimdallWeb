@@ -70,16 +70,19 @@ public static class UserEndpoints
 
     private static async Task<IResult> DeleteUser(
         int id,
-        [FromBody] DeleteUserCommand request,
         ICommandHandler<DeleteUserCommand, DeleteUserResponse> handler,
-        HttpContext context)
+        HttpContext context,
+        string? password = null,
+        bool confirmDelete = false)
     {
         var authenticatedUserId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
-        var command = new DeleteUserCommand(id, authenticatedUserId, request.Password, request.ConfirmDelete);
-        await handler.Handle(command);
+        // For admin users, password confirmation may not be required
+        // For regular users, they must provide their password to delete their own account
+        var command = new DeleteUserCommand(id, authenticatedUserId, password ?? string.Empty, confirmDelete);
+        var result = await handler.Handle(command);
 
-        return Results.NoContent();
+        return Results.Ok(new { message = "User deleted successfully", userId = id });
     }
 
     private static async Task<IResult> UpdateProfileImage(

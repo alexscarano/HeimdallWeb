@@ -27,11 +27,19 @@ public static class AuthenticationEndpoints
     }
 
     private static async Task<IResult> Login(
-        [FromBody] LoginCommand request,
+        [FromBody] LoginRequest request,
         ICommandHandler<LoginCommand, LoginResponse> handler,
         HttpContext context)
     {
-        var result = await handler.Handle(request);
+        var remoteIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        
+        var command = new LoginCommand(
+            request.EmailOrLogin,
+            request.Password,
+            remoteIp
+        );
+        
+        var result = await handler.Handle(command);
 
         // Set JWT token in HttpOnly cookie (following old CookiesHelper pattern)
         var cookieOptions = new CookieOptions
@@ -48,21 +56,30 @@ public static class AuthenticationEndpoints
     }
 
     private static async Task<IResult> Register(
-        [FromBody] RegisterUserCommand request,
+        [FromBody] RegisterUserRequest request,
         ICommandHandler<RegisterUserCommand, RegisterUserResponse> handler,
         HttpContext context)
     {
-        var result = await handler.Handle(request);
+        var remoteIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        
+        var command = new RegisterUserCommand(
+            request.Email,
+            request.Username,
+            request.Password,
+            remoteIp
+        );
+        
+        var result = await handler.Handle(command);
 
         // Return 201 Created with location header
         return Results.Created($"/api/v1/users/{result.UserId}/profile", result);
     }
 
-    private static Task<IResult> Logout(HttpContext context)
+    private static IResult Logout(HttpContext context)
     {
         // Delete authentication cookie
         context.Response.Cookies.Delete("authHeimdallCookie");
 
-        return Task.FromResult(Results.NoContent());
+        return Results.NoContent();
     }
 }

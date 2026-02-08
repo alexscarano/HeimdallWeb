@@ -26,6 +26,12 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync(u => u.UserId == userId, ct);
     }
 
+    public async Task<User?> GetByIdForUpdateAsync(int userId, CancellationToken ct = default)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.UserId == userId, ct);
+    }
+
     public async Task<User?> GetByEmailAsync(EmailAddress email, CancellationToken ct = default)
     {
         // Convert EmailAddress VO to string for EF query

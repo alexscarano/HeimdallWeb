@@ -12,10 +12,10 @@ public static class EndpointConfiguration
     /// Registra todos os grupos de endpoints da aplicação.
     /// 
     /// Endpoints disponíveis (5 grupos):
-    /// - 🔐 Authentication: /api/v1/auth (login, register, logout)
-    /// - 🔍 Scan: /api/v1/scan (iniciar, listar, detalhes de scan)
-    /// - 📜 History: /api/v1/history (histórico de scans)
-    /// - 👤 User: /api/v1/user (perfil, configurações)
+    /// - Authentication: /api/v1/auth (login, register, logout)
+    /// - Scan: /api/v1/scan (iniciar, listar, detalhes de scan)
+    /// - History: /api/v1/history (histórico de scans)
+    /// - User: /api/v1/user (perfil, configurações)
     /// - 📊 Dashboard: /api/v1/dashboard (estatísticas de admin)
     /// </summary>
     /// <remarks>

@@ -52,8 +52,8 @@ public class UpdateProfileImageCommandHandler : ICommandHandler<UpdateProfileIma
             throw new ForbiddenException("You can only update your own profile image");
         }
 
-        // Get user from database
-        var user = await _unitOfWork.Users.GetByIdAsync(request.UserId, ct);
+        // Get user from database WITH TRACKING (so EF Core can save changes)
+        var user = await _unitOfWork.Users.GetByIdForUpdateAsync(request.UserId, ct);
         if (user is null)
         {
             throw new NotFoundException($"User with ID {request.UserId} not found");
@@ -122,10 +122,19 @@ public class UpdateProfileImageCommandHandler : ICommandHandler<UpdateProfileIma
         // Update user profile image using domain method
         user.UpdateProfileImage(relativePath);
 
-        await _unitOfWork.SaveChangesAsync(ct);
+        // Log profile image update (create log entity before saving)
+        var log = new Domain.Entities.AuditLog(
+            code: LogEventCode.PROFILE_IMAGE_UPDATED,
+            level: "Info",
+            message: "Profile image updated",
+            source: "UpdateProfileImageCommandHandler",
+            details: $"New image path: {relativePath}",
+            userId: user.UserId
+        );
+        await _unitOfWork.AuditLogs.AddAsync(log, ct);
 
-        // Log profile image update
-        await LogProfileImageUpdateAsync(user.UserId, relativePath, ct);
+        // Single SaveChanges for both user update and audit log
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return new UpdateProfileImageResponse(
             UserId: user.UserId,
@@ -147,18 +156,5 @@ public class UpdateProfileImageCommandHandler : ICommandHandler<UpdateProfileIma
         return false;
     }
 
-    private async Task LogProfileImageUpdateAsync(int userId, string imagePath, CancellationToken ct)
-    {
-        var log = new Domain.Entities.AuditLog(
-            code: LogEventCode.PROFILE_IMAGE_UPDATED,
-            level: "Info",
-            message: "Profile image updated",
-            source: "UpdateProfileImageCommandHandler",
-            details: $"New image path: {imagePath}",
-            userId: userId
-        );
 
-        await _unitOfWork.AuditLogs.AddAsync(log, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
-    }
 }

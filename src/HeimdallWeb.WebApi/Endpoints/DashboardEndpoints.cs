@@ -101,8 +101,8 @@ public static class DashboardEndpoints
         ICommandHandler<ToggleUserStatusCommand, ToggleUserStatusResponse> handler,
         HttpContext context)
     {
-        // Get UserType from claims (assuming it's stored as a claim)
-        var userTypeString = context.User.FindFirst("UserType")?.Value ?? "1";
+        // Get UserType from Role claim
+        var userTypeString = context.User.FindFirst(ClaimTypes.Role)?.Value ?? "1";
         var userType = (UserType)int.Parse(userTypeString);
 
         var command = new ToggleUserStatusCommand(id, request.IsActive, userType);
@@ -117,7 +117,7 @@ public static class DashboardEndpoints
         HttpContext context)
     {
         var adminUserId = int.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        var userTypeString = context.User.FindFirst("UserType")?.Value ?? "1";
+        var userTypeString = context.User.FindFirst(ClaimTypes.Role)?.Value ?? "1";
         var userType = (UserType)int.Parse(userTypeString);
 
         var command = new DeleteUserByAdminCommand(id, userType, adminUserId);
