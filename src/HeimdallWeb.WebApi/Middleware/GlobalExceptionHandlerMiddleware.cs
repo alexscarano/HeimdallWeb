@@ -60,8 +60,12 @@ public class GlobalExceptionHandlerMiddleware
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
                 errorResponse.StatusCode = response.StatusCode;
                 errorResponse.Message = appValidationException.Message;
-                _logger.LogWarning(appValidationException, "Application validation failed: {Message}", 
-                    appValidationException.Message);
+                errorResponse.Errors = appValidationException.Errors.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value
+                ); // Convert IDictionary to Dictionary
+                _logger.LogWarning(appValidationException, "Application validation failed: {Errors}",
+                    JsonSerializer.Serialize(errorResponse.Errors));
                 break;
 
             // Custom NotFoundException
