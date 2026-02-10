@@ -596,7 +596,7 @@ npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
 - [ ] `src/components/layout/Sidebar.tsx` — colapsável 200px desktop / drawer mobile
 - [ ] `src/components/layout/Header.tsx` — breadcrumb + user menu + theme toggle
 - [ ] `src/components/layout/Container.tsx` — responsivo
-- [ ] `src/middleware.ts` — proteção de rotas autenticadas (redirect `/login`)
+- [ ] `src/proxy.ts` — proteção de rotas autenticadas (redirect `/login`) *(Next.js 16: proxy ao invés de middleware)*
 - [ ] `src/lib/constants/routes.ts` — rotas centralizadas
 - [ ] Layout protegido aplicado em todas rotas exceto `/login` e `/register`
 
