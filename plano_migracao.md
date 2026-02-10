@@ -448,12 +448,234 @@ npm install --save-dev @types/prismjs
 - ✅ **lucide-react** - Ícones modernos e consistentes
 - ✅ **shadcn/ui** - Biblioteca de componentes (Button, Card, Form, Table, etc.)
 
-**Próximos Passos:**
-- [ ] Configurar API client (Axios interceptors + JWT)
-- [ ] Configurar React Query provider
-- [ ] Criar types TypeScript para DTOs do backend
-- [ ] Setup de componentes shadcn/ui essenciais (Button, Card, Form, Input, Table)
-- [ ] Criar layout base (Header, Sidebar, Footer)
+---
+
+### **Arquitetura Frontend (baseada em EProc.NFe/SistemaFiscal)**
+
+**Estrutura de Pastas (App Router):**
+```
+/HeimdallWeb.Next/
+  /src/
+    /app/                    # Páginas (Next.js App Router)
+      layout.tsx             # Root layout com ThemeProvider
+      page.tsx               # Home (scan form)
+      /login/
+        page.tsx
+      /register/
+        page.tsx
+      /history/
+        page.tsx             # Lista de scans
+        /[id]/
+          page.tsx           # Detalhes do scan
+      /dashboard/
+        /admin/
+          page.tsx           # Dashboard admin
+        /user/
+          page.tsx           # Dashboard usuário
+      /profile/
+        page.tsx
+      /admin/
+        /users/
+          page.tsx           # Gerenciamento de usuários
+
+    /components/
+      /ui/                   # Primitivos (shadcn/ui + custom)
+        Button.tsx
+        Input.tsx
+        Card.tsx
+        Badge.tsx           # Status badges (success, warning, error)
+        Table.tsx           # Tabela com paginação
+        Modal.tsx           # Modal base
+        Tabs.tsx
+        Select.tsx
+        Textarea.tsx
+        ThemeToggle.tsx     # Toggle dark/light mode
+      /layout/               # Componentes de layout
+        Sidebar.tsx         # Sidebar colapsável (200px)
+        Header.tsx          # Header com breadcrumb + user menu
+        Container.tsx       # Container responsivo
+      /dashboard/            # Componentes específicos de dashboards
+        MetricCard.tsx      # Card de métrica com ícone colorido
+        ChartCard.tsx       # Card com gráfico (Recharts)
+        StatsGrid.tsx
+      /history/              # Componentes de histórico
+        ScanTable.tsx       # Tabela de scans
+        ScanFilters.tsx     # Filtros de busca
+        FindingsList.tsx    # Lista de findings
+        JsonViewer.tsx      # Viewer de JSON com Prism.js
+      /scan/                 # Componentes de scan
+        ScanForm.tsx        # Formulário de scan
+        ScannerSelector.tsx # Seletor de scanners
+        LoadingIndicator.tsx
+      /icons/                # Ícones customizados SVG
+
+    /lib/
+      /api/                  # API clients
+        client.ts           # Axios instance com interceptors JWT
+        endpoints.ts        # Endpoints organizados por domínio
+        scan.api.ts
+        auth.api.ts
+        user.api.ts
+        dashboard.api.ts
+      /hooks/                # Custom hooks
+        useAuth.ts
+        useScan.ts
+        useHistory.ts
+        useDashboard.ts
+        useDebounce.ts
+      /utils/                # Utilitários
+        cn.ts               # clsx + tailwind-merge
+        formatters.ts       # formatCurrency, formatDate, etc.
+        validators.ts       # Validações customizadas
+      /constants/            # Constantes
+        scanners.ts
+        severityLevels.ts
+        routes.ts
+
+    /types/                  # TypeScript types
+      api.ts                # DTOs do backend
+      scan.ts               # ScanHistory, Finding, Technology
+      user.ts               # User, UserUsage
+      dashboard.ts          # Dashboard stats
+      common.ts             # PagedResult, enums
+
+    /stores/                 # Estado global (Zustand ou Context)
+      authStore.ts
+      themeStore.ts
+```
+
+**Design System (Tailwind + shadcn/ui):**
+
+**Paleta de Cores (Dark/Light Mode):**
+- Backgrounds: Preto puro (#000) dark / Branco puro (#FFF) light
+- Text: Alto contraste (branco/preto puro para texto principal)
+- Primary: Azul (#3B82F6)
+- Success: Verde mint (#10B981) - **SEMPRE para valores e métricas positivas**
+- Warning: Amarelo/laranja (#F59E0B)
+- Error: Vermelho (#EF4444)
+
+**Regras de Cores (Críticas):**
+1. **Valores de métricas**: SEMPRE `text-success-500` (verde #10B981)
+2. **Cards de métricas**: Ícones com fundo colorido translúcido `bg-{color}-500/10`
+3. **Status badges**: Background translúcido (15%) + borda sutil
+4. **Alto contraste**: WCAG AA compliance
+
+**Componentes Principais:**
+- **MetricCard**: Card com ícone circular colorido, título, valor grande em verde
+- **ScanTable**: Tabela responsiva com paginação, filtros, status badges
+- **JsonViewer**: Viewer de JSON com syntax highlighting (Prism.js)
+- **Sidebar**: 200px, colapsável desktop, drawer mobile
+- **Header**: Breadcrumb + notificações + theme toggle + avatar
+- **Modal**: Base com overlay, tabs horizontais, tamanhos (sm, md, lg, xl)
+
+**Dependências Adicionais Futuras:**
+```bash
+# Ainda a instalar conforme necessidade
+npm install next-themes        # Dark/light mode toggle
+npm install sonner             # Toast notifications
+npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
+```
+
+---
+
+**Sub-Sprints do Frontend (10 sprints):**
+
+### Sprint 5.1 — Foundation (3-4h)
+- [ ] `tailwind.config.ts` com tokens do design system (cores, tipografia, dark/light)
+- [ ] `next-themes` instalado + `ThemeProvider` no root layout
+- [ ] `QueryProvider` (React Query) no root layout
+- [ ] `src/lib/api/client.ts` — Axios instance com interceptors JWT (cookie `authHeimdallCookie`)
+- [ ] `src/lib/api/endpoints.ts` — endpoints organizados por domínio (auth, scan, history, user, dashboard)
+- [ ] `src/types/` — TypeScript types espelhando todos os DTOs do backend (User, ScanHistory, Finding, Technology, IASummary, Dashboard)
+- [ ] `src/stores/authStore.ts` — estado global de autenticação
+- [ ] shadcn/ui components instalados: Button, Card, Input, Form, Table, Badge, Dialog, Tabs, Select, Textarea, Skeleton
+- [ ] `.env.local` com `NEXT_PUBLIC_API_URL=http://localhost:5000`
+
+### Sprint 5.2 — Layout Base + Routing Guard (3-4h)
+- [ ] `src/app/layout.tsx` root com ThemeProvider + QueryProvider + fontes
+- [ ] `src/components/layout/Sidebar.tsx` — colapsável 200px desktop / drawer mobile
+- [ ] `src/components/layout/Header.tsx` — breadcrumb + user menu + theme toggle
+- [ ] `src/components/layout/Container.tsx` — responsivo
+- [ ] `src/middleware.ts` — proteção de rotas autenticadas (redirect `/login`)
+- [ ] `src/lib/constants/routes.ts` — rotas centralizadas
+- [ ] Layout protegido aplicado em todas rotas exceto `/login` e `/register`
+
+### Sprint 5.3 — Autenticação (3-4h)
+- [ ] `src/lib/api/auth.api.ts` — login, register, logout
+- [ ] `src/lib/hooks/useAuth.ts` — estado, login, logout, register
+- [ ] `src/app/login/page.tsx` — LoginForm com Zod + React Hook Form
+- [ ] `src/app/register/page.tsx` — RegisterForm com validação
+- [ ] Redirect pós-login para `/`
+- [ ] Redirect pós-logout para `/login`
+- [ ] Persistência de sessão (verificar cookie JWT ao recarregar)
+- [ ] **Browser Test (MCP):** screenshot login + register, testar submit, verificar redirect
+
+### Sprint 5.4 — Home + Scan Flow (4-5h)
+- [ ] `src/lib/api/scan.api.ts` — POST /api/v1/scans, GET status
+- [ ] `src/lib/hooks/useScan.ts` — submit, polling de status (até 75s)
+- [ ] `src/components/scan/ScannerSelector.tsx` — checkboxes dos 7 scanners
+- [ ] `src/components/scan/ScanForm.tsx` — URL input + validação + seletor
+- [ ] `src/components/scan/LoadingIndicator.tsx` — barra de progresso com timer
+- [ ] `src/app/page.tsx` — Home com ScanForm funcional
+- [ ] Exibição de resultado resumido após scan concluir
+- [ ] **Browser Test (MCP):** screenshot home, submeter scan real, verificar loading + resultado
+
+### Sprint 5.5 — Histórico + Detalhes (5-6h)
+- [ ] `src/lib/api/history.api.ts` — GET /history (paginado), GET /history/{id}, export PDF
+- [ ] `src/lib/hooks/useHistory.ts`
+- [ ] `src/components/history/ScanTable.tsx` — tabela responsiva com paginação
+- [ ] `src/components/history/ScanFilters.tsx` — filtro por data, status, severidade
+- [ ] `src/components/history/FindingsList.tsx` — lista com badges de severidade
+- [ ] `src/components/history/JsonViewer.tsx` — Prism.js syntax highlighting
+- [ ] `src/app/history/page.tsx` — lista paginada com filtros
+- [ ] `src/app/history/[id]/page.tsx` — detalhes completos + export PDF
+- [ ] **Browser Test (MCP):** navegação lista→detalhes, filtros, JSON viewer, export PDF
+
+### Sprint 5.6 — Dashboard do Usuário + Perfil (5-6h)
+- [ ] `src/lib/api/user.api.ts` — GET/PUT /users/me, PUT /users/me/image
+- [ ] `src/lib/api/dashboard.api.ts` — GET /dashboard/user
+- [ ] `src/lib/hooks/useDashboard.ts` (user)
+- [ ] `src/components/dashboard/MetricCard.tsx` — card com ícone colorido + valor
+- [ ] `src/components/dashboard/ChartCard.tsx` — wrapper Recharts
+- [ ] `src/app/dashboard/user/page.tsx` — métricas + gráficos de uso
+- [ ] `src/app/profile/page.tsx` — edição de dados + upload de foto de perfil
+- [ ] **Browser Test (MCP):** screenshot dashboard, editar perfil, upload de imagem
+
+### Sprint 5.7 — Admin Dashboard + Gestão de Usuários (6-7h)
+- [ ] `src/lib/api/admin.api.ts` — GET /dashboard/admin, GET/PUT/DELETE /users (admin)
+- [ ] `src/lib/hooks/useDashboard.ts` (admin) + `useUsers.ts`
+- [ ] `src/app/dashboard/admin/page.tsx` — charts avançados (trends, risk distribution, top categories)
+- [ ] `src/app/admin/users/page.tsx` — tabela de usuários com toggle ativo/inativo + exclusão
+- [ ] Guard de rota `user_type = 2` para rotas `/admin/*` e `/dashboard/admin`
+- [ ] Confirmação modal antes de excluir usuário
+- [ ] **Browser Test (MCP):** login como admin, visualizar dashboard, toggle usuário, deletar usuário
+
+### Sprint 5.8 — Polish, Acessibilidade e UX Final (4-5h)
+- [ ] `sonner` instalado — toast notifications (success/error em todas ações)
+- [ ] Error boundaries por página (`error.tsx` do App Router)
+- [ ] Loading skeletons para todas as listas/cards (`loading.tsx`)
+- [ ] Empty states (sem histórico, sem dados no dashboard)
+- [ ] Responsividade validada: 375px (mobile), 768px (tablet), 1280px (desktop)
+- [ ] WCAG 2.1 AA: contraste mínimo 4.5:1, aria-labels, navegação por teclado
+- [ ] Favicon + metadata (`<title>`, `<description>`) em todas as páginas
+- [ ] **Browser Test (MCP):** resize para mobile (375px), verificar todos layouts, checar console de erros
+
+### Sprint 6.1 — Testes de Integração Backend (3-4h)
+- [ ] Testar todos os 20 endpoints com banco PostgreSQL real (Swagger ou curl)
+- [ ] Validar cenários de erro: 400 (validação), 401 (sem auth), 403 (sem permissão), 404 (não encontrado)
+- [ ] Testar CORS com `credentials: 'include'` do Next.js
+- [ ] Testar rate limiting: 85 req/min global + 4 req/min scan
+- [ ] Criar/atualizar `docs/testing/Phase5_Integration_TestGuide.md`
+
+### Sprint 6.2 — E2E Manual + Validação Final (4-5h)
+- [ ] Fluxo completo: register → login → executar scan → ver resultado → exportar PDF
+- [ ] Dashboard admin com dados reais do PostgreSQL
+- [ ] Gerenciamento de usuários (toggle status, exclusão)
+- [ ] Validar quota de 5 scans/dia por usuário
+- [ ] JWT cookie: verificar HttpOnly, Secure, SameSite=Strict no browser
+- [ ] Testar em mobile real (ou DevTools 375px)
+- [ ] Corrigir todos os bugs críticos encontrados
+- [ ] Marcar Fase 5 e Fase 6 como CONCLUÍDAS no plano_migracao.md
 
 ---
 
@@ -700,22 +922,19 @@ npm install --save-dev @types/prismjs
 - [x] Swagger documentado
 - [x] Erros seguem RFC 7807
 
-**Fase 5: Frontend**
-- [ ] Todas páginas renderizam
-- [ ] Formulários validam
-- [ ] API calls usam React Query
-- [ ] Auth state persiste
-- [ ] Charts exibem dados
-- [ ] Responsive (mobile/desktop)
-- [ ] Acessibilidade (WCAG 2.1 AA)
+**Fase 5: Frontend** *(ver sub-sprints detalhadas acima)*
+- [ ] Sprint 5.1 — Foundation concluída
+- [ ] Sprint 5.2 — Layout Base + Routing Guard concluído
+- [ ] Sprint 5.3 — Autenticação concluída
+- [ ] Sprint 5.4 — Home + Scan Flow concluído
+- [ ] Sprint 5.5 — Histórico + Detalhes concluído
+- [ ] Sprint 5.6 — Dashboard do Usuário + Perfil concluído
+- [ ] Sprint 5.7 — Admin Dashboard + Gestão de Usuários concluído
+- [ ] Sprint 5.8 — Polish, Acessibilidade e UX Final concluído
 
-**Fase 6: End-to-End**
-- [ ] Usuário registra e faz login
-- [ ] Usuário executa scan e vê resultados
-- [ ] Admin vê dashboard
-- [ ] Export PDF funciona
-- [ ] Rate limiting previne abuso
-- [ ] Quota de usuário enforçada (5 scans/dia)
+**Fase 6: End-to-End** *(ver sub-sprints detalhadas acima)*
+- [ ] Sprint 6.1 — Testes de Integração Backend concluído
+- [ ] Sprint 6.2 — E2E Manual + Validação Final concluído
 
 ---
 

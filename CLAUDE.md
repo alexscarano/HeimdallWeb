@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **These rules are MANDATORY and SEVERE. NO exceptions:**
 
 1. **✅ Mark completed tasks** in `plano_migracao.md` after EVERY task
-2. **🌐 Use browser automation** (MCP Chrome/Puppeteer) after ANY frontend change
+2. **🌐 Use browser automation** (MCP Chrome/Puppeteer) after ANY frontend change — inclusive após o agente `nexus-next-js` completar qualquer alteração
 3. **🧪 Test ALL endpoints** after backend sprints + create testing guide (`.MD`)
 4. **🚫 NO Docker** for development - use `dotnet build/run` only
 5. **🎨 Consult designer agent** for ALL UI/design decisions - NEVER improvise
@@ -36,6 +36,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```
 Task(subagent_type="designer", prompt="Design the admin dashboard layout...")
 ```
+
+### nexus-next-js Agent
+**When:** Implementing ANY Next.js frontend feature or component
+**Use for:**
+- Next.js 15 + React 19 page and component implementation
+- TailwindCSS + shadcn/ui integration
+- App Router structure and routing
+- Client/Server component decisions
+- API integration with the backend (fetch, React Query, etc.)
+- State management in the frontend
+- Performance optimization (SSR, SSG, ISR)
+
+**🎨 frontend-design Skill:** The `nexus-next-js` agent MAY load the `frontend-design` skill (via `Skill("frontend-design")`) when greater visual creativity and design quality is needed — e.g., for complex layouts, landing pages, or components that go beyond standard patterns. Use this skill proactively when the task demands high design quality.
+
+**Example:**
+```
+Task(subagent_type="nexus-next-js", prompt="Implement the login page for HeimdallWeb using the design provided...")
+```
+
+**🚨 MANDATORY POST-IMPLEMENTATION:** After the nexus-next-js agent completes ANY frontend change, you MUST use MCP Claude-in-Chrome to:
+1. Navigate to the changed page in the browser
+2. Take screenshots (desktop + mobile viewport)
+3. Test all interactions (clicks, form submissions, navigation)
+4. Check browser console for errors
+5. Verify responsive behavior
+6. Document any visual issues found
 
 ### dotnet-backend-expert Agent
 **When:** Working on .NET backend code
@@ -841,15 +867,46 @@ Task(
 // 3. Implement EXACTLY as designed
 ```
 
-**Step 3c: Browser Testing (MANDATORY)**
+**Step 3c: Implementation with nexus-next-js Agent (MANDATORY for Next.js frontend)**
+```typescript
+// After receiving the design from the designer agent
+
+// 1. Delegate implementation to nexus-next-js agent
+Task(
+  subagent_type="nexus-next-js",
+  description="Implement login page",
+  prompt="Implement the login page for HeimdallWeb based on the design: [design details here]..."
+)
+
+// 2. Agent implements the component/page
+// 3. Proceed to browser verification (Step 3d)
+```
+
+**Step 3d: Browser Testing with MCP (MANDATORY)**
 ```javascript
-// Use MCP Claude-in-Chrome
-// 1. Navigate to login page
-// 2. Take screenshots
-// 3. Test form interactions
-// 4. Verify responsive behavior
-// 5. Check console for errors
-// 6. Document findings
+// Use MCP Claude-in-Chrome IMMEDIATELY after any frontend change
+// This step is REQUIRED even if the code "looks correct"
+
+// 1. Get tab context
+mcp__claude-in-chrome__tabs_context_mcp()
+
+// 2. Navigate to the changed page
+mcp__claude-in-chrome__navigate({ url: "http://localhost:3000/login" })
+
+// 3. Take desktop screenshot
+mcp__claude-in-chrome__computer({ action: "screenshot" })
+
+// 4. Test interactions (fill form, click buttons, etc.)
+mcp__claude-in-chrome__find({ query: "login form fields" })
+
+// 5. Check responsive (mobile viewport)
+mcp__claude-in-chrome__resize_window({ width: 375, height: 812 })
+mcp__claude-in-chrome__computer({ action: "screenshot" })
+
+// 6. Read console for errors
+mcp__claude-in-chrome__read_console_messages({ pattern: "error|warn" })
+
+// 7. Document any visual issues found
 ```
 
 ---
