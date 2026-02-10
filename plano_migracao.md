@@ -410,6 +410,53 @@ public static class AuthenticationEndpoints
 
 **Stack**: Next.js 15 + React 19 + TailwindCSS + shadcn/ui + React Query + Zod
 
+**Setup Inicial do Projeto** ✅ CONCLUÍDO (2026-02-10)
+
+**Criação do Projeto:**
+```bash
+# Criar projeto Next.js com TypeScript, App Router, TailwindCSS, ESLint, src/ directory
+npx create-next-app@latest heimdallweb-next \
+  --typescript \
+  --app \
+  --tailwind \
+  --eslint \
+  --src-dir \
+  --import-alias "@/*"
+```
+
+**Dependências Instaladas:**
+```bash
+# Core dependencies (React Query, Axios, Zod, Form handling)
+npm install @tanstack/react-query axios zod recharts date-fns prismjs lucide-react @hookform/resolvers react-hook-form
+
+# shadcn/ui setup (componentes + utils)
+npx shadcn@latest init  # Base color: Neutral
+
+# Dev dependencies (TypeScript types)
+npm install --save-dev @types/prismjs
+```
+
+**Dependências Completas:**
+- ✅ **@tanstack/react-query** - State management e cache de API calls
+- ✅ **axios** - HTTP client com interceptors para JWT
+- ✅ **zod** - Schema validation para formulários
+- ✅ **react-hook-form** - Gerenciamento de formulários
+- ✅ **@hookform/resolvers** - Integração Zod + React Hook Form
+- ✅ **recharts** - Gráficos para dashboards (admin/user)
+- ✅ **date-fns** - Formatação de datas
+- ✅ **prismjs** - Syntax highlighting para JSON viewer
+- ✅ **lucide-react** - Ícones modernos e consistentes
+- ✅ **shadcn/ui** - Biblioteca de componentes (Button, Card, Form, Table, etc.)
+
+**Próximos Passos:**
+- [ ] Configurar API client (Axios interceptors + JWT)
+- [ ] Configurar React Query provider
+- [ ] Criar types TypeScript para DTOs do backend
+- [ ] Setup de componentes shadcn/ui essenciais (Button, Card, Form, Input, Table)
+- [ ] Criar layout base (Header, Sidebar, Footer)
+
+---
+
 **11 Páginas para criar:**
 1. Login (2-3h)
 2. Register (2-3h)
@@ -646,12 +693,12 @@ public static class AuthenticationEndpoints
 **Após DI:** Fase 4 - WebAPI Minimal APIs (criar endpoints para todos handlers)
 
 **Fase 4: WebApi**
-- [ ] Endpoints retornam status codes corretos
-- [ ] JWT authentication funciona
-- [ ] Rate limiting funciona
-- [ ] CORS permite Next.js
-- [ ] Swagger documentado
-- [ ] Erros seguem RFC 7807
+- [x] Endpoints retornam status codes corretos
+- [x] JWT authentication funciona
+- [x] Rate limiting funciona
+- [x] CORS permite Next.js
+- [x] Swagger documentado
+- [x] Erros seguem RFC 7807
 
 **Fase 5: Frontend**
 - [ ] Todas páginas renderizam
