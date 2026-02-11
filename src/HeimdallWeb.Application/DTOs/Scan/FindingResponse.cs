@@ -1,5 +1,3 @@
-using HeimdallWeb.Domain.Enums;
-
 namespace HeimdallWeb.Application.DTOs.Scan;
 
 /// <summary>
@@ -10,7 +8,7 @@ public record FindingResponse(
     int FindingId,
     string Type,
     string Description,
-    SeverityLevel Severity,
+    string Severity,
     string? Evidence,
     string? Recommendation,
     int? HistoryId,

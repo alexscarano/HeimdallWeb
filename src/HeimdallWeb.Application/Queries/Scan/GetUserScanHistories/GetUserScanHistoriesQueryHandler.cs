@@ -40,6 +40,8 @@ public class GetUserScanHistoriesQueryHandler : IQueryHandler<GetUserScanHistori
             userInternalId,
             page,
             pageSize,
+            query.Search,
+            query.Status,
             cancellationToken);
 
         // Calculate pagination metadata

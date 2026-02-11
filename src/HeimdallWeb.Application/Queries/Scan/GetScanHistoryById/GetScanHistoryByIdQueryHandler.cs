@@ -49,7 +49,7 @@ public class GetScanHistoryByIdQueryHandler : IQueryHandler<GetScanHistoryByIdQu
             FindingId: f.FindingId,
             Type: f.Type,
             Description: f.Description,
-            Severity: f.Severity,
+            Severity: f.Severity.ToString(),
             Evidence: f.Evidence,
             Recommendation: f.Recommendation,
             HistoryId: f.HistoryId,

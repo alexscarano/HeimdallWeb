@@ -42,6 +42,8 @@ public static class ScanEndpoints
     private static async Task<IResult> GetUserScans(
         [FromQuery] int? page,
         [FromQuery] int? pageSize,
+        [FromQuery] string? search,
+        [FromQuery] string? status,
         IQueryHandler<GetUserScanHistoriesQuery, PaginatedScanHistoriesResponse> handler,
         HttpContext context)
     {
@@ -51,7 +53,7 @@ public static class ScanEndpoints
         var finalPage = page.HasValue && page.Value > 0 ? page.Value : 1;
         var finalPageSize = pageSize.HasValue && pageSize.Value > 0 && pageSize.Value <= 100 ? pageSize.Value : 10;
 
-        var query = new GetUserScanHistoriesQuery(userId, finalPage, finalPageSize);
+        var query = new GetUserScanHistoriesQuery(userId, finalPage, finalPageSize, search, status);
         var result = await handler.Handle(query);
 
         return Results.Ok(result);

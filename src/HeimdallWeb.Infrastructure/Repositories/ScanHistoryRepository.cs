@@ -110,11 +110,23 @@ public class ScanHistoryRepository : IScanHistoryRepository
         int userId,
         int page,
         int pageSize,
+        string? search,
+        string? status,
         CancellationToken ct = default)
     {
         var query = _context.ScanHistories
             .AsNoTracking()
             .Where(h => h.UserId == userId);
+
+        // Server-side URL filter: case-insensitive partial match via PostgreSQL ILike
+        if (!string.IsNullOrWhiteSpace(search))
+            query = query.Where(h => EF.Functions.ILike(h.Target.Value, $"%{search}%"));
+
+        // Server-side status filter applied before COUNT and Skip/Take
+        if (status == "completed")
+            query = query.Where(h => h.HasCompleted);
+        else if (status == "failed")
+            query = query.Where(h => !h.HasCompleted);
 
         var totalCount = await query.CountAsync(ct);
 

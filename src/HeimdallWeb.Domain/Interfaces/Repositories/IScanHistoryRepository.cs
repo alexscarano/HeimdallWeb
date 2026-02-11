@@ -50,11 +50,20 @@ public interface IScanHistoryRepository
 
     /// <summary>
     /// Gets paginated scan histories for a specific user, ordered by created date DESC.
+    /// Supports optional server-side filtering by URL (search) and completion status.
     /// </summary>
+    /// <param name="userId">Internal user ID</param>
+    /// <param name="page">Page number (1-based)</param>
+    /// <param name="pageSize">Number of items per page</param>
+    /// <param name="search">Optional case-insensitive partial match against the scan URL</param>
+    /// <param name="status">Optional status filter: "completed", "failed", or null for all</param>
+    /// <param name="ct">Cancellation token</param>
     Task<(IEnumerable<ScanHistorySummaryResponse> Items, int TotalCount)> GetByUserIdPaginatedAsync(
         int userId,
         int page,
         int pageSize,
+        string? search,
+        string? status,
         CancellationToken ct = default);
 
     /// <summary>

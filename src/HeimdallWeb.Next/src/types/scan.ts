@@ -1,5 +1,3 @@
-import { SeverityLevel } from "./common";
-
 export interface ScanHistorySummary {
   historyId: string;
   target: string;
@@ -29,7 +27,7 @@ export interface FindingResponse {
   findingId: string;
   type: string;
   description: string;
-  severity: SeverityLevel;
+  severity: "Critical" | "High" | "Medium" | "Low" | "Informational";
   evidence: string | null;
   recommendation: string | null;
   historyId: string | null;

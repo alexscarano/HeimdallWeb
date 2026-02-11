@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function Header() {
+export function Header({ mobileMenuButton }: { mobileMenuButton?: React.ReactNode }) {
   const { user, logout } = useAuth();
   const router = useRouter();
 
@@ -29,8 +29,10 @@ export function Header() {
     : "??";
 
   return (
-    <header className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-background px-6">
-      <div />
+    <header className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-background px-4 sm:px-6">
+      <div className="flex items-center gap-2">
+        {mobileMenuButton}
+      </div>
 
       <div className="flex items-center gap-2">
         <ThemeToggle />

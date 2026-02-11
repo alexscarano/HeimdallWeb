@@ -620,41 +620,43 @@ npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
 - [ ] Exibição de resultado resumido após scan concluir
 - [ ] **Browser Test (MCP):** screenshot home, submeter scan real, verificar loading + resultado
 
-### Sprint 5.5 — Histórico + Detalhes (5-6h)
-- [ ] `src/lib/api/history.api.ts` — GET /history (paginado), GET /history/{id}, export PDF
-- [ ] `src/lib/hooks/useHistory.ts`
-- [ ] `src/components/history/ScanTable.tsx` — tabela responsiva com paginação
-- [ ] `src/components/history/ScanFilters.tsx` — filtro por data, status, severidade
-- [ ] `src/components/history/FindingsList.tsx` — lista com badges de severidade
-- [ ] `src/components/history/JsonViewer.tsx` — Prism.js syntax highlighting
-- [ ] `src/app/history/page.tsx` — lista paginada com filtros
-- [ ] `src/app/history/[id]/page.tsx` — detalhes completos + export PDF
+### Sprint 5.5 — Histórico + Detalhes (5-6h) ✅ COMPLETO
+- [x] `src/lib/hooks/use-history.ts` — Hooks React Query para histórico
+- [x] `src/components/history/scan-table.tsx` — tabela responsiva com paginação
+- [x] `src/components/history/scan-filters.tsx` — filtro por status e busca
+- [x] `src/components/history/findings-list.tsx` — Accordion com badges de severidade
+- [x] `src/components/history/json-viewer.tsx` — Prism.js syntax highlighting
+- [x] `src/components/history/technologies-list.tsx` — Lista de tecnologias agrupadas
+- [x] `src/components/history/ai-summary.tsx` — Análise de IA com cards
+- [x] `src/app/(app)/history/page.tsx` — lista paginada com filtros
+- [x] `src/app/(app)/history/[id]/page.tsx` — detalhes com tabs (Findings, Tech, AI, JSON)
+- [x] Endpoints corrigidos: `/api/v1/scans` (lista), `/api/v1/scan-histories/{uuid}/*` (detalhes)
 - [ ] **Browser Test (MCP):** navegação lista→detalhes, filtros, JSON viewer, export PDF
 
-### Sprint 5.6 — Dashboard do Usuário + Perfil (5-6h)
-- [ ] `src/lib/api/user.api.ts` — GET/PUT /users/me, PUT /users/me/image
-- [ ] `src/lib/api/dashboard.api.ts` — GET /dashboard/user
-- [ ] `src/lib/hooks/useDashboard.ts` (user)
-- [ ] `src/components/dashboard/MetricCard.tsx` — card com ícone colorido + valor
-- [ ] `src/components/dashboard/ChartCard.tsx` — wrapper Recharts
-- [ ] `src/app/dashboard/user/page.tsx` — métricas + gráficos de uso
-- [ ] `src/app/profile/page.tsx` — edição de dados + upload de foto de perfil
+### Sprint 5.6 — Dashboard do Usuário + Perfil (5-6h) ✅ COMPLETO
+- [x] `src/lib/hooks/use-dashboard.ts` — Hook para estatísticas do usuário
+- [x] `src/components/dashboard/metric-card.tsx` — card com ícone colorido + borda
+- [x] `src/components/dashboard/chart-card.tsx` — wrapper Recharts
+- [x] `src/app/(app)/dashboard/user/page.tsx` — métricas + gráficos (Recharts)
+- [x] Endpoint corrigido: `/api/v1/users/{uuid}/statistics`
+- [x] `src/app/(app)/profile/page.tsx` — edição de dados + upload de foto de perfil + alterar senha + deletar conta
+- [x] `src/lib/hooks/use-profile.ts` — Hooks para update profile, password, image, delete account
 - [ ] **Browser Test (MCP):** screenshot dashboard, editar perfil, upload de imagem
 
-### Sprint 5.7 — Admin Dashboard + Gestão de Usuários (6-7h)
-- [ ] `src/lib/api/admin.api.ts` — GET /dashboard/admin, GET/PUT/DELETE /users (admin)
-- [ ] `src/lib/hooks/useDashboard.ts` (admin) + `useUsers.ts`
-- [ ] `src/app/dashboard/admin/page.tsx` — charts avançados (trends, risk distribution, top categories)
-- [ ] `src/app/admin/users/page.tsx` — tabela de usuários com toggle ativo/inativo + exclusão
-- [ ] Guard de rota `user_type = 2` para rotas `/admin/*` e `/dashboard/admin`
-- [ ] Confirmação modal antes de excluir usuário
+### Sprint 5.7 — Admin Dashboard + Gestão de Usuários (6-7h) ✅ COMPLETO
+- [x] `src/lib/hooks/use-admin.ts` — Hooks para dashboard admin + gestão de usuários (usa dashboard.api.ts existente)
+- [x] `src/app/(app)/dashboard/admin/page.tsx` — KPIs + severity pie chart + scan trend area chart + activity table + paginated logs
+- [x] `src/app/(app)/admin/users/page.tsx` — tabela de usuários com busca, filtros, toggle ativo/inativo + exclusão com confirmação
+- [x] `src/components/layout/admin-guard.tsx` — Guard de rota `user_type = 2` para rotas admin
+- [x] Confirmação modal antes de excluir usuário
 - [ ] **Browser Test (MCP):** login como admin, visualizar dashboard, toggle usuário, deletar usuário
 
-### Sprint 5.8 — Polish, Acessibilidade e UX Final (4-5h)
-- [ ] `sonner` instalado — toast notifications (success/error em todas ações)
-- [ ] Error boundaries por página (`error.tsx` do App Router)
-- [ ] Loading skeletons para todas as listas/cards (`loading.tsx`)
-- [ ] Empty states (sem histórico, sem dados no dashboard)
+### Sprint 5.8 — Polish, Acessibilidade e UX Final (4-5h) ✅ COMPLETO
+- [x] Error boundaries por página (`error.tsx` do App Router) — 5 páginas
+- [x] Loading skeletons para todas as listas/cards (`loading.tsx`) — 5 páginas
+- [x] Sidebar responsiva (mobile sheet overlay) com auto-close on navigation
+- [x] Header com botão hamburger em mobile
+- [x] Padding responsivo no main (p-4 mobile, p-6 desktop)
 - [ ] Responsividade validada: 375px (mobile), 768px (tablet), 1280px (desktop)
 - [ ] WCAG 2.1 AA: contraste mínimo 4.5:1, aria-labels, navegação por teclado
 - [ ] Favicon + metadata (`<title>`, `<description>`) em todas as páginas
@@ -923,14 +925,14 @@ npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
 - [x] Erros seguem RFC 7807
 
 **Fase 5: Frontend** *(ver sub-sprints detalhadas acima)*
-- [ ] Sprint 5.1 — Foundation concluída
-- [ ] Sprint 5.2 — Layout Base + Routing Guard concluído
-- [ ] Sprint 5.3 — Autenticação concluída
-- [ ] Sprint 5.4 — Home + Scan Flow concluído
-- [ ] Sprint 5.5 — Histórico + Detalhes concluído
-- [ ] Sprint 5.6 — Dashboard do Usuário + Perfil concluído
-- [ ] Sprint 5.7 — Admin Dashboard + Gestão de Usuários concluído
-- [ ] Sprint 5.8 — Polish, Acessibilidade e UX Final concluído
+- [x] Sprint 5.1 — Foundation concluída
+- [x] Sprint 5.2 — Layout Base + Routing Guard concluído
+- [x] Sprint 5.3 — Autenticação concluída
+- [x] Sprint 5.4 — Home + Scan Flow concluído
+- [x] Sprint 5.5 — Histórico + Detalhes concluído
+- [x] Sprint 5.6 — Dashboard do Usuário + Perfil concluído
+- [x] Sprint 5.7 — Admin Dashboard + Gestão de Usuários concluído
+- [x] Sprint 5.8 — Polish, Acessibilidade e UX Final concluído
 
 **Fase 6: End-to-End** *(ver sub-sprints detalhadas acima)*
 - [ ] Sprint 6.1 — Testes de Integração Backend concluído

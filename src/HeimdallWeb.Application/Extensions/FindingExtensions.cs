@@ -19,7 +19,7 @@ public static class FindingExtensions
             FindingId: finding.FindingId,
             Type: finding.Type,
             Description: finding.Description,
-            Severity: finding.Severity, // Enum is serialized correctly
+            Severity: finding.Severity.ToString(),
             Evidence: finding.Evidence,
             Recommendation: finding.Recommendation,
             HistoryId: finding.HistoryId,

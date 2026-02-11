@@ -16,7 +16,11 @@ export function proxy(request: NextRequest) {
   }
 
   if (isPublicPath && token) {
-    return NextResponse.redirect(new URL("/", request.url));
+    // Allow forced login (e.g., session recovery when frontend state is lost)
+    const isForced = request.nextUrl.searchParams.get("force") === "1";
+    if (!isForced) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 
   return NextResponse.next();
