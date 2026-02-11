@@ -112,15 +112,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (data: LoginRequest) => {
     const response = await authApi.login(data);
-    const profile: UserProfile = {
-      userId: response.userId,
-      username: response.username,
-      email: response.email,
-      userType: response.userType,
-      isActive: response.isActive,
-      profileImage: null,
-      createdAt: new Date().toISOString(),
-    };
+    
+    // Fetch full profile including profileImage
+    const profile = await userApi.getUserProfile(response.userId);
+    
     setUser(profile);
     localStorage.setItem("heimdall_user", JSON.stringify(profile));
     setUidCookie(profile.userId);
@@ -128,15 +123,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = useCallback(async (data: RegisterRequest) => {
     const response = await authApi.register(data);
-    const profile: UserProfile = {
-      userId: response.userId,
-      username: response.username,
-      email: response.email,
-      userType: response.userType,
-      isActive: response.isActive,
-      profileImage: null,
-      createdAt: new Date().toISOString(),
-    };
+    
+    // Fetch full profile including profileImage
+    const profile = await userApi.getUserProfile(response.userId);
+    
     setUser(profile);
     localStorage.setItem("heimdall_user", JSON.stringify(profile));
     setUidCookie(profile.userId);
