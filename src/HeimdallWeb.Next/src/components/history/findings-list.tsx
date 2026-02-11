@@ -42,11 +42,11 @@ export function FindingsList({ findings }: FindingsListProps) {
                 className={`rounded-lg border ${severityBarColor(finding.severity)}`}
               >
                 <AccordionTrigger className="px-4 hover:no-underline">
-                  <div className="flex items-center gap-3 text-left">
-                    <Badge className={severityBadgeClass(finding.severity)}>
+                  <div className="flex min-w-0 flex-1 items-center gap-3 text-left">
+                    <Badge className={`${severityBadgeClass(finding.severity)} shrink-0`}>
                       {finding.severity}
                     </Badge>
-                    <span className="font-medium">{finding.type}</span>
+                    <span className="truncate font-medium">{finding.type}</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4">
@@ -61,7 +61,7 @@ export function FindingsList({ findings }: FindingsListProps) {
                     {finding.evidence && (
                       <div>
                         <p className="text-sm font-medium">Evidência</p>
-                        <pre className="mt-1 rounded-md bg-muted p-3 text-xs">
+                        <pre className="mt-1 overflow-x-auto rounded-md bg-muted p-3 text-xs whitespace-pre-wrap break-words">
                           {finding.evidence}
                         </pre>
                       </div>
