@@ -117,14 +117,24 @@ export function useScanTechnologies(historyId: string) {
 }
 
 export function useAISummary(historyId: string) {
-  return useQuery<AISummary>({
+  return useQuery<AISummary | null>({
     queryKey: ["ai-summary", historyId],
     queryFn: async () => {
       const response = await fetch(`/api/v1/scan-histories/${historyId}/ai-summary`);
-      if (!response.ok) throw new Error("Erro ao carregar análise de IA");
+      
+      // 404 é esperado para scans sem AI summary - retorna null
+      if (response.status === 404) {
+        return null;
+      }
+      
+      if (!response.ok) {
+        throw new Error("Erro ao carregar análise de IA");
+      }
+      
       return response.json();
     },
     enabled: !!historyId,
+    retry: false, // Não tentar novamente em caso de 404
   });
 }
 
