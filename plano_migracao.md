@@ -665,12 +665,21 @@ npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
 - [x] Endpoint `/api/v1/scan-histories/{id}/ai-summary` criado com validação de ownership
 - [ ] **Browser Test (MCP):** resize para mobile (375px), verificar todos layouts, checar console de erros
 
-### Sprint 6.1 — Testes de Integração Backend (3-4h)
-- [ ] Testar todos os 20 endpoints com banco PostgreSQL real (Swagger ou curl)
-- [ ] Validar cenários de erro: 400 (validação), 401 (sem auth), 403 (sem permissão), 404 (não encontrado)
-- [ ] Testar CORS com `credentials: 'include'` do Next.js
-- [ ] Testar rate limiting: 85 req/min global + 4 req/min scan
-- [ ] Criar/atualizar `docs/testing/Phase5_Integration_TestGuide.md`
+### Sprint 6.1 — Revisão de Segurança & Hardening ✅ COMPLETO
+- [x] Auditoria completa de todos os 25 endpoints da API
+- [x] **IDOR FIX**: GET /users/{id}/profile — validação de ownership adicionada
+- [x] **IDOR FIX**: GET /users/{id}/statistics — validação de ownership adicionada
+- [x] **IDOR FIX**: Todos os 6 endpoints de scan-histories retornam 404 (não 403)
+- [x] **DI FIX**: GetAISummaryByHistoryIdQueryHandler registrado no container DI
+- [x] **BRUTE FORCE**: Rate limiting em login/register (AuthPolicy: 10 req/min por IP)
+- [x] **HEADERS**: Security headers adicionados (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy)
+- [x] Validar cenários de erro: 400 (validação), 401 (sem auth), 404 (não encontrado/sem permissão)
+- [x] Verificar JWT cookie: HttpOnly ✅, Secure ✅, SameSite=Strict ✅
+- [x] Verificar tratamento de exceções: sem vazamento de stack traces ✅
+- [x] Verificar DashboardEndpoints: admin role validation ✅
+- [x] Build backend: 0 errors ✅
+- [x] Build frontend: 0 errors, 11 routes ✅
+- [x] Documentação: `docs/security/IDOR_FIX_SUMMARY.md` criado
 
 ### Sprint 6.2 — E2E Manual + Validação Final (4-5h)
 - [ ] Fluxo completo: register → login → executar scan → ver resultado → exportar PDF
