@@ -289,6 +289,103 @@ install_mysql_client() {
     fi
 }
 
+# Pull PostgreSQL 16 Docker image
+pull_postgres_image() {
+    log_section "Pulling PostgreSQL 16 Docker Image"
+    
+    if ! command -v docker &> /dev/null; then
+        log_warning "Docker not installed, skipping PostgreSQL image pull"
+        log_info "Run this script again after logging back in to pull the image"
+        return
+    fi
+    
+    log_info "Pulling postgres:16 Docker image..."
+    log_info "This may take a few minutes depending on your internet connection"
+    
+    # Check if user is in docker group (may need re-login)
+    if groups | grep -q docker; then
+        if docker pull postgres:16; then
+            log_success "PostgreSQL 16 image pulled successfully"
+            
+            # Show image info
+            IMAGE_SIZE=$(docker images postgres:16 --format "{{.Size}}")
+            log_info "Image size: $IMAGE_SIZE"
+            
+            # Optionally create a dev container
+            read -p "Do you want to create a PostgreSQL container for development? (y/N): " -n 1 -r
+            echo
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                create_postgres_container
+            else
+                log_info "You can create a container later with:"
+                echo "  docker run -d --name heimdall-postgres \\"
+                echo "    -e POSTGRES_PASSWORD=heimdall123 \\"
+                echo "    -e POSTGRES_USER=heimdall \\"
+                echo "    -e POSTGRES_DB=heimdallweb \\"
+                echo "    -p 5432:5432 \\"
+                echo "    -v heimdall-pgdata:/var/lib/postgresql/data \\"
+                echo "    postgres:16"
+            fi
+        else
+            log_error "Failed to pull PostgreSQL image"
+            log_info "You may need to log out and back in for Docker permissions"
+        fi
+    else
+        log_warning "User not in docker group yet - log out and back in first"
+        log_info "After re-login, pull the image manually with:"
+        echo "  docker pull postgres:16"
+    fi
+}
+
+# Create PostgreSQL development container
+create_postgres_container() {
+    log_info "Creating PostgreSQL development container..."
+    
+    # Check if container already exists
+    if docker ps -a --format '{{.Names}}' | grep -q "^heimdall-postgres$"; then
+        log_warning "Container 'heimdall-postgres' already exists"
+        read -p "Do you want to remove and recreate it? (y/N): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            docker rm -f heimdall-postgres
+            docker volume rm heimdall-pgdata 2>/dev/null || true
+        else
+            log_info "Keeping existing container"
+            return
+        fi
+    fi
+    
+    # Create container
+    if docker run -d \
+        --name heimdall-postgres \
+        -e POSTGRES_PASSWORD=heimdall123 \
+        -e POSTGRES_USER=heimdall \
+        -e POSTGRES_DB=heimdallweb \
+        -p 5432:5432 \
+        -v heimdall-pgdata:/var/lib/postgresql/data \
+        --restart unless-stopped \
+        postgres:16; then
+        
+        log_success "PostgreSQL container created and started"
+        log_info "Connection details:"
+        echo "  Host: localhost"
+        echo "  Port: 5432"
+        echo "  Database: heimdallweb"
+        echo "  User: heimdall"
+        echo "  Password: heimdall123"
+        echo ""
+        log_info "Connection string for appsettings.json:"
+        echo '  "ConnectionStrings": {'
+        echo '    "AppDbConnectionString": "Host=localhost;Port=5432;Database=heimdallweb;Username=heimdall;Password=heimdall123"'
+        echo '  }'
+        echo ""
+        log_warning "This is a DEVELOPMENT container with a weak password"
+        log_warning "DO NOT use this configuration in production"
+    else
+        log_error "Failed to create PostgreSQL container"
+    fi
+}
+
 # Configure environment variables
 configure_environment() {
     log_section "Configuring Environment Variables"
@@ -395,11 +492,14 @@ post_install_instructions() {
 8. Verify Docker is working (after re-login):
    $ docker run hello-world
 
-9. Build the project:
-   Backend:  $ dotnet build
-   Frontend: $ cd src/HeimdallWeb.Next && npm run build
+9. Pull PostgreSQL image (if not done automatically):
+   $ docker pull postgres:16
 
-10. Read CLAUDE.md for project-specific workflow rules
+10. Build the project:
+    Backend:  $ dotnet build
+    Frontend: $ cd src/HeimdallWeb.Next && npm run build
+
+11. Read CLAUDE.md for project-specific workflow rules
 
 ═══════════════════════════════════════════════════════════════════════
 
@@ -418,8 +518,14 @@ Frontend:
   npm run build                      # Production build
   npm run lint                       # Lint code
 
-Docker (Production Only - not for development):
-  docker compose up -d               # Start services
+Docker (Database & Production):
+  # PostgreSQL development container (if created)
+  docker start heimdall-postgres     # Start PostgreSQL
+  docker stop heimdall-postgres      # Stop PostgreSQL
+  docker logs -f heimdall-postgres   # View PostgreSQL logs
+  
+  # Production (full stack - not for development)
+  docker compose up -d               # Start all services
   docker compose down                # Stop services
   docker compose logs -f             # View logs
 
@@ -464,6 +570,7 @@ main() {
     install_copilot_cli
     install_gemini_cli
     install_mysql_client
+    pull_postgres_image
     configure_environment
     
     # Verification and final instructions
