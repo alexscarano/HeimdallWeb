@@ -1,10 +1,15 @@
 {
   "meta": {
     "name": "Heimdall Design System",
-    "version": "1.0.0",
+    "version": "2.2.0",
     "concept": "Minimal Intelligence",
     "stack": ["Next.js 15", "React 19", "Tailwind CSS", "shadcn/ui"],
-    "description": "Clean, elegant, and professional design system for a security scanning platform. Inspired by Linear, Vercel, and Stripe Dashboard. Conveys trust through clarity, not aggression."
+    "description": "Clean, elegant, and professional design system for a security scanning platform. Inspired by Linear, Vercel, and Stripe Dashboard. Conveys trust through clarity, not aggression. v2.0 adds Indigo accent identity, depth through elevation, and richer interactive states — without breaking the minimal foundation. v2.1 adds Emerald as a complementary color for success, health, and positive states. v2.2 introduces dual-accent theming: Emerald replaces Indigo as the primary interactive accent in light mode, while Indigo remains the primary interactive accent in dark mode.",
+    "changelog": {
+      "2.2.0": "Dual-accent theming: light mode accent = emerald-600 (#059669), dark mode accent = indigo-400 (#818CF8). Added accent-primary-* tokens to both light and dark color sets. Updated all components that hardcoded indigo in light mode to reference accent tokens or provide explicit light/dark variants. Renamed button.indigo to button.accent and badge.indigo to badge.accent with theme-split values. Added focus-ring.accent. Added emerald-md shadow. Updated guidelines with accent-theme-split rationale.",
+      "2.1.0": "Added emerald palette as complementary color for success/positive states. Updated success tokens (light: emerald-600, dark: emerald-400). Added emerald-sm and emerald-glow shadows. Updated badge.success, states.success-inline, card.success variant, scan-results status-completed badge, and landing scan-states.success with emerald tokens.",
+      "2.0.0": "Added indigo accent palette, elevation tokens, glow effects, refined all interactive states, per-page visual enhancements, scanner card patterns, sidebar active indicator"
+    }
   },
 
   "tokens": {
@@ -26,7 +31,7 @@
         "accent-foreground": "#18181B",
         "destructive": "#EF4444",
         "destructive-foreground": "#FAFAFA",
-        "success": "#10B981",
+        "success": "#059669",
         "success-foreground": "#FFFFFF",
         "warning": "#F59E0B",
         "warning-foreground": "#FFFFFF",
@@ -40,11 +45,16 @@
         "sidebar-border": "#E4E4E7",
         "sidebar-accent": "#F4F4F5",
         "sidebar-accent-foreground": "#18181B",
-        "chart-1": "#6366F1",
+        "chart-1": "#059669",
         "chart-2": "#8B5CF6",
         "chart-3": "#EC4899",
         "chart-4": "#F59E0B",
-        "chart-5": "#10B981"
+        "chart-5": "#10B981",
+        "accent-primary": "#059669",
+        "accent-primary-foreground": "#FFFFFF",
+        "accent-primary-hover": "#047857",
+        "accent-primary-subtle": "rgba(5, 150, 105, 0.08)",
+        "accent-primary-border": "rgba(5, 150, 105, 0.20)"
       },
       "dark": {
         "background": "#09090B",
@@ -63,7 +73,7 @@
         "accent-foreground": "#FAFAFA",
         "destructive": "#DC2626",
         "destructive-foreground": "#FAFAFA",
-        "success": "#059669",
+        "success": "#34D399",
         "success-foreground": "#FFFFFF",
         "warning": "#D97706",
         "warning-foreground": "#FFFFFF",
@@ -81,7 +91,12 @@
         "chart-2": "#A78BFA",
         "chart-3": "#F472B6",
         "chart-4": "#FBBF24",
-        "chart-5": "#34D399"
+        "chart-5": "#34D399",
+        "accent-primary": "#818CF8",
+        "accent-primary-foreground": "#1E1B4B",
+        "accent-primary-hover": "#6366F1",
+        "accent-primary-subtle": "rgba(129, 140, 248, 0.10)",
+        "accent-primary-border": "rgba(129, 140, 248, 0.20)"
       },
       "severity": {
         "critical": {
@@ -123,6 +138,57 @@
           "text-dark": "#A1A1AA",
           "border": "#E4E4E7",
           "border-dark": "#27272A"
+        }
+      },
+      "emerald": {
+        "50": "#ECFDF5",
+        "100": "#D1FAE5",
+        "200": "#A7F3D0",
+        "300": "#6EE7B7",
+        "400": "#34D399",
+        "500": "#10B981",
+        "600": "#059669",
+        "700": "#047857",
+        "800": "#065F46",
+        "900": "#064E3B",
+        "alpha": {
+          "05": "rgba(5, 150, 105, 0.05)",
+          "08": "rgba(5, 150, 105, 0.08)",
+          "10": "rgba(5, 150, 105, 0.10)",
+          "15": "rgba(5, 150, 105, 0.15)",
+          "20": "rgba(5, 150, 105, 0.20)",
+          "30": "rgba(5, 150, 105, 0.30)"
+        }
+      },
+      "indigo": {
+        "description": "Indigo accent palette — primary interactive accent in dark mode. In light mode, all interactive accent roles are fulfilled by emerald. Indigo still serves as the 'info' semantic color in both modes.",
+        "50": "#EEF2FF",
+        "100": "#E0E7FF",
+        "200": "#C7D2FE",
+        "300": "#A5B4FC",
+        "400": "#818CF8",
+        "500": "#6366F1",
+        "600": "#4F46E5",
+        "700": "#4338CA",
+        "800": "#3730A3",
+        "900": "#312E81",
+        "alpha": {
+          "05": "rgba(99, 102, 241, 0.05)",
+          "08": "rgba(99, 102, 241, 0.08)",
+          "10": "rgba(99, 102, 241, 0.10)",
+          "15": "rgba(99, 102, 241, 0.15)",
+          "20": "rgba(99, 102, 241, 0.20)",
+          "30": "rgba(99, 102, 241, 0.30)",
+          "50": "rgba(99, 102, 241, 0.50)"
+        },
+        "alpha-dark": {
+          "05": "rgba(129, 140, 248, 0.05)",
+          "08": "rgba(129, 140, 248, 0.08)",
+          "10": "rgba(129, 140, 248, 0.10)",
+          "15": "rgba(129, 140, 248, 0.15)",
+          "20": "rgba(129, 140, 248, 0.20)",
+          "30": "rgba(129, 140, 248, 0.30)",
+          "50": "rgba(129, 140, 248, 0.50)"
         }
       }
     },
@@ -198,7 +264,17 @@
       "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04)",
       "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04)",
       "inner": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)",
-      "none": "none"
+      "none": "none",
+      "indigo-sm": "0 0 0 3px rgba(99, 102, 241, 0.12)",
+      "indigo-md": "0 0 0 3px rgba(99, 102, 241, 0.20)",
+      "indigo-glow": "0 0 16px -2px rgba(99, 102, 241, 0.25), 0 0 0 1px rgba(99, 102, 241, 0.15)",
+      "indigo-glow-dark": "0 0 20px -2px rgba(129, 140, 248, 0.30), 0 0 0 1px rgba(129, 140, 248, 0.20)",
+      "card-hover": "0 4px 12px -2px rgba(0, 0, 0, 0.10), 0 2px 6px -2px rgba(0, 0, 0, 0.06)",
+      "card-hover-dark": "0 4px 12px -2px rgba(0, 0, 0, 0.40), 0 2px 6px -2px rgba(0, 0, 0, 0.25)",
+      "emerald-sm": "0 0 0 2px rgba(5, 150, 105, 0.15)",
+      "emerald-md": "0 0 0 3px rgba(5, 150, 105, 0.20)",
+      "emerald-glow": "0 0 0 3px rgba(5, 150, 105, 0.12), 0 0 12px rgba(5, 150, 105, 0.08)",
+      "emerald-glow-light": "0 0 16px -2px rgba(5, 150, 105, 0.25), 0 0 0 1px rgba(5, 150, 105, 0.15)"
     },
 
     "transitions": {
@@ -213,6 +289,50 @@
       "lg": "1024px",
       "xl": "1280px",
       "2xl": "1536px"
+    },
+
+    "elevation": {
+      "description": "Elevation layers for visual depth. Applied via shadow + subtle background shifts.",
+      "0": { "shadow": "none", "background-offset": "0%" },
+      "1": { "shadow": "sm", "background-offset": "0%", "note": "Cards at rest" },
+      "2": { "shadow": "md", "background-offset": "1%", "note": "Hovered cards, dropdowns" },
+      "3": { "shadow": "lg", "background-offset": "2%", "note": "Popovers, tooltips" },
+      "4": { "shadow": "xl", "background-offset": "3%", "note": "Modals, sheets" }
+    },
+
+    "focus-ring": {
+      "default": {
+        "outline": "none",
+        "box-shadow": "0 0 0 2px var(--background), 0 0 0 4px var(--ring)"
+      },
+      "accent": {
+        "description": "Theme-aware accent focus ring. Use this instead of focus-ring.indigo for interactive elements. Light mode uses emerald, dark mode uses indigo.",
+        "light": {
+          "outline": "none",
+          "box-shadow": "0 0 0 2px var(--background), 0 0 0 4px rgba(5, 150, 105, 0.50)"
+        },
+        "dark": {
+          "outline": "none",
+          "box-shadow": "0 0 0 2px var(--background), 0 0 0 4px rgba(129, 140, 248, 0.50)"
+        }
+      },
+      "indigo": {
+        "outline": "none",
+        "box-shadow": "0 0 0 2px var(--background), 0 0 0 4px rgba(99, 102, 241, 0.50)"
+      },
+      "indigo-dark": {
+        "outline": "none",
+        "box-shadow": "0 0 0 2px var(--background), 0 0 0 4px rgba(129, 140, 248, 0.50)"
+      }
+    },
+
+    "backgrounds": {
+      "hero-gradient-light": "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(5, 150, 105, 0.06) 0%, transparent 70%)",
+      "hero-gradient-dark": "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(129, 140, 248, 0.08) 0%, transparent 70%)",
+      "section-muted-light": "rgba(244, 244, 245, 0.50)",
+      "section-muted-dark": "rgba(39, 39, 42, 0.30)",
+      "scanner-icon-bg-light": "rgba(5, 150, 105, 0.08)",
+      "scanner-icon-bg-dark": "rgba(129, 140, 248, 0.10)"
     }
   },
 
@@ -225,7 +345,8 @@
           "border": "1px solid border",
           "border-radius": "xl",
           "padding": "6",
-          "shadow": "none"
+          "shadow": "none",
+          "transition": "normal"
         },
         "elevated": {
           "background": "card",
@@ -240,9 +361,11 @@
           "border-radius": "xl",
           "padding": "6",
           "shadow": "none",
+          "transition": "normal",
           "hover": {
-            "border-color": "ring",
-            "shadow": "sm",
+            "border-color-light": "rgba(5, 150, 105, 0.30)",
+            "border-color-dark": "rgba(129, 140, 248, 0.30)",
+            "shadow": "card-hover",
             "transition": "normal"
           }
         },
@@ -251,10 +374,74 @@
           "border": "1px solid border",
           "border-radius": "xl",
           "padding": "5",
+          "shadow": "none",
+          "transition": "normal",
+          "hover": {
+            "shadow": "sm",
+            "border-color-light": "rgba(5, 150, 105, 0.20)",
+            "border-color-dark": "rgba(129, 140, 248, 0.20)"
+          },
           "layout": {
             "label": { "size": "sm", "color": "muted-foreground", "weight": "medium" },
             "value": { "size": "3xl", "color": "foreground", "weight": "bold", "letter-spacing": "tight" },
             "trend": { "size": "xs", "position": "inline-end" }
+          }
+        },
+        "metric": {
+          "description": "Stat card with colored top border for dashboard use",
+          "background": "card",
+          "border": "1px solid border",
+          "border-radius": "xl",
+          "padding": "5",
+          "shadow": "none",
+          "border-top": "3px solid <semantic-color>",
+          "note": "border-top color is determined by the metric type: accent-primary for general (emerald light / indigo dark), success for positive, warning for medium risk, destructive for critical",
+          "hover": {
+            "shadow": "sm"
+          }
+        },
+        "success": {
+          "background": "card",
+          "border": "1px solid emerald.alpha.20",
+          "border-top": "3px solid emerald.600",
+          "border-radius": "xl",
+          "padding": "6",
+          "shadow": "none",
+          "dark-border-top": "3px solid emerald.400"
+        },
+        "scanner": {
+          "description": "Card for individual scanner selection (ScannerSelector component)",
+          "background": "card",
+          "border": "1px solid border",
+          "border-radius": "xl",
+          "padding": "4",
+          "shadow": "none",
+          "transition": "normal",
+          "icon-container": {
+            "size": "2.25rem",
+            "border-radius": "lg",
+            "background-light": "emerald.alpha.08",
+            "background-dark": "indigo.alpha-dark.10",
+            "color-light": "emerald.600",
+            "color-dark": "indigo.400",
+            "transition": "normal"
+          },
+          "hover": {
+            "border-color-light": "rgba(5, 150, 105, 0.30)",
+            "border-color-dark": "rgba(129, 140, 248, 0.30)",
+            "shadow": "card-hover",
+            "icon-container-background-light": "emerald.alpha.15",
+            "icon-container-background-dark": "indigo.alpha-dark.15"
+          },
+          "active": {
+            "border-color-light": "rgba(5, 150, 105, 0.40)",
+            "border-color-dark": "rgba(129, 140, 248, 0.40)",
+            "background-light": "emerald.alpha.05",
+            "background-dark": "indigo.alpha-dark.05",
+            "shadow-light": "emerald-sm",
+            "shadow-dark": "indigo-sm",
+            "icon-container-background-light": "emerald.alpha.15",
+            "icon-container-background-dark": "indigo.alpha-dark.15"
           }
         }
       }
@@ -268,7 +455,8 @@
         "border-radius": "lg",
         "transition": "fast",
         "cursor": "pointer",
-        "line-height": "tight"
+        "line-height": "tight",
+        "focus": "focus-ring.accent"
       },
       "sizes": {
         "sm": { "height": "2rem", "padding-x": "3", "font-size": "xs" },
@@ -280,33 +468,89 @@
         "primary": {
           "background": "primary",
           "color": "primary-foreground",
-          "hover-opacity": 0.9
+          "hover": {
+            "opacity": 0.88,
+            "shadow": "sm"
+          },
+          "active": {
+            "opacity": 0.80,
+            "transform": "scale(0.99)"
+          }
         },
         "secondary": {
           "background": "secondary",
           "color": "secondary-foreground",
-          "hover-opacity": 0.8
+          "hover": {
+            "background": "rgba(0,0,0,0.06)",
+            "shadow": "sm"
+          }
         },
         "outline": {
           "background": "transparent",
           "border": "1px solid input",
           "color": "foreground",
-          "hover-background": "accent"
+          "hover": {
+            "background": "accent",
+            "border-color-light": "rgba(5, 150, 105, 0.30)",
+            "border-color-dark": "rgba(129, 140, 248, 0.30)"
+          }
         },
         "ghost": {
           "background": "transparent",
           "color": "foreground",
-          "hover-background": "accent"
+          "hover": {
+            "background": "accent",
+            "color": "foreground"
+          }
         },
         "destructive": {
           "background": "destructive",
           "color": "destructive-foreground",
-          "hover-opacity": 0.9
+          "hover": {
+            "opacity": 0.88,
+            "shadow": "sm"
+          }
         },
         "link": {
           "background": "transparent",
-          "color": "primary",
-          "text-decoration": "underline-offset-4 hover:underline"
+          "color-light": "emerald.600",
+          "color-dark": "indigo.400",
+          "hover": {
+            "text-decoration": "underline",
+            "text-underline-offset": "4px"
+          }
+        },
+        "accent": {
+          "description": "Theme-aware accent button for primary CTAs. Light mode uses emerald, dark mode uses indigo. Replaces the former 'indigo' button variant.",
+          "background-light": "emerald.600",
+          "background-dark": "indigo.600",
+          "color": "#FFFFFF",
+          "hover": {
+            "background-light": "emerald.700",
+            "background-dark": "indigo.500",
+            "shadow-light": "emerald-sm",
+            "shadow-dark": "indigo-sm"
+          },
+          "active": {
+            "background-light": "emerald.800",
+            "background-dark": "indigo.700",
+            "transform": "scale(0.99)"
+          }
+        },
+        "indigo": {
+          "description": "Legacy alias — kept for backward compatibility. Prefer button.accent for new implementations. In dark mode this renders as indigo; in light mode prefer button.accent which uses emerald.",
+          "background": "indigo.500",
+          "background-dark": "indigo.600",
+          "color": "#FFFFFF",
+          "hover": {
+            "background": "indigo.600",
+            "background-dark": "indigo.500",
+            "shadow": "indigo-sm"
+          },
+          "active": {
+            "background": "indigo.700",
+            "transform": "scale(0.99)"
+          }
         }
       }
     },
@@ -329,7 +573,31 @@
         "medium": { "background": "severity.medium.bg", "color": "severity.medium.text", "border": "1px solid severity.medium.border" },
         "low": { "background": "severity.low.bg", "color": "severity.low.text", "border": "1px solid severity.low.border" },
         "info": { "background": "severity.info.bg", "color": "severity.info.text", "border": "1px solid severity.info.border" },
-        "success": { "background": "success/10", "color": "success", "border": "1px solid success/20" }
+        "success": {
+          "background": "emerald.alpha.08",
+          "color": "emerald.600",
+          "border": "1px solid emerald.alpha.20",
+          "dark-background": "emerald.alpha.10",
+          "dark-color": "emerald.400",
+          "dark-border": "1px solid emerald.alpha.20"
+        },
+        "accent": {
+          "description": "Theme-aware accent badge for active filters, feature tags, and emphasis. Light mode uses emerald, dark mode uses indigo. Replaces the former 'indigo' badge variant.",
+          "background-light": "emerald.alpha.08",
+          "background-dark": "indigo.alpha-dark.10",
+          "color-light": "emerald.700",
+          "color-dark": "indigo.400",
+          "border-light": "1px solid rgba(5, 150, 105, 0.25)",
+          "border-dark": "1px solid rgba(129, 140, 248, 0.25)"
+        },
+        "indigo": {
+          "description": "Legacy alias — kept for backward compatibility. Prefer badge.accent for new implementations.",
+          "background": "indigo.alpha.10",
+          "background-dark": "indigo.alpha-dark.10",
+          "color": "indigo.600",
+          "color-dark": "indigo.400",
+          "border": "1px solid rgba(99, 102, 241, 0.25)"
+        }
       }
     },
 
@@ -355,12 +623,22 @@
         "hover-background": "muted/30",
         "transition": "fast"
       },
+      "row-selected": {
+        "background-light": "emerald.alpha.05",
+        "background-dark": "indigo.alpha-dark.05",
+        "border-left-light": "2px solid emerald.600",
+        "border-left-dark": "2px solid indigo.400"
+      },
       "cell": {
         "font-size": "sm",
         "color": "foreground",
         "vertical-align": "middle"
       },
       "features": ["sorting", "column-visibility", "row-selection", "pagination", "filtering", "search"],
+      "sort-active": {
+        "color-light": "emerald.600",
+        "color-dark": "indigo.400"
+      },
       "empty-state": {
         "icon": "FileSearch",
         "message-size": "sm",
@@ -381,13 +659,19 @@
         "transition": "fast"
       },
       "focus": {
-        "border-color": "ring",
-        "ring": "2px ring/20",
+        "border-color-light": "emerald.600",
+        "border-color-dark": "indigo.400",
+        "box-shadow-light": "0 0 0 3px rgba(5, 150, 105, 0.15)",
+        "box-shadow-dark": "0 0 0 3px rgba(129, 140, 248, 0.15)",
         "outline": "none"
+      },
+      "hover": {
+        "border-color": "rgba(0,0,0,0.25)",
+        "border-color-dark": "rgba(255,255,255,0.25)"
       },
       "error": {
         "border-color": "destructive",
-        "ring": "2px destructive/20"
+        "ring": "0 0 0 3px rgba(239, 68, 68, 0.15)"
       },
       "variants": {
         "search": {
@@ -397,7 +681,16 @@
         "url-input": {
           "icon-left": "Globe",
           "font-family": "mono",
-          "font-size": "sm"
+          "font-size": "sm",
+          "height": "3rem",
+          "border-radius": "xl",
+          "font-size-note": "Slightly larger for the main scanner input",
+          "focus": {
+            "border-color-light": "emerald.600",
+            "border-color-dark": "indigo.400",
+            "box-shadow-light": "emerald-glow-light",
+            "box-shadow-dark": "indigo-glow-dark"
+          }
         }
       }
     },
@@ -445,8 +738,11 @@
         "font-weight": "medium",
         "color": "muted-foreground",
         "hover-color": "foreground",
-        "active-color": "foreground",
-        "transition": "fast"
+        "transition": "fast",
+        "active": {
+          "color-light": "emerald.700",
+          "color-dark": "indigo.400"
+        }
       }
     },
 
@@ -466,12 +762,32 @@
         "font-size": "sm",
         "font-weight": "medium",
         "color": "sidebar-foreground",
-        "hover-background": "sidebar-accent",
-        "active-background": "sidebar-accent",
-        "active-color": "sidebar-accent-foreground",
+        "transition": "fast",
+        "hover": {
+          "background": "rgba(0, 0, 0, 0.04)",
+          "background-dark": "rgba(255, 255, 255, 0.05)",
+          "color": "foreground"
+        },
+        "active": {
+          "background-light": "emerald.alpha.10",
+          "background-dark": "indigo.alpha-dark.10",
+          "color-light": "emerald.800",
+          "color-dark": "indigo.300",
+          "font-weight": "semibold",
+          "indicator": {
+            "description": "Thin vertical bar on the left edge of the active item",
+            "width": "2px",
+            "height": "60%",
+            "background-light": "emerald.600",
+            "background-dark": "indigo.400",
+            "border-radius": "full",
+            "position": "absolute left-0"
+          }
+        },
         "icon-size": "1rem",
-        "gap": "3",
-        "transition": "fast"
+        "icon-active-color-light": "emerald.600",
+        "icon-active-color-dark": "indigo.400",
+        "gap": "3"
       },
       "section-label": {
         "font-size": "xs",
@@ -482,6 +798,12 @@
         "padding-x": "3",
         "margin-top": "6",
         "margin-bottom": "2"
+      },
+      "section-separator": {
+        "description": "Visual divider between main navigation and admin navigation sections",
+        "border-top": "1px solid sidebar-border",
+        "margin-y": "4",
+        "opacity": 0.6
       }
     },
 
@@ -499,6 +821,10 @@
         "fallback-background": "muted",
         "fallback-color": "muted-foreground",
         "fallback-font-weight": "semibold"
+      },
+      "ring-on-hover": {
+        "box-shadow-light": "0 0 0 2px background, 0 0 0 4px rgba(5, 150, 105, 0.30)",
+        "box-shadow-dark": "0 0 0 2px background, 0 0 0 4px rgba(129, 140, 248, 0.30)"
       }
     },
 
@@ -513,10 +839,27 @@
         "color": "muted-foreground",
         "padding-y": "2.5",
         "padding-x": "1",
-        "active-color": "foreground",
-        "active-border-bottom": "2px solid foreground",
-        "hover-color": "foreground",
-        "transition": "fast"
+        "transition": "fast",
+        "hover": {
+          "color": "foreground"
+        },
+        "active": {
+          "color": "foreground",
+          "border-bottom-light": "2px solid emerald.600",
+          "border-bottom-dark": "2px solid indigo.400"
+        }
+      },
+      "badge-count": {
+        "description": "Small badge inside tab showing item count. Uses accent variant (emerald light / indigo dark).",
+        "background-light": "emerald.alpha.08",
+        "background-dark": "indigo.alpha-dark.10",
+        "color-light": "emerald.700",
+        "color-dark": "indigo.400",
+        "font-size": "xs",
+        "border-radius": "full",
+        "padding-x": "1.5",
+        "padding-y": "0.25",
+        "margin-left": "1.5"
       }
     },
 
@@ -534,7 +877,11 @@
       "trigger": {
         "font-size": "sm",
         "font-weight": "medium",
-        "hover-background": "muted/30"
+        "transition": "fast",
+        "hover": {
+          "background": "muted/30",
+          "color": "foreground"
+        }
       },
       "content": {
         "padding": "4",
@@ -562,7 +909,8 @@
         "color": "muted-foreground"
       },
       "palette": {
-        "primary": ["#6366F1", "#8B5CF6", "#EC4899", "#F59E0B", "#10B981", "#06B6D4"],
+        "primary-light": ["#059669", "#8B5CF6", "#EC4899", "#F59E0B", "#10B981", "#06B6D4"],
+        "primary-dark": ["#818CF8", "#A78BFA", "#F472B6", "#FBBF24", "#34D399", "#22D3EE"],
         "severity": {
           "critical": "#EF4444",
           "high": "#F97316",
@@ -582,6 +930,12 @@
         "border-radius": "lg",
         "shadow": "lg",
         "font-size": "sm"
+      },
+      "active-dot": {
+        "fill-light": "emerald.600",
+        "fill-dark": "indigo.400",
+        "stroke": "background",
+        "stroke-width": "2px"
       }
     },
 
@@ -612,9 +966,19 @@
           "border-radius": "lg"
         },
         "spinner": {
-          "color": "muted-foreground",
+          "color-light": "emerald.600",
+          "color-dark": "indigo.400",
           "size": "1.25rem",
-          "border-width": "2px"
+          "border-width": "2px",
+          "note": "Light mode uses emerald spinner; dark mode uses indigo spinner. For secondary/non-CTA actions, use muted-foreground in both modes."
+        },
+        "progress-bar": {
+          "background-light": "emerald.alpha.10",
+          "background-dark": "indigo.alpha-dark.15",
+          "fill-light": "emerald.600",
+          "fill-dark": "indigo.400",
+          "border-radius": "full",
+          "height": "2px"
         }
       },
       "empty": {
@@ -635,6 +999,18 @@
         "border": "1px solid destructive/20",
         "border-radius": "xl",
         "padding": "6"
+      },
+      "success-inline": {
+        "description": "Inline success state for scan completion or form success",
+        "icon": "CheckCircle2",
+        "icon-color": "emerald.600",
+        "background": "emerald.alpha.05",
+        "border": "1px solid emerald.alpha.20",
+        "border-radius": "xl",
+        "padding": "4",
+        "text-color": "emerald.700",
+        "dark-icon-color": "emerald.400",
+        "dark-text-color": "emerald.300"
       }
     },
 
@@ -649,6 +1025,37 @@
         "padding": "4",
         "overflow-x": "auto",
         "line-height": "relaxed"
+      }
+    },
+
+    "progress-indicator": {
+      "description": "Linear progress bar for scan progress and loading states",
+      "style": {
+        "height": "3px",
+        "border-radius": "full",
+        "background-light": "emerald.alpha.10",
+        "background-dark": "indigo.alpha-dark.15",
+        "fill-light": "emerald.600",
+        "fill-dark": "indigo.400",
+        "animation": "indeterminate 1.5s ease infinite"
+      },
+      "determinate": {
+        "transition": "width 300ms cubic-bezier(0.4, 0, 0.2, 1)"
+      }
+    },
+
+    "separator": {
+      "description": "Subtle visual dividers between content sections",
+      "horizontal": {
+        "height": "1px",
+        "background": "border",
+        "margin-y": "4"
+      },
+      "section": {
+        "height": "1px",
+        "background": "linear-gradient(to right, transparent, border, transparent)",
+        "margin-y": "6",
+        "note": "Fade-out separator for softer section breaks"
       }
     }
   },
@@ -669,7 +1076,10 @@
       "sidebar": true,
       "main-content": {
         "max-width": "none",
-        "padding": "6 8"
+        "padding": "6 8",
+        "background": "section-muted-light",
+        "background-dark": "section-muted-dark",
+        "note": "Very subtle muted tint on main area creates depth vs the white sidebar"
       }
     },
     "focus": {
@@ -691,21 +1101,85 @@
       "components": [
         "navbar",
         "input:url-input",
-        "button:primary (lg)",
-        "card:stat (recent scans summary)"
+        "button:accent (lg)",
+        "card:stat (recent scans summary)",
+        "card:scanner (ScannerSelector)"
       ],
+      "visual-details": {
+        "hero-background": {
+          "type": "radial-gradient",
+          "value": "backgrounds.hero-gradient-light",
+          "dark": "backgrounds.hero-gradient-dark",
+          "note": "Light mode: very subtle emerald tint emanating from the top center. Dark mode: very subtle indigo tint. Almost invisible — purely atmospheric."
+        },
+        "headline": {
+          "size": "4xl",
+          "weight": "bold",
+          "letter-spacing": "tight",
+          "color": "foreground"
+        },
+        "subheadline": {
+          "size": "lg",
+          "color": "muted-foreground",
+          "margin-top": "3"
+        },
+        "url-input-wrapper": {
+          "max-width": "36rem",
+          "margin": "auto",
+          "margin-top": "8"
+        },
+        "scan-button": {
+          "variant": "accent",
+          "size": "lg",
+          "width": "full",
+          "margin-top": "3",
+          "note": "Full-width below input on mobile, right-aligned or below on desktop"
+        },
+        "scanner-selector": {
+          "layout": "grid-3-cols",
+          "gap": "3",
+          "margin-top": "6",
+          "card-variant": "card:scanner"
+        }
+      },
       "sections": [
         {
           "name": "hero",
           "content": "Headline + subtítulo + campo URL centralizado",
-          "notes": "Fundo limpo, sem gradientes ou partículas. Headline em 4xl/bold. Input de URL em destaque com ícone Globe. Botão Scan primário grande."
+          "notes": "Fundo com radial gradient emerald muito sutil no light mode (backgrounds.hero-gradient-light). Headline em 4xl/bold. Input de URL em destaque com ícone Globe. Botão Scan accent grande. Focus no input dispara glow emerald no light, indigo no dark."
+        },
+        {
+          "name": "scanner-selector",
+          "content": "Grid de cards para selecionar quais scanners ativar",
+          "notes": "Usar card variant 'scanner'. Ícones com fundo circular emerald/08 no light, indigo/10 no dark. Hover: border emerald/30 (light) ou indigo/30 (dark) + shadow elevado. Active: background emerald/05 (light) ou indigo/05 (dark)."
         },
         {
           "name": "features",
           "content": "3 cards com ícones mostrando capacidades do scanner",
-          "notes": "Opcional. Cards com ícone + título + descrição curta. Layout em grid 3 colunas."
+          "notes": "Opcional. Cards com ícone + título + descrição curta. Layout em grid 3 colunas. Background muted/30 na seção para separação sutil."
         }
-      ]
+      ],
+      "scan-states": {
+        "idle": "Input limpo, botão Scan habilitado",
+        "loading": {
+          "button": "Desabilitado com spinner emerald (light) / indigo (dark)",
+          "progress": "Progress bar emerald (light) / indigo (dark) indeterminate abaixo do input",
+          "note": "Manter o input visível para indicar o target"
+        },
+        "success": {
+          "redirect": "Redirecionar para /results/:id",
+          "transition": "Fade out + navigate",
+          "icon": "CheckCircle2",
+          "icon-color": "emerald.600",
+          "background": "emerald.alpha.05",
+          "border": "emerald.alpha.20",
+          "text-color": "emerald.700"
+        },
+        "error": {
+          "display": "states.error inline abaixo do input",
+          "animation": "Subtle shake animation (100ms, 4px offset)"
+        }
+      }
     },
 
     "login": {
@@ -719,11 +1193,30 @@
         "button:primary",
         "button:link"
       ],
+      "visual-details": {
+        "page-background": "backgrounds.hero-gradient-light",
+        "card": {
+          "max-width": "24rem",
+          "shadow": "md",
+          "border": "1px solid border"
+        },
+        "inputs": {
+          "focus": "input.focus (emerald border + glow in light, indigo in dark)"
+        },
+        "submit-button": {
+          "variant": "primary",
+          "width": "full"
+        },
+        "links": {
+          "color-light": "emerald.700",
+          "color-dark": "indigo.400"
+        }
+      },
       "sections": [
         {
           "name": "form-card",
-          "content": "Card centralizado com max-width 24rem. Logo/título no topo. Campos email + senha. Botão login full-width. Link para registro abaixo.",
-          "notes": "Fundo page background limpo. Card com shadow sutil. Sem split-screen layout — manter simples e centrado."
+          "content": "Card centralizado com max-width 24rem. Logo/título no topo. Campos email + senha com focus emerald (light) / indigo (dark). Botão login full-width. Link para registro abaixo.",
+          "notes": "Fundo page com gradient radial sutil. Card com shadow-md. Sem split-screen layout — manter simples e centrado."
         }
       ]
     },
@@ -739,11 +1232,24 @@
         "button:primary",
         "button:link"
       ],
+      "visual-details": {
+        "page-background": "backgrounds.hero-gradient-light",
+        "password-strength": {
+          "description": "Inline password strength indicator below the password field",
+          "bar-height": "2px",
+          "bar-radius": "full",
+          "levels": {
+            "weak": { "width": "33%", "color": "destructive" },
+            "medium": { "width": "66%", "color": "warning" },
+            "strong": { "width": "100%", "color": "success" }
+          }
+        }
+      },
       "sections": [
         {
           "name": "form-card",
           "content": "Card centralizado, mesmo estilo do login. Campos agrupados logicamente. Link para login existente abaixo.",
-          "notes": "Manter consistência visual com login. Adicionar indicadores de força de senha inline."
+          "notes": "Manter consistência visual com login. Adicionar indicadores de força de senha inline com barra de progresso colorida."
         }
       ]
     },
@@ -755,25 +1261,41 @@
       "priority": "média",
       "components": [
         "avatar:xl",
-        "card:stat (grid 2x2 ou 4 colunas)",
+        "card:metric (grid 2x2 ou 4 colunas)",
         "table (recent scans)",
         "badge"
       ],
+      "visual-details": {
+        "profile-header-background": {
+          "type": "subtle section",
+          "background": "section-muted-light",
+          "border-bottom": "1px solid border",
+          "padding": "6 8"
+        },
+        "stat-cards": {
+          "border-top-colors": {
+            "total-scans": "accent-primary (emerald.600 light / indigo.400 dark)",
+            "scans-month": "chart-2",
+            "vulnerabilities": "warning",
+            "risk-score": "destructive"
+          }
+        }
+      },
       "sections": [
         {
           "name": "profile-header",
           "content": "Avatar + nome + email + badge de tipo de usuário. Botão editar perfil.",
-          "notes": "Layout horizontal. Avatar xl à esquerda, info à direita."
+          "notes": "Layout horizontal. Avatar xl à esquerda, info à direita. Background muted sutil como separador."
         },
         {
           "name": "stats-grid",
           "content": "4 stat cards: Total Scans, Scans este mês, Vulnerabilidades encontradas, Risk score médio",
-          "notes": "Grid responsivo: 4 cols desktop, 2 cols tablet, 1 col mobile. Cada card com label muted + valor bold grande + trend indicator opcional."
+          "notes": "Grid responsivo: 4 cols desktop, 2 cols tablet, 1 col mobile. Usar card variant 'metric' com borda superior colorida por tipo."
         },
         {
           "name": "recent-scans",
           "content": "Tabela com últimos 5-10 scans do usuário",
-          "notes": "Tabela simplificada sem todos os filtros. Link para ver histórico completo."
+          "notes": "Tabela simplificada sem todos os filtros. Link para ver histórico completo em cor accent-primary (emerald light / indigo dark)."
         }
       ]
     },
@@ -791,26 +1313,55 @@
         "code-block",
         "chart:radar ou bar (severity overview)"
       ],
+      "visual-details": {
+        "scan-header": {
+          "background": "section-muted-light",
+          "background-dark": "section-muted-dark",
+          "border-bottom": "1px solid border",
+          "padding": "6 8",
+          "status-completed": {
+            "badge-background": "emerald.alpha.08",
+            "badge-color": "emerald.600",
+            "badge-border": "1px solid emerald.alpha.20",
+            "dark-badge-background": "emerald.alpha.10",
+            "dark-badge-color": "emerald.400",
+            "dark-badge-border": "1px solid emerald.alpha.20"
+          }
+        },
+        "severity-cards": {
+          "border-top": "3px solid <severity-color>",
+          "note": "Each severity stat card gets the color of its severity as a top border"
+        },
+        "tabs": {
+          "active-indicator-light": "2px solid emerald.600",
+          "active-indicator-dark": "2px solid indigo.400",
+          "badge-count-variant": "badge:accent"
+        },
+        "finding-item": {
+          "severity-indicator": "3px left border using severity color",
+          "hover": "background: muted/20"
+        }
+      },
       "sections": [
         {
           "name": "scan-header",
           "content": "URL alvo + data/hora + duração + status badge. Botão re-scan e exportar PDF.",
-          "notes": "Background muted sutil. URL em font mono. Status badge (completed/failed)."
+          "notes": "Background muted sutil. URL em font mono. Status badge (completed/failed). Botões à direita do header."
         },
         {
           "name": "severity-summary",
           "content": "4-5 stat cards mostrando contagem por severidade (Critical, High, Medium, Low, Info)",
-          "notes": "Grid horizontal. Cada card usa a cor da severidade correspondente. Destaque visual no mais crítico."
+          "notes": "Grid horizontal. Cada card usa borda superior com a cor da severidade. Destaque visual no mais crítico."
         },
         {
           "name": "findings-tabs",
           "content": "Abas: Overview | Headers | SSL | Ports | Redirects | Robots | Sensitive Paths | Technologies",
-          "notes": "Cada aba mostra findings da categoria em accordions expansíveis. Badge de contagem em cada tab."
+          "notes": "Cada aba com badge de contagem (variant accent). Active tab com underline emerald (light) / indigo (dark). Conteúdo em accordions com severity indicator lateral."
         },
         {
           "name": "finding-item",
           "content": "Accordion com: severity badge + título + description. Expandido: evidence em code-block + recommendation.",
-          "notes": "Visual limpo com hierarquia clara. Severity badge à esquerda, sempre visível."
+          "notes": "Visual limpo com hierarquia clara. Severity badge à esquerda, sempre visível. Borda esquerda colorida pela severidade."
         }
       ]
     },
@@ -826,16 +1377,30 @@
         "accordion",
         "chart (risk distribution)"
       ],
+      "visual-details": {
+        "summary-card": {
+          "border-left": "4px solid <overall-risk-color>",
+          "background": "rgba(<overall-risk-color-alpha>, 0.03)",
+          "note": "The summary card gets a strong left accent border based on the overall risk level"
+        },
+        "overall-risk-badge": {
+          "size": "lg",
+          "padding-x": "4",
+          "padding-y": "1.5",
+          "font-size": "sm",
+          "font-weight": "semibold"
+        }
+      },
       "sections": [
         {
           "name": "ai-summary",
           "content": "Card de resumo: overall risk badge (Critical/High/Medium/Low) + texto resumido da IA + contagem de findings por severidade.",
-          "notes": "Card com destaque visual. Risk badge grande e proeminente. Texto da IA em tamanho base com boa legibilidade."
+          "notes": "Card com borda esquerda colorida pelo overall risk. Risk badge grande e proeminente. Texto da IA em tamanho base com boa legibilidade."
         },
         {
           "name": "ai-findings-list",
           "content": "Lista de findings da IA em accordions. Cada finding com: severidade + categoria + título + descrição + recomendação.",
-          "notes": "Agrupar por severidade (Critical primeiro). Accordion para manter densidade gerenciável."
+          "notes": "Agrupar por severidade (Critical primeiro). Accordion para manter densidade gerenciável. Severity badge sempre visível no trigger."
         }
       ]
     },
@@ -846,25 +1411,46 @@
       "layout": "authenticated",
       "priority": "alta",
       "components": [
-        "card:stat",
+        "card:metric",
         "chart (bar, pie/donut, line/area)",
         "table (recent activity)"
       ],
+      "visual-details": {
+        "kpi-cards": {
+          "border-top-colors": {
+            "total-users": "accent-primary (emerald.600 light / indigo.400 dark)",
+            "total-scans": "chart-2",
+            "scans-today": "success",
+            "avg-risk": "warning"
+          }
+        },
+        "charts": {
+          "primary-color-light": "emerald.600",
+          "primary-color-dark": "indigo.400",
+          "area-fill-light": "emerald.alpha.10",
+          "area-fill-dark": "indigo.alpha-dark.10"
+        },
+        "recent-activity-table": {
+          "row-hover": "muted/30",
+          "action-link-color-light": "emerald.700",
+          "action-link-color-dark": "indigo.400"
+        }
+      },
       "sections": [
         {
           "name": "kpi-row",
           "content": "4 stat cards: Total Users, Total Scans, Scans Hoje, Avg Risk Score",
-          "notes": "Grid 4 colunas. Trend indicators com setas e porcentagem de variação."
+          "notes": "Grid 4 colunas. Usar card variant 'metric' com borda superior por tipo. Trend indicators com setas e porcentagem de variação."
         },
         {
           "name": "charts-grid",
           "content": "Grid 2x2: Severity Distribution (donut), Scan Trends (area), Category Breakdown (bar horizontal), User Registration Trend (area)",
-          "notes": "Usar paleta de charts do design system. Gráficos com títulos e subtítulos dentro do card container. Tooltips estilizados."
+          "notes": "Usar paleta de charts do design system com accent-primary como cor primária (emerald light, indigo dark). Gráficos com títulos e subtítulos dentro do card container. Tooltips estilizados. Area charts com fill accent/10."
         },
         {
           "name": "recent-activity",
           "content": "Tabela com últimas ações do sistema (scans, registros, etc.)",
-          "notes": "Tabela compacta sem paginação, últimos 10 itens. Link 'Ver todos'."
+          "notes": "Tabela compacta sem paginação, últimos 10 itens. Link 'Ver todos' em accent-primary."
         }
       ]
     },
@@ -881,16 +1467,36 @@
         "button:outline (actions)",
         "modal:dialog (confirm delete)"
       ],
+      "visual-details": {
+        "search-input": {
+          "focus": "input.focus (emerald light / indigo dark)"
+        },
+        "active-filters": {
+          "badge-variant": "badge:accent"
+        },
+        "pagination": {
+          "active-page": {
+            "background-light": "emerald.600",
+            "background-dark": "indigo.500",
+            "color": "#FFFFFF",
+            "border-radius": "md"
+          }
+        },
+        "row-actions": {
+          "view-link-color-light": "emerald.700",
+          "view-link-color-dark": "indigo.400"
+        }
+      },
       "sections": [
         {
           "name": "header",
           "content": "Título da página + campo de busca + filtros (status, data, severidade)",
-          "notes": "Layout flex com título à esquerda e controles à direita."
+          "notes": "Layout flex com título à esquerda e controles à direita. Filtros ativos mostrados como badges accent."
         },
         {
           "name": "data-table",
           "content": "Colunas: Target URL, Date, Status, Duration, Risk Level, Actions (view, export, delete). Paginação inferior.",
-          "notes": "Usar DataTable do shadcn com sorting e column visibility. Action menu como dropdown. Status como badge colorido. URL em mono font."
+          "notes": "Usar DataTable do shadcn com sorting e column visibility. Coluna ativa de sort em accent-primary. Pagination com active page accent-primary. Action menu como dropdown. Status como badge colorido. URL em mono font."
         }
       ]
     },
@@ -905,11 +1511,27 @@
         "table (simple)",
         "badge"
       ],
+      "visual-details": {
+        "category-header": {
+          "font-size": "xs",
+          "font-weight": "semibold",
+          "color": "muted-foreground",
+          "text-transform": "uppercase",
+          "letter-spacing": "wide",
+          "padding-bottom": "2",
+          "border-bottom": "1px solid border",
+          "margin-bottom": "2"
+        },
+        "tech-badge": {
+          "variant": "badge:accent",
+          "note": "Category badge uses accent variant for visual consistency (emerald light / indigo dark)"
+        }
+      },
       "sections": [
         {
           "name": "tech-list",
           "content": "Tecnologias agrupadas por categoria (Server, Framework, CMS, JS Library, etc.). Cada grupo com header e items abaixo.",
-          "notes": "Sheet slide-in pela direita (substituir modal Bootstrap). Agrupar por categoria com section labels. Cada item: nome + versão + badge de categoria."
+          "notes": "Sheet slide-in pela direita. Agrupar por categoria com section labels. Cada item: nome + versão + badge de categoria em accent."
         }
       ]
     }
@@ -944,11 +1566,12 @@
     "accessibility": {
       "rules": [
         "Contraste mínimo WCAG AA (4.5:1 texto, 3:1 UI)",
-        "Focus rings visíveis em todos os interativos",
+        "Focus rings visíveis em todos os interativos — usar focus-ring.accent (emerald light / indigo dark)",
         "Labels em todos os inputs",
         "Alt text em todas as imagens",
         "Keyboard navigation completa",
-        "aria-labels em ícones-only"
+        "aria-labels em ícones-only",
+        "Accent alpha values mantêm contraste adequado (verificar ratio em ambos os modos — emerald.600 sobre branco e indigo.400 sobre dark background)"
       ]
     },
     "animations": {
@@ -957,7 +1580,89 @@
         "Transições de 150-200ms para hover/focus",
         "300ms para modais/sheets",
         "Skeleton loading para conteúdo assíncrono",
-        "Respeitar prefers-reduced-motion"
+        "Respeitar prefers-reduced-motion",
+        "Glow effects devem ter transição de 200ms ease-out"
+      ]
+    },
+    "accent-theme-split": {
+      "light": "emerald-600 (#059669) — transmite segurança, confiança e precisão técnica",
+      "dark": "indigo-400 (#818CF8) — suavidade luminosa no fundo escuro",
+      "rationale": "Emerald no light mode cria contraste natural com fundos brancos e transmite a sensação de sistema seguro e confiável. Indigo no dark mode mantém sofisticação sem agredir a retina.",
+      "token": "accent-primary — único ponto de referência para implementação. Resolva para emerald.600 no light e indigo.400 no dark via CSS variables ou Tailwind theme.",
+      "implementation-hint": "No tailwind.config.ts, definir 'accent-primary' como CSS variable que muda por [data-theme='light'] e [data-theme='dark']. Exemplo: '--color-accent-primary': tema === 'light' ? '#059669' : '#818CF8'"
+    },
+    "indigo-usage": {
+      "principle": "In dark mode, Indigo is the intelligent accent — use it to draw attention to what matters. In light mode, all interactive accent roles are fulfilled by emerald. Indigo remains the semantic 'info' color in both modes.",
+      "dark-mode-use-cases": [
+        "Focus rings on all interactive elements (dark mode)",
+        "Active navigation items — sidebar + navbar (dark mode)",
+        "Active tab underline indicator (dark mode)",
+        "Primary CTA buttons when accent is needed (dark mode)",
+        "Scanner card icon backgrounds (dark mode)",
+        "Hover border color on interactive cards (dark mode)",
+        "Active/selected row in tables (dark mode)",
+        "Badge for active filters and counts (dark mode)",
+        "Chart primary line/area color (dark mode)",
+        "Links (dark mode)",
+        "Progress bars and spinners for primary actions (dark mode)",
+        "Pagination active page (dark mode)"
+      ],
+      "both-modes": [
+        "Toast info variant left border (info semantic color)",
+        "The 'info' token in tokens.colors.light and tokens.colors.dark"
+      ],
+      "avoid": [
+        "Do NOT use as interactive accent in light mode — use emerald instead",
+        "Do NOT use as a full-page or section background",
+        "Do NOT use on body text",
+        "Do NOT use on non-interactive decorative elements in light mode",
+        "Do NOT combine with other strong accent colors in the same view",
+        "Do NOT exceed indigo/30 alpha for background fills"
+      ]
+    },
+    "emerald-usage": {
+      "principle": "In light mode, Emerald is the primary interactive accent — use it for all focus, hover, active, and CTA states. In dark mode, Emerald remains the success/positive semantic color only.",
+      "light-mode-interactive-use-cases": [
+        "Focus rings on all interactive elements (light mode)",
+        "Active navigation items — sidebar + navbar (light mode)",
+        "Active tab underline indicator (light mode)",
+        "Primary CTA buttons — button.accent (light mode)",
+        "Scanner card icon backgrounds (light mode)",
+        "Hover border color on interactive cards (light mode)",
+        "Active/selected row in tables (light mode)",
+        "Badge for active filters and counts — badge.accent (light mode)",
+        "Chart primary line/area color (light mode)",
+        "Links (light mode)",
+        "Progress bars and spinners for primary actions (light mode)",
+        "Pagination active page (light mode)",
+        "Hero gradient atmospheric tint (light mode)"
+      ],
+      "both-modes-success-use-cases": [
+        "Scan completed successfully — status badge and success-inline state",
+        "Healthy/passing check indicators in scan results",
+        "Positive trend badges (e.g. risk score improved)",
+        "Password strength 'strong' indicator on register page",
+        "Toast success variant left border",
+        "Card success variant (border + border-top accent)",
+        "Success state on landing page after scan initiation"
+      ],
+      "avoid": [
+        "Do NOT use emerald for interactive accent in dark mode — that role belongs to indigo",
+        "Do NOT use as a navigation or tab indicator in dark mode",
+        "Do NOT use on neutral or ambiguous states",
+        "Do NOT mix emerald and indigo on the same interactive element",
+        "Do NOT exceed emerald/30 alpha for background fills"
+      ]
+    },
+    "elevation-usage": {
+      "principle": "Depth through shadow and background — not color. Objects closer to the user cast slightly larger shadows.",
+      "rules": [
+        "Cards at rest: no shadow (flat, rely on border)",
+        "Cards on hover: shadow-sm or card-hover",
+        "Elevated cards (featured/important): shadow-md",
+        "Dropdowns and popovers: shadow-lg",
+        "Modals and sheets: shadow-xl",
+        "Active cards: accent-primary glow (emerald-sm light / indigo-sm dark) instead of larger shadow"
       ]
     },
     "implementation-notes": [
@@ -967,7 +1672,13 @@
       "Instalar JetBrains Mono para mono via next/font/google",
       "Componentes shadcn/ui: Button, Card, Input, Table, Badge, Dialog, Sheet, Tabs, Accordion, Avatar, DropdownMenu, Toast, Skeleton, Tooltip",
       "Charts: usar Recharts com wrapper shadcn/ui (chart component)",
-      "Ícones: Lucide React (já incluído no shadcn/ui)"
+      "Ícones: Lucide React (já incluído no shadcn/ui)",
+      "Indigo e Emerald palettes podem ser adicionadas ao tailwind.config.ts como 'colors.indigo' e 'colors.emerald' usando os valores de tokens.colors.indigo e tokens.colors.emerald",
+      "Para o glow do input URL no light mode: usar class focus-within:shadow-[0_0_16px_-2px_rgba(5,150,105,0.25)] — no dark mode: focus-within:shadow-[0_0_20px_-2px_rgba(129,140,248,0.30)]",
+      "Sidebar active indicator: implementar como ::before pseudo-element ou div absoluta de 2px de largura",
+      "Accent-primary token: definir --color-accent-primary como CSS variable no :root (light: #059669) e .dark (dark: #818CF8)",
+      "Para button.accent: light mode class 'bg-emerald-600 hover:bg-emerald-700', dark mode class 'dark:bg-indigo-600 dark:hover:bg-indigo-500'",
+      "Para badge.accent: light mode class 'bg-emerald-600/8 text-emerald-700 border-emerald-600/25', dark mode class 'dark:bg-indigo-400/10 dark:text-indigo-400 dark:border-indigo-400/25'"
     ]
   }
 }

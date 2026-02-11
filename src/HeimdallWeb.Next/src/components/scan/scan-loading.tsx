@@ -27,12 +27,12 @@ export function ScanLoading({ elapsedSeconds, timeoutSeconds }: ScanLoadingProps
   };
 
   return (
-    <Card className="w-full max-w-lg border-0 shadow-lg">
+    <Card className="w-full max-w-lg border shadow-lg">
       <CardContent className="flex flex-col items-center gap-6 py-10">
         <div className="relative flex h-20 w-20 items-center justify-center">
-          <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-primary" />
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-            <Shield className="h-8 w-8 text-primary" />
+          <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-accent-primary" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary-subtle">
+            <Shield className="h-8 w-8 text-accent-primary" />
           </div>
         </div>
 
@@ -44,9 +44,9 @@ export function ScanLoading({ elapsedSeconds, timeoutSeconds }: ScanLoadingProps
         </div>
 
         <div className="w-full space-y-2">
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+          <div className="h-1 w-full overflow-hidden rounded-full bg-accent-primary-subtle">
             <div
-              className="h-full rounded-full bg-primary transition-all duration-1000 ease-linear"
+              className="h-full rounded-full bg-accent-primary transition-all duration-1000 ease-linear"
               style={{ width: `${progress}%` }}
             />
           </div>

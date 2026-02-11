@@ -41,12 +41,12 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
           render={({ field }) => (
             <FormItem className="flex-1">
               <FormControl>
-                <div className="relative">
+                <div className="url-input-glow relative rounded-xl transition-shadow duration-200">
                   <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     {...field}
                     placeholder="https://exemplo.com"
-                    className="h-12 pl-10 text-base"
+                    className="h-12 rounded-xl pl-10 font-mono text-sm focus-visible:border-accent-primary focus-visible:ring-accent-primary/20"
                     disabled={isScanning}
                     autoComplete="url"
                     aria-label="URL do alvo para scan"
@@ -60,7 +60,7 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
         <Button
           type="submit"
           size="lg"
-          className="h-12 min-w-[140px] gap-2"
+          className="h-12 min-w-[140px] gap-2 bg-accent-primary text-accent-primary-foreground hover:bg-accent-primary-hover"
           disabled={isScanning}
         >
           {isScanning ? (

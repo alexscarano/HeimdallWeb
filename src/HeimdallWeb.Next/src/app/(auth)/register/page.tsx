@@ -12,6 +12,7 @@ import { registerSchema, type RegisterFormData } from "@/lib/validations/auth";
 import { routes } from "@/lib/constants/routes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import {
   Card,
@@ -22,6 +23,20 @@ import {
 } from "@/components/ui/card";
 import { isAxiosError } from "axios";
 
+function getPasswordStrength(password: string): { level: "weak" | "medium" | "strong"; width: string; color: string } {
+  if (!password) return { level: "weak", width: "0%", color: "bg-muted" };
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[a-z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 2) return { level: "weak", width: "33%", color: "bg-destructive" };
+  if (score <= 3) return { level: "medium", width: "66%", color: "bg-warning" };
+  return { level: "strong", width: "100%", color: "bg-success" };
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const { register: registerUser } = useAuth();
@@ -30,10 +45,14 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
+
+  const passwordValue = watch("password", "");
+  const strength = getPasswordStrength(passwordValue);
 
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
@@ -58,7 +77,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <Card className="border shadow-sm">
+    <Card className="border shadow-md">
       <CardHeader className="space-y-1 text-center">
         <CardTitle className="text-xl">Criar Conta</CardTitle>
         <CardDescription>
@@ -75,6 +94,7 @@ export default function RegisterPage() {
               placeholder="meuusuario"
               autoComplete="username"
               disabled={isLoading}
+              className="focus-ring-indigo"
               {...register("username")}
             />
             {errors.username && (
@@ -90,6 +110,7 @@ export default function RegisterPage() {
               placeholder="seu@email.com"
               autoComplete="email"
               disabled={isLoading}
+              className="focus-ring-indigo"
               {...register("email")}
             />
             {errors.email && (
@@ -99,14 +120,27 @@ export default function RegisterPage() {
 
           <div className="space-y-2">
             <Label htmlFor="password">Senha</Label>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               placeholder="••••••••"
               autoComplete="new-password"
               disabled={isLoading}
+              className="focus-ring-indigo"
               {...register("password")}
             />
+            {passwordValue && (
+              <div className="space-y-1">
+                <div className="h-0.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${strength.color}`}
+                    style={{ width: strength.width }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground capitalize">
+                  Força: {strength.level === "weak" ? "fraca" : strength.level === "medium" ? "média" : "forte"}
+                </p>
+              </div>
+            )}
             {errors.password && (
               <p className="text-xs text-destructive">{errors.password.message}</p>
             )}
@@ -114,12 +148,12 @@ export default function RegisterPage() {
 
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirmar Senha</Label>
-            <Input
+            <PasswordInput
               id="confirmPassword"
-              type="password"
               placeholder="••••••••"
               autoComplete="new-password"
               disabled={isLoading}
+              className="focus-ring-indigo"
               {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
@@ -137,7 +171,7 @@ export default function RegisterPage() {
           Já tem uma conta?{" "}
           <Link
             href={routes.login}
-            className="font-medium text-foreground underline-offset-4 hover:underline"
+            className="font-medium text-indigo-600 underline-offset-4 hover:underline dark:text-indigo-400"
           >
             Entrar
           </Link>

@@ -23,7 +23,7 @@ export function ScanResultSummary({ result, onNewScan }: ScanResultSummaryProps)
   const isCompleted = result.hasCompleted;
 
   return (
-    <Card className="w-full max-w-lg border-0 shadow-lg">
+    <Card className="w-full max-w-lg border shadow-lg">
       <CardContent className="flex flex-col items-center gap-5 pt-8 pb-4">
         <div
           className={`flex h-14 w-14 items-center justify-center rounded-2xl ${
@@ -65,7 +65,7 @@ export function ScanResultSummary({ result, onNewScan }: ScanResultSummaryProps)
 
       <CardFooter className="flex flex-col gap-2 pt-2 pb-6 sm:flex-row sm:justify-center">
         {isCompleted && (
-          <Button asChild>
+          <Button asChild className="bg-accent-primary text-accent-primary-foreground hover:bg-accent-primary-hover">
             <Link href={routes.historyDetail(result.historyId)}>
               Ver detalhes completos
             </Link>

@@ -5,6 +5,7 @@ import { QueryProvider } from "@/providers/query-provider";
 import { AuthProvider } from "@/stores/auth-store";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "sonner";
+import { ParticleBackground } from "@/components/ui/particle-background";
 import "./globals.css";
 
 const inter = Inter({
@@ -62,11 +63,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`} suppressHydrationWarning>
         <ThemeProvider>
           <QueryProvider>
             <AuthProvider>
               <TooltipProvider>
+                {/* Particle background global */}
+                <ParticleBackground />
                 {children}
                 <Toaster position="bottom-right" richColors />
               </TooltipProvider>

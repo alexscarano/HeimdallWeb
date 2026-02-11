@@ -12,6 +12,7 @@ import { loginSchema, type LoginFormData } from "@/lib/validations/auth";
 import { routes } from "@/lib/constants/routes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import {
   Card,
@@ -82,7 +83,7 @@ function LoginForm() {
   };
 
   return (
-    <Card className="border shadow-sm">
+    <Card className="border shadow-md">
       <CardHeader className="space-y-1 text-center">
         <CardTitle className="text-xl">Entrar</CardTitle>
         <CardDescription>
@@ -99,6 +100,7 @@ function LoginForm() {
               placeholder="seu@email.com"
               autoComplete="username"
               disabled={isLoading}
+              className="focus-ring-indigo"
               {...register("emailOrLogin")}
             />
             {errors.emailOrLogin && (
@@ -108,12 +110,12 @@ function LoginForm() {
 
           <div className="space-y-2">
             <Label htmlFor="password">Senha</Label>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               placeholder="••••••••"
               autoComplete="current-password"
               disabled={isLoading}
+              className="focus-ring-indigo"
               {...register("password")}
             />
             {errors.password && (
@@ -131,7 +133,7 @@ function LoginForm() {
           Não tem uma conta?{" "}
           <Link
             href={routes.register}
-            className="font-medium text-foreground underline-offset-4 hover:underline"
+            className="font-medium text-accent-primary underline-offset-4 hover:underline"
           >
             Criar conta
           </Link>

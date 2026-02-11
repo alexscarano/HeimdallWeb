@@ -54,13 +54,15 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "flex h-screen flex-col border-r border-sidebar-border bg-sidebar transition-all duration-200",
+        "relative z-10 flex h-screen flex-col border-r border-border bg-sidebar transition-all duration-200",
         collapsed ? "w-16" : "w-64"
       )}
     >
       {/* Logo */}
-      <div className="flex h-14 items-center gap-3 border-b border-sidebar-border px-4">
-        <Shield className="h-6 w-6 shrink-0 text-foreground" />
+      <div className="flex h-14 items-center gap-3 border-b border-border px-4">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-accent-primary-subtle">
+          <Shield className="h-4 w-4 text-accent-primary" />
+        </div>
         {!collapsed && (
           <span className="text-base font-semibold tracking-tight text-foreground">
             Heimdall
@@ -86,7 +88,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       {/* Collapse toggle */}
-      <div className="border-t border-sidebar-border p-2">
+      <div className="border-t border-border p-2">
         <Button
           variant="ghost"
           size="icon"
@@ -123,13 +125,16 @@ function NavSection({
             key={item.href}
             href={item.href}
             className={cn(
-              "flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors",
+              "relative flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors",
               isActive
-                ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                ? "bg-accent-primary-subtle font-semibold text-accent-primary"
+                : "text-sidebar-foreground hover:bg-black/[0.04] hover:text-foreground dark:hover:bg-white/[0.05]"
             )}
           >
-            <item.icon className="h-4 w-4 shrink-0" />
+            {isActive && (
+              <span className="absolute left-0 top-1/2 h-[60%] w-0.5 -translate-y-1/2 rounded-full bg-accent-primary" />
+            )}
+            <item.icon className={cn("h-4 w-4 shrink-0", isActive && "text-accent-primary")} />
             {!collapsed && <span>{item.label}</span>}
           </Link>
         );
