@@ -13,13 +13,11 @@ import {
   useScanHistoryDetail,
   useScanFindings,
   useScanTechnologies,
-  useAISummary,
   useExportPdf,
 } from "@/lib/hooks/use-history";
 import { FindingsList } from "@/components/history/findings-list";
 import { JsonViewer } from "@/components/history/json-viewer";
 import { TechnologiesList } from "@/components/history/technologies-list";
-import { AISummaryCard } from "@/components/history/ai-summary";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -32,7 +30,7 @@ export default function HistoryDetailPage({ params }: Props) {
   const { data: scan, isLoading: scanLoading } = useScanHistoryDetail(scanId);
   const { data: findings, isLoading: findingsLoading } = useScanFindings(scanId);
   const { data: technologies, isLoading: techLoading } = useScanTechnologies(scanId);
-  const { data: aiSummary, isLoading: aiLoading } = useAISummary(scanId);
+  // AI Summary removido - endpoint não existe no backend
   const exportMutation = useExportPdf();
 
   if (scanLoading) {
@@ -107,19 +105,19 @@ export default function HistoryDetailPage({ params }: Props) {
       )}
 
       <Tabs defaultValue="findings" className="space-y-4">
-        {/* Tabs - Scrollable on mobile */}
-        <div className="overflow-x-auto">
-          <TabsList className="inline-flex w-full min-w-max sm:w-auto">
-            <TabsTrigger value="findings" className="flex-1 sm:flex-none sm:px-6">
+        {/* Tabs - Responsivo sem scroll horizontal */}
+        <div>
+          <TabsList className="grid w-full grid-cols-4 sm:inline-flex sm:w-auto">
+            <TabsTrigger value="findings" className="sm:px-6">
               Vulnerabilidades
             </TabsTrigger>
-            <TabsTrigger value="technologies" className="flex-1 sm:flex-none sm:px-6">
+            <TabsTrigger value="technologies" className="sm:px-6">
               Tecnologias
             </TabsTrigger>
-            <TabsTrigger value="ai" className="flex-1 sm:flex-none sm:px-6">
+            <TabsTrigger value="ai" className="sm:px-6">
               Análise de IA
             </TabsTrigger>
-            <TabsTrigger value="json" className="flex-1 sm:flex-none sm:px-6">
+            <TabsTrigger value="json" className="sm:px-6">
               JSON
             </TabsTrigger>
           </TabsList>
@@ -142,15 +140,9 @@ export default function HistoryDetailPage({ params }: Props) {
         </TabsContent>
 
         <TabsContent value="ai">
-          {aiLoading ? (
-            <Skeleton className="h-64 w-full" />
-          ) : aiSummary ? (
-            <AISummaryCard summary={aiSummary} />
-          ) : (
-            <div className="py-8 text-center text-sm text-muted-foreground">
-              Análise de IA não disponível para este scan.
-            </div>
-          )}
+          <div className="py-8 text-center text-sm text-muted-foreground">
+            Análise de IA não disponível para este scan.
+          </div>
         </TabsContent>
 
         <TabsContent value="json">
