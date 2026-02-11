@@ -661,6 +661,8 @@ npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
 - [x] WCAG 2.1 AA: contraste mínimo 4.5:1, aria-labels, navegação por teclado
 - [x] Favicon + metadata (`<title>`, `<description>`) em todas as páginas
 - [x] Empty states para listas vazias
+- [x] **SEGURANÇA:** Correção de vulnerabilidade IDOR em todos os endpoints de scan history (5 handlers)
+- [x] Endpoint `/api/v1/scan-histories/{id}/ai-summary` criado com validação de ownership
 - [ ] **Browser Test (MCP):** resize para mobile (375px), verificar todos layouts, checar console de erros
 
 ### Sprint 6.1 — Testes de Integração Backend (3-4h)

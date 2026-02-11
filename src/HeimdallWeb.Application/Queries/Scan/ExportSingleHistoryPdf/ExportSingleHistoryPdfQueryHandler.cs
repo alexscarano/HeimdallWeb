@@ -40,7 +40,7 @@ public class ExportSingleHistoryPdfQueryHandler : IQueryHandler<ExportSingleHist
             throw new NotFoundException("User", query.RequestingUserId);
 
         if (user.UserType != UserType.Admin && scanHistory.UserId != user.UserId)
-            throw new ForbiddenException("You can only export your own scan history");
+            throw new NotFoundException("Scan history", query.HistoryId); // Security: 404 instead of 403
 
         // Generate PDF for single scan
         var pdfBytes = _pdfService.GenerateSingleHistoryPdf(scanHistory, query.Username);

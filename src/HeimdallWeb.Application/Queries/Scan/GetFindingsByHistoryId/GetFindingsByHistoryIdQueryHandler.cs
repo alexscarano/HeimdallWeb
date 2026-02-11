@@ -37,7 +37,7 @@ public class GetFindingsByHistoryIdQueryHandler : IQueryHandler<GetFindingsByHis
             throw new NotFoundException("User", query.RequestingUserId);
 
         if (user.UserType != UserType.Admin && scanHistory.UserId != user.UserId)
-            throw new ForbiddenException("You can only view findings from your own scan history");
+            throw new NotFoundException("Scan history", query.HistoryId); // Security: 404 instead of 403
 
         // Get findings using internal HistoryId
         var findings = await _unitOfWork.Findings.GetByHistoryIdAsync(scanHistory.HistoryId, cancellationToken);

@@ -36,8 +36,9 @@ public class GetScanHistoryByIdQueryHandler : IQueryHandler<GetScanHistoryByIdQu
         if (user == null)
             throw new NotFoundException("User", query.RequestingUserId);
 
+        // Security: Return 404 instead of 403 to not leak resource existence
         if (user.UserType != UserType.Admin && scanHistory.UserId != user.UserId)
-            throw new ForbiddenException("You can only view your own scan history");
+            throw new NotFoundException("Scan history", query.HistoryId);
 
         // Get related entities using internal HistoryId
         var findings = await _unitOfWork.Findings.GetByHistoryIdAsync(scanHistory.HistoryId, cancellationToken);

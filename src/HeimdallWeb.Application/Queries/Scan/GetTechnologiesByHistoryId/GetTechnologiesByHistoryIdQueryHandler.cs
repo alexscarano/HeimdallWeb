@@ -37,7 +37,7 @@ public class GetTechnologiesByHistoryIdQueryHandler : IQueryHandler<GetTechnolog
             throw new NotFoundException("User", query.RequestingUserId);
 
         if (user.UserType != UserType.Admin && scanHistory.UserId != user.UserId)
-            throw new ForbiddenException("You can only view technologies from your own scan history");
+            throw new NotFoundException("Scan history", query.HistoryId); // Security: 404 instead of 403
 
         // Get technologies using internal HistoryId
         var technologies = await _unitOfWork.Technologies.GetByHistoryIdAsync(scanHistory.HistoryId, cancellationToken);

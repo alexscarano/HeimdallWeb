@@ -56,7 +56,7 @@ public class DeleteScanHistoryCommandHandler : ICommandHandler<DeleteScanHistory
 
         if (!isAdmin && !isOwner)
         {
-            throw new ForbiddenException("You can only delete your own scan history");
+            throw new NotFoundException("Scan history", request.HistoryId); // Security: 404 instead of 403
         }
 
         var target = scanHistory.Target;

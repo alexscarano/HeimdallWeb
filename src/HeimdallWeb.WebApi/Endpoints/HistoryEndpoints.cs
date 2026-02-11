@@ -3,6 +3,7 @@ using HeimdallWeb.Application.Commands.Scan.DeleteScanHistory;
 using HeimdallWeb.Application.Queries.Scan.GetScanHistoryById;
 using HeimdallWeb.Application.Queries.Scan.GetFindingsByHistoryId;
 using HeimdallWeb.Application.Queries.Scan.GetTechnologiesByHistoryId;
+using HeimdallWeb.Application.Queries.Scan.GetAISummaryByHistoryId;
 using HeimdallWeb.Application.Queries.Scan.ExportSingleHistoryPdf;
 using HeimdallWeb.Application.Queries.Scan.ExportHistoryPdf;
 using HeimdallWeb.Application.DTOs.Scan;
@@ -22,6 +23,7 @@ public static class HistoryEndpoints
         group.MapGet("/{id:guid}", GetScanHistoryById);
         group.MapGet("/{id:guid}/findings", GetFindings);
         group.MapGet("/{id:guid}/technologies", GetTechnologies);
+        group.MapGet("/{id:guid}/ai-summary", GetAISummary);
         group.MapGet("/{id:guid}/export", ExportSinglePdf);
         group.MapGet("/export", ExportAllPdf);
         group.MapDelete("/{id:guid}", DeleteScanHistory);
@@ -64,6 +66,23 @@ public static class HistoryEndpoints
 
         var query = new GetTechnologiesByHistoryIdQuery(id, userId);
         var result = await handler.Handle(query);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> GetAISummary(
+        Guid id,
+        IQueryHandler<GetAISummaryByHistoryIdQuery, IASummaryResponse?> handler,
+        HttpContext context)
+    {
+        var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+
+        var query = new GetAISummaryByHistoryIdQuery(id, userId);
+        var result = await handler.Handle(query);
+
+        // Return 404 if no AI summary exists for this scan
+        if (result == null)
+            return Results.NotFound(new { message = "AI summary not available for this scan" });
 
         return Results.Ok(result);
     }
