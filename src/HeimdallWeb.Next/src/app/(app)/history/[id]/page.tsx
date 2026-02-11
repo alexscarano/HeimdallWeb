@@ -88,7 +88,8 @@ export default function HistoryDetailPage({ params }: Props) {
         <Button
           onClick={() => exportMutation.mutate(scanId)}
           disabled={exportMutation.isPending}
-          className="w-full shrink-0 sm:w-auto"
+          variant="outline"
+          className="w-full shrink-0 sm:w-auto sm:ml-4"
         >
           <FileDown className="mr-2 h-4 w-4" />
           {exportMutation.isPending ? "Exportando..." : "Exportar PDF"}
@@ -109,16 +110,16 @@ export default function HistoryDetailPage({ params }: Props) {
         {/* Tabs - Scrollable on mobile */}
         <div className="overflow-x-auto">
           <TabsList className="inline-flex w-full min-w-max sm:w-auto">
-            <TabsTrigger value="findings" className="flex-1 sm:flex-none">
+            <TabsTrigger value="findings" className="flex-1 sm:flex-none sm:px-6">
               Vulnerabilidades
             </TabsTrigger>
-            <TabsTrigger value="technologies" className="flex-1 sm:flex-none">
+            <TabsTrigger value="technologies" className="flex-1 sm:flex-none sm:px-6">
               Tecnologias
             </TabsTrigger>
-            <TabsTrigger value="ai" className="flex-1 sm:flex-none">
+            <TabsTrigger value="ai" className="flex-1 sm:flex-none sm:px-6">
               Análise de IA
             </TabsTrigger>
-            <TabsTrigger value="json" className="flex-1 sm:flex-none">
+            <TabsTrigger value="json" className="flex-1 sm:flex-none sm:px-6">
               JSON
             </TabsTrigger>
           </TabsList>
