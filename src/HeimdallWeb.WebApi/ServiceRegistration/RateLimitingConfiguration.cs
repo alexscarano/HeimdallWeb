@@ -41,6 +41,16 @@ public static class RateLimitingConfiguration
                         PermitLimit = 4,
                         Window = TimeSpan.FromMinutes(1)
                     }));
+
+            // Auth rate limit: 10 requests/minute per IP (brute force protection)
+            options.AddPolicy("AuthPolicy", context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 10,
+                        Window = TimeSpan.FromMinutes(1)
+                    }));
         });
 
         return services;

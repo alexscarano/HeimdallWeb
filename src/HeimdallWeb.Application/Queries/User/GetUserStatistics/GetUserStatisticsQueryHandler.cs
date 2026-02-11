@@ -27,6 +27,15 @@ public class GetUserStatisticsQueryHandler : IQueryHandler<GetUserStatisticsQuer
         if (user == null)
             throw new NotFoundException("User", query.UserId);
 
+        // Verify ownership: users can only view their own statistics, admins can view any
+        var requestingUser = await _unitOfWork.Users.GetByPublicIdAsync(query.RequestingUserId, cancellationToken);
+        if (requestingUser == null)
+            throw new NotFoundException("User", query.RequestingUserId);
+
+        // Security: Return 404 instead of 403 to not leak resource existence
+        if (requestingUser.UserType != UserType.Admin && query.UserId != query.RequestingUserId)
+            throw new NotFoundException("User", query.UserId);
+
         var userInternalId = user.UserId; // Use internal ID for FK queries
 
         // Get all scan histories for user

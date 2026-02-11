@@ -28,6 +28,15 @@ public class GetUserProfileQueryHandler : IQueryHandler<GetUserProfileQuery, Use
         if (user == null)
             throw new NotFoundException("User", query.UserId);
 
+        // Verify ownership: users can only view their own profile, admins can view any
+        var requestingUser = await _unitOfWork.Users.GetByPublicIdAsync(query.RequestingUserId, cancellationToken);
+        if (requestingUser == null)
+            throw new NotFoundException("User", query.RequestingUserId);
+
+        // Security: Return 404 instead of 403 to not leak resource existence
+        if (requestingUser.UserType != UserType.Admin && query.UserId != query.RequestingUserId)
+            throw new NotFoundException("User", query.UserId);
+
         // Map to response DTO
         return new UserProfileResponse(
             UserId: user.PublicId,

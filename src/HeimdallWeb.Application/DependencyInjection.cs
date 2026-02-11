@@ -21,6 +21,7 @@ using HeimdallWeb.Application.Queries.Admin.GetAdminDashboard;
 using HeimdallWeb.Application.Queries.Admin.GetUsers;
 using HeimdallWeb.Application.Queries.Scan.ExportHistoryPdf;
 using HeimdallWeb.Application.Queries.Scan.ExportSingleHistoryPdf;
+using HeimdallWeb.Application.Queries.Scan.GetAISummaryByHistoryId;
 using HeimdallWeb.Application.Queries.Scan.GetFindingsByHistoryId;
 using HeimdallWeb.Application.Queries.Scan.GetScanHistoryById;
 using HeimdallWeb.Application.Queries.Scan.GetTechnologiesByHistoryId;
@@ -84,11 +85,12 @@ public static class DependencyInjection
 
         // ===== Query Handlers (10 total) =====
 
-        // Scan Queries (6)
+        // Scan Queries (7)
         services.AddScoped<IQueryHandler<GetScanHistoryByIdQuery, ScanHistoryDetailResponse>, GetScanHistoryByIdQueryHandler>();
         services.AddScoped<IQueryHandler<GetUserScanHistoriesQuery, PaginatedScanHistoriesResponse>, GetUserScanHistoriesQueryHandler>();
         services.AddScoped<IQueryHandler<GetFindingsByHistoryIdQuery, IEnumerable<FindingResponse>>, GetFindingsByHistoryIdQueryHandler>();
         services.AddScoped<IQueryHandler<GetTechnologiesByHistoryIdQuery, IEnumerable<TechnologyResponse>>, GetTechnologiesByHistoryIdQueryHandler>();
+        services.AddScoped<IQueryHandler<GetAISummaryByHistoryIdQuery, IASummaryResponse?>, GetAISummaryByHistoryIdQueryHandler>();
         services.AddScoped<IQueryHandler<ExportHistoryPdfQuery, PdfExportResponse>, ExportHistoryPdfQueryHandler>();
         services.AddScoped<IQueryHandler<ExportSingleHistoryPdfQuery, PdfExportResponse>, ExportSingleHistoryPdfQueryHandler>();
 

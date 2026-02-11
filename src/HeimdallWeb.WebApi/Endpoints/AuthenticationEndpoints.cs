@@ -15,10 +15,12 @@ public static class AuthenticationEndpoints
             .WithTags("Authentication");
 
         group.MapPost("/login", Login)
-            .AllowAnonymous();
+            .AllowAnonymous()
+            .RequireRateLimiting("AuthPolicy");
 
         group.MapPost("/register", Register)
-            .AllowAnonymous();
+            .AllowAnonymous()
+            .RequireRateLimiting("AuthPolicy");
 
         group.MapPost("/logout", Logout)
             .RequireAuthorization();

@@ -29,6 +29,17 @@ public static class SecurityMiddleware
     /// <returns>WebApplication para encadeamento de chamadas</returns>
     public static WebApplication UseSecurityMiddlewarePipeline(this WebApplication app)
     {
+        // 0️⃣ Security Headers (prevent common web attacks)
+        app.Use(async (context, next) =>
+        {
+            context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            context.Response.Headers["X-Frame-Options"] = "DENY";
+            context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
+            context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+            context.Response.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
+            await next();
+        });
+
         // 1️⃣ HTTPS Redirection (protocol-level security)
         app.UseHttpsRedirection();
 

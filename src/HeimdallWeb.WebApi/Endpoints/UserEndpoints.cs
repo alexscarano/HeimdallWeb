@@ -31,9 +31,12 @@ public static class UserEndpoints
 
     private static async Task<IResult> GetUserProfile(
         Guid id,
-        IQueryHandler<GetUserProfileQuery, UserProfileResponse> handler)
+        IQueryHandler<GetUserProfileQuery, UserProfileResponse> handler,
+        HttpContext context)
     {
-        var query = new GetUserProfileQuery(id);
+        var authenticatedUserId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+
+        var query = new GetUserProfileQuery(id, authenticatedUserId);
         var result = await handler.Handle(query);
 
         return Results.Ok(result);
@@ -41,9 +44,12 @@ public static class UserEndpoints
 
     private static async Task<IResult> GetUserStatistics(
         Guid id,
-        IQueryHandler<GetUserStatisticsQuery, UserStatisticsResponse> handler)
+        IQueryHandler<GetUserStatisticsQuery, UserStatisticsResponse> handler,
+        HttpContext context)
     {
-        var query = new GetUserStatisticsQuery(id);
+        var authenticatedUserId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+
+        var query = new GetUserStatisticsQuery(id, authenticatedUserId);
         var result = await handler.Handle(query);
 
         return Results.Ok(result);
