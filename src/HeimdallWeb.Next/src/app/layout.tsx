@@ -52,7 +52,11 @@ export const metadata: Metadata = {
       "Web security scanning platform — analyze vulnerabilities, SSL, ports, headers and more",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: "/apple-icon.png",
   },
 };
 

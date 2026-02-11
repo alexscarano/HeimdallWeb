@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { History, Trash2 } from "lucide-react";
+import { History, Trash2, SearchX } from "lucide-react";
 import { ScanTable } from "@/components/history/scan-table";
 import { ScanFilters } from "@/components/history/scan-filters";
 import { useScanHistories, useDeleteScanHistory, useExportPdf } from "@/lib/hooks/use-history";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -69,12 +70,33 @@ export default function HistoryPage() {
         onStatusChange={handleStatusChange}
       />
 
-      <ScanTable
-        scans={data?.items ?? []}
-        isLoading={isLoading}
-        onDelete={setDeleteId}
-        onExportPdf={(id) => exportMutation.mutate(id)}
-      />
+      {/* Empty State */}
+      {!isLoading && data?.items.length === 0 && (
+        <EmptyState
+          icon={SearchX}
+          title="Nenhum scan encontrado"
+          description={
+            search || status !== "all"
+              ? "Tente ajustar os filtros de busca ou status para ver mais resultados."
+              : "Você ainda não realizou nenhum scan. Vá para a página inicial para começar."
+          }
+          action={
+            !search && status === "all"
+              ? { label: "Realizar primeiro scan", href: "/" }
+              : undefined
+          }
+        />
+      )}
+
+      {/* Table with data */}
+      {(isLoading || (data && data.items.length > 0)) && (
+        <ScanTable
+          scans={data?.items ?? []}
+          isLoading={isLoading}
+          onDelete={setDeleteId}
+          onExportPdf={(id) => exportMutation.mutate(id)}
+        />
+      )}
 
       {data && data.totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">

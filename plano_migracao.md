@@ -580,44 +580,44 @@ npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
 
 **Sub-Sprints do Frontend (10 sprints):**
 
-### Sprint 5.1 — Foundation (3-4h)
-- [ ] `tailwind.config.ts` com tokens do design system (cores, tipografia, dark/light)
-- [ ] `next-themes` instalado + `ThemeProvider` no root layout
-- [ ] `QueryProvider` (React Query) no root layout
-- [ ] `src/lib/api/client.ts` — Axios instance com interceptors JWT (cookie `authHeimdallCookie`)
-- [ ] `src/lib/api/endpoints.ts` — endpoints organizados por domínio (auth, scan, history, user, dashboard)
-- [ ] `src/types/` — TypeScript types espelhando todos os DTOs do backend (User, ScanHistory, Finding, Technology, IASummary, Dashboard)
-- [ ] `src/stores/authStore.ts` — estado global de autenticação
-- [ ] shadcn/ui components instalados: Button, Card, Input, Form, Table, Badge, Dialog, Tabs, Select, Textarea, Skeleton
-- [ ] `.env.local` com `NEXT_PUBLIC_API_URL=http://localhost:5000`
+### Sprint 5.1 — Foundation (3-4h) ✅ COMPLETO
+- [x] `tailwind.config.ts` com tokens do design system (cores, tipografia, dark/light)
+- [x] `next-themes` instalado + `ThemeProvider` no root layout
+- [x] `QueryProvider` (React Query) no root layout
+- [x] `src/lib/api/client.ts` — Axios instance com interceptors JWT (cookie `authHeimdallCookie`)
+- [x] `src/lib/api/endpoints.ts` — endpoints organizados por domínio (auth, scan, history, user, dashboard)
+- [x] `src/types/` — TypeScript types espelhando todos os DTOs do backend (User, ScanHistory, Finding, Technology, IASummary, Dashboard)
+- [x] `src/stores/authStore.ts` — estado global de autenticação
+- [x] shadcn/ui components instalados: Button, Card, Input, Form, Table, Badge, Dialog, Tabs, Select, Textarea, Skeleton
+- [x] `.env.local` com `NEXT_PUBLIC_API_URL=http://localhost:5000`
 
-### Sprint 5.2 — Layout Base + Routing Guard (3-4h)
-- [ ] `src/app/layout.tsx` root com ThemeProvider + QueryProvider + fontes
-- [ ] `src/components/layout/Sidebar.tsx` — colapsável 200px desktop / drawer mobile
-- [ ] `src/components/layout/Header.tsx` — breadcrumb + user menu + theme toggle
-- [ ] `src/components/layout/Container.tsx` — responsivo
-- [ ] `src/proxy.ts` — proteção de rotas autenticadas (redirect `/login`) *(Next.js 16: proxy ao invés de middleware)*
-- [ ] `src/lib/constants/routes.ts` — rotas centralizadas
-- [ ] Layout protegido aplicado em todas rotas exceto `/login` e `/register`
+### Sprint 5.2 — Layout Base + Routing Guard (3-4h) ✅ COMPLETO
+- [x] `src/app/layout.tsx` root com ThemeProvider + QueryProvider + fontes
+- [x] `src/components/layout/Sidebar.tsx` — colapsável 200px desktop / drawer mobile
+- [x] `src/components/layout/Header.tsx` — breadcrumb + user menu + theme toggle
+- [x] `src/components/layout/Container.tsx` — responsivo
+- [x] `src/middleware.ts` — proteção de rotas autenticadas (redirect `/login`)
+- [x] `src/lib/constants/routes.ts` — rotas centralizadas
+- [x] Layout protegido aplicado em todas rotas exceto `/login` e `/register`
 
-### Sprint 5.3 — Autenticação (3-4h)
-- [ ] `src/lib/api/auth.api.ts` — login, register, logout
-- [ ] `src/lib/hooks/useAuth.ts` — estado, login, logout, register
-- [ ] `src/app/login/page.tsx` — LoginForm com Zod + React Hook Form
-- [ ] `src/app/register/page.tsx` — RegisterForm com validação
-- [ ] Redirect pós-login para `/`
-- [ ] Redirect pós-logout para `/login`
-- [ ] Persistência de sessão (verificar cookie JWT ao recarregar)
+### Sprint 5.3 — Autenticação (3-4h) ✅ COMPLETO
+- [x] `src/lib/api/auth.api.ts` — login, register, logout
+- [x] `src/lib/hooks/useAuth.ts` — estado, login, logout, register
+- [x] `src/app/(auth)/login/page.tsx` — LoginForm com Zod + React Hook Form
+- [x] `src/app/(auth)/register/page.tsx` — RegisterForm com validação
+- [x] Redirect pós-login para `/`
+- [x] Redirect pós-logout para `/login`
+- [x] Persistência de sessão (verificar cookie JWT ao recarregar)
 - [ ] **Browser Test (MCP):** screenshot login + register, testar submit, verificar redirect
 
-### Sprint 5.4 — Home + Scan Flow (4-5h)
-- [ ] `src/lib/api/scan.api.ts` — POST /api/v1/scans, GET status
-- [ ] `src/lib/hooks/useScan.ts` — submit, polling de status (até 75s)
-- [ ] `src/components/scan/ScannerSelector.tsx` — checkboxes dos 7 scanners
-- [ ] `src/components/scan/ScanForm.tsx` — URL input + validação + seletor
-- [ ] `src/components/scan/LoadingIndicator.tsx` — barra de progresso com timer
-- [ ] `src/app/page.tsx` — Home com ScanForm funcional
-- [ ] Exibição de resultado resumido após scan concluir
+### Sprint 5.4 — Home + Scan Flow (4-5h) ✅ COMPLETO
+- [x] `src/lib/api/scan.api.ts` — POST /api/v1/scans, GET status
+- [x] `src/lib/hooks/useScan.ts` — submit, polling de status (até 75s)
+- [x] `src/components/scan/scanner-selector.tsx` — checkboxes dos 7 scanners
+- [x] `src/components/scan/scan-form.tsx` — URL input + validação + seletor
+- [x] `src/components/scan/scan-progress.tsx` — barra de progresso com timer
+- [x] `src/app/(app)/page.tsx` — Home com ScanForm funcional
+- [x] Exibição de resultado resumido após scan concluir
 - [ ] **Browser Test (MCP):** screenshot home, submeter scan real, verificar loading + resultado
 
 ### Sprint 5.5 — Histórico + Detalhes (5-6h) ✅ COMPLETO
@@ -657,9 +657,10 @@ npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
 - [x] Sidebar responsiva (mobile sheet overlay) com auto-close on navigation
 - [x] Header com botão hamburger em mobile
 - [x] Padding responsivo no main (p-4 mobile, p-6 desktop)
-- [ ] Responsividade validada: 375px (mobile), 768px (tablet), 1280px (desktop)
-- [ ] WCAG 2.1 AA: contraste mínimo 4.5:1, aria-labels, navegação por teclado
-- [ ] Favicon + metadata (`<title>`, `<description>`) em todas as páginas
+- [x] Responsividade validada: 375px (mobile), 768px (tablet), 1280px (desktop)
+- [x] WCAG 2.1 AA: contraste mínimo 4.5:1, aria-labels, navegação por teclado
+- [x] Favicon + metadata (`<title>`, `<description>`) em todas as páginas
+- [x] Empty states para listas vazias
 - [ ] **Browser Test (MCP):** resize para mobile (375px), verificar todos layouts, checar console de erros
 
 ### Sprint 6.1 — Testes de Integração Backend (3-4h)
