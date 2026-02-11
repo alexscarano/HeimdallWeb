@@ -50,6 +50,9 @@ var app = builder.Build();
 // Development-only services (Swagger UI)
 app.UseSwaggerDevelopment();
 
+// Static files (profile images, uploads) — must be before auth to serve public assets
+app.UseStaticFiles();
+
 // Global exception handler (must be early in pipeline to catch all exceptions)
 app.UseGlobalExceptionHandler();
 

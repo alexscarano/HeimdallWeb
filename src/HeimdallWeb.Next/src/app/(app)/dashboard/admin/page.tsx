@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useTheme } from "next-themes";
 import { format } from "date-fns";
 import {
   Users,
@@ -46,6 +47,7 @@ import {
   PieChart,
   Pie,
   Cell,
+  Legend,
 } from "recharts";
 
 const SEVERITY_COLORS = ["#ef4444", "#f97316", "#eab308", "#3b82f6"];
@@ -61,12 +63,24 @@ export default function AdminDashboardPage() {
 function AdminDashboardContent() {
   const [logPage, setLogPage] = useState(1);
   const [logLevel, setLogLevel] = useState<string>("all");
+  const scrollPosRef = useRef<number>(0);
+  const { resolvedTheme } = useTheme();
+  const chartColor = resolvedTheme === "dark" ? "#6366f1" : "#059669";
+  const tickColor = resolvedTheme === "dark" ? "#cbd5e1" : "#64748b";
 
   const { data, isLoading } = useAdminDashboard({
     logPage,
     logPageSize: 10,
     logLevel: logLevel === "all" ? undefined : logLevel,
   });
+
+  // Restore scroll position after log page change
+  useEffect(() => {
+    if (scrollPosRef.current > 0) {
+      const main = document.querySelector("main");
+      if (main) main.scrollTop = scrollPosRef.current;
+    }
+  }, [data?.logs.items]);
 
   if (isLoading) return <AdminDashboardSkeleton />;
   if (!data) {
@@ -157,7 +171,6 @@ function AdminDashboardContent() {
                   innerRadius={60}
                   outerRadius={100}
                   dataKey="value"
-                  label={({ name, value }) => `${name}: ${value}`}
                 >
                   {severityData.map((_, index) => (
                     <Cell
@@ -167,6 +180,7 @@ function AdminDashboardContent() {
                   ))}
                 </Pie>
                 <Tooltip />
+                <Legend />
               </PieChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -188,8 +202,8 @@ function AdminDashboardContent() {
                     x2="0"
                     y2="1"
                   >
-                    <stop offset="5%" stopColor="#059669" stopOpacity={0.1} />
-                    <stop offset="95%" stopColor="#059669" stopOpacity={0} />
+                    <stop offset="5%" stopColor={chartColor} stopOpacity={0.1} />
+                    <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid
@@ -198,12 +212,14 @@ function AdminDashboardContent() {
                 />
                 <XAxis
                   dataKey="date"
-                  stroke="hsl(var(--muted-foreground))"
+                  stroke={tickColor}
                   fontSize={12}
+                  tick={{ fill: tickColor }}
                 />
                 <YAxis
-                  stroke="hsl(var(--muted-foreground))"
+                  stroke={tickColor}
                   fontSize={12}
+                  tick={{ fill: tickColor }}
                 />
                 <Tooltip
                   contentStyle={{
@@ -215,7 +231,7 @@ function AdminDashboardContent() {
                 <Area
                   type="monotone"
                   dataKey="count"
-                  stroke="#059669"
+                  stroke={chartColor}
                   fillOpacity={1}
                   fill="url(#colorScans)"
                 />
@@ -341,7 +357,10 @@ function AdminDashboardContent() {
               variant="outline"
               size="sm"
               disabled={logPage <= 1}
-              onClick={() => setLogPage((p) => p - 1)}
+              onClick={() => {
+                scrollPosRef.current = document.querySelector("main")?.scrollTop ?? 0;
+                setLogPage((p) => p - 1);
+              }}
             >
               Anterior
             </Button>
@@ -352,7 +371,10 @@ function AdminDashboardContent() {
               variant="outline"
               size="sm"
               disabled={logPage >= data.logs.totalPages}
-              onClick={() => setLogPage((p) => p + 1)}
+              onClick={() => {
+                scrollPosRef.current = document.querySelector("main")?.scrollTop ?? 0;
+                setLogPage((p) => p + 1);
+              }}
             >
               Próximo
             </Button>

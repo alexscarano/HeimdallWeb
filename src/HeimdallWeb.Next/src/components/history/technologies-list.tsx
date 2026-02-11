@@ -37,7 +37,7 @@ export function TechnologiesList({ technologies }: TechnologiesListProps) {
               <Card key={tech.technologyId} className="p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 space-y-1">
-                    <p className="font-medium leading-none">{tech.technologyName}</p>
+                    <p className="font-medium leading-none">{tech.name}</p>
                     {tech.version && (
                       <Badge variant="outline" className="text-xs">
                         v{tech.version}

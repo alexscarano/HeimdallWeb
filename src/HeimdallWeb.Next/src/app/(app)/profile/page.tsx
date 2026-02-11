@@ -12,6 +12,7 @@ import {
 import { UserType } from "@/types/common";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,6 +26,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+
+function getPasswordStrength(password: string): {
+  level: "weak" | "medium" | "strong";
+  width: string;
+  color: string;
+} {
+  if (!password) return { level: "weak", width: "0%", color: "bg-muted" };
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[a-z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 2) return { level: "weak", width: "33%", color: "bg-destructive" };
+  if (score <= 3) return { level: "medium", width: "66%", color: "bg-warning" };
+  return { level: "strong", width: "100%", color: "bg-success" };
+}
 
 export default function ProfilePage() {
   const { user, isLoading } = useAuth();
@@ -189,6 +208,8 @@ function ChangePasswordCard() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const strength = getPasswordStrength(newPassword);
+
   const canSubmit =
     currentPassword.length > 0 &&
     newPassword.length >= 8 &&
@@ -221,8 +242,7 @@ function ChangePasswordCard() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <label className="text-sm font-medium">Senha atual</label>
-          <Input
-            type="password"
+          <PasswordInput
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             placeholder="Sua senha atual"
@@ -231,18 +251,34 @@ function ChangePasswordCard() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <label className="text-sm font-medium">Nova senha</label>
-            <Input
-              type="password"
+            <PasswordInput
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Mínimo 8 caracteres"
               minLength={8}
             />
+            {newPassword && (
+              <div className="space-y-1">
+                <div className="h-0.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${strength.color}`}
+                    style={{ width: strength.width }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground capitalize">
+                  Força:{" "}
+                  {strength.level === "weak"
+                    ? "fraca"
+                    : strength.level === "medium"
+                      ? "média"
+                      : "forte"}
+                </p>
+              </div>
+            )}
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Confirmar nova senha</label>
-            <Input
-              type="password"
+            <PasswordInput
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirme a nova senha"

@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { ChartCard } from "@/components/dashboard/chart-card";
 import { useUserDashboard } from "@/lib/hooks/use-dashboard";
+import { useTheme } from "next-themes";
 import {
   AreaChart,
   Area,
@@ -19,6 +20,9 @@ import {
 
 export default function UserDashboardPage() {
   const { data: stats, isLoading } = useUserDashboard();
+  const { resolvedTheme } = useTheme();
+  const chartColor = resolvedTheme === "dark" ? "#6366f1" : "#059669";
+  const tickColor = resolvedTheme === "dark" ? "#cbd5e1" : "#64748b";
 
   if (isLoading) {
     return <DashboardSkeleton />;
@@ -91,13 +95,13 @@ export default function UserDashboardPage() {
               <AreaChart data={stats.riskTrend}>
                 <defs>
                   <linearGradient id="colorFindings" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#059669" stopOpacity={0.1} />
-                    <stop offset="95%" stopColor="#059669" stopOpacity={0} />
+                    <stop offset="5%" stopColor={chartColor} stopOpacity={0.1} />
+                    <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                <XAxis dataKey="date" stroke={tickColor} fontSize={12} tick={{ fill: tickColor }} />
+                <YAxis stroke={tickColor} fontSize={12} tick={{ fill: tickColor }} />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "hsl(var(--popover))",
@@ -108,7 +112,7 @@ export default function UserDashboardPage() {
                 <Area
                   type="monotone"
                   dataKey="findingsCount"
-                  stroke="#059669"
+                  stroke={chartColor}
                   fillOpacity={1}
                   fill="url(#colorFindings)"
                 />
@@ -122,13 +126,14 @@ export default function UserDashboardPage() {
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={stats.categoryBreakdown} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                <XAxis type="number" stroke={tickColor} fontSize={12} tick={{ fill: tickColor }} />
                 <YAxis
                   dataKey="category"
                   type="category"
-                  stroke="hsl(var(--muted-foreground))"
-                  fontSize={12}
-                  width={100}
+                  stroke={tickColor}
+                  fontSize={11}
+                  width={120}
+                  tick={{ fill: tickColor, fontSize: 11 }}
                 />
                 <Tooltip
                   contentStyle={{
@@ -137,7 +142,7 @@ export default function UserDashboardPage() {
                     borderRadius: "0.5rem",
                   }}
                 />
-                <Bar dataKey="count" fill="#059669" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="count" fill={chartColor} radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>

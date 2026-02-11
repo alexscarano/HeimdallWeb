@@ -31,7 +31,7 @@ export interface Finding {
 
 export interface Technology {
   technologyId: string;
-  technologyName: string;
+  name: string;
   version?: string;
   category: string;
   description?: string;
