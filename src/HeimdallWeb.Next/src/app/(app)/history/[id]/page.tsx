@@ -64,7 +64,7 @@ export default function HistoryDetailPage({ params }: Props) {
   return (
     <div className="space-y-6">
       {/* Header - Responsive */}
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-center gap-3">
           <Link href="/history">
             <Button variant="ghost" size="icon" aria-label="Voltar ao histórico">
@@ -84,11 +84,11 @@ export default function HistoryDetailPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Export PDF button - Full width on mobile */}
+        {/* Export PDF button - Ao lado em desktop */}
         <Button
           onClick={() => exportMutation.mutate(scanId)}
           disabled={exportMutation.isPending}
-          className="w-full sm:w-auto"
+          className="w-full shrink-0 sm:w-auto"
         >
           <FileDown className="mr-2 h-4 w-4" />
           {exportMutation.isPending ? "Exportando..." : "Exportar PDF"}
