@@ -63,26 +63,35 @@ export default function HistoryDetailPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Header - Responsive */}
+      <div className="space-y-4">
         <div className="flex items-center gap-3">
           <Link href="/history">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" aria-label="Voltar ao histórico">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary-subtle">
             <Shield className="h-5 w-5 text-accent-primary" />
           </div>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{scan.target}</h1>
-            <p className="text-sm text-muted-foreground">
+          <div className="min-w-0 flex-1">
+            <h1 className="truncate text-xl font-semibold tracking-tight sm:text-2xl">
+              {scan.target}
+            </h1>
+            <p className="text-xs text-muted-foreground sm:text-sm">
               {format(new Date(scan.createdDate), "dd/MM/yyyy, HH:mm")} • {scan.duration}
             </p>
           </div>
         </div>
-        <Button onClick={() => exportMutation.mutate(scanId)} disabled={exportMutation.isPending}>
+
+        {/* Export PDF button - Full width on mobile */}
+        <Button
+          onClick={() => exportMutation.mutate(scanId)}
+          disabled={exportMutation.isPending}
+          className="w-full sm:w-auto"
+        >
           <FileDown className="mr-2 h-4 w-4" />
-          Exportar PDF
+          {exportMutation.isPending ? "Exportando..." : "Exportar PDF"}
         </Button>
       </div>
 
@@ -97,12 +106,23 @@ export default function HistoryDetailPage({ params }: Props) {
       )}
 
       <Tabs defaultValue="findings" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="findings">Vulnerabilidades</TabsTrigger>
-          <TabsTrigger value="technologies">Tecnologias</TabsTrigger>
-          <TabsTrigger value="ai">Análise de IA</TabsTrigger>
-          <TabsTrigger value="json">JSON</TabsTrigger>
-        </TabsList>
+        {/* Tabs - Scrollable on mobile */}
+        <div className="overflow-x-auto">
+          <TabsList className="inline-flex w-full min-w-max sm:w-auto">
+            <TabsTrigger value="findings" className="flex-1 sm:flex-none">
+              Vulnerabilidades
+            </TabsTrigger>
+            <TabsTrigger value="technologies" className="flex-1 sm:flex-none">
+              Tecnologias
+            </TabsTrigger>
+            <TabsTrigger value="ai" className="flex-1 sm:flex-none">
+              Análise de IA
+            </TabsTrigger>
+            <TabsTrigger value="json" className="flex-1 sm:flex-none">
+              JSON
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="findings">
           {findingsLoading ? (
