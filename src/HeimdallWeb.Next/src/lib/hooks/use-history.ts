@@ -85,10 +85,23 @@ export function useScanHistoryDetail(historyId: string) {
     queryKey: ["scan-history", historyId],
     queryFn: async () => {
       const response = await fetch(`/api/v1/scan-histories/${historyId}`);
-      if (!response.ok) throw new Error("Erro ao carregar detalhes do scan");
+      
+      if (response.status === 404) {
+        throw new Error("Scan não encontrado ou você não tem permissão para acessá-lo");
+      }
+      
+      if (response.status === 403) {
+        throw new Error("Você não tem permissão para acessar este scan");
+      }
+      
+      if (!response.ok) {
+        throw new Error("Erro ao carregar detalhes do scan");
+      }
+      
       return response.json();
     },
     enabled: !!historyId,
+    retry: false, // Não tentar novamente em erros de autorização
   });
 }
 
@@ -97,10 +110,23 @@ export function useScanFindings(historyId: string) {
     queryKey: ["scan-findings", historyId],
     queryFn: async () => {
       const response = await fetch(`/api/v1/scan-histories/${historyId}/findings`);
-      if (!response.ok) throw new Error("Erro ao carregar vulnerabilidades");
+      
+      if (response.status === 404) {
+        throw new Error("Scan não encontrado ou sem permissão");
+      }
+      
+      if (response.status === 403) {
+        throw new Error("Sem permissão para acessar vulnerabilidades");
+      }
+      
+      if (!response.ok) {
+        throw new Error("Erro ao carregar vulnerabilidades");
+      }
+      
       return response.json();
     },
     enabled: !!historyId,
+    retry: false,
   });
 }
 
@@ -109,10 +135,23 @@ export function useScanTechnologies(historyId: string) {
     queryKey: ["scan-technologies", historyId],
     queryFn: async () => {
       const response = await fetch(`/api/v1/scan-histories/${historyId}/technologies`);
-      if (!response.ok) throw new Error("Erro ao carregar tecnologias");
+      
+      if (response.status === 404) {
+        throw new Error("Scan não encontrado ou sem permissão");
+      }
+      
+      if (response.status === 403) {
+        throw new Error("Sem permissão para acessar tecnologias");
+      }
+      
+      if (!response.ok) {
+        throw new Error("Erro ao carregar tecnologias");
+      }
+      
       return response.json();
     },
     enabled: !!historyId,
+    retry: false,
   });
 }
 
