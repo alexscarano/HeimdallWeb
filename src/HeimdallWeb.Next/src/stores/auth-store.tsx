@@ -72,8 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           const parsed = JSON.parse(stored) as UserProfile;
           userId = parsed.userId;
-          // Optimistic render while validating
-          setUser(parsed);
+          // DO NOT set user optimistically - wait for API validation
         } catch {
           localStorage.removeItem("heimdall_user");
         }
@@ -91,6 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // 3. Validate session via API (401 = cookie expired, interceptor handles redirect)
+      // Only set user AFTER successful API validation to prevent race conditions
       try {
         const profile = await userApi.getUserProfile(userId);
         setUser(profile);

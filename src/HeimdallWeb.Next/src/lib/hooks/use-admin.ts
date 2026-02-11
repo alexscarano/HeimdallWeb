@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/stores/auth-store";
 import * as dashboardApi from "@/lib/api/dashboard.api";
 import type { AdminDashboardResponse } from "@/types/dashboard";
 import type { PaginatedUsersResponse } from "@/types/user";
@@ -9,9 +10,12 @@ export function useAdminDashboard(params?: {
   logPageSize?: number;
   logLevel?: string;
 }) {
+  const { user } = useAuth();
+
   return useQuery<AdminDashboardResponse>({
     queryKey: ["admin-dashboard", params],
     queryFn: () => dashboardApi.getAdminDashboard(params),
+    enabled: !!user, // Wait for user to be loaded before fetching
   });
 }
 
@@ -22,9 +26,12 @@ export function useAdminUsers(params?: {
   isActive?: boolean;
   isAdmin?: boolean;
 }) {
+  const { user } = useAuth();
+
   return useQuery<PaginatedUsersResponse>({
     queryKey: ["admin-users", params],
     queryFn: () => dashboardApi.getUsers(params),
+    enabled: !!user, // Wait for user to be loaded before fetching
   });
 }
 

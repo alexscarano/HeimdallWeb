@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/stores/auth-store";
 import { toast } from "sonner";
 
 export interface ScanHistory {
@@ -63,6 +64,8 @@ export function useScanHistories(
   search?: string,
   status?: string
 ) {
+  const { user } = useAuth();
+
   return useQuery<PaginatedResponse<ScanHistory>>({
     queryKey: ["scan-histories", page, pageSize, search, status],
     queryFn: async () => {
@@ -77,6 +80,7 @@ export function useScanHistories(
       if (!response.ok) throw new Error("Erro ao carregar histórico");
       return response.json();
     },
+    enabled: !!user, // Wait for user to be loaded before fetching
   });
 }
 
