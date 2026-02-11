@@ -67,7 +67,7 @@ export function useScanHistories(
   const { user } = useAuth();
 
   return useQuery<PaginatedResponse<ScanHistory>>({
-    queryKey: ["scan-histories", page, pageSize, search, status],
+    queryKey: ["scan-histories", user?.userId, page, pageSize, search, status],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: String(page),

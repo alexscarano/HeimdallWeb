@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import type { UserProfile } from "@/types/user";
 import type { LoginRequest, RegisterRequest } from "@/types/user";
 import { UserType } from "@/types/common";
@@ -39,6 +40,7 @@ const AuthContext = createContext<AuthState | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
 
   const refreshUser = useCallback(async () => {
     try {
@@ -144,11 +146,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await authApi.logout();
     } finally {
+      // Clear ALL React Query cache to prevent data leakage between users
+      queryClient.clear();
       setUser(null);
       localStorage.removeItem("heimdall_user");
       clearUidCookie();
     }
-  }, []);
+  }, [queryClient]);
 
   const value = useMemo<AuthState>(
     () => ({

@@ -13,7 +13,7 @@ export function useAdminDashboard(params?: {
   const { user } = useAuth();
 
   return useQuery<AdminDashboardResponse>({
-    queryKey: ["admin-dashboard", params],
+    queryKey: ["admin-dashboard", user?.userId, params],
     queryFn: () => dashboardApi.getAdminDashboard(params),
     enabled: !!user, // Wait for user to be loaded before fetching
   });
@@ -29,7 +29,7 @@ export function useAdminUsers(params?: {
   const { user } = useAuth();
 
   return useQuery<PaginatedUsersResponse>({
-    queryKey: ["admin-users", params],
+    queryKey: ["admin-users", user?.userId, params],
     queryFn: () => dashboardApi.getUsers(params),
     enabled: !!user, // Wait for user to be loaded before fetching
   });
