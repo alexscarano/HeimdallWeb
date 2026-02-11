@@ -49,7 +49,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function AdminUsersPage() {
   return (
@@ -156,7 +156,7 @@ function AdminUsersContent() {
       {isLoading ? (
         <UsersTableSkeleton />
       ) : data && data.users.length > 0 ? (
-        <Card>
+        <Card className="p-4">
           <div className="rounded-lg border">
             <Table>
               <TableHeader>
@@ -175,6 +175,12 @@ function AdminUsersContent() {
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar className="h-8 w-8">
+                          {u.profileImage && (
+                            <AvatarImage
+                              src={`${process.env.NEXT_PUBLIC_API_URL}/${u.profileImage}`}
+                              alt={u.username}
+                            />
+                          )}
                           <AvatarFallback className="text-xs">
                             {u.username.slice(0, 2).toUpperCase()}
                           </AvatarFallback>

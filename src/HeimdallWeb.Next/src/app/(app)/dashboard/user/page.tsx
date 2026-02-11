@@ -23,6 +23,7 @@ export default function UserDashboardPage() {
   const { resolvedTheme } = useTheme();
   const chartColor = resolvedTheme === "dark" ? "#6366f1" : "#059669";
   const tickColor = resolvedTheme === "dark" ? "#cbd5e1" : "#64748b";
+  const cursorFill = resolvedTheme === "dark" ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)";
 
   if (isLoading) {
     return <DashboardSkeleton />;
@@ -136,6 +137,7 @@ export default function UserDashboardPage() {
                   tick={{ fill: tickColor, fontSize: 11 }}
                 />
                 <Tooltip
+                  cursor={{ fill: cursorFill }}
                   contentStyle={{
                     backgroundColor: "hsl(var(--popover))",
                     border: "1px solid hsl(var(--border))",

@@ -518,6 +518,40 @@ After implementing ANY backend endpoints, you MUST:
    # Test user flows
    ```
 
+   **⚙️ Puppeteer configuration (verified working):**
+   ```javascript
+   // Puppeteer module path (global install via @modelcontextprotocol/server-puppeteer)
+   const puppeteer = require('/home/alex/.npm-global/lib/node_modules/@modelcontextprotocol/server-puppeteer/node_modules/puppeteer');
+
+   // Chrome binary (latest verified version)
+   const CHROME_PATH = `${process.env.HOME}/.cache/puppeteer/chrome/linux-145.0.7632.46/chrome-linux64/chrome`;
+
+   // Required launch args for headless Linux
+   const browser = await puppeteer.launch({
+     executablePath: CHROME_PATH,
+     args: ['--no-sandbox', '--disable-setuid-sandbox'],
+     headless: true
+   });
+   ```
+
+   **⚠️ Login form fields:**
+   - Email input: `input[name="emailOrLogin"]`  ← NOT `input[type="email"]`
+   - Password input: `input[name="password"]`
+   - Test credentials (admin): `alexandrescarano@gmail.com` / `Admin@123`
+
+   **⚠️ Dark mode toggle:**
+   ```javascript
+   // Enable dark mode (next-themes reads from localStorage)
+   await page.evaluate(() => localStorage.setItem('theme', 'dark'));
+   await page.reload({ waitUntil: 'networkidle2' });
+
+   // Disable dark mode
+   await page.evaluate(() => localStorage.removeItem('theme'));
+   await page.reload({ waitUntil: 'networkidle2' });
+   ```
+
+   **⚠️ Wait for hydration:** Always add `await new Promise(r => setTimeout(r, 2000-3000))` after navigation — Next.js needs time to hydrate before inputs are interactive.
+
 3. **Document findings** in the testing guide
 
 ### Manual Testing Workflow (MVC - Legacy)
