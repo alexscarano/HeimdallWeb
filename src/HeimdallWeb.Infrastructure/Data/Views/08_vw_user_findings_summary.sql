@@ -30,6 +30,3 @@ WHERE
     h.has_completed = true
 GROUP BY
     h.user_id;
-
-
-select * from tb_ tf 

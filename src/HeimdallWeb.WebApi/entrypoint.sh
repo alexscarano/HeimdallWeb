@@ -5,7 +5,8 @@
 #   1. Aguardar o PostgreSQL aceitar conexões
 #   2. Compilar o projeto
 #   3. Aplicar migrations EF Core pendentes
-#   4. Iniciar dotnet watch para hot reload em desenvolvimento
+#   4. Criar as 14 SQL Views (idempotente)
+#   5. Iniciar dotnet watch para hot reload em desenvolvimento
 #
 # Executado como usuário não-privilegiado "appuser" (definido no Dockerfile).
 
@@ -38,8 +39,8 @@ printf "${BOLD} HeimdallWeb API — Entrypoint${RESET}\n"
 printf " Environment: ${CYAN}${ASPNETCORE_ENVIRONMENT:-Development}${RESET}\n"
 printf "${BOLD}══════════════════════════════════════════════${RESET}\n\n"
 
-# ─── [1/4] Aguardar PostgreSQL ────────────────────────────────────────────────
-step "[1/4] Aguardando PostgreSQL ficar disponível..."
+# ─── [1/5] Aguardar PostgreSQL ────────────────────────────────────────────────
+step "[1/5] Aguardando PostgreSQL ficar disponível..."
 info "Host: ${PG_HOST}  Porta: ${PG_PORT}"
 
 MAX_RETRIES=30
@@ -61,8 +62,8 @@ done
 
 success "PostgreSQL disponível em ${PG_HOST}:${PG_PORT}."
 
-# ─── [2/4] Build do Projeto ───────────────────────────────────────────────────
-step "[2/4] Compilando projeto..."
+# ─── [2/5] Build do Projeto ───────────────────────────────────────────────────
+step "[2/5] Compilando projeto..."
 info "Startup project: HeimdallWeb.WebApi"
 
 dotnet build "$WEBAPI_PROJECT" \
@@ -71,8 +72,8 @@ dotnet build "$WEBAPI_PROJECT" \
 
 success "Build concluído sem erros."
 
-# ─── [3/4] Migrations EF Core ─────────────────────────────────────────────────
-step "[3/4] Aplicando migrations EF Core..."
+# ─── [3/5] Migrations EF Core ─────────────────────────────────────────────────
+step "[3/5] Aplicando migrations EF Core..."
 info "--project       → HeimdallWeb.Infrastructure  (onde vivem as Migrations)"
 info "--startup-project → HeimdallWeb.WebApi        (onde o DbContext é configurado)"
 info "--no-build      → reutiliza o artefato do passo anterior"
@@ -85,8 +86,28 @@ dotnet ef database update \
 
 success "Migrations aplicadas com sucesso."
 
-# ─── [4/4] Informações ao desenvolvedor + Hot Reload ─────────────────────────
-step "[4/4] Iniciando dotnet watch (hot reload ativo)..."
+# ─── [4/5] SQL Views ──────────────────────────────────────────────────────────
+step "[4/5] Criando SQL Views (idempotente)..."
+info "Script: /workspace/src/HeimdallWeb.Infrastructure/Data/Views/apply_views.sh"
+
+VIEWS_SCRIPT="/workspace/src/HeimdallWeb.Infrastructure/Data/Views/apply_views.sh"
+
+if [[ ! -f "$VIEWS_SCRIPT" ]]; then
+  error "Script de views não encontrado em: ${VIEWS_SCRIPT}"
+  exit 1
+fi
+
+PG_HOST="$PG_HOST" \
+PG_PORT="$PG_PORT" \
+POSTGRES_DB="${POSTGRES_DB:-db_heimdall}" \
+POSTGRES_USER="${POSTGRES_USER:-postgres}" \
+POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-postgres}" \
+bash "$VIEWS_SCRIPT"
+
+success "SQL Views aplicadas com sucesso."
+
+# ─── [5/5] Informações ao desenvolvedor + Hot Reload ─────────────────────────
+step "[5/5] Iniciando dotnet watch (hot reload ativo)..."
 
 printf "\n"
 printf "${GREEN}${BOLD}╔══════════════════════════════════════════╗${RESET}\n"
