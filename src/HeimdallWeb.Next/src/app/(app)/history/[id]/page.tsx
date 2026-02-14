@@ -146,7 +146,7 @@ export default function HistoryDetailPage({ params }: Props) {
         </TabsContent>
 
         <TabsContent value="json">
-          <JsonViewer json={scan.rawJsonResult} />
+          <JsonViewer json={scan.rawJsonResult ?? undefined} />
         </TabsContent>
       </Tabs>
     </div>

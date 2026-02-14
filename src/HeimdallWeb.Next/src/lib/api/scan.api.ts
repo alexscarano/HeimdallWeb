@@ -9,12 +9,23 @@ export async function executeScan(data: ExecuteScanRequest): Promise<ExecuteScan
   return response.data;
 }
 
-export async function listScans(params: {
+export interface ListScansParams {
   page?: number;
   pageSize?: number;
-}): Promise<PaginatedResponse<ScanHistorySummary>> {
+  search?: string;
+  status?: string;
+}
+
+export async function listScans(params: ListScansParams): Promise<PaginatedResponse<ScanHistorySummary>> {
+  const query: Record<string, string | number> = {};
+
+  if (params.page !== undefined) query.page = params.page;
+  if (params.pageSize !== undefined) query.pageSize = params.pageSize;
+  if (params.search?.trim()) query.search = params.search.trim();
+  if (params.status && params.status !== "all") query.status = params.status;
+
   const response = await apiClient.get<PaginatedResponse<ScanHistorySummary>>(endpoints.scans.list, {
-    params,
+    params: query,
   });
   return response.data;
 }

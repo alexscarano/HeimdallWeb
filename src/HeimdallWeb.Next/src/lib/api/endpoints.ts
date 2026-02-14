@@ -20,6 +20,7 @@ export const endpoints = {
     getById: (id: string) => `/scan-histories/${id}`,
     findings: (id: string) => `/scan-histories/${id}/findings`,
     technologies: (id: string) => `/scan-histories/${id}/technologies`,
+    aiSummary: (id: string) => `/scan-histories/${id}/ai-summary`,
     export: (id: string) => `/scan-histories/${id}/export`,
     exportAll: "/scan-histories/export",
     delete: (id: string) => `/scan-histories/${id}`,

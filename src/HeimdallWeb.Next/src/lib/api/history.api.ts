@@ -4,6 +4,7 @@ import type {
   ScanHistoryDetail,
   FindingResponse,
   TechnologyResponse,
+  IASummaryResponse,
   DeleteScanHistoryResponse,
 } from "@/types/scan";
 
@@ -19,6 +20,11 @@ export async function getScanFindings(id: string): Promise<FindingResponse[]> {
 
 export async function getScanTechnologies(id: string): Promise<TechnologyResponse[]> {
   const response = await apiClient.get<TechnologyResponse[]>(endpoints.scanHistories.technologies(id));
+  return response.data;
+}
+
+export async function getAISummary(id: string): Promise<IASummaryResponse | null> {
+  const response = await apiClient.get<IASummaryResponse>(endpoints.scanHistories.aiSummary(id));
   return response.data;
 }
 

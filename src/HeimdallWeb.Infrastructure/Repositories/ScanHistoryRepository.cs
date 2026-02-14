@@ -118,9 +118,14 @@ public class ScanHistoryRepository : IScanHistoryRepository
             .AsNoTracking()
             .Where(h => h.UserId == userId);
 
-        // Server-side URL filter: case-insensitive partial match via PostgreSQL ILike
+        // Server-side URL filter: case-insensitive partial match via PostgreSQL ILike.
+        // IMPORTANT: h.Target is a Value Object mapped with HasConversion(). EF Core cannot
+        // translate the member access h.Target.Value into SQL inside a Where() predicate
+        // because the expression tree contains a conversion step that the SQL translator
+        // cannot decompose. EF.Property<string> bypasses the converter and references the
+        // raw "target" column directly, generating the correct SQL: WHERE target ILIKE '%x%'.
         if (!string.IsNullOrWhiteSpace(search))
-            query = query.Where(h => EF.Functions.ILike(h.Target.Value, $"%{search}%"));
+            query = query.Where(h => EF.Functions.ILike(EF.Property<string>(h, "target"), $"%{search}%"));
 
         // Server-side status filter applied before COUNT and Skip/Take
         if (status == "completed")

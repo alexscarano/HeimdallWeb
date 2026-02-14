@@ -1,61 +1,32 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/stores/auth-store";
 import { toast } from "sonner";
+import { listScans } from "@/lib/api/scan.api";
+import {
+  getScanHistoryById,
+  getScanFindings,
+  getScanTechnologies,
+  getAISummary,
+  exportScanPdf,
+  exportAllScansPdf,
+  deleteScanHistory,
+} from "@/lib/api/history.api";
+import type { ScanHistorySummary, FindingResponse, TechnologyResponse, IASummaryResponse } from "@/types/scan";
+import type { PaginatedResponse } from "@/types/api";
 
-export interface ScanHistory {
-  historyId: string;
-  target: string;
-  createdDate: string;
-  duration: string;
-  hasCompleted: boolean;
-  summary?: string;
-}
+// Re-export for backward compatibility with consumers of this hook
+export type { ScanHistorySummary as ScanHistory } from "@/types/scan";
+export type { FindingResponse as Finding, TechnologyResponse as Technology, IASummaryResponse as AISummary } from "@/types/scan";
+export type { PaginatedResponse } from "@/types/api";
 
 export interface ScanHistoryDetail {
   historyId: string;
   target: string;
   createdDate: string;
-  duration: string;
+  duration: string | null;
   hasCompleted: boolean;
-  summary?: string;
-  rawJsonResult?: string;
-}
-
-export interface Finding {
-  findingId: string;
-  type: string;
-  description: string;
-  severity: "Critical" | "High" | "Medium" | "Low" | "Informational";
-  evidence?: string;
-  recommendation?: string;
-}
-
-export interface Technology {
-  technologyId: string;
-  name: string;
-  version?: string;
-  category: string;
-  description?: string;
-}
-
-export interface AISummary {
-  iaSummaryId: string;
-  mainCategory: string;
-  overallRisk: string;
-  summaryText: string;
-  findingsCritical: number;
-  findingsHigh: number;
-  findingsMedium: number;
-  findingsLow: number;
-  findingsInformational: number;
-}
-
-export interface PaginatedResponse<T> {
-  items: T[];
-  totalCount: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+  summary: string | null;
+  rawJsonResult?: string | null;
 }
 
 export function useScanHistories(
@@ -66,118 +37,58 @@ export function useScanHistories(
 ) {
   const { user } = useAuth();
 
-  return useQuery<PaginatedResponse<ScanHistory>>({
+  return useQuery<PaginatedResponse<ScanHistorySummary>>({
     queryKey: ["scan-histories", user?.userId, page, pageSize, search, status],
-    queryFn: async () => {
-      const params = new URLSearchParams({
-        page: String(page),
-        pageSize: String(pageSize),
-      });
-      if (search?.trim()) params.set("search", search.trim());
-      if (status && status !== "all") params.set("status", status);
-
-      const response = await fetch(`/api/v1/scans?${params.toString()}`);
-      if (!response.ok) throw new Error("Erro ao carregar histórico");
-      return response.json();
-    },
-    enabled: !!user, // Wait for user to be loaded before fetching
+    queryFn: () =>
+      listScans({ page, pageSize, search, status }),
+    enabled: !!user,
   });
 }
 
 export function useScanHistoryDetail(historyId: string) {
-  return useQuery<ScanHistoryDetail>({
+  return useQuery({
     queryKey: ["scan-history", historyId],
-    queryFn: async () => {
-      const response = await fetch(`/api/v1/scan-histories/${historyId}`);
-      
-      if (response.status === 404) {
-        throw new Error("Scan não encontrado ou você não tem permissão para acessá-lo");
-      }
-      
-      if (response.status === 403) {
-        throw new Error("Você não tem permissão para acessar este scan");
-      }
-      
-      if (!response.ok) {
-        throw new Error("Erro ao carregar detalhes do scan");
-      }
-      
-      return response.json();
-    },
+    queryFn: () => getScanHistoryById(historyId),
     enabled: !!historyId,
-    retry: false, // Não tentar novamente em erros de autorização
+    retry: false,
   });
 }
 
 export function useScanFindings(historyId: string) {
-  return useQuery<Finding[]>({
+  return useQuery<FindingResponse[]>({
     queryKey: ["scan-findings", historyId],
-    queryFn: async () => {
-      const response = await fetch(`/api/v1/scan-histories/${historyId}/findings`);
-      
-      if (response.status === 404) {
-        throw new Error("Scan não encontrado ou sem permissão");
-      }
-      
-      if (response.status === 403) {
-        throw new Error("Sem permissão para acessar vulnerabilidades");
-      }
-      
-      if (!response.ok) {
-        throw new Error("Erro ao carregar vulnerabilidades");
-      }
-      
-      return response.json();
-    },
+    queryFn: () => getScanFindings(historyId),
     enabled: !!historyId,
     retry: false,
   });
 }
 
 export function useScanTechnologies(historyId: string) {
-  return useQuery<Technology[]>({
+  return useQuery<TechnologyResponse[]>({
     queryKey: ["scan-technologies", historyId],
-    queryFn: async () => {
-      const response = await fetch(`/api/v1/scan-histories/${historyId}/technologies`);
-      
-      if (response.status === 404) {
-        throw new Error("Scan não encontrado ou sem permissão");
-      }
-      
-      if (response.status === 403) {
-        throw new Error("Sem permissão para acessar tecnologias");
-      }
-      
-      if (!response.ok) {
-        throw new Error("Erro ao carregar tecnologias");
-      }
-      
-      return response.json();
-    },
+    queryFn: () => getScanTechnologies(historyId),
     enabled: !!historyId,
     retry: false,
   });
 }
 
 export function useAISummary(historyId: string) {
-  return useQuery<AISummary | null>({
+  return useQuery<IASummaryResponse | null>({
     queryKey: ["ai-summary", historyId],
     queryFn: async () => {
-      const response = await fetch(`/api/v1/scan-histories/${historyId}/ai-summary`);
-      
-      // 404 é esperado para scans sem AI summary - retorna null
-      if (response.status === 404) {
-        return null;
+      try {
+        return await getAISummary(historyId);
+      } catch (error: unknown) {
+        // 404 is expected for scans without an AI summary - return null instead of throwing
+        const axiosError = error as { response?: { status?: number } };
+        if (axiosError?.response?.status === 404) {
+          return null;
+        }
+        throw error;
       }
-      
-      if (!response.ok) {
-        throw new Error("Erro ao carregar análise de IA");
-      }
-      
-      return response.json();
     },
     enabled: !!historyId,
-    retry: false, // Não tentar novamente em caso de 404
+    retry: false,
   });
 }
 
@@ -185,12 +96,7 @@ export function useDeleteScanHistory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (historyId: string) => {
-      const response = await fetch(`/api/v1/scan-histories/${historyId}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) throw new Error("Erro ao deletar scan");
-    },
+    mutationFn: (historyId: string) => deleteScanHistory(historyId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["scan-histories"] });
       toast.success("Scan deletado com sucesso");
@@ -204,9 +110,7 @@ export function useDeleteScanHistory() {
 export function useExportPdf() {
   return useMutation({
     mutationFn: async (historyId: string) => {
-      const response = await fetch(`/api/v1/scan-histories/${historyId}/export`);
-      if (!response.ok) throw new Error("Erro ao exportar PDF");
-      const blob = await response.blob();
+      const blob = await exportScanPdf(historyId);
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -226,9 +130,7 @@ export function useExportPdf() {
 export function useExportAllPdf() {
   return useMutation({
     mutationFn: async () => {
-      const response = await fetch(`/api/v1/scan-histories/export`);
-      if (!response.ok) throw new Error("Erro ao exportar todos os PDFs");
-      const blob = await response.blob();
+      const blob = await exportAllScansPdf();
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;

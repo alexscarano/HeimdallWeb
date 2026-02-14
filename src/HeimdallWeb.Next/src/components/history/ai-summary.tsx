@@ -10,7 +10,7 @@ interface AISummaryCardProps {
 }
 
 export function AISummaryCard({ summary }: AISummaryCardProps) {
-  const riskColor = getRiskColor(summary.overallRisk);
+  const riskColor = getRiskColor(summary.overallRisk ?? "");
 
   return (
     <div className="space-y-4">
@@ -22,7 +22,7 @@ export function AISummaryCard({ summary }: AISummaryCardProps) {
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-semibold">Análise de IA - {summary.mainCategory}</h3>
-              <Badge className={riskBadgeClass(summary.overallRisk)}>{summary.overallRisk}</Badge>
+              <Badge className={riskBadgeClass(summary.overallRisk ?? "")}>{summary.overallRisk}</Badge>
             </div>
             <p className="mt-2 text-sm text-muted-foreground">{summary.summaryText}</p>
           </div>

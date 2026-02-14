@@ -1,0 +1,127 @@
+services:
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # PostgreSQL 16 — Banco de dados principal
+  # Volume nomeado garante persistência entre restarts.
+  # Healthcheck bloqueia os serviços dependentes até o banco aceitar conexões.
+  # ─────────────────────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: heimdall_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - heimdall_pgdata:/var/lib/postgresql/data
+    networks:
+      - heimdall_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # API — .NET 10 Minimal APIs (HeimdallWeb.WebApi)
+  # Hot reload via dotnet watch com polling (necessário em bind mounts Linux/WSL).
+  # Roda migrations EF Core antes de subir o servidor via entrypoint script.
+  # Depende do postgres estar healthy antes de iniciar.
+  # ─────────────────────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: src/HeimdallWeb.WebApi/Dockerfile
+      target: dev
+    container_name: heimdall_api
+    restart: unless-stopped
+    environment:
+      # Runtime
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      ASPNETCORE_URLS: http://+:5110
+      # Habilita polling de arquivos para hot reload funcionar em bind mounts Linux/WSL
+      DOTNET_USE_POLLING_FILE_WATCHER: "1"
+      DOTNET_RUNNING_IN_CONTAINER: "true"
+      # Connection String — sobrescreve appsettings.json via convenção .NET
+      ConnectionStrings__AppDbConnectionString: >-
+        Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Pooling=true;
+      # JWT
+      Jwt__Key: ${JWT_KEY}
+      Jwt__Issuer: ${JWT_ISSUER:-HeimdallWeb}
+      Jwt__Audience: ${JWT_AUDIENCE:-HeimdallWebUsers}
+      Jwt__RequireHttpsMetadata: "false"
+      # Gemini AI
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    volumes:
+      # Bind mount do código-fonte para hot reload funcionar
+      - ./src:/workspace/src:delegated
+      # DLLs externas (ASHelpers.dll, etc.) — referenciadas via HintPath
+      - ./dlls:/workspace/dlls:ro
+      # Cache de pacotes NuGet — evita re-download a cada rebuild
+      - heimdall_nuget_cache:/root/.nuget/packages
+      # Cache de build do .NET
+      - heimdall_dotnet_cache:/root/.dotnet
+    networks:
+      - heimdall_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Frontend — Next.js 16 + React 19 (HeimdallWeb.Next)
+  # Hot reload via next dev com Fast Refresh.
+  # NEXT_PUBLIC_API_URL aponta para o serviço api dentro da rede Docker.
+  # O rewrite no next.config.ts é sobrescrito pela variável NEXT_BACKEND_URL.
+  # ─────────────────────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: src/HeimdallWeb.Next
+      dockerfile: Dockerfile
+      target: dev
+    container_name: heimdall_frontend
+    restart: unless-stopped
+    user: root  # dev only — evita conflito de permissão no volume .next
+    environment:
+      NODE_ENV: development
+      # URL interna usada pelo servidor Next.js para reescritas (server-side)
+      NEXT_BACKEND_URL: http://api:5110
+      # URL pública acessível pelo browser (client-side)
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5110}
+      # Habilita turbopack (opcional, remova se causar problemas)
+      # TURBOPACK: "1"
+    volumes:
+      # Bind mount do código-fonte para Fast Refresh funcionar
+      - ./src/HeimdallWeb.Next:/app:delegated
+      # Volume nomeado protege node_modules do host sobrescrever o do container
+      - heimdall_node_modules:/app/node_modules
+      # .next inteiro como volume nomeado — evita conflito de permissão root/nextjs
+      - heimdall_next_build:/app/.next
+    networks:
+      - heimdall_net
+    depends_on:
+      - api
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Rede isolada — serviços se comunicam pelo hostname do serviço (ex: "api")
+# ─────────────────────────────────────────────────────────────────────────────
+networks:
+  heimdall_net:
+    driver: bridge
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Volumes nomeados — persistência entre restarts e performance de I/O
+# ─────────────────────────────────────────────────────────────────────────────
+volumes:
+  heimdall_pgdata:
+    driver: local
+  heimdall_nuget_cache:
+    driver: local
+  heimdall_dotnet_cache:
+    driver: local
+  heimdall_node_modules:
+    driver: local
+  heimdall_next_build:
+    driver: local

@@ -17,6 +17,7 @@
  *   - EndpointConfiguration.cs: Maps all Minimal API endpoints
  */
 
+using HeimdallWeb.Infrastructure.Data;
 using HeimdallWeb.WebApi.ServiceRegistration;
 using HeimdallWeb.WebApi.Middleware;
 using HeimdallWeb.WebApi.Configuration;
@@ -59,6 +60,10 @@ app.UseGlobalExceptionHandler();
 // Security middleware pipeline (order is CRITICAL - DO NOT CHANGE)
 // Order: HTTPS → CORS → Authentication → Authorization → RateLimiting
 app.UseSecurityMiddlewarePipeline();
+
+// ===== DATABASE SEED =====
+// Creates the default admin user on first run (idempotent — safe on every startup).
+await DatabaseSeeder.SeedAsync(app.Services);
 
 // ===== ENDPOINT REGISTRATION =====
 // All Minimal API endpoints (grouped by domain concern)

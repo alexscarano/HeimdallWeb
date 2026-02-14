@@ -54,6 +54,7 @@ export interface IASummaryResponse {
   findingsHigh: number;
   findingsMedium: number;
   findingsLow: number;
+  findingsInformational: number;
   historyId: string | null;
   createdDate: string;
 }
