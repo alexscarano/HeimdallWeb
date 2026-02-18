@@ -95,10 +95,10 @@ function AdminDashboardContent() {
   }
 
   const severityData = [
-    { name: "Critical", value: data.scanStats.criticalFindings },
-    { name: "High", value: data.scanStats.highFindings },
-    { name: "Medium", value: data.scanStats.mediumFindings },
-    { name: "Low", value: data.scanStats.lowFindings },
+    { name: "Crítico", value: data.scanStats.criticalFindings },
+    { name: "Alta", value: data.scanStats.highFindings },
+    { name: "Média", value: data.scanStats.mediumFindings },
+    { name: "Baixa", value: data.scanStats.lowFindings },
   ].filter((d) => d.value > 0);
 
   return (

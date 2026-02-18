@@ -82,11 +82,11 @@ export default function UserDashboardPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <SeverityMetricCard label="Critical" count={stats.criticalFindings} colorClass="border-t-severity-critical" />
-        <SeverityMetricCard label="High" count={stats.highFindings} colorClass="border-t-severity-high" />
-        <SeverityMetricCard label="Medium" count={stats.mediumFindings} colorClass="border-t-severity-medium" />
-        <SeverityMetricCard label="Low" count={stats.lowFindings} colorClass="border-t-severity-low" />
-        <SeverityMetricCard label="Info" count={stats.informationalFindings} colorClass="border-t-severity-info" />
+        <SeverityMetricCard label="Crítico" count={stats.criticalFindings} colorClass="border-t-severity-critical" />
+        <SeverityMetricCard label="Alta" count={stats.highFindings} colorClass="border-t-severity-high" />
+        <SeverityMetricCard label="Média" count={stats.mediumFindings} colorClass="border-t-severity-medium" />
+        <SeverityMetricCard label="Baixa" count={stats.lowFindings} colorClass="border-t-severity-low" />
+        <SeverityMetricCard label="Informativa" count={stats.informationalFindings} colorClass="border-t-severity-info" />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
