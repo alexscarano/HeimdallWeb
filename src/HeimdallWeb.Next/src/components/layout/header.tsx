@@ -29,7 +29,7 @@ export function Header({ mobileMenuButton }: { mobileMenuButton?: React.ReactNod
     : "??";
 
   return (
-    <header className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-background px-4 sm:px-6">
+    <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-background px-4 sm:px-6">
       <div className="flex items-center gap-2">
         {mobileMenuButton}
       </div>
