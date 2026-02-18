@@ -228,6 +228,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -237,6 +238,7 @@
 .bg-hero-gradient {
   background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.08), transparent);
 }
+
 .dark .bg-hero-gradient {
   background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(129, 140, 248, 0.06), transparent);
 }
@@ -247,6 +249,7 @@
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
   border-color: #6366F1;
 }
+
 .dark .focus-ring-indigo:focus-visible {
   box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
   border-color: #818CF8;
@@ -256,6 +259,7 @@
 .url-input-glow:focus-within {
   box-shadow: 0 0 16px -2px rgba(99, 102, 241, 0.25), 0 0 0 1px rgba(99, 102, 241, 0.15);
 }
+
 .dark .url-input-glow:focus-within {
   box-shadow: 0 0 20px -2px rgba(129, 140, 248, 0.30), 0 0 0 1px rgba(129, 140, 248, 0.20);
 }
@@ -264,10 +268,12 @@
 .progress-indigo {
   background: rgba(99, 102, 241, 0.15);
 }
-.progress-indigo > div {
+
+.progress-indigo>div {
   background: #6366F1;
 }
-.dark .progress-indigo > div {
+
+.dark .progress-indigo>div {
   background: #818CF8;
 }
 
@@ -291,48 +297,88 @@
   color: var(--muted-foreground) !important;
 }
 
-/* Success toast - emerald in light, emerald in dark */
+/* Success toast - Balanced Green (Emerald 600/700) */
 [data-sonner-toast][data-type="success"] {
-  background: var(--success) !important;
-  border-color: var(--success) !important;
+  background: #EFFDF5 !important;
+  border-color: #A7F3D0 !important;
+}
+
+.dark [data-sonner-toast][data-type="success"] {
+  background: #064E3B !important;
+  border-color: #059669 !important;
 }
 
 [data-sonner-toast][data-type="success"] [data-title],
 [data-sonner-toast][data-type="success"] [data-description] {
-  color: var(--success-foreground) !important;
+  color: #065F46 !important;
 }
 
-/* Error/Destructive toast */
+.dark [data-sonner-toast][data-type="success"] [data-title],
+.dark [data-sonner-toast][data-type="success"] [data-description] {
+  color: #ECFDF5 !important;
+}
+
+/* Error/Destructive toast - Balanced Soft Red */
 [data-sonner-toast][data-type="error"] {
-  background: var(--destructive) !important;
-  border-color: var(--destructive) !important;
+  background: #FEF2F2 !important;
+  border-color: #FECACA !important;
+}
+
+.dark [data-sonner-toast][data-type="error"] {
+  background: #450A0A !important;
+  border-color: #7F1D1D !important;
 }
 
 [data-sonner-toast][data-type="error"] [data-title],
 [data-sonner-toast][data-type="error"] [data-description] {
-  color: #FFFFFF !important;
+  color: #991B1B !important;
 }
 
-/* Warning toast */
+.dark [data-sonner-toast][data-type="error"] [data-title],
+.dark [data-sonner-toast][data-type="error"] [data-description] {
+  color: #FEF2F2 !important;
+}
+
+/* Warning toast - Balanced Grey/Neutral */
 [data-sonner-toast][data-type="warning"] {
-  background: var(--warning) !important;
-  border-color: var(--warning) !important;
+  background: #F4F4F5 !important;
+  border-color: #E4E4E7 !important;
+}
+
+.dark [data-sonner-toast][data-type="warning"] {
+  background: #27272A !important;
+  border-color: #3F3F46 !important;
 }
 
 [data-sonner-toast][data-type="warning"] [data-title],
 [data-sonner-toast][data-type="warning"] [data-description] {
-  color: var(--warning-foreground) !important;
+  color: #3F3F46 !important;
 }
 
-/* Info toast - uses accent-primary (emerald light, indigo dark) */
+.dark [data-sonner-toast][data-type="warning"] [data-title],
+.dark [data-sonner-toast][data-type="warning"] [data-description] {
+  color: #FAFAFA !important;
+}
+
+/* Info toast - Balanced Blue/Indigo */
 [data-sonner-toast][data-type="info"] {
-  background: var(--accent-primary) !important;
-  border-color: var(--accent-primary) !important;
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+.dark [data-sonner-toast][data-type="info"] {
+  background: #172554 !important;
+  border-color: #1e3a8a !important;
 }
 
 [data-sonner-toast][data-type="info"] [data-title],
 [data-sonner-toast][data-type="info"] [data-description] {
-  color: var(--accent-primary-foreground) !important;
+  color: #1e40af !important;
+}
+
+.dark [data-sonner-toast][data-type="info"] [data-title],
+.dark [data-sonner-toast][data-type="info"] [data-description] {
+  color: #eff6ff !important;
 }
 
 /* Toast close button */
@@ -349,4 +395,13 @@
 /* Toast icons */
 [data-sonner-toast] [data-icon] {
   color: currentColor !important;
+}
+
+/* Hide/Lower header when a Dialog/Sheet is open to prevent overlay issues */
+body:has([role="dialog"][data-state="open"]) header,
+body:has([data-slot="sheet-content"][data-state="open"]) header {
+  z-index: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
 }
