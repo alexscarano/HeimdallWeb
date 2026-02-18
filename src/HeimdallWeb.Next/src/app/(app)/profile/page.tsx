@@ -194,7 +194,7 @@ function EditProfileSection() {
       <p className="text-sm text-muted-foreground mb-6">
         Atualize seu nome de usuário e endereço de email.
       </p>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <label className="text-sm font-medium">Nome de usuário</label>
@@ -264,7 +264,7 @@ function ChangePasswordSection() {
       <p className="text-sm text-muted-foreground mb-6">
         Atualize sua senha para manter sua conta segura.
       </p>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <label className="text-sm font-medium">Senha atual</label>
           <PasswordInput
@@ -364,35 +364,33 @@ function ProfilePhotoSection() {
         </p>
       </div>
 
-      <div className="flex flex-col items-center gap-6 py-4 sm:flex-row sm:items-start">
+      <div className="flex flex-col items-center gap-8 py-8">
         <div className="relative shrink-0">
-          <Avatar className="h-32 w-32 border-2 border-border">
+          <Avatar className="h-36 w-36 border-2 border-border">
             <AvatarImage src={imageUrl} alt={user.username} />
             <AvatarFallback className="text-3xl">{initials}</AvatarFallback>
           </Avatar>
         </div>
 
-        <div className="flex flex-col gap-3 text-center sm:text-left">
+        <div className="flex flex-col items-center gap-3 text-center">
           <p className="text-sm text-muted-foreground">
             Formatos aceitos: <strong>JPG, PNG</strong>. Tamanho máximo recomendado: <strong>2MB</strong>.
           </p>
-          <div>
-            <Button
-              variant="outline"
-              onClick={() => fileRef.current?.click()}
-              disabled={updateImage.isPending}
-            >
-              <Camera className="mr-2 h-4 w-4" />
-              {updateImage.isPending ? "Enviando..." : "Escolher imagem"}
-            </Button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/png,image/jpeg,image/jpg"
-              className="hidden"
-              onChange={handleImageSelect}
-            />
-          </div>
+          <Button
+            variant="outline"
+            onClick={() => fileRef.current?.click()}
+            disabled={updateImage.isPending}
+          >
+            <Camera className="mr-2 h-4 w-4" />
+            {updateImage.isPending ? "Enviando..." : "Escolher imagem"}
+          </Button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/png,image/jpeg,image/jpg"
+            className="hidden"
+            onChange={handleImageSelect}
+          />
         </div>
       </div>
 
