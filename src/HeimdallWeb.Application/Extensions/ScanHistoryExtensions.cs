@@ -26,6 +26,8 @@ public static class ScanHistoryExtensions
             Duration: scanHistory.Duration?.Value.ToString(@"hh\:mm\:ss"), // ScanDuration is a Value Object (TimeSpan)
             HasCompleted: scanHistory.HasCompleted,
             Summary: scanHistory.Summary,
+            Score: scanHistory.Score,
+            Grade: scanHistory.Grade,
             Findings: scanHistory.Findings.Select(f => f.ToDto()).ToList(),
             Technologies: scanHistory.Technologies.Select(t => t.ToDto()).ToList(),
             IASummary: scanHistory.IASummaries.FirstOrDefault()?.ToDto()
@@ -68,7 +70,9 @@ public static class ScanHistoryExtensions
             HasCompleted: scanHistory.HasCompleted,
             Summary: scanHistory.Summary,
             FindingsCount: scanHistory.Findings.Count,
-            TechnologiesCount: scanHistory.Technologies.Count
+            TechnologiesCount: scanHistory.Technologies.Count,
+            Score: scanHistory.Score,
+            Grade: scanHistory.Grade
         );
     }
 }

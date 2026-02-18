@@ -20,6 +20,7 @@ export function useUpdateProfile() {
     onSuccess: () => {
       refreshUser();
       queryClient.invalidateQueries({ queryKey: ["user-dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["user-profile"] });
       toast.success("Perfil atualizado com sucesso");
     },
     onError: () => {
@@ -50,6 +51,8 @@ export function useUpdatePassword() {
 export function useUpdateProfileImage() {
   const { user, refreshUser } = useAuth();
 
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (data: UpdateProfileImageRequest) => {
       if (!user?.userId) throw new Error("Não autenticado");
@@ -57,6 +60,8 @@ export function useUpdateProfileImage() {
     },
     onSuccess: () => {
       refreshUser();
+      queryClient.invalidateQueries({ queryKey: ["user-dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["user-profile"] });
       toast.success("Imagem atualizada com sucesso");
     },
     onError: () => {

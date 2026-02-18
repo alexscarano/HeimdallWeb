@@ -16,7 +16,8 @@ public static class EndpointConfiguration
     /// - Scan: /api/v1/scan (iniciar, listar, detalhes de scan)
     /// - History: /api/v1/history (histórico de scans)
     /// - User: /api/v1/user (perfil, configurações)
-    /// - 📊 Dashboard: /api/v1/dashboard (estatísticas de admin)
+    /// - Dashboard: /api/v1/dashboard (estatísticas de admin)
+    /// - Profiles: /api/v1/profiles (scan profiles — public)
     /// </summary>
     /// <remarks>
     /// Cada endpoint group é mapeado em sua própria classe estática (Endpoints/*.cs)
@@ -31,6 +32,7 @@ public static class EndpointConfiguration
         app.MapHistoryEndpoints();
         app.MapUserEndpoints();
         app.MapDashboardEndpoints();
+        app.MapProfileEndpoints();
 
         return app;
     }

@@ -4,7 +4,17 @@
       "Bash(dotnet build:*)",
       "Bash(dotnet clean:*)",
       "Bash(dotnet ef migrations add:*)",
-      "Bash(dotnet publish:*)"
+      "Bash(dotnet publish:*)",
+      "Bash(ASPNETCORE_ENVIRONMENT=Development dotnet ef database update:*)",
+      "Bash(ASPNETCORE_ENVIRONMENT=Development dotnet ef migrations list:*)",
+      "Bash(python3:*)",
+      "Bash(npm run build:*)",
+      "Bash(bash -c \"cd /home/alex/Documents/WindowsBkp/Dotnet/HeimdallWeb/src/HeimdallWeb.Next && npm run build 2>&1 | tail -40\")",
+      "Bash(lsof:*)",
+      "Bash(curl:*)",
+      "Bash(/tmp/puppeteer-mock-test.js:*)",
+      "Bash(node:*)",
+      "Bash(bash -c \"cd /home/alex/Documents/WindowsBkp/Dotnet/HeimdallWeb/src/HeimdallWeb.Next && npm run build 2>&1 | tail -30\")"
     ]
   },
   "enableAllProjectMcpServers": true,

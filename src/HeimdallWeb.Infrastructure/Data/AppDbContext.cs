@@ -26,6 +26,7 @@ public class AppDbContext : DbContext
     public DbSet<AuditLog> AuditLogs { get; set; } = null!;
     public DbSet<UserUsage> UserUsages { get; set; } = null!;
     public DbSet<RiskWeight> RiskWeights { get; set; } = null!;
+    public DbSet<ScanProfile> ScanProfiles { get; set; } = null!;
 
     // Read-only DbSets for SQL VIEWs (14 total)
     // Dashboard VIEWs (6)
@@ -61,6 +62,7 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
         modelBuilder.ApplyConfiguration(new UserUsageConfiguration());
         modelBuilder.ApplyConfiguration(new RiskWeightConfiguration());
+        modelBuilder.ApplyConfiguration(new ScanProfileConfiguration());
 
         // SQL VIEWs - mapped as keyless entities (read-only)
         

@@ -25,12 +25,44 @@ export function TechnologiesList({ technologies }: TechnologiesListProps) {
     return acc;
   }, {} as Record<string, Technology[]>);
 
+
+  const CATEGORY_TRANSLATION: Record<string, string> = {
+    "Web Server": "Servidor Web",
+    "Operating System": "Sistema Operacional",
+    "Programming Language": "Linguagem de Programação",
+    "Web Framework": "Framework Web",
+    "JavaScript Framework": "Framework JavaScript",
+    "JavaScript Library": "Biblioteca JavaScript",
+    "CMS": "CMS",
+    "Database": "Banco de Dados",
+    "CDN": "CDN",
+    "Reverse Proxy": "Proxy Reverso",
+    "Load Balancer": "Balanceador de Carga",
+    "UI Framework": "Framework de UI",
+    "Font Script": "Script de Fonte",
+    "Analytics": "Analytics",
+    "Advertising": "Publicidade",
+    "Tag Manager": "Gerenciador de Tags",
+    "SSL/TLS Certificate Authority": "Autoridade Certificadora SSL/TLS",
+    "Cookie Compliance": "Conformidade de Cookies",
+    "Map": "Mapa",
+    "Video Player": "Player de Vídeo",
+    "Payment Processor": "Processador de Pagamento",
+    "Security": "Segurança",
+    "Email": "Email",
+    "Cloud": "Computação em Nuvem",
+    "PaaS": "PaaS",
+    "IaaS": "IaaS",
+    "Container": "Container",
+    "DevOps": "DevOps",
+  };
+
   return (
     <div className="space-y-6">
       {Object.entries(groupedByCategory).map(([category, items]) => (
         <div key={category}>
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            {category}
+            {CATEGORY_TRANSLATION[category] || category}
           </h3>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((tech) => (

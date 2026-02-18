@@ -102,6 +102,8 @@ public class GetScanHistoryByIdQueryHandler : IQueryHandler<GetScanHistoryByIdQu
             Duration: durationString,
             HasCompleted: scanHistory.HasCompleted,
             Summary: scanHistory.Summary,
+            Score: scanHistory.Score,
+            Grade: scanHistory.Grade,
             Findings: findingResponses,
             Technologies: technologyResponses,
             IASummary: iaSummaryResponse

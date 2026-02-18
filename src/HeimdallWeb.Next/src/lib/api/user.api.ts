@@ -12,7 +12,9 @@ import type {
 } from "@/types/user";
 
 export async function getUserProfile(userId: string): Promise<UserProfile> {
-  const response = await apiClient.get<UserProfile>(endpoints.users.profile(userId));
+  // Add timestamp to prevent caching of user profile (for image updates)
+  const url = `${endpoints.users.profile(userId)}?t=${new Date().getTime()}`;
+  const response = await apiClient.get<UserProfile>(url);
   return response.data;
 }
 

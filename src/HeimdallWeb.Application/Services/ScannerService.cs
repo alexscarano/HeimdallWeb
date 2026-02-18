@@ -16,10 +16,10 @@ public class ScannerService : IScannerService
         _scannerLogger = scannerLogger;
     }
 
-    public async Task<string> RunAllScannersAsync(string target, CancellationToken cancellationToken)
+    public async Task<string> RunAllScannersAsync(string target, CancellationToken cancellationToken, IEnumerable<string>? enabledScanners = null)
     {
         var scannerManager = new ScannerManager(_scannerLogger);
-        var result = await scannerManager.RunAllAsync(target, cancellationToken);
+        var result = await scannerManager.RunAllAsync(target, cancellationToken, enabledScanners);
         return result.ToString();
     }
 }

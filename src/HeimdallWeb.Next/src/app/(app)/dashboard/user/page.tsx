@@ -65,7 +65,7 @@ export default function UserDashboardPage() {
           title="Scans Completos"
           value={stats.completedScans}
           icon={TrendingUp}
-          borderColorClass="border-t-success"
+          borderColorClass="border-t-emerald-600 dark:border-t-emerald-500"
         />
         <MetricCard
           title="Vulnerabilidades"
@@ -93,7 +93,7 @@ export default function UserDashboardPage() {
         {stats.riskTrend && stats.riskTrend.length > 0 && (
           <ChartCard title="Tendência de Risco" subtitle="Vulnerabilidades encontradas ao longo do tempo">
             <ResponsiveContainer width="100%" height={250}>
-              <AreaChart data={stats.riskTrend}>
+              <AreaChart data={[...stats.riskTrend].reverse()}>
                 <defs>
                   <linearGradient id="colorFindings" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor={chartColor} stopOpacity={0.1} />
@@ -113,6 +113,7 @@ export default function UserDashboardPage() {
                 <Area
                   type="monotone"
                   dataKey="findingsCount"
+                  name="Achados"
                   stroke={chartColor}
                   fillOpacity={1}
                   fill="url(#colorFindings)"
@@ -144,7 +145,7 @@ export default function UserDashboardPage() {
                     borderRadius: "0.5rem",
                   }}
                 />
-                <Bar dataKey="count" fill={chartColor} radius={[0, 4, 4, 0]} />
+                <Bar dataKey="count" name="Achados" fill={chartColor} radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>

@@ -29,7 +29,7 @@ export function Header({ mobileMenuButton }: { mobileMenuButton?: React.ReactNod
     : "??";
 
   return (
-    <header className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-background px-4 sm:px-6">
+    <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:px-6 transition-all duration-200">
       <div className="flex items-center gap-2">
         {mobileMenuButton}
       </div>
@@ -43,7 +43,7 @@ export function Header({ mobileMenuButton }: { mobileMenuButton?: React.ReactNod
               <Avatar className="h-8 w-8">
                 {user?.profileImage && (
                   <AvatarImage
-                    src={`${process.env.NEXT_PUBLIC_API_URL}/${user.profileImage}`}
+                    src={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110"}/${user.profileImage}`}
                     alt={user.username}
                   />
                 )}

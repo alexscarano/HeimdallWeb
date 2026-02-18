@@ -8,7 +8,7 @@ import type { ExecuteScanResponse } from "@/types/scan";
 const SCAN_TIMEOUT_SECONDS = 75;
 
 interface UseScanReturn {
-  submit: (target: string) => void;
+  submit: (target: string, profileId?: number | null, enabledScanners?: string[] | null) => void;
   result: ExecuteScanResponse | null;
   isScanning: boolean;
   elapsedSeconds: number;
@@ -42,7 +42,8 @@ export function useScan(): UseScanReturn {
   }, [stopTimer]);
 
   const mutation = useMutation({
-    mutationFn: (target: string) => executeScan({ target }),
+    mutationFn: ({ target, profileId, enabledScanners }: { target: string; profileId?: number | null; enabledScanners?: string[] | null }) =>
+      executeScan({ target, profileId, enabledScanners }),
     onMutate: () => {
       setError(null);
       startTimer();
@@ -59,8 +60,8 @@ export function useScan(): UseScanReturn {
   });
 
   const submit = useCallback(
-    (target: string) => {
-      mutation.mutate(target);
+    (target: string, profileId?: number | null, enabledScanners?: string[] | null) => {
+      mutation.mutate({ target, profileId, enabledScanners });
     },
     [mutation]
   );

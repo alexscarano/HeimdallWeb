@@ -1,6 +1,6 @@
 import { apiClient } from "./client";
 import { endpoints } from "./endpoints";
-import type { ExecuteScanRequest, ExecuteScanResponse } from "@/types/scan";
+import type { ExecuteScanRequest, ExecuteScanResponse, ScanProfile } from "@/types/scan";
 import type { PaginatedResponse } from "@/types/api";
 import type { ScanHistorySummary } from "@/types/scan";
 
@@ -9,6 +9,10 @@ export async function executeScan(data: ExecuteScanRequest): Promise<ExecuteScan
   return response.data;
 }
 
+export async function fetchScanProfiles(): Promise<ScanProfile[]> {
+  const response = await apiClient.get<ScanProfile[]>(endpoints.scans.profiles);
+  return response.data;
+}
 export interface ListScansParams {
   page?: number;
   pageSize?: number;

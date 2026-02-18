@@ -52,7 +52,33 @@ var app = builder.Build();
 app.UseSwaggerDevelopment();
 
 // Static files (profile images, uploads) — must be before auth to serve public assets
+// Explicitly configure path to match UpdateProfileImageCommandHandler
+var wwwRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+Console.WriteLine($"[Program] Configuring Static Files using path: {wwwRootPath}");
+
+if (!Directory.Exists(wwwRootPath))
+{
+    Console.WriteLine($"[Program] Creating missing wwwroot directory: {wwwRootPath}");
+    Directory.CreateDirectory(wwwRootPath);
+}
+
+// 1. Default Static Files (serves standard assets from wwwroot)
 app.UseStaticFiles();
+
+// 2. Explicit Static Files for Uploads (Runtime generated files)
+// This guarantees that files created after startup are served, bypassing potential StaticWebAssets conflicts in Dev
+var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads",
+    ServeUnknownFileTypes = true // Safety net
+});
 
 // Global exception handler (must be early in pipeline to catch all exceptions)
 app.UseGlobalExceptionHandler();

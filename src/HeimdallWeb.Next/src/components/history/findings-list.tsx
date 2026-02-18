@@ -44,7 +44,7 @@ export function FindingsList({ findings }: FindingsListProps) {
                 <AccordionTrigger className="px-4 hover:no-underline">
                   <div className="flex min-w-0 flex-1 items-center gap-3 text-left">
                     <Badge className={`${severityBadgeClass(finding.severity)} shrink-0`}>
-                      {finding.severity}
+                      {SEVERITY_TRANSLATION[finding.severity] || finding.severity}
                     </Badge>
                     <span className="truncate font-medium">{finding.type}</span>
                   </div>
@@ -86,6 +86,7 @@ export function FindingsList({ findings }: FindingsListProps) {
   );
 }
 
+
 function severityBadgeClass(severity: string): string {
   switch (severity) {
     case "Critical":
@@ -115,3 +116,12 @@ function severityBarColor(severity: string): string {
       return "border-l-4 border-l-severity-info";
   }
 }
+
+const SEVERITY_TRANSLATION: Record<string, string> = {
+  Critical: "Crítico",
+  High: "Alto",
+  Medium: "Médio",
+  Low: "Baixo",
+  Informational: "Informativo",
+};
+

@@ -360,6 +360,50 @@ namespace HeimdallWeb.Infrastructure.Migrations
                     b.ToTable("tb_history", (string)null);
                 });
 
+            modelBuilder.Entity("HeimdallWeb.Domain.Entities.ScanProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConfigJson")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("config_json");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasDefaultValue("")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("IsSystem")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_system");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_tb_scan_profile");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ux_tb_scan_profile_name");
+
+                    b.ToTable("tb_scan_profile", (string)null);
+                });
+
             modelBuilder.Entity("HeimdallWeb.Domain.Entities.Technology", b =>
                 {
                     b.Property<int>("TechnologyId")

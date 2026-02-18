@@ -1537,6 +1537,505 @@
     }
   },
 
+  "scannerResultsScreen": {
+    "_meta": {
+      "page": "/history/[id] — Scanner Results Detail",
+      "version": "1.0.0",
+      "description": "Design specification for the refactored scanner results screen. Extends the v2.2 base design system without overriding any existing tokens. Aesthetic target: Linear app, Vercel Dashboard, Stripe Dashboard — enterprise-grade, visually calm, data-hierarchy-first.",
+      "problems_solved": [
+        "Particle background too distracting (100 stars at 0.30 opacity)",
+        "All 13 scanner cards had equal visual weight — no grouping or hierarchy",
+        "Excessive bg-destructive/text-destructive usage throughout cards",
+        "No dominant global score block above the fold",
+        "AlertBadge used heavy destructive color regardless of severity",
+        "Flat 3-column grid with no categorical separation"
+      ]
+    },
+
+    "particleBackground": {
+      "_component": "ParticleBackground (src/components/ui/particle-background.tsx)",
+      "_change": "Modify existing values only — no structural change to component",
+      "dark": {
+        "particleCount": 40,
+        "particleColor": "#3730a3",
+        "particleSpeed": 0.3,
+        "particleOpacity": 0.05,
+        "particleShadowBlur": 4,
+        "particleSizeExpression": "Math.random() * 2 + 1"
+      },
+      "light": {
+        "particleCount": 30,
+        "particleColor": "#059669",
+        "particleSpeed": 0.3,
+        "particleOpacity": 0.04,
+        "particleShadowBlur": 4,
+        "particleSizeExpression": "Math.random() * 1 + 1"
+      },
+      "_was": {
+        "particleCount": "100 dark / 80 light",
+        "particleSpeed": "0.7",
+        "particleOpacity": "0.30 dark / 0.15 light",
+        "particleShadowBlur": "10 dark / 8 light",
+        "particleSizeExpression": "Math.random() * (isDark ? 6 : 5) + 1"
+      }
+    },
+
+    "pageLayout": {
+      "root": {
+        "class": "space-y-6",
+        "description": "Single vertical column. Each major section is a direct child. No grid at the top level."
+      },
+      "sections": [
+        "headerBar",
+        "heroScoreBlock",
+        "scannerCategoryGroups (simple view)",
+        "advancedTabs (advanced view)",
+        "findingsList (simple view)"
+      ]
+    },
+
+    "headerBar": {
+      "class": "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between",
+      "leftSlot": {
+        "class": "flex items-center gap-3",
+        "parts": [
+          {
+            "element": "BackButton",
+            "component": "Button variant=ghost size=icon",
+            "icon": "ArrowLeft h-5 w-5"
+          },
+          {
+            "element": "ShieldIcon",
+            "class": "flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary-subtle",
+            "icon": "Shield h-5 w-5 text-accent-primary"
+          },
+          {
+            "element": "TitleBlock",
+            "class": "min-w-0 flex-1",
+            "title": "text-xl font-semibold tracking-tight sm:text-2xl truncate",
+            "meta": "text-xs text-muted-foreground sm:text-sm"
+          },
+          {
+            "element": "GradeBadge",
+            "component": "GradeBadge (existing, no changes)"
+          }
+        ]
+      },
+      "rightSlot": {
+        "class": "flex items-center gap-2",
+        "parts": [
+          {
+            "element": "ViewToggle",
+            "component": "Button variant=outline size=sm",
+            "class": "gap-2",
+            "iconSimple": "ToggleLeft h-4 w-4",
+            "iconAdvanced": "ToggleRight h-4 w-4",
+            "labelSimple": "Simples",
+            "labelAdvanced": "Avançado"
+          },
+          {
+            "element": "ExportPDF",
+            "component": "Button variant=outline size=sm",
+            "icon": "FileDown mr-2 h-4 w-4"
+          }
+        ]
+      }
+    },
+
+    "heroScoreBlock": {
+      "_description": "The dominant visual above the fold. Replaces the previous side-by-side gauge + flat severity cards layout.",
+      "container": {
+        "class": "rounded-2xl border border-border bg-card shadow-sm p-6 bg-hero-gradient",
+        "note": "bg-hero-gradient is already defined in globals.css as a subtle radial gradient"
+      },
+      "innerLayout": {
+        "class": "flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-10",
+        "gaugeSlot": {
+          "class": "shrink-0",
+          "component": "ScoreGauge",
+          "props": {
+            "size": 160,
+            "strokeWidth": 10,
+            "animate": true,
+            "showLabel": true
+          }
+        },
+        "infoSlot": {
+          "class": "flex-1 space-y-4 text-center lg:text-left",
+          "parts": [
+            {
+              "element": "RiskLevelPill",
+              "description": "Prominent colored pill indicating overall risk. Derived from scan grade.",
+              "gradeToRisk": {
+                "A": "Low",
+                "B": "Low",
+                "C": "Medium",
+                "D": "High",
+                "F": "Critical"
+              },
+              "variants": {
+                "Low": "inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-800/30 dark:bg-emerald-950/20 dark:text-emerald-400",
+                "Medium": "inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-800/30 dark:bg-amber-950/20 dark:text-amber-400",
+                "High": "inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700 dark:border-orange-800/30 dark:bg-orange-950/20 dark:text-orange-400",
+                "Critical": "inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 dark:border-red-800/30 dark:bg-red-950/20 dark:text-red-400"
+              }
+            },
+            {
+              "element": "TopProblemAreas",
+              "description": "3 most important problem areas derived from findings. Shown as a compact list with severity dots.",
+              "wrapperClass": "space-y-1",
+              "itemClass": "flex items-start gap-2 text-xs text-muted-foreground justify-center lg:justify-start",
+              "dotClass": "h-1.5 w-1.5 rounded-full shrink-0 mt-1.5",
+              "dotColors": {
+                "Critical": "bg-red-500",
+                "High": "bg-orange-500",
+                "Medium": "bg-amber-500",
+                "Low": "bg-emerald-500",
+                "Info": "bg-blue-500"
+              },
+              "derivationLogic": "Sort findings by severity (Critical > High > Medium > Low > Info), take the top 3 unique finding types"
+            },
+            {
+              "element": "SeverityCountRow",
+              "description": "Compact 5-cell grid showing count per severity level. Moved inside the hero block.",
+              "wrapperClass": "grid grid-cols-5 gap-2 pt-1",
+              "cellClass": "flex flex-col items-center gap-0.5 rounded-xl border border-border bg-background/60 px-2 py-2 border-t-[3px]",
+              "labelClass": "text-[10px] font-medium text-muted-foreground uppercase tracking-wide leading-none",
+              "countClass": "text-lg font-bold text-foreground leading-none mt-0.5",
+              "borderTopColors": {
+                "Critical": "border-t-red-500",
+                "High": "border-t-orange-500",
+                "Medium": "border-t-amber-500",
+                "Low": "border-t-emerald-500",
+                "Info": "border-t-blue-500"
+              }
+            }
+          ]
+        }
+      }
+    },
+
+    "scannerCategoryGroups": {
+      "_description": "Replaces the previous flat grid. Groups all 13 scanners into 5 logical categories. Each category renders as a visually distinct section.",
+      "outerClass": "space-y-6",
+
+      "categories": [
+        {
+          "key": "segurancaHttp",
+          "label": "Segurança HTTP",
+          "icon": "Shield",
+          "scannerKeys": ["securityHeaders", "csp_analysis", "security_txt"]
+        },
+        {
+          "key": "tlsCertificado",
+          "label": "TLS & Certificado",
+          "icon": "Lock",
+          "scannerKeys": ["tls_capability", "resultsSslScanner"]
+        },
+        {
+          "key": "infraestrutura",
+          "label": "Infraestrutura",
+          "icon": "Server",
+          "scannerKeys": ["ip_resolution", "subdomains", "domain_age", "resultsHttpRedirectScanner"]
+        },
+        {
+          "key": "escaneamento",
+          "label": "Escaneamento",
+          "icon": "Search",
+          "scannerKeys": ["resultsPortScanner", "sensitivePathScanner", "robots"]
+        },
+        {
+          "key": "performance",
+          "label": "Performance",
+          "icon": "Zap",
+          "scannerKeys": ["response_behavior"]
+        }
+      ],
+
+      "categoryGroupContainer": {
+        "class": "space-y-3 rounded-2xl border border-border/60 bg-muted/20 p-4",
+        "note": "bg-muted/20 resolves to approx. rgba(244,244,245,0.20) in light and rgba(39,39,42,0.20) in dark — barely visible but enough to group cards"
+      },
+
+      "categoryHeader": {
+        "class": "flex items-center gap-2.5 px-1",
+        "iconWrapper": {
+          "class": "flex h-7 w-7 items-center justify-center rounded-lg bg-muted/60"
+        },
+        "icon": {
+          "class": "h-4 w-4 text-muted-foreground"
+        },
+        "label": {
+          "class": "text-sm font-semibold text-foreground"
+        },
+        "optionalRiskBadge": {
+          "_note": "Only shown when the category has Critical or High findings. Provides instant category-level risk signal.",
+          "placement": "ml-auto",
+          "Critical": "rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-medium text-red-600 dark:bg-red-950/30 dark:text-red-400",
+          "High": "rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-medium text-orange-600 dark:bg-orange-950/30 dark:text-orange-400",
+          "ok": "rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400"
+        }
+      },
+
+      "cardGrid": {
+        "class": "grid gap-4 grid-cols-1 sm:grid-cols-2"
+      }
+    },
+
+    "scannerCard": {
+      "_description": "Individual scanner result card. No visual changes to card structure — only color system changes inside bodies.",
+      "class": "overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md",
+      "header": {
+        "class": "flex flex-row items-center gap-3 px-4 pb-3 pt-4",
+        "iconWrapper": {
+          "class": "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+          "style": "backgroundColor: `${config.color}15` — scanner accent color at 15% alpha"
+        },
+        "iconStyle": "h-[18px] w-[18px], color: config.color",
+        "title": "text-sm font-semibold leading-tight text-foreground"
+      },
+      "body": {
+        "class": "px-4 pb-4 pt-0",
+        "rowClass": "flex items-start justify-between gap-3"
+      }
+    },
+
+    "alertBlock": {
+      "_replaces": "AlertBadge component (old: border-destructive/20 bg-destructive/5 — removed)",
+      "_description": "Three semantic variants for inline alert/recommendation blocks. Choose based on alert severity, NOT a fixed destructive color for all.",
+
+      "selectionLogic": {
+        "critical": "Keywords in alert text: expired, invalid, critical, detected, vulnerability, unsafe, forbidden",
+        "warning": "Keywords: weak, missing, outdated, fallback, slow, deprecated, no-sniff absent",
+        "info": "All other alerts — default fallback"
+      },
+
+      "critical": {
+        "class": "flex items-start gap-1.5 rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 dark:border-red-800/30 dark:bg-red-950/20",
+        "icon": "AlertTriangle",
+        "iconClass": "mt-0.5 h-3 w-3 shrink-0 text-red-500",
+        "textClass": "text-xs text-red-700 dark:text-red-400 leading-relaxed break-all"
+      },
+      "warning": {
+        "class": "flex items-start gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1.5 dark:border-amber-800/30 dark:bg-amber-950/20",
+        "icon": "AlertTriangle",
+        "iconClass": "mt-0.5 h-3 w-3 shrink-0 text-amber-500",
+        "textClass": "text-xs text-amber-700 dark:text-amber-400 leading-relaxed break-all"
+      },
+      "info": {
+        "class": "flex items-start gap-1.5 rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1.5 dark:border-blue-800/30 dark:bg-blue-950/20",
+        "icon": "Info",
+        "iconClass": "mt-0.5 h-3 w-3 shrink-0 text-blue-500",
+        "textClass": "text-xs text-blue-700 dark:text-blue-400 leading-relaxed break-all"
+      }
+    },
+
+    "statusIndicator": {
+      "_description": "Replaces text-success / text-destructive with direct tonal classes for precise control.",
+      "ok": {
+        "icon": "CheckCircle",
+        "iconClass": "h-3.5 w-3.5 text-emerald-500",
+        "labelClass": "text-sm font-medium text-emerald-600 dark:text-emerald-400",
+        "wrapperClass": "inline-flex items-center gap-1.5"
+      },
+      "fail": {
+        "icon": "XCircle",
+        "iconClass": "h-3.5 w-3.5 text-red-500",
+        "labelClass": "text-sm font-medium text-red-600 dark:text-red-400",
+        "wrapperClass": "inline-flex items-center gap-1.5"
+      }
+    },
+
+    "inlineBadges": {
+      "_description": "Per-scanner inline badges replacing variant=destructive throughout card bodies.",
+
+      "portOpen": {
+        "_usage": "Open ports in PortScanCard",
+        "class": "rounded-md border border-red-200 bg-red-50 px-2 py-0.5 font-mono text-[11px] text-red-600 dark:border-red-800/30 dark:bg-red-950/20 dark:text-red-400"
+      },
+      "sensitivePath": {
+        "_usage": "Found sensitive paths in SensitivePathCard",
+        "class": "rounded-md border border-orange-200 bg-orange-50 px-2 py-0.5 font-mono text-[11px] text-orange-600 dark:border-orange-800/30 dark:bg-orange-950/20 dark:text-orange-400"
+      },
+      "ttfbSlow": {
+        "_usage": "ResponseBehaviorCard when TTFB > 800ms",
+        "class": "h-4 rounded border border-red-200 bg-red-50 px-1.5 py-0 text-[10px] text-red-600 dark:border-red-800/30 dark:bg-red-950/20 dark:text-red-400"
+      },
+      "ttfbMedium": {
+        "_usage": "ResponseBehaviorCard when TTFB 400-800ms",
+        "class": "h-4 rounded border border-amber-200 bg-amber-50 px-1.5 py-0 text-[10px] text-amber-600 dark:border-amber-800/30 dark:bg-amber-950/20 dark:text-amber-400"
+      },
+      "ttfbFast": {
+        "_usage": "ResponseBehaviorCard when TTFB < 400ms",
+        "class": "h-4 rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0 text-[10px] text-emerald-600 dark:border-emerald-800/30 dark:bg-emerald-950/20 dark:text-emerald-400"
+      },
+      "sslExpiryWarning": {
+        "_usage": "SslCard when daysToExpire < 30",
+        "class": "h-4 rounded border border-amber-200 bg-amber-50 px-1.5 py-0 text-[10px] text-amber-600 dark:border-amber-800/30 dark:bg-amber-950/20 dark:text-amber-400"
+      },
+      "subdomain": {
+        "_usage": "SubdomainCard subdomain name badges",
+        "class": "rounded bg-muted px-2 py-0.5 font-mono text-[11px] text-muted-foreground border border-border"
+      },
+      "overflow": {
+        "_usage": "+N more items across all cards",
+        "class": "rounded border border-border px-2 py-0.5 text-[11px] text-muted-foreground"
+      }
+    },
+
+    "textColorReplacements": {
+      "_description": "Precise find-and-replace map for removing destructive/success CSS vars from card internals.",
+      "securityHeadersMissingCount": {
+        "before": "text-destructive font-medium",
+        "after": "text-red-600 dark:text-red-400 font-medium"
+      },
+      "portScannerOpenCount": {
+        "before": "text-destructive font-medium",
+        "after": "text-red-600 dark:text-red-400 font-medium"
+      },
+      "sensitivePathCount": {
+        "before": "text-destructive font-medium",
+        "after": "text-red-600 dark:text-red-400 font-medium"
+      },
+      "scannerCardErrorMessage": {
+        "before": "text-sm text-destructive",
+        "after": "text-sm text-red-600 dark:text-red-400"
+      }
+    },
+
+    "typography": {
+      "pageTitle": "text-xl font-semibold tracking-tight sm:text-2xl",
+      "pageMeta": "text-xs text-muted-foreground sm:text-sm",
+      "sectionTitle": "text-sm font-semibold text-foreground",
+      "cardTitle": "text-sm font-semibold leading-tight text-foreground",
+      "rowLabel": "text-sm text-muted-foreground shrink-0",
+      "rowValue": "text-right text-sm",
+      "monoSmall": "font-mono text-xs",
+      "heroScoreLabel": "text-xs font-medium text-muted-foreground",
+      "overflowLabel": "text-xs text-muted-foreground",
+      "severityCellLabel": "text-[10px] font-medium text-muted-foreground uppercase tracking-wide leading-none",
+      "severityCellCount": "text-lg font-bold text-foreground leading-none mt-0.5"
+    },
+
+    "spacing": {
+      "pageSections": "space-y-6",
+      "categoryGroupGap": "space-y-6",
+      "withinCategoryGroup": "space-y-3",
+      "cardGrid": "gap-4",
+      "cardHeaderPadding": "px-4 pb-3 pt-4",
+      "cardBodyPadding": "px-4 pb-4 pt-0",
+      "cardRowSpacing": "space-y-2",
+      "alertBlockPadding": "px-2.5 py-1.5",
+      "alertListSpacing": "mt-1.5 space-y-1",
+      "badgeWrap": "flex flex-wrap gap-1.5 mt-1",
+      "heroContainerPadding": "p-6",
+      "heroInnerGap": "gap-6 lg:gap-10",
+      "severityGridGap": "gap-2"
+    },
+
+    "borders": {
+      "scannerCard": "border border-border rounded-2xl",
+      "categoryGroup": "border border-border/60 rounded-2xl",
+      "heroBlock": "border border-border rounded-2xl",
+      "severityCell": "border border-border rounded-xl border-t-[3px]",
+      "alertBlock": "border rounded-md (color per variant)",
+      "findingAccordion": "border border-border rounded-lg",
+      "_prohibited": [
+        "border-destructive on scanner cards",
+        "border-destructive/20 on alert blocks",
+        "ring-* glow on cards",
+        "drop-shadow with color"
+      ]
+    },
+
+    "shadows": {
+      "scannerCard": "shadow-sm hover:shadow-md transition-shadow duration-200",
+      "heroBlock": "shadow-sm",
+      "categoryGroup": "none (border only)",
+      "_prohibited": [
+        "shadow-xl or larger on data cards",
+        "Colored drop-shadow / neon glow on any scanner card"
+      ]
+    },
+
+    "pageStructureOutline": {
+      "_note": "JSX hierarchy for the refactored page. Describes nesting, classes, and component placement.",
+      "jsx": [
+        "<div className='space-y-6'>",
+        "",
+        "  {/* 1. Header bar */}",
+        "  <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>",
+        "    <div className='flex items-center gap-3'>",
+        "      <BackButton />",
+        "      <ShieldIconWrapper />",
+        "      <TitleBlock>",
+        "        <h1>{scan.target}</h1>",
+        "        <GradeBadge />",
+        "        <p>{date} • {duration}</p>",
+        "      </TitleBlock>",
+        "    </div>",
+        "    <div className='flex items-center gap-2'>",
+        "      <ViewToggleButton />",
+        "      <ExportPdfButton />",
+        "    </div>",
+        "  </div>",
+        "",
+        "  {/* 2. Hero score block */}",
+        "  <div className='rounded-2xl border border-border bg-card shadow-sm p-6 bg-hero-gradient'>",
+        "    <div className='flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-10'>",
+        "      <div className='shrink-0'>",
+        "        <ScoreGauge score={scan.score} grade={scan.grade} size={160} strokeWidth={10} />",
+        "      </div>",
+        "      <div className='flex-1 space-y-4 text-center lg:text-left'>",
+        "        <RiskLevelPill grade={scan.grade} />",
+        "        <TopProblemAreasList findings={findings} maxItems={3} />",
+        "        <SeverityCountRow severityCounts={severityCounts} />",
+        "      </div>",
+        "    </div>",
+        "  </div>",
+        "",
+        "  {/* 3. Simple view: categorized scanner cards */}",
+        "  {!isAdvancedView && scan.rawJsonResult && (",
+        "    <ScannerResultCards rawJson={scan.rawJsonResult} />",
+        "  )}",
+        "  {/* ScannerResultCards renders 5 CategoryGroup blocks internally */}",
+        "  {/* CategoryGroup structure: */}",
+        "  {/* <div className='space-y-3 rounded-2xl border border-border/60 bg-muted/20 p-4'> */}",
+        "  {/*   <CategoryHeader icon label optionalRiskBadge /> */}",
+        "  {/*   <div className='grid gap-4 grid-cols-1 sm:grid-cols-2'> */}",
+        "  {/*     {scannerKeys.map(key => <ScannerCard key={key} ... />)} */}",
+        "  {/*   </div> */}",
+        "  {/* </div> */}",
+        "",
+        "  {/* 4. Advanced view: tabs */}",
+        "  {isAdvancedView && (",
+        "    <Tabs defaultValue='findings' className='space-y-4'>",
+        "      <TabsList className='grid w-full grid-cols-4 sm:inline-flex sm:w-auto'>",
+        "        <TabsTrigger value='findings'>Vulnerabilidades</TabsTrigger>",
+        "        <TabsTrigger value='technologies'>Tecnologias</TabsTrigger>",
+        "        <TabsTrigger value='ai'>Análise de IA</TabsTrigger>",
+        "        <TabsTrigger value='json'>JSON</TabsTrigger>",
+        "      </TabsList>",
+        "      <TabsContent value='findings'><FindingsList findings={findings} /></TabsContent>",
+        "      <TabsContent value='technologies'><TechnologiesList technologies={technologies} /></TabsContent>",
+        "      <TabsContent value='ai'>...</TabsContent>",
+        "      <TabsContent value='json'><JsonViewer json={scan.rawJsonResult} /></TabsContent>",
+        "    </Tabs>",
+        "  )}",
+        "",
+        "  {/* 5. Findings summary (always in simple view) */}",
+        "  {!isAdvancedView && findings?.length > 0 && (",
+        "    <div className='space-y-4'>",
+        "      <h3 className='text-lg font-semibold'>Vulnerabilidades Encontradas</h3>",
+        "      <FindingsList findings={findings} />",
+        "    </div>",
+        "  )}",
+        "",
+        "</div>"
+      ]
+    }
+  },
+
   "guidelines": {
     "mode": {
       "default": "light",

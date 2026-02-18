@@ -73,7 +73,20 @@ Refatorar `ScanService` para usar paralelismo robusto.
 ### 2.3. WebApi
 
 -   `GET /api/v1/profiles` - Listar perfis.
+-   `GET /api/v1/profiles` - Listar perfis.
 -   `POST /api/v1/scan` - Atualizado para receber configurações.
+
+### 2.5. Custom Scan Profiles (Feature Adicional)
+
+**Objetivo:** Permitir seleção granular de scanners via interface visual.
+
+-   **Backend:**
+    -   Atualizar `ExecuteScanRequest` e `ExecuteScanCommand` para aceitar `List<string> EnabledScanners`.
+    -   Atualizar `ScannerManager` para filtrar execução baseado na lista, se fornecida.
+-   **Frontend:**
+    -   Criar `CustomScanModal` com checkboxes agrupados por categoria (Segurança, Infra, Performance, etc.).
+    -   Atualizar `ScanForm` para abrir modal ao selecionar perfil "Custom".
+    -   Passar lista de scanners selecionados no payload da API.
 
 ---
 
@@ -97,6 +110,15 @@ Refatorar `ScanService` para usar paralelismo robusto.
     -   Verificar subdomínios comuns (`www`, `api`, `dev`, `staging`) via DNS resolution paralela.
 7.  **Security.txt Scanner:**
     -   Verificar presença e validade de `/.well-known/security.txt` (RFC 9116).
+
+### 3.1. Atualização do Prompt Gemini
+-   **Local:** `HeimdallWeb.Infrastructure/External/GeminiService.cs` (Novo local após refatoração).
+-   **Ação:** Atualizar o prompt hardcoded para:
+    -   Reconhecer novas categorias: `CSP Analysis`, `Domain Reputation`, `Infra Change`, `Compliance (security.txt)`.
+    -   Interpretar JSONs dos novos scanners (ex: output do `SslStream`, análise de CSP).
+    -   Considerar o contexto de "Perfil de Scan" na análise (ex: scan rápido vs profundo).
+    -   Manter formato de resposta JSON estrito para facilitar parsing.
+    -   Incluir instruções sobre como tratar `security.txt` e mudanças de IP.
 
 ---
 
@@ -159,7 +181,18 @@ Refatorar `ScanService` para usar paralelismo robusto.
 
 ## FASE 6: UX & Frontend (Sprint 6)
 
-**Objetivo:** Interface moderna e responsiva.
+**Objetivo:** Interface moderna e responsiva integrada à API.
+
+### 6.0. Agentes e Skills Mandatórios
+
+-   **Agente:** `nexus-next-js` (Definido em `CLAUDE.md`).
+    -   *Responsabilidade:* Implementar todas as páginas e componentes.
+    -   *Instrução:* Usar `Task(subagent_type="nexus-next-js", prompt="Implementar página X...")`.
+-   **Skill:** `frontend-design` (ou similar do `awesome-claude-skills`).
+    -   *Responsabilidade:* Garantir qualidade visual e consistência com shadcn/ui.
+-   **Skill:** `api-integration` (Geral).
+    -   *Responsabilidade:* Criar camada de serviço no frontend (`services/api.ts`) para consumir o backend.
+    -   *Padrão:* Usar `fetch` com tipagem forte (Zod + TypeScript) para validar respostas da API.
 
 ### 6.1. Next.js App Router Structure
 

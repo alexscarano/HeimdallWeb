@@ -7,6 +7,8 @@ export interface ScanHistorySummary {
   summary: string | null;
   findingsCount: number;
   technologiesCount: number;
+  score: number | null;
+  grade: string | null;
 }
 
 export interface ScanHistoryDetail {
@@ -18,6 +20,8 @@ export interface ScanHistoryDetail {
   duration: string | null;
   hasCompleted: boolean;
   summary: string | null;
+  score: number | null;
+  grade: string | null;
   findings: FindingResponse[];
   technologies: TechnologyResponse[];
   iaSummary: IASummaryResponse | null;
@@ -61,6 +65,8 @@ export interface IASummaryResponse {
 
 export interface ExecuteScanRequest {
   target: string;
+  profileId?: number | null;
+  enabledScanners?: string[] | null;
 }
 
 export interface ExecuteScanResponse {
@@ -70,10 +76,20 @@ export interface ExecuteScanResponse {
   duration: string;
   hasCompleted: boolean;
   createdDate: string;
+  score: number | null;
+  grade: string | null;
 }
 
 export interface DeleteScanHistoryResponse {
   success: boolean;
   historyId: string;
   target: string;
+}
+
+export interface ScanProfile {
+  id: number;
+  name: string;
+  description: string;
+  configJson: string;
+  isSystem: boolean;
 }

@@ -31,8 +31,8 @@ public static class ScanEndpoints
         var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
         var remoteIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
-        // Create command with userId from JWT token and remote IP
-        var command = new ExecuteScanCommand(request.Target, userId, remoteIp);
+        // Create command with userId from JWT token, remote IP, and optional profile/scanners
+        var command = new ExecuteScanCommand(request.Target, userId, remoteIp, request.ProfileId, request.EnabledScanners);
         var result = await handler.Handle(command);
 
         // Return 201 Created with location header

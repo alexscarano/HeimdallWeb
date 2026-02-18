@@ -18,6 +18,7 @@ public interface IUnitOfWork : IDisposable
     IUserUsageRepository UserUsages { get; }
     IUserStatisticsViewRepository UserStatisticsViews { get; }
     IRiskWeightRepository RiskWeights { get; }
+    IScanProfileRepository ScanProfiles { get; }
     
     // Raw query support for SQL VIEWs
     /// <summary>

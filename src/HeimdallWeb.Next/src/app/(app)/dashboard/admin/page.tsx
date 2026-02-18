@@ -163,25 +163,51 @@ function AdminDashboardContent() {
             subtitle="Findings por nível de severidade"
           >
             <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={severityData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  dataKey="value"
-                >
-                  {severityData.map((_, index) => (
+              <BarChart data={severityData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                <XAxis
+                  dataKey="name"
+                  stroke={tickColor}
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke={tickColor}
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  allowDecimals={false}
+                />
+                <Tooltip
+                  cursor={false}
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-md">
+                          <p className="flex items-center gap-2 text-sm font-medium text-popover-foreground">
+                            <span
+                              className="block h-2 w-2 rounded-full"
+                              style={{ backgroundColor: payload[0].payload.fill || payload[0].color }}
+                            />
+                            <span>{payload[0].payload.name}:</span>
+                            <span className="font-bold">{payload[0].value}</span>
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                  {severityData.map((entry, index) => (
                     <Cell
-                      key={index}
+                      key={`cell-${index}`}
                       fill={SEVERITY_COLORS[index % SEVERITY_COLORS.length]}
                     />
                   ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
           </ChartCard>
         )}
@@ -231,6 +257,7 @@ function AdminDashboardContent() {
                 <Area
                   type="monotone"
                   dataKey="count"
+                  name="Scans"
                   stroke={chartColor}
                   fillOpacity={1}
                   fill="url(#colorScans)"

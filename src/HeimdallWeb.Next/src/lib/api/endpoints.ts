@@ -15,6 +15,7 @@ export const endpoints = {
   scans: {
     execute: "/scans",
     list: "/scans",
+    profiles: "/profiles",
   },
   scanHistories: {
     getById: (id: string) => `/scan-histories/${id}`,

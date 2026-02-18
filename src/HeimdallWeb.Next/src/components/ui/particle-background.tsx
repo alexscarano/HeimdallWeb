@@ -25,13 +25,12 @@ export function ParticleBackground() {
     let particles: Particle[] = [];
     let animationFrameId: number;
 
-    // Configuration based on theme
     const isDark = resolvedTheme === "dark";
-    const particleCount = isDark ? 100 : 80;
-    const particleColor = isDark ? "#3730a3" : "#059669"; // indigo-800 dark, emerald-600 light
-    const particleSpeed = isDark ? 0.7 : 0.7; // Faster in dark mode
-    const particleOpacity = isDark ? 0.3 : 0.15; // More visible in dark
-    const particleShadowBlur = isDark ? 10 : 8;
+    const particleCount = isDark ? 40 : 30;
+    const particleColor = isDark ? "#3730a3" : "#059669";
+    const particleSpeed = 0.3;
+    const particleOpacity = isDark ? 0.05 : 0.04;
+    const particleShadowBlur = 4;
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -47,7 +46,7 @@ export function ParticleBackground() {
           y: Math.random() * canvas.height,
           vx: (Math.random() - 0.5) * particleSpeed * 2,
           vy: (Math.random() - 0.5) * particleSpeed * 2,
-          size: Math.random() * (isDark ? 6 : 5) + 1,
+          size: Math.random() * (isDark ? 2 : 1) + 1,
         });
       }
     };
@@ -75,19 +74,15 @@ export function ParticleBackground() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach((particle) => {
-        // Update position
         particle.x += particle.vx;
         particle.y += particle.vy;
 
-        // Bounce off edges
         if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
         if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
 
-        // Clamp to canvas bounds
         particle.x = Math.max(0, Math.min(canvas.width, particle.x));
         particle.y = Math.max(0, Math.min(canvas.height, particle.y));
 
-        // Draw particle
         ctx.fillStyle = particleColor;
         ctx.shadowColor = particleColor;
         ctx.shadowBlur = particleShadowBlur;
@@ -102,19 +97,16 @@ export function ParticleBackground() {
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    // Initialize
     resizeCanvas();
     animate();
 
-    // Event listener
     window.addEventListener("resize", resizeCanvas);
 
-    // Cleanup
     return () => {
       window.removeEventListener("resize", resizeCanvas);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [resolvedTheme]); // Re-run when theme changes
+  }, [resolvedTheme]);
 
   return (
     <canvas

@@ -28,6 +28,7 @@ public static class DatabaseSeeder
 
         await SeedAdminUserAsync(db, logger);
         await SeedRiskWeightsAsync(db, logger);
+        await SeedScanProfilesAsync(db, logger);
     }
 
     // -------------------------------------------------------------------------
@@ -106,6 +107,54 @@ public static class DatabaseSeeder
 
         logger.LogInformation(
             "[DatabaseSeeder] Seeded {Count} default risk weights.",
+            defaults.Length);
+    }
+
+    // -------------------------------------------------------------------------
+    // Scan profile seed
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Seeds the three built-in scan profiles (Quick, Standard, Deep).
+    /// Idempotent: skipped when tb_scan_profile already contains any rows.
+    /// </summary>
+    private static async Task SeedScanProfilesAsync(AppDbContext db, ILogger logger)
+    {
+        bool hasProfiles = await db.ScanProfiles.AnyAsync();
+
+        if (hasProfiles)
+        {
+            logger.LogInformation("[DatabaseSeeder] Scan profiles already exist. Skipping seed.");
+            return;
+        }
+
+        var defaults = new[]
+        {
+            new Domain.Entities.ScanProfile(
+                name: "Quick",
+                description: "Fast scan covering essential security checks. Suitable for a first look at a target.",
+                configJson: "{\"scanners\":[\"Headers\",\"SSL\",\"Redirect\"],\"timeoutSeconds\":30}",
+                isSystem: true
+            ),
+            new Domain.Entities.ScanProfile(
+                name: "Standard",
+                description: "Balanced scan including the most commonly relevant security checks.",
+                configJson: "{\"scanners\":[\"Headers\",\"SSL\",\"Redirect\",\"Robots\",\"Port\"],\"timeoutSeconds\":60}",
+                isSystem: true
+            ),
+            new Domain.Entities.ScanProfile(
+                name: "Deep",
+                description: "Comprehensive scan that runs all available scanners. May take up to 90 seconds.",
+                configJson: "{\"scanners\":[\"Headers\",\"SSL\",\"Redirect\",\"Robots\",\"Port\",\"Sensitive\"],\"timeoutSeconds\":90}",
+                isSystem: true
+            ),
+        };
+
+        db.ScanProfiles.AddRange(defaults);
+        await db.SaveChangesAsync();
+
+        logger.LogInformation(
+            "[DatabaseSeeder] Seeded {Count} default scan profiles.",
             defaults.Length);
     }
 

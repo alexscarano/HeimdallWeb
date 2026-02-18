@@ -709,6 +709,109 @@ npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
 
 ---
 
+## 🚀 Evolution Plan (implementation_plan.md) — Sprints de Evolução
+
+> **Fonte:** `implementation_plan.md` na raiz do projeto.
+> **Ordem de execução recomendada:** Sprint 1 → Sprint 5 (Auth) → Sprint 2 → Sprint 3 → Sprint 6 (UX) → Sprint 4 (Monitoramento)
+
+### Implementation Sprint 1 — Core Engine Refactoring & Scoring ✅ COMPLETO (2026-02-18)
+- [x] `RiskWeight` entity (`tb_risk_weights`): Id, Category, Weight (decimal), IsActive
+- [x] `IRiskWeightRepository` + `RiskWeightRepository` + `RiskWeightConfiguration`
+- [x] `IUnitOfWork` atualizado: `IRiskWeightRepository RiskWeights`
+- [x] `ScanHistory`: `int? Score` + `string? Grade` + método `SetScore()`
+- [x] `ScannerMetadata` record: Key, DisplayName, Category, DefaultTimeout
+- [x] `IScanner.Metadata` property adicionada à interface
+- [x] Todos os 6 scanners implementam `Metadata` com timeouts individuais
+- [x] `ScannerManager` refatorado: `Task.WhenAll` + timeout individual por scanner (scanner falho não derruba pipeline)
+- [x] `ScannerService` injeta `ILogger<ScannerManager>` e passa ao manager
+- [x] `IScoreCalculatorService` + `ScoreCalculatorService`: score 0–100, grade A–F, cache MemoryCache 10min
+- [x] `ExecuteScanResponse`: adicionado `int? Score` e `string? Grade`
+- [x] `ExecuteScanCommandHandler`: calcula e persiste score após salvar findings
+- [x] Migration `Sprint1_RiskWeights_ScanScore` criada
+- [x] `DatabaseSeeder`: seed de 7 weights padrão (SSL=1.5, Headers=1.2, Port=1.3, Sensitive=1.4, Redirect=0.9, Robots=0.8, General=1.0)
+- [x] `DependencyInjection.cs` (Application): `AddMemoryCache()` + `ScoreCalculatorService`
+- [x] `DependencyInjection.cs` (Infrastructure): `RiskWeightRepository`
+- [x] Build: 0 erros C# em todos os projetos
+
+### Implementation Sprint 2 — Advanced Scan Mode & Profiles ✅ COMPLETO (2026-02-18)
+- [x] `ScanProfile` entity (`tb_scan_profile`): Id, Name (max 50, unique), Description, ConfigJson (text), IsSystem
+- [x] `IScanProfileRepository` interface: GetAllAsync, GetByIdAsync, GetByNameAsync, AddAsync
+- [x] `ScanProfileRepository` implementação
+- [x] `IUnitOfWork` atualizado: `IScanProfileRepository ScanProfiles`
+- [x] `ScanProfileConfiguration` (EF Core, snake_case, unique index `ux_tb_scan_profile_name`)
+- [x] `ScanProfileResponse` DTO: record com Id, Name, Description, ConfigJson, IsSystem
+- [x] `GetScanProfilesQuery` + `GetScanProfilesQueryHandler`
+- [x] `GET /api/v1/profiles` endpoint (AllowAnonymous) em `ProfileEndpoints.cs`
+- [x] `ExecuteScanRequest` / `ExecuteScanCommand`: campo opcional `int? ProfileId`
+- [x] `ExecuteScanCommandHandler`: valida perfil, loga no AuditLog, ecoa ProfileId na resposta
+- [x] `ExecuteScanResponse`: `int? ProfileId` adicionado
+- [x] `ScanEndpoints.cs`: passa `ProfileId` ao command
+- [x] `Program.cs`: registra `app.MapProfileEndpoints()`
+- [x] `DependencyInjection.cs` (Application): query handler registrado
+- [x] `DependencyInjection.cs` (Infrastructure): `ScanProfileRepository` registrado
+- [x] Migration `Sprint2_ScanProfiles` (20260218153933) criada
+- [x] `DatabaseSeeder`: seed idempotente dos 3 perfis padrão (Quick/Standard/Deep, IsSystem=true)
+- [x] Build: 0 erros C# em todos os projetos
+
+### Implementation Sprint 3 — New Scanners ✅ COMPLETO (2026-02-18)
+- [x] `TlsCapabilityScanner`: verifica TLS 1.2/1.3, detecta cipher suites fracos (via `SslStream`)
+- [x] `CspAnalyzerScanner`: parser do header `Content-Security-Policy`, detecta `unsafe-inline`, `unsafe-eval`, wildcards `*`
+- [x] `DomainAgeScanner`: WHOIS lookup via TCP porta 43 (IANA → TLD-specific server)
+- [x] `IpChangeScanner`: resolve DNS, lista IPv4/IPv6, detecta CDN (Cloudflare, Fastly, Akamai)
+- [x] `ResponseBehaviorScanner`: mede TTFB, verifica consistência 404 (soft 404 detection)
+- [x] `SubdomainDiscoveryScanner`: verifica `www`, `api`, `dev`, `staging`, `admin`, `mail`, `ftp`, `vpn`, `portal` via DNS paralelo
+- [x] `SecurityTxtScanner`: verifica `/.well-known/security.txt` e fallback `/security.txt` (RFC 9116)
+- [x] Todos os 7 novos scanners implementam `IScanner` com `Metadata` correto (Key, DisplayName, Category, DefaultTimeout)
+- [x] `ScannerManager` atualizado: 13 scanners totais (6 originais + 7 novos)
+- [x] Build: 0 erros em todos os 4 projetos C#
+
+### Implementation Sprint 3.1 — Atualização do Prompt Gemini ✅ COMPLETO (2026-02-18)
+- [x] Prompt atualizado para reconhecer os 13 scanners (6 originais + 7 novos)
+- [x] Novas categorias de achados: `CSP Analysis`, `Domain Reputation`, `Infra Change`, `Response Behavior`, `Compliance`
+- [x] Instruções para interpretar JSONs dos novos scanners (TLS via SslStream, CSP, WHOIS, CDN, TTFB, subdomains, security.txt)
+- [x] Regras de severidade calibradas para cada scanner novo (ex: cipher fraco=Alto, domínio jovem<90d=Medio)
+- [x] Instrução para correlacionar dados entre scanners
+- [x] CDN provider mapeado como tecnologia na categoria "CDN"
+- [x] Build: 0 erros
+
+### Implementation Sprint 4 — Snapshot, Monitoramento & Cache
+- [ ] `MonitoredTarget` entity (`tb_monitored_target`): Id, UserId, Url, Frequency (enum), LastCheck, NextCheck, IsActive
+- [ ] `RiskSnapshot` entity (`tb_risk_snapshot`): snapshot resumido por ponto no tempo
+- [ ] `ScanCache` entity (`tb_scan_cache`): Id, CacheKey (hash Target+Profile), ResultJson (jsonb), ExpiresAt
+- [ ] Repositories + configurations + migrations para as 3 entidades
+- [ ] `ScanCacheService`: antes de executar scan, verifica cache válido; se hit retorna com `is_cached: true`
+- [ ] Índices GIN no JSONB de `tb_scan_cache`
+- [ ] Worker/`IHostedService` para monitoramento: `PeriodicTimer` ou Quartz.NET
+- [ ] `RiskDeltaService`: compara snapshot atual com anterior; gera evento se score caiu 10+ pontos
+- [ ] `GET /api/v1/monitor` endpoint (CRUD de alvos monitorados)
+- [ ] Build: 0 erros
+
+### Implementation Sprint 5 — Auth Google, Email & User Management
+- [ ] `IEmailService` interface no Domain + implementação SMTP via MailKit
+- [ ] Fluxo "Esqueci minha senha": token temporário + endpoint `POST /api/v1/auth/forgot-password`
+- [ ] Endpoint `POST /api/v1/auth/reset-password`
+- [ ] Google OAuth: `POST /api/v1/auth/google` — valida `id_token`, cria/atualiza usuário, emite JWT próprio
+- [ ] `tb_user` atualizado: colunas `auth_provider`, `external_id`, `password_reset_token`, `password_reset_expires`
+- [ ] Migration `Sprint5_GoogleAuth_PasswordReset`
+- [ ] Formulário de contato: `POST /api/v1/support/contact`
+- [ ] Build: 0 erros
+
+### Implementation Sprint 6 — UX & Frontend (Next.js)
+- [ ] Landing page: `/app/(public)/page.tsx` — Hero, Features, Preview
+- [ ] Página monitor: `/app/(app)/monitor/page.tsx`
+- [ ] Página esqueci senha: `/app/auth/forgot-password/page.tsx`
+- [ ] Página suporte/contato: `/app/support/page.tsx`
+- [ ] `ScoreGauge` component: círculo animado SVG/Canvas com score 0–100 e grade A–F
+- [ ] `RiskCard` component: cards coloridos por severidade
+- [ ] `Timeline` component: histórico visual de scans
+- [ ] Progress real durante scan via SSE ou polling de status
+- [ ] Toggle "Simples vs Avançado": esconde JSON bruto e mostra só cards + recomendações
+- [ ] Exibir `Score` e `Grade` na página de detalhes do scan e no histórico
+- [ ] Browser tests (MCP Chrome) para todas as novas páginas
+- [ ] Build frontend: 0 erros
+
+---
+
 **11 Páginas para criar:**
 1. Login (2-3h)
 2. Register (2-3h)

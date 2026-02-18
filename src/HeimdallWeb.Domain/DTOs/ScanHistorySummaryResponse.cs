@@ -12,5 +12,7 @@ public record ScanHistorySummaryResponse(
     bool HasCompleted,
     string? Summary,
     int FindingsCount,
-    int TechnologiesCount
+    int TechnologiesCount,
+    int? Score,
+    string? Grade
 );

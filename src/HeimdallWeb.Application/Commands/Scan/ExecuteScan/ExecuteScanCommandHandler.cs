@@ -71,15 +71,26 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
             var user = await _unitOfWork.Users.GetByPublicIdAsync(command.UserId, cancellationToken);
             var userInternalId = user!.UserId; // Already validated in step 1
 
+            // Step 2b: Validate profile (optional) — resolve name for audit log
+            string? profileName = null;
+            if (command.ProfileId.HasValue)
+            {
+                var profile = await _unitOfWork.ScanProfiles.GetByIdAsync(command.ProfileId.Value, cancellationToken);
+                if (profile != null)
+                    profileName = profile.Name;
+                // Unknown profile ID is silently ignored — all scanners run with default settings
+            }
+
             // Step 3: Log scan initialization
-            await LogScanInitializationAsync(userInternalId, normalizedTarget, command.RemoteIp, cancellationToken);
+            await LogScanInitializationAsync(userInternalId, normalizedTarget, command.RemoteIp, cancellationToken, profileName);
 
             // Step 4: Run security scanners with timeout (75 seconds)
             var (scanResultJson, aiSummary, aiResponseJson) = await RunScannersAndAnalyzeAsync(
                 normalizedTarget,
                 userInternalId,
                 command.RemoteIp,
-                cancellationToken);
+                cancellationToken,
+                command.EnabledScanners);
 
             // Step 5: Save scan results to database within a transaction
             var (historyPublicId, score, grade) = await SaveScanResultsAsync(
@@ -106,7 +117,8 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 HasCompleted: true,
                 CreatedDate: DateTime.UtcNow,
                 Score: score,
-                Grade: grade
+                Grade: grade,
+                ProfileId: command.ProfileId
             );
         }
         catch (OperationCanceledException ex)
@@ -139,7 +151,8 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 HasCompleted: false,
                 CreatedDate: DateTime.UtcNow,
                 Score: null,
-                Grade: null
+                Grade: null,
+                ProfileId: command.ProfileId
             );
         }
         catch (Exception ex)
@@ -170,7 +183,8 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 HasCompleted: false,
                 CreatedDate: DateTime.UtcNow,
                 Score: null,
-                Grade: null
+                Grade: null,
+                ProfileId: command.ProfileId
             );
         }
     }
@@ -217,13 +231,14 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         string target,
         int userId,
         string remoteIp,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        IEnumerable<string>? enabledScanners = null)
     {
         using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(75));
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
-        // Run all scanners
-        var scanResultJson = await _scannerService.RunAllScannersAsync(target, linkedCts.Token);
+        // Run scanners (filtered if enabledScanners provided)
+        var scanResultJson = await _scannerService.RunAllScannersAsync(target, linkedCts.Token, enabledScanners);
 
         // Preprocess JSON (normalize timestamps, headers, SSL results, etc.)
         PreProcessScanResults(ref scanResultJson);
@@ -283,7 +298,11 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 await ParseAndSaveTechnologiesAsync(historyId, aiResponseJson, cancellationToken);
                 await ParseAndSaveIASummaryAsync(historyId, aiResponseJson, cancellationToken);
 
-                // Calculate security score from persisted findings
+                // Supplement: extract findings directly from raw scanner results as fallback
+                // This ensures scoring even if the AI misses some vulnerabilities
+                await ExtractFindingsFromRawScanAsync(historyId, scanResultJson, cancellationToken);
+
+                // Calculate security score from ALL persisted findings (AI + raw scanner)
                 var findings = await _unitOfWork.Findings.GetByHistoryIdAsync(historyId, cancellationToken);
                 var (score, grade) = await _scoreCalculatorService.CalculateAsync(findings, cancellationToken);
                 createdHistory.SetScore(score, grade);
@@ -426,6 +445,137 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
     }
 
     /// <summary>
+    /// Extracts findings directly from raw scanner JSON results as a supplementary source.
+    /// This ensures that scanner-detected vulnerabilities (with severity fields) are always
+    /// counted towards the score, even if the AI fails to generate corresponding achados.
+    /// Only adds findings that are not duplicated by AI-generated ones.
+    /// </summary>
+    private async Task ExtractFindingsFromRawScanAsync(int historyId, string scanResultJson, CancellationToken ct)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(scanResultJson);
+            var root = doc.RootElement;
+            var rawFindings = new List<Finding>();
+
+            // 1. Extract from PortScanner results (resultsPortScanner array)
+            if (root.TryGetProperty("resultsPortScanner", out var portResults) &&
+                portResults.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var portEntry in portResults.EnumerateArray())
+                {
+                    var isOpen = portEntry.TryGetProperty("open", out var openProp) && openProp.GetBoolean();
+                    if (!isOpen) continue;
+
+                    var severity = portEntry.TryGetProperty("severity", out var sevProp)
+                        ? sevProp.GetString() ?? ""
+                        : "";
+                    var description = portEntry.TryGetProperty("description", out var descProp)
+                        ? descProp.GetString() ?? ""
+                        : "";
+                    var port = portEntry.TryGetProperty("port", out var portProp)
+                        ? portProp.GetInt32()
+                        : 0;
+
+                    // Only add findings with actual security severity (skip Informativo)
+                    var parsedSeverity = ParseSeverity(severity);
+                    if (parsedSeverity == SeverityLevel.Informational) continue;
+
+                    var banner = portEntry.TryGetProperty("banner", out var bannerProp)
+                        ? bannerProp.GetString() ?? ""
+                        : "";
+                    var evidence = !string.IsNullOrEmpty(banner)
+                        ? $"Porta {port} aberta. Banner: {banner}"
+                        : $"Porta {port} aberta";
+
+                    rawFindings.Add(new Finding(
+                        type: "Portas Abertas",
+                        description: description,
+                        severity: parsedSeverity,
+                        evidence: evidence,
+                        recommendation: GetPortRecommendation(port),
+                        historyId: historyId
+                    ));
+                }
+            }
+
+            // 2. Extract from SecurityHeaders scanner (securityHeaders.missing array)
+            if (root.TryGetProperty("securityHeaders", out var secHeaders))
+            {
+                if (secHeaders.TryGetProperty("missing", out var missingHeaders) &&
+                    missingHeaders.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var header in missingHeaders.EnumerateArray())
+                    {
+                        var headerName = header.GetString() ?? "";
+                        if (string.IsNullOrEmpty(headerName)) continue;
+
+                        // Critical headers get higher severity
+                        var headerSeverity = headerName switch
+                        {
+                            "Strict-Transport-Security" => SeverityLevel.High,
+                            "Content-Security-Policy" => SeverityLevel.Medium,
+                            "X-Frame-Options" => SeverityLevel.Medium,
+                            "X-Content-Type-Options" => SeverityLevel.Low,
+                            _ => SeverityLevel.Low
+                        };
+
+                        rawFindings.Add(new Finding(
+                            type: "Headers de Segurança",
+                            description: $"Header de segurança ausente: {headerName}",
+                            severity: headerSeverity,
+                            evidence: $"Header {headerName} não presente na resposta HTTP",
+                            recommendation: $"Adicionar o header {headerName} para melhorar a segurança.",
+                            historyId: historyId
+                        ));
+                    }
+                }
+            }
+
+            // Only save non-duplicate findings
+            if (rawFindings.Any())
+            {
+                // Check existing findings to avoid duplicates
+                var existingFindings = await _unitOfWork.Findings.GetByHistoryIdAsync(historyId, ct);
+                var existingDescriptions = new HashSet<string>(
+                    existingFindings.Select(f => f.Description),
+                    StringComparer.OrdinalIgnoreCase);
+
+                var newFindings = rawFindings
+                    .Where(f => !existingDescriptions.Contains(f.Description))
+                    .ToList();
+
+                if (newFindings.Any())
+                {
+                    await _unitOfWork.Findings.AddRangeAsync(newFindings, ct);
+                }
+            }
+        }
+        catch
+        {
+            // Non-critical: silently skip if raw parsing fails
+        }
+    }
+
+    private static string GetPortRecommendation(int port) => port switch
+    {
+        3306 or 5432 or 27017 or 1433 or 1521 =>
+            "Remover o acesso público ao banco de dados. Use firewalls e VPN para restringir o acesso.",
+        3389 =>
+            "Remover acesso público ao RDP. Use VPN ou bastion host.",
+        6379 or 11211 =>
+            "Remover acesso público ao serviço de cache. Configure autenticação e firewall.",
+        22 =>
+            "Utilize autenticação por chave SSH e desative login por senha.",
+        21 or 20 =>
+            "Desative FTP e utilize SFTP sobre SSH para transferências seguras.",
+        23 =>
+            "Desative Telnet imediatamente. Utilize SSH como alternativa segura.",
+        _ =>
+            "Avalie se esta porta precisa estar exposta publicamente e configure firewall adequadamente."
+    };
+
+    /// <summary>
     /// Parses AI response JSON and saves technologies to database.
     /// </summary>
     private async Task ParseAndSaveTechnologiesAsync(int historyId, string aiResponseJson, CancellationToken ct)
@@ -535,14 +685,23 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
     }
 
     // Logging helpers
-    private async Task LogScanInitializationAsync(int userId, string target, string remoteIp, CancellationToken ct)
+    private async Task LogScanInitializationAsync(
+        int userId,
+        string target,
+        string remoteIp,
+        CancellationToken ct,
+        string? profileName = null)
     {
+        var details = profileName != null
+            ? $"Target: {target} | Profile: {profileName}"
+            : $"Target: {target}";
+
         await _unitOfWork.AuditLogs.AddAsync(new AuditLog(
             code: LogEventCode.INIT_SCAN,
             level: "Info",
             message: "Scan initialization started",
             source: "ExecuteScanCommandHandler",
-            details: $"Target: {target}",
+            details: details,
             userId: userId,
             remoteIp: remoteIp
         ), ct);

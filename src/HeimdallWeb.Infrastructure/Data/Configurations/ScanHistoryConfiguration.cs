@@ -73,6 +73,16 @@ public class ScanHistoryConfiguration : IEntityTypeConfiguration<ScanHistory>
             .HasColumnName("user_id")
             .IsRequired();
 
+        // Security score and grade (Sprint 1 — computed by ScoreCalculatorService)
+        builder.Property(h => h.Score)
+            .HasColumnName("score")
+            .IsRequired(false);
+
+        builder.Property(h => h.Grade)
+            .HasColumnName("grade")
+            .HasMaxLength(1)
+            .IsRequired(false);
+
         // Relationships
         builder.HasOne(h => h.User)
             .WithMany(u => u.ScanHistories)

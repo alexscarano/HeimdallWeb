@@ -2,6 +2,7 @@ namespace HeimdallWeb.Application.DTOs.Scan;
 
 /// <summary>
 /// Response DTO for scan execution.
+/// ProfileId is echoed back when the caller supplied one in the request.
 /// </summary>
 public record ExecuteScanResponse(
     Guid HistoryId,
@@ -11,5 +12,6 @@ public record ExecuteScanResponse(
     bool HasCompleted,
     DateTime CreatedDate,
     int? Score,
-    string? Grade
+    string? Grade,
+    int? ProfileId = null
 );

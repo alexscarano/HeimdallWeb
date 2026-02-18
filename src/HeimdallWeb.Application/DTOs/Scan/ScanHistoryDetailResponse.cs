@@ -13,6 +13,8 @@ public record ScanHistoryDetailResponse(
     string? Duration,  // String format (e.g., "00:02:15")
     bool HasCompleted,
     string? Summary,
+    int? Score,
+    string? Grade,
     IEnumerable<FindingResponse> Findings,
     IEnumerable<TechnologyResponse> Technologies,
     IASummaryResponse? IASummary

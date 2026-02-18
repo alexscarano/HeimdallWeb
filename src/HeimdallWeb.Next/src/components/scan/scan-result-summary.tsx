@@ -10,6 +10,7 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ScoreGauge } from "@/components/scan/score-gauge";
 import type { ExecuteScanResponse } from "@/types/scan";
 import { routes } from "@/lib/constants/routes";
 import Link from "next/link";
@@ -25,17 +26,21 @@ export function ScanResultSummary({ result, onNewScan }: ScanResultSummaryProps)
   return (
     <Card className="w-full max-w-lg border shadow-lg">
       <CardContent className="flex flex-col items-center gap-5 pt-8 pb-4">
-        <div
-          className={`flex h-14 w-14 items-center justify-center rounded-2xl ${
-            isCompleted ? "bg-success/10" : "bg-destructive/10"
-          }`}
-        >
-          {isCompleted ? (
-            <CheckCircle2 className="h-7 w-7 text-success" />
-          ) : (
-            <XCircle className="h-7 w-7 text-destructive" />
-          )}
-        </div>
+        {/* Score gauge — only shown when scan completed and score is available */}
+        {isCompleted && result.score != null ? (
+          <ScoreGauge score={result.score} grade={result.grade} size={130} />
+        ) : (
+          <div
+            className={`flex h-14 w-14 items-center justify-center rounded-2xl ${isCompleted ? "bg-success/10" : "bg-destructive/10"
+              }`}
+          >
+            {isCompleted ? (
+              <CheckCircle2 className="h-7 w-7 text-success" />
+            ) : (
+              <XCircle className="h-7 w-7 text-destructive" />
+            )}
+          </div>
+        )}
 
         <div className="space-y-1 text-center">
           <h3 className="text-lg font-semibold">

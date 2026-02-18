@@ -25,6 +25,7 @@ using HeimdallWeb.Application.Queries.Scan.GetAISummaryByHistoryId;
 using HeimdallWeb.Application.Queries.Scan.GetFindingsByHistoryId;
 using HeimdallWeb.Application.Queries.Scan.GetScanHistoryById;
 using HeimdallWeb.Application.Queries.Scan.GetTechnologiesByHistoryId;
+using HeimdallWeb.Application.Queries.Scan.GetScanProfiles;
 using HeimdallWeb.Application.Queries.Scan.GetUserScanHistories;
 using HeimdallWeb.Application.Queries.User.GetUserProfile;
 using HeimdallWeb.Application.Queries.User.GetUserStatistics;
@@ -91,7 +92,8 @@ public static class DependencyInjection
 
         // ===== Query Handlers (10 total) =====
 
-        // Scan Queries (7)
+        // Scan Queries (8)
+        services.AddScoped<IQueryHandler<GetScanProfilesQuery, IEnumerable<ScanProfileResponse>>, GetScanProfilesQueryHandler>();
         services.AddScoped<IQueryHandler<GetScanHistoryByIdQuery, ScanHistoryDetailResponse>, GetScanHistoryByIdQueryHandler>();
         services.AddScoped<IQueryHandler<GetUserScanHistoriesQuery, PaginatedScanHistoriesResponse>, GetUserScanHistoriesQueryHandler>();
         services.AddScoped<IQueryHandler<GetFindingsByHistoryIdQuery, IEnumerable<FindingResponse>>, GetFindingsByHistoryIdQueryHandler>();

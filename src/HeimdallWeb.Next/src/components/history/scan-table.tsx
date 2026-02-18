@@ -23,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { GradeBadge } from "@/components/scan/score-gauge";
 
 interface ScanTableProps {
   scans: ScanHistory[];
@@ -76,16 +77,21 @@ export function ScanTable({ scans, isLoading, onDelete, onExportPdf }: ScanTable
                   </div>
                 </div>
 
-                {/* Status badge */}
-                <Badge
-                  className={
-                    scan.hasCompleted
-                      ? "bg-success-bg text-success border-success-border"
-                      : "bg-destructive text-white"
-                  }
-                >
-                  {scan.hasCompleted ? "Completo" : "Falhado"}
-                </Badge>
+                {/* Score + Status badges */}
+                <div className="flex items-center gap-2">
+                  {scan.grade && (
+                    <GradeBadge grade={scan.grade} score={scan.score} />
+                  )}
+                  <Badge
+                    className={
+                      scan.hasCompleted
+                        ? "bg-success-bg text-success border-success-border"
+                        : "bg-destructive text-white"
+                    }
+                  >
+                    {scan.hasCompleted ? "Completo" : "Falhado"}
+                  </Badge>
+                </div>
               </div>
 
               {/* Actions dropdown */}
@@ -130,6 +136,7 @@ export function ScanTable({ scans, isLoading, onDelete, onExportPdf }: ScanTable
               <TableHead>URL Alvo</TableHead>
               <TableHead>Data</TableHead>
               <TableHead>Duração</TableHead>
+              <TableHead>Score</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="w-[70px]"></TableHead>
             </TableRow>
@@ -149,6 +156,13 @@ export function ScanTable({ scans, isLoading, onDelete, onExportPdf }: ScanTable
                   {format(new Date(scan.createdDate), "dd/MM/yyyy, HH:mm")}
                 </TableCell>
                 <TableCell className="text-sm">{scan.duration}</TableCell>
+                <TableCell>
+                  {scan.grade ? (
+                    <GradeBadge grade={scan.grade} score={scan.score} />
+                  ) : (
+                    <span className="text-xs text-muted-foreground">–</span>
+                  )}
+                </TableCell>
                 <TableCell>
                   <Badge
                     className={
@@ -212,7 +226,10 @@ function ScanTableSkeleton() {
                 <Skeleton className="h-4 w-32" />
                 <Skeleton className="h-4 w-20" />
               </div>
-              <Skeleton className="h-6 w-20" />
+              <div className="flex gap-2">
+                <Skeleton className="h-6 w-14" />
+                <Skeleton className="h-6 w-20" />
+              </div>
             </div>
           </Card>
         ))}
@@ -226,6 +243,7 @@ function ScanTableSkeleton() {
               <TableHead>URL Alvo</TableHead>
               <TableHead>Data</TableHead>
               <TableHead>Duração</TableHead>
+              <TableHead>Score</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="w-[70px]"></TableHead>
             </TableRow>
@@ -241,6 +259,9 @@ function ScanTableSkeleton() {
                 </TableCell>
                 <TableCell>
                   <Skeleton className="h-5 w-16" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-6 w-14" />
                 </TableCell>
                 <TableCell>
                   <Skeleton className="h-6 w-20" />

@@ -24,21 +24,39 @@ public class ScannerManager
             new SensitivePathsScanner(),
             new HttpRedirectScanner(),
             new RobotsScanner(),
+            new TlsCapabilityScanner(),
+            new CspAnalyzerScanner(),
+            new DomainAgeScanner(),
+            new IpChangeScanner(),
+            new ResponseBehaviorScanner(),
+            new SubdomainDiscoveryScanner(),
+            new SecurityTxtScanner(),
         };
     }
 
     /// <summary>
-    /// Runs all scanners in parallel, each with its individual timeout.
+    /// Runs scanners in parallel, each with its individual timeout.
+    /// When enabledScanners is provided, only matching scanners run.
     /// Failed or timed-out scanners are logged and skipped — they do not abort the pipeline.
     /// </summary>
-    /// <param name="target">The target URL.</param>
-    /// <param name="globalCancellationToken">
-    /// Global cancellation token (e.g. the 75-second request timeout).
-    /// Each scanner also gets a linked individual timeout from its Metadata.DefaultTimeout.
-    /// </param>
-    public async Task<JObject> RunAllAsync(string target, CancellationToken globalCancellationToken = default)
+    public async Task<JObject> RunAllAsync(string target, CancellationToken globalCancellationToken = default, IEnumerable<string>? enabledScanners = null)
     {
-        var tasks = _scanners.Select(scanner => RunSingleScannerAsync(scanner, target, globalCancellationToken));
+        var scannersToRun = _scanners.AsEnumerable();
+
+        // Filter scanners if a custom list was provided
+        if (enabledScanners != null)
+        {
+            var enabledSet = new HashSet<string>(enabledScanners, StringComparer.OrdinalIgnoreCase);
+            if (enabledSet.Count > 0)
+            {
+                scannersToRun = _scanners.Where(s => enabledSet.Contains(s.Metadata.Key));
+                _logger?.LogInformation(
+                    "[ScannerManager] Custom scan: running {Count} of {Total} scanners. Keys: {Keys}",
+                    enabledSet.Count, _scanners.Count, string.Join(", ", enabledSet));
+            }
+        }
+
+        var tasks = scannersToRun.Select(scanner => RunSingleScannerAsync(scanner, target, globalCancellationToken));
 
         var results = await Task.WhenAll(tasks);
 
