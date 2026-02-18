@@ -43,7 +43,7 @@ export function Header({ mobileMenuButton }: { mobileMenuButton?: React.ReactNod
               <Avatar className="h-8 w-8">
                 {user?.profileImage && (
                   <AvatarImage
-                    src={`${process.env.NEXT_PUBLIC_API_URL}/${user.profileImage}`}
+                    src={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110"}/${user.profileImage}`}
                     alt={user.username}
                   />
                 )}

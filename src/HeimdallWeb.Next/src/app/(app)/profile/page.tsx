@@ -81,69 +81,92 @@ export default function ProfilePage() {
   );
 }
 
+
+import { ImageCropper } from "@/components/ui/image-cropper";
+
 function ProfileHeaderCard() {
   const { user } = useAuth();
   const updateImage = useUpdateProfileImage();
   const fileRef = useRef<HTMLInputElement>(null);
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   if (!user) return null;
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Reset input value to allow selecting same file again
+    e.target.value = "";
+
     const reader = new FileReader();
     reader.onload = () => {
-      const base64 = (reader.result as string).split(",")[1];
-      updateImage.mutate({ imageBase64: base64 });
+      setSelectedImage(reader.result as string);
+      setCropperOpen(true);
     };
     reader.readAsDataURL(file);
   };
 
+  const handleCropComplete = (base64: string) => {
+    updateImage.mutate({ imageBase64: base64 });
+  };
+
   const initials = user.username.slice(0, 2).toUpperCase();
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110";
   const imageUrl = user.profileImage
-    ? `${process.env.NEXT_PUBLIC_API_URL}/${user.profileImage}`
+    ? `${apiUrl}/${user.profileImage}?t=${new Date().getTime()}`
     : undefined;
 
   return (
-    <Card className="p-6">
-      <div className="flex items-center gap-6">
-        <div className="relative">
-          <Avatar className="h-20 w-20">
-            <AvatarImage src={imageUrl} alt={user.username} />
-            <AvatarFallback className="text-xl">{initials}</AvatarFallback>
-          </Avatar>
-          <button
-            onClick={() => fileRef.current?.click()}
-            className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full border bg-background shadow-sm hover:bg-muted"
-          >
-            <Camera className="h-4 w-4" />
-          </button>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/png,image/jpeg,image/jpg"
-            className="hidden"
-            onChange={handleImageUpload}
-          />
-        </div>
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-semibold">{user.username}</h2>
-            <Badge
-              className={
-                user.userType === UserType.Admin
-                  ? "bg-accent-primary/10 text-accent-primary"
-                  : "bg-muted text-muted-foreground"
-              }
+    <>
+      <Card className="p-6">
+        <div className="flex items-center gap-6">
+          <div className="relative">
+            <Avatar className="h-20 w-20">
+              <AvatarImage src={imageUrl} alt={user.username} />
+              <AvatarFallback className="text-xl">{initials}</AvatarFallback>
+            </Avatar>
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full border bg-background shadow-sm hover:bg-muted"
             >
-              {user.userType === UserType.Admin ? "Admin" : "Usuário"}
-            </Badge>
+              <Camera className="h-4 w-4" />
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/png,image/jpeg,image/jpg"
+              className="hidden"
+              onChange={handleImageSelect}
+            />
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-semibold">{user.username}</h2>
+              <Badge
+                className={
+                  user.userType === UserType.Admin
+                    ? "bg-accent-primary/10 text-accent-primary"
+                    : "bg-muted text-muted-foreground"
+                }
+              >
+                {user.userType === UserType.Admin ? "Admin" : "Usuário"}
+              </Badge>
+            </div>
+            <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+
+      <ImageCropper
+        imageSrc={selectedImage}
+        open={cropperOpen}
+        onOpenChange={setCropperOpen}
+        onComplete={handleCropComplete}
+        aspect={1}
+      />
+    </>
   );
 }
 

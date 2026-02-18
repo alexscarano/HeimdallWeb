@@ -3,6 +3,7 @@ using HeimdallWeb.Application.Common.Interfaces;
 using HeimdallWeb.Application.DTOs.User;
 using HeimdallWeb.Domain.Enums;
 using HeimdallWeb.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace HeimdallWeb.Application.Commands.User.UpdateProfileImage;
 
@@ -14,6 +15,7 @@ namespace HeimdallWeb.Application.Commands.User.UpdateProfileImage;
 public class UpdateProfileImageCommandHandler : ICommandHandler<UpdateProfileImageCommand, UpdateProfileImageResponse>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly Microsoft.Extensions.Logging.ILogger<UpdateProfileImageCommandHandler> _logger;
     private const int MaxImageSizeBytes = 2 * 1024 * 1024; // 2MB
     private const string UploadDirectory = "wwwroot/uploads/profiles";
 
@@ -25,13 +27,16 @@ public class UpdateProfileImageCommandHandler : ICommandHandler<UpdateProfileIma
         { "webp", new byte[] { 0x52, 0x49, 0x46, 0x46 } } // RIFF header for WEBP
     };
 
-    public UpdateProfileImageCommandHandler(IUnitOfWork unitOfWork)
+    public UpdateProfileImageCommandHandler(IUnitOfWork unitOfWork, Microsoft.Extensions.Logging.ILogger<UpdateProfileImageCommandHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task<UpdateProfileImageResponse> Handle(UpdateProfileImageCommand request, CancellationToken ct = default)
     {
+        _logger.LogInformation("UpdateProfileImage started for User {UserId}", request.UserId);
+
         // Validate input
         var validator = new UpdateProfileImageCommandValidator();
         var validationResult = await validator.ValidateAsync(request, ct);
@@ -71,6 +76,7 @@ public class UpdateProfileImageCommandHandler : ICommandHandler<UpdateProfileIma
             }
 
             imageBytes = Convert.FromBase64String(cleanBase64);
+            _logger.LogInformation("Image bytes decoded. Length: {Length}", imageBytes.Length);
         }
         catch (Exception ex)
         {
@@ -86,36 +92,63 @@ public class UpdateProfileImageCommandHandler : ICommandHandler<UpdateProfileIma
         // Validate image format using magic bytes
         if (!IsValidImageFormat(imageBytes))
         {
+            _logger.LogWarning("Invalid image format detected.");
             throw new ValidationException("ImageBase64", "Invalid image format. Only JPG, PNG, and WEBP are supported.");
         }
 
         // Generate unique filename
         var timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
         var filename = $"{request.UserId}_{timestamp}.jpg";
+        
+        // Use absolute path resolution for Docker/Linux compatibility
+        // This ensures we're writing to the actual running application's wwwroot
+        var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+        var uploadDir = Path.Combine(webRootPath, "uploads", "profiles");
+        var fullPath = Path.Combine(uploadDir, filename);
+        
+        _logger.LogInformation("Resolved webRootPath: {WebRootPath}", webRootPath);
+        _logger.LogInformation("Resolved uploadDir: {UploadDir}", uploadDir);
+        _logger.LogInformation("Resolved fullPath to save: {FullPath}", fullPath);
+
+        // Store relative path for database (browser access)
         var relativePath = $"uploads/profiles/{filename}";
-        var fullPath = Path.Combine(UploadDirectory, filename);
 
         // Create directory if not exists
-        Directory.CreateDirectory(UploadDirectory);
+        if (!Directory.Exists(uploadDir))
+        {
+            _logger.LogInformation("Directory does not exist. Creating: {UploadDir}", uploadDir);
+            Directory.CreateDirectory(uploadDir);
+        }
 
         // Save new image to disk
         await File.WriteAllBytesAsync(fullPath, imageBytes, ct);
+        _logger.LogInformation("File written successfully.");
 
         // Delete old profile image if exists
         if (!string.IsNullOrWhiteSpace(user.ProfileImage))
         {
-            var oldImagePath = Path.Combine("wwwroot", user.ProfileImage.TrimStart('/'));
+            var oldImageFileName = Path.GetFileName(user.ProfileImage);
+            var oldImagePath = Path.Combine(uploadDir, oldImageFileName);
+            
+            _logger.LogInformation("Attempting to delete old image at: {OldImagePath}", oldImagePath);
+            
             if (File.Exists(oldImagePath))
             {
                 try
                 {
                     File.Delete(oldImagePath);
+                    _logger.LogInformation("Old image deleted.");
                 }
-                catch
+                catch (Exception ex)
                 {
                     // Ignore deletion errors for old image
                     // Log could be added here if needed
+                    _logger.LogError(ex, "Failed to delete old image.");
                 }
+            }
+            else 
+            {
+                 _logger.LogWarning("Old image file not found at calculated path.");
             }
         }
 
