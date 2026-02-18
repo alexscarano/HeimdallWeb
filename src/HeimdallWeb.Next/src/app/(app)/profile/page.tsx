@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +25,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ImageCropper } from "@/components/ui/image-cropper";
 
 function getPasswordStrength(password: string): {
   level: "weak" | "medium" | "strong";
@@ -69,48 +70,70 @@ export default function ProfilePage() {
       {/* Profile Header Card */}
       <ProfileHeaderCard />
 
-      {/* Edit Profile */}
-      <EditProfileCard />
+      {/* Tabbed Settings */}
+      <Card className="p-0 overflow-hidden">
+        <Tabs defaultValue="informacoes" className="w-full">
+          <div className="border-b px-4 pt-4 sm:px-6">
+            <TabsList className="w-full justify-start gap-0 bg-transparent p-0 h-auto flex-wrap">
+              <TabsTrigger
+                value="informacoes"
+                className="relative rounded-none border-b-2 border-transparent px-4 py-2.5 data-[state=active]:border-accent-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                Informações Pessoais
+              </TabsTrigger>
+              <TabsTrigger
+                value="senha"
+                className="relative rounded-none border-b-2 border-transparent px-4 py-2.5 data-[state=active]:border-accent-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              >
+                <Lock className="mr-2 h-4 w-4" />
+                Alterar Senha
+              </TabsTrigger>
+              <TabsTrigger
+                value="foto"
+                className="relative rounded-none border-b-2 border-transparent px-4 py-2.5 data-[state=active]:border-accent-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              >
+                <Camera className="mr-2 h-4 w-4" />
+                Foto de Perfil
+              </TabsTrigger>
+              <TabsTrigger
+                value="perigo"
+                className="relative rounded-none border-b-2 border-transparent px-4 py-2.5 data-[state=active]:border-destructive data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-destructive"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Zona de Perigo
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-      {/* Change Password */}
-      <ChangePasswordCard />
+          <div className="p-4 sm:p-6">
+            <TabsContent value="informacoes" className="mt-0">
+              <EditProfileSection />
+            </TabsContent>
 
-      {/* Danger Zone */}
-      <DangerZoneCard />
+            <TabsContent value="senha" className="mt-0">
+              <ChangePasswordSection />
+            </TabsContent>
+
+            <TabsContent value="foto" className="mt-0">
+              <ProfilePhotoSection />
+            </TabsContent>
+
+            <TabsContent value="perigo" className="mt-0">
+              <DangerZoneSection />
+            </TabsContent>
+          </div>
+        </Tabs>
+      </Card>
     </div>
   );
 }
 
-
-import { ImageCropper } from "@/components/ui/image-cropper";
+/* ─── Profile Header (standalone card) ─── */
 
 function ProfileHeaderCard() {
   const { user } = useAuth();
-  const updateImage = useUpdateProfileImage();
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [cropperOpen, setCropperOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
   if (!user) return null;
-
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Reset input value to allow selecting same file again
-    e.target.value = "";
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedImage(reader.result as string);
-      setCropperOpen(true);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleCropComplete = (base64: string) => {
-    updateImage.mutate({ imageBase64: base64 });
-  };
 
   const initials = user.username.slice(0, 2).toUpperCase();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110";
@@ -119,58 +142,35 @@ function ProfileHeaderCard() {
     : undefined;
 
   return (
-    <>
-      <Card className="p-6">
-        <div className="flex items-center gap-6">
-          <div className="relative">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={imageUrl} alt={user.username} />
-              <AvatarFallback className="text-xl">{initials}</AvatarFallback>
-            </Avatar>
-            <button
-              onClick={() => fileRef.current?.click()}
-              className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full border bg-background shadow-sm hover:bg-muted"
+    <Card className="p-6">
+      <div className="flex items-center gap-6">
+        <Avatar className="h-20 w-20">
+          <AvatarImage src={imageUrl} alt={user.username} />
+          <AvatarFallback className="text-xl">{initials}</AvatarFallback>
+        </Avatar>
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-semibold">{user.username}</h2>
+            <Badge
+              className={
+                user.userType === UserType.Admin
+                  ? "bg-accent-primary/10 text-accent-primary"
+                  : "bg-muted text-muted-foreground"
+              }
             >
-              <Camera className="h-4 w-4" />
-            </button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/png,image/jpeg,image/jpg"
-              className="hidden"
-              onChange={handleImageSelect}
-            />
+              {user.userType === UserType.Admin ? "Admin" : "Usuário"}
+            </Badge>
           </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-semibold">{user.username}</h2>
-              <Badge
-                className={
-                  user.userType === UserType.Admin
-                    ? "bg-accent-primary/10 text-accent-primary"
-                    : "bg-muted text-muted-foreground"
-                }
-              >
-                {user.userType === UserType.Admin ? "Admin" : "Usuário"}
-              </Badge>
-            </div>
-            <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
-          </div>
+          <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
         </div>
-      </Card>
-
-      <ImageCropper
-        imageSrc={selectedImage}
-        open={cropperOpen}
-        onOpenChange={setCropperOpen}
-        onComplete={handleCropComplete}
-        aspect={1}
-      />
-    </>
+      </div>
+    </Card>
   );
 }
 
-function EditProfileCard() {
+/* ─── Tab 1: Informações Pessoais ─── */
+
+function EditProfileSection() {
   const { user } = useAuth();
   const updateProfile = useUpdateProfile();
   const [username, setUsername] = useState(user?.username ?? "");
@@ -189,11 +189,11 @@ function EditProfileCard() {
   };
 
   return (
-    <Card className="p-6">
-      <div className="mb-4 flex items-center gap-2">
-        <Mail className="h-5 w-5 text-muted-foreground" />
-        <h3 className="font-semibold">Informações Pessoais</h3>
-      </div>
+    <div className="space-y-1">
+      <h3 className="text-lg font-semibold">Informações Pessoais</h3>
+      <p className="text-sm text-muted-foreground mb-6">
+        Atualize seu nome de usuário e endereço de email.
+      </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
@@ -221,11 +221,13 @@ function EditProfileCard() {
           {updateProfile.isPending ? "Salvando..." : "Salvar alterações"}
         </Button>
       </form>
-    </Card>
+    </div>
   );
 }
 
-function ChangePasswordCard() {
+/* ─── Tab 2: Alterar Senha ─── */
+
+function ChangePasswordSection() {
   const updatePassword = useUpdatePassword();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -257,11 +259,11 @@ function ChangePasswordCard() {
   };
 
   return (
-    <Card className="p-6">
-      <div className="mb-4 flex items-center gap-2">
-        <Lock className="h-5 w-5 text-muted-foreground" />
-        <h3 className="font-semibold">Alterar Senha</h3>
-      </div>
+    <div className="space-y-1">
+      <h3 className="text-lg font-semibold">Alterar Senha</h3>
+      <p className="text-sm text-muted-foreground mb-6">
+        Atualize sua senha para manter sua conta segura.
+      </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <label className="text-sm font-medium">Senha atual</label>
@@ -315,11 +317,99 @@ function ChangePasswordCard() {
           {updatePassword.isPending ? "Alterando..." : "Alterar senha"}
         </Button>
       </form>
-    </Card>
+    </div>
   );
 }
 
-function DangerZoneCard() {
+/* ─── Tab 3: Foto de Perfil ─── */
+
+function ProfilePhotoSection() {
+  const { user } = useAuth();
+  const updateImage = useUpdateProfileImage();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  if (!user) return null;
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = "";
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSelectedImage(reader.result as string);
+      setCropperOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropComplete = (base64: string) => {
+    updateImage.mutate({ imageBase64: base64 });
+  };
+
+  const initials = user.username.slice(0, 2).toUpperCase();
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110";
+  const imageUrl = user.profileImage
+    ? `${apiUrl}/${user.profileImage}?t=${new Date().getTime()}`
+    : undefined;
+
+  return (
+    <>
+      <div className="space-y-1">
+        <h3 className="text-lg font-semibold">Foto de Perfil</h3>
+        <p className="text-sm text-muted-foreground mb-6">
+          Personalize sua foto de perfil. A imagem será recortada em formato quadrado.
+        </p>
+      </div>
+
+      <div className="flex flex-col items-center gap-6 py-4 sm:flex-row sm:items-start">
+        <div className="relative shrink-0">
+          <Avatar className="h-32 w-32 border-2 border-border">
+            <AvatarImage src={imageUrl} alt={user.username} />
+            <AvatarFallback className="text-3xl">{initials}</AvatarFallback>
+          </Avatar>
+        </div>
+
+        <div className="flex flex-col gap-3 text-center sm:text-left">
+          <p className="text-sm text-muted-foreground">
+            Formatos aceitos: <strong>JPG, PNG</strong>. Tamanho máximo recomendado: <strong>2MB</strong>.
+          </p>
+          <div>
+            <Button
+              variant="outline"
+              onClick={() => fileRef.current?.click()}
+              disabled={updateImage.isPending}
+            >
+              <Camera className="mr-2 h-4 w-4" />
+              {updateImage.isPending ? "Enviando..." : "Escolher imagem"}
+            </Button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/png,image/jpeg,image/jpg"
+              className="hidden"
+              onChange={handleImageSelect}
+            />
+          </div>
+        </div>
+      </div>
+
+      <ImageCropper
+        imageSrc={selectedImage}
+        open={cropperOpen}
+        onOpenChange={setCropperOpen}
+        onComplete={handleCropComplete}
+        aspect={1}
+      />
+    </>
+  );
+}
+
+/* ─── Tab 4: Zona de Perigo ─── */
+
+function DangerZoneSection() {
   const deleteAccount = useDeleteAccount();
   const [showDialog, setShowDialog] = useState(false);
   const [password, setPassword] = useState("");
@@ -332,20 +422,32 @@ function DangerZoneCard() {
 
   return (
     <>
-      <Card className="border-destructive/50 p-6">
-        <div className="mb-4 flex items-center gap-2">
-          <Trash2 className="h-5 w-5 text-destructive" />
-          <h3 className="font-semibold text-destructive">Zona de Perigo</h3>
-        </div>
-        <p className="mb-4 text-sm text-muted-foreground">
-          Uma vez deletada, sua conta e todos os dados associados serão
-          permanentemente removidos. Esta ação não pode ser desfeita.
+      <div className="space-y-1">
+        <h3 className="text-lg font-semibold text-destructive">Zona de Perigo</h3>
+        <p className="text-sm text-muted-foreground mb-6">
+          Ações irreversíveis para sua conta.
         </p>
-        <Button variant="destructive" onClick={() => setShowDialog(true)}>
-          <Trash2 className="mr-2 h-4 w-4" />
-          Deletar minha conta
-        </Button>
-      </Card>
+      </div>
+
+      <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-medium">Deletar minha conta</p>
+            <p className="text-sm text-muted-foreground">
+              Uma vez deletada, sua conta e todos os dados associados serão
+              permanentemente removidos. Esta ação não pode ser desfeita.
+            </p>
+          </div>
+          <Button
+            variant="destructive"
+            className="shrink-0"
+            onClick={() => setShowDialog(true)}
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Deletar conta
+          </Button>
+        </div>
+      </div>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent>
@@ -385,14 +487,14 @@ function DangerZoneCard() {
   );
 }
 
+/* ─── Skeleton ─── */
+
 function ProfileSkeleton() {
   return (
     <div className="space-y-6">
       <Skeleton className="h-10 w-64" />
       <Skeleton className="h-32 w-full rounded-xl" />
-      <Skeleton className="h-48 w-full rounded-xl" />
-      <Skeleton className="h-64 w-full rounded-xl" />
-      <Skeleton className="h-32 w-full rounded-xl" />
+      <Skeleton className="h-96 w-full rounded-xl" />
     </div>
   );
 }
