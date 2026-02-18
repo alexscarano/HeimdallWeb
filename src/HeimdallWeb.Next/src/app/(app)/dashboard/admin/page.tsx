@@ -257,6 +257,7 @@ function AdminDashboardContent() {
                 <Area
                   type="monotone"
                   dataKey="count"
+                  name="Scans"
                   stroke={chartColor}
                   fillOpacity={1}
                   fill="url(#colorScans)"
