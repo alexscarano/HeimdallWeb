@@ -8,6 +8,12 @@ namespace HeimdallWeb.Application.Services.Scanners
 {
     public class HeaderScanner : IScanner
     {
+        public ScannerMetadata Metadata => new(
+            Key: "Headers",
+            DisplayName: "HTTP Security Headers",
+            Category: "Headers",
+            DefaultTimeout: TimeSpan.FromSeconds(8));
+
         private readonly Dictionary<string, Func<string, bool>> _securityHeaders = new()
         {
             { "Strict-Transport-Security", v => v.Contains("max-age") },

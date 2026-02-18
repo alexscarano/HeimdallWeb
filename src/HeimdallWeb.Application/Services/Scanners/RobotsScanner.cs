@@ -6,6 +6,12 @@ namespace HeimdallWeb.Application.Services.Scanners;
 
 public class RobotsScanner : IScanner
 {
+    public ScannerMetadata Metadata => new(
+        Key: "Robots",
+        DisplayName: "Robots.txt",
+        Category: "Robots",
+        DefaultTimeout: TimeSpan.FromSeconds(5));
+
     public async Task<JObject> ScanAsync(string target, CancellationToken cancellationToken = default)
     {
         var alerts = new List<string>();

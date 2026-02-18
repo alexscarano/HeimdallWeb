@@ -24,6 +24,7 @@ public class UnitOfWork : IUnitOfWork
     private IAuditLogRepository? _auditLogs;
     private IUserUsageRepository? _userUsages;
     private IUserStatisticsViewRepository? _userStatisticsViews;
+    private IRiskWeightRepository? _riskWeights;
 
     public UnitOfWork(AppDbContext context)
     {
@@ -54,7 +55,10 @@ public class UnitOfWork : IUnitOfWork
 
     public IUserStatisticsViewRepository UserStatisticsViews =>
         _userStatisticsViews ??= new UserStatisticsViewRepository(_context);
-    
+
+    public IRiskWeightRepository RiskWeights =>
+        _riskWeights ??= new RiskWeightRepository(_context);
+
     // Raw query support for VIEWs
     public IQueryable<T> QueryView<T>() where T : class
     {

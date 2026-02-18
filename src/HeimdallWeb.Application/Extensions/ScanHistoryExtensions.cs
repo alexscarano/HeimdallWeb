@@ -46,7 +46,9 @@ public static class ScanHistoryExtensions
             Summary: scanHistory.Summary,
             Duration: scanHistory.Duration?.Value ?? TimeSpan.Zero, // TimeSpan directly, default to Zero if null
             HasCompleted: scanHistory.HasCompleted,
-            CreatedDate: scanHistory.CreatedDate
+            CreatedDate: scanHistory.CreatedDate,
+            Score: scanHistory.Score,
+            Grade: scanHistory.Grade
         );
     }
 

@@ -9,5 +9,7 @@ public record ExecuteScanResponse(
     string Summary,
     TimeSpan Duration,
     bool HasCompleted,
-    DateTime CreatedDate
+    DateTime CreatedDate,
+    int? Score,
+    string? Grade
 );

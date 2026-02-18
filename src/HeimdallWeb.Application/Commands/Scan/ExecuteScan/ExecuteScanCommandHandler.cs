@@ -4,6 +4,7 @@ using FluentValidation;
 using HeimdallWeb.Application.Common.Exceptions;
 using HeimdallWeb.Application.Common.Interfaces;
 using HeimdallWeb.Application.DTOs.Scan;
+using HeimdallWeb.Application.Interfaces;
 using HeimdallWeb.Application.Services;
 using HeimdallWeb.Application.Services.AI;
 using HeimdallWeb.Domain.Entities;
@@ -31,6 +32,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
     private readonly IUnitOfWork _unitOfWork;
     private readonly IScannerService _scannerService;
     private readonly IGeminiService _geminiService;
+    private readonly IScoreCalculatorService _scoreCalculatorService;
     private readonly IConfiguration _configuration;
     private readonly int _maxDailyRequests;
 
@@ -38,11 +40,13 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         IUnitOfWork unitOfWork,
         IScannerService scannerService,
         IGeminiService geminiService,
+        IScoreCalculatorService scoreCalculatorService,
         IConfiguration configuration)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _scannerService = scannerService ?? throw new ArgumentNullException(nameof(scannerService));
         _geminiService = geminiService ?? throw new ArgumentNullException(nameof(geminiService));
+        _scoreCalculatorService = scoreCalculatorService ?? throw new ArgumentNullException(nameof(scoreCalculatorService));
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _maxDailyRequests = 5; // Default daily quota for regular users
     }
@@ -78,7 +82,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 cancellationToken);
 
             // Step 5: Save scan results to database within a transaction
-            var historyPublicId = await SaveScanResultsAsync(
+            var (historyPublicId, score, grade) = await SaveScanResultsAsync(
                 userInternalId,
                 normalizedTarget,
                 scanResultJson,
@@ -100,7 +104,9 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 Summary: aiSummary,
                 Duration: stopwatch.Elapsed,
                 HasCompleted: true,
-                CreatedDate: DateTime.UtcNow
+                CreatedDate: DateTime.UtcNow,
+                Score: score,
+                Grade: grade
             );
         }
         catch (OperationCanceledException ex)
@@ -126,12 +132,14 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
             return new ExecuteScanResponse(
                 HistoryId: incompleteHistoryId,
                 Target: normalizedTarget,
-                Summary: cancellationToken.IsCancellationRequested 
-                    ? "Scan was cancelled by the user." 
+                Summary: cancellationToken.IsCancellationRequested
+                    ? "Scan was cancelled by the user."
                     : "Scan took too long and was cancelled (max 75 seconds).",
                 Duration: stopwatch.Elapsed,
                 HasCompleted: false,
-                CreatedDate: DateTime.UtcNow
+                CreatedDate: DateTime.UtcNow,
+                Score: null,
+                Grade: null
             );
         }
         catch (Exception ex)
@@ -160,7 +168,9 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 Summary: $"Error: {ex.Message}",
                 Duration: stopwatch.Elapsed,
                 HasCompleted: false,
-                CreatedDate: DateTime.UtcNow
+                CreatedDate: DateTime.UtcNow,
+                Score: null,
+                Grade: null
             );
         }
     }
@@ -240,9 +250,10 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
     /// <summary>
     /// Saves all scan results to the database within a transaction.
     /// Includes ScanHistory, Findings, Technologies, IASummary, UserUsage, and AuditLog.
-    /// Returns the PublicId of the created history.
+    /// Also calculates and persists the security score and grade.
+    /// Returns the PublicId of the created history plus the computed Score and Grade.
     /// </summary>
-    private async Task<Guid> SaveScanResultsAsync(
+    private async Task<(Guid PublicId, int Score, string Grade)> SaveScanResultsAsync(
         int userId,
         string target,
         string scanResultJson,
@@ -272,6 +283,11 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 await ParseAndSaveTechnologiesAsync(historyId, aiResponseJson, cancellationToken);
                 await ParseAndSaveIASummaryAsync(historyId, aiResponseJson, cancellationToken);
 
+                // Calculate security score from persisted findings
+                var findings = await _unitOfWork.Findings.GetByHistoryIdAsync(historyId, cancellationToken);
+                var (score, grade) = await _scoreCalculatorService.CalculateAsync(findings, cancellationToken);
+                createdHistory.SetScore(score, grade);
+
                 // Update UserUsage (increment request count)
                 await UpdateUserUsageAsync(userId, cancellationToken);
 
@@ -286,10 +302,10 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                     remoteIp: remoteIp
                 ), cancellationToken);
 
-                // Final save
+                // Final save (persists score/grade on the history record)
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return createdHistory.PublicId; // Return PublicId instead of HistoryId
+                return (createdHistory.PublicId, score, grade);
             }, ct);
         }
         catch (Exception ex)

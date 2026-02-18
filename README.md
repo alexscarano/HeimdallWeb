@@ -210,6 +210,52 @@ npm run dev
 -   **Erro de migração do EF Core**: Se encontrar problemas, você pode apagar o banco de dados e recriá-lo, depois rodar `dotnet ef database update` novamente.
 -   **Erro de autenticação JWT**: Certifique-se de que a chave JWT em `appsettings` tem pelo menos 32 caracteres.
 
+## 🐳 Ambiente de Desenvolvimento com Docker
+
+Para uma experiência de desenvolvimento simplificada, o projeto está configurado para rodar inteiramente em contêineres Docker, gerenciados com `docker-compose`. Esta abordagem automatiza todo o processo de setup, desde a criação do banco de dados até a execução das aplicações com hot-reload.
+
+**Aviso:** Conforme as diretrizes do projeto (`CLAUDE.md`), o Docker é recomendado **apenas para o ambiente de produção**. O fluxo de desenvolvimento principal deve utilizar `dotnet run` e `npm run dev` diretamente no host.
+
+### Pré-requisitos
+
+-   **[Docker](https://www.docker.com/products/docker-desktop/)** e **Docker Compose**.
+
+### Como Executar com Docker
+
+1.  **Crie o arquivo `.env`**: Na raiz do projeto, crie um arquivo `.env` a partir do exemplo `env.example` e preencha as variáveis, como a chave da API do Gemini e as credenciais do banco de dados.
+
+2.  **Suba os contêineres**: Execute o seguinte comando na raiz do projeto:
+    ```bash
+    docker-compose up --build
+    ```
+
+### O Que Acontece Automaticamente?
+
+O comando `docker-compose up` orquestra as seguintes etapas:
+
+1.  **Rede Docker**: Cria uma rede isolada (`heimdall_net`) para os serviços se comunicarem.
+2.  **Banco de Dados**: Inicia um contêiner com **PostgreSQL 16**. Os dados são persistidos em um volume Docker (`heimdall_pgdata`), sobrevivendo a reinicializações.
+3.  **Backend (.NET API)**:
+    - O contêiner da API aguarda até que o banco de dados esteja pronto para aceitar conexões.
+    - Aplica automaticamente todas as **migrações pendentes** do Entity Framework Core.
+    - Executa um script para criar ou atualizar as **14 SQL Views** necessárias para os dashboards.
+    - Inicia a aplicação com `dotnet watch`, ativando o **hot-reload** para o backend.
+4.  **Frontend (Next.js)**:
+    - Inicia a aplicação Next.js em modo de desenvolvimento (`next dev`).
+    - O **hot-reload (Fast Refresh)** é ativado por padrão.
+    - O contêiner é configurado para se comunicar com a API através da rede Docker interna.
+
+### Acessando os Serviços
+
+Após a execução, os serviços estarão disponíveis nos seguintes endereços:
+
+-   **Frontend (Next.js)**: `http://localhost:3000`
+-   **Backend API**: `http://localhost:5110`
+-   **Swagger UI (API Docs)**: `http://localhost:5110/swagger`
+-   **Banco de Dados (PostgreSQL)**: Acessível em `localhost:5432` para clientes de banco de dados como DBeaver ou DataGrip.
+
+Com esta configuração, o desenvolvedor pode começar a trabalhar com um único comando, beneficiando-se de um ambiente consistente e com recarregamento automático de código tanto no frontend quanto no backend.
+
 ## 🖼️ Diagramas
 
 ### Diagrama do Banco de Dados

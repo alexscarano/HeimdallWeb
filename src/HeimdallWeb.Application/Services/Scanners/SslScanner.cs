@@ -12,6 +12,12 @@ namespace HeimdallWeb.Application.Services.Scanners
 {
     public class SslScanner : IScanner
     {
+        public ScannerMetadata Metadata => new(
+            Key: "SSL",
+            DisplayName: "SSL/TLS Certificate",
+            Category: "SSL",
+            DefaultTimeout: TimeSpan.FromSeconds(8));
+
         private readonly List<int> _ports = new() { 443 };
 
         public async Task<JObject> ScanAsync(string targetRaw, CancellationToken cancellationToken = default)

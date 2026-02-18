@@ -18,6 +18,12 @@ public class ScanHistory
     public DateTime CreatedDate { get; private set; }
     public int UserId { get; private set; }
 
+    /// <summary>Security score 0–100 computed by ScoreCalculatorService. Null for incomplete scans.</summary>
+    public int? Score { get; private set; }
+
+    /// <summary>Letter grade: A (90+), B (80–89), C (70–79), D (60–69), F (&lt;60). Null for incomplete scans.</summary>
+    public string? Grade { get; private set; }
+
     // Navigation properties (collections)
     // Note: Using ICollection instead of IReadOnlyCollection to allow EF Core materialization
     // Domain logic should not modify these collections directly outside of aggregate methods
@@ -44,6 +50,15 @@ public class ScanHistory
         CreatedDate = DateTime.UtcNow;
         RawJsonResult = "{}";
         Summary = string.Empty;
+    }
+
+    /// <summary>
+    /// Sets the computed security score and grade.
+    /// </summary>
+    public void SetScore(int score, string grade)
+    {
+        Score = score;
+        Grade = grade;
     }
 
     /// <summary>

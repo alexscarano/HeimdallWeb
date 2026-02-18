@@ -27,6 +27,7 @@ public static class DatabaseSeeder
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<AppDbContext>>();
 
         await SeedAdminUserAsync(db, logger);
+        await SeedRiskWeightsAsync(db, logger);
     }
 
     // -------------------------------------------------------------------------
@@ -67,6 +68,45 @@ public static class DatabaseSeeder
             "[DatabaseSeeder] Admin user created. Username: {Username} | Email: {Email}",
             admin.Username,
             email.Value);
+    }
+
+    // -------------------------------------------------------------------------
+    // Risk weight seed
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Seeds default risk weights for each scanner category.
+    /// Idempotent: skipped when tb_risk_weights already contains any rows.
+    /// </summary>
+    private static async Task SeedRiskWeightsAsync(AppDbContext db, ILogger logger)
+    {
+        bool hasWeights = await db.RiskWeights.AnyAsync();
+
+        if (hasWeights)
+        {
+            logger.LogInformation("[DatabaseSeeder] Risk weights already exist. Skipping seed.");
+            return;
+        }
+
+        // Default weights calibrated to the 6 built-in scanners + a General fallback.
+        // Higher weight → category findings deduct more from the 0-100 score.
+        var defaults = new[]
+        {
+            new Domain.Entities.RiskWeight("SSL",       1.5m),
+            new Domain.Entities.RiskWeight("Headers",   1.2m),
+            new Domain.Entities.RiskWeight("Port",      1.3m),
+            new Domain.Entities.RiskWeight("Sensitive", 1.4m),
+            new Domain.Entities.RiskWeight("Redirect",  0.9m),
+            new Domain.Entities.RiskWeight("Robots",    0.8m),
+            new Domain.Entities.RiskWeight("General",   1.0m),
+        };
+
+        db.RiskWeights.AddRange(defaults);
+        await db.SaveChangesAsync();
+
+        logger.LogInformation(
+            "[DatabaseSeeder] Seeded {Count} default risk weights.",
+            defaults.Length);
     }
 
     // -------------------------------------------------------------------------

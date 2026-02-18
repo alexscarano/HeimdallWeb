@@ -8,6 +8,12 @@ namespace HeimdallWeb.Application.Services.Scanners
 {
     public class HttpRedirectScanner : IScanner
     {
+        public ScannerMetadata Metadata => new(
+            Key: "Redirect",
+            DisplayName: "HTTP Redirect",
+            Category: "Redirect",
+            DefaultTimeout: TimeSpan.FromSeconds(8));
+
         private readonly TimeSpan _connectTimeout;
         private readonly TimeSpan _readTimeout;
         private readonly int _maxParallel;

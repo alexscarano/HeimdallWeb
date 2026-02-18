@@ -230,13 +230,11 @@ npx tsc --watch
 ```
 
 ### Docker
-**⚠️ DO NOT USE DOCKER FOR DEVELOPMENT**
+** USE DOCKER FOR DEVELOPMENT **
 
-Docker is configured for production deployment only. During development and migration phases, always use:
+Docker is configured for developmentdeployment, start containers with:
 ```bash
-dotnet clean
-dotnet build
-dotnet run --project HeimdallWebOld/HeimdallWebOld.csproj
+docker-compose up -d 
 ```
 
 Docker usage is reserved for final production deployment after migration is complete.

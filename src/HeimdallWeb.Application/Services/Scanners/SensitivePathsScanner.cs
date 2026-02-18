@@ -13,6 +13,12 @@ namespace HeimdallWeb.Application.Services.Scanners;
 /// </summary>
 public class SensitivePathsScanner : IScanner
 {
+    public ScannerMetadata Metadata => new(
+        Key: "Sensitive",
+        DisplayName: "Sensitive Paths",
+        Category: "Sensitive",
+        DefaultTimeout: TimeSpan.FromSeconds(20));
+
     private readonly HttpClient _httpClient;
     private readonly TimeSpan _connectTimeout;
     private readonly TimeSpan _readTimeout;

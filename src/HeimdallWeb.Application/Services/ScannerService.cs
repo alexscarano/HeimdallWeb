@@ -1,16 +1,24 @@
 using HeimdallWeb.Application.Services.Scanners;
+using Microsoft.Extensions.Logging;
 
 namespace HeimdallWeb.Application.Services;
 
 /// <summary>
-/// Service for coordinating all security scanners.
-/// Wraps the ScannerManager from the legacy codebase.
+/// Application service that delegates scanner orchestration to ScannerManager.
+/// ScannerManager now runs all scanners in parallel with individual timeouts.
 /// </summary>
 public class ScannerService : IScannerService
 {
+    private readonly ILogger<ScannerManager> _scannerLogger;
+
+    public ScannerService(ILogger<ScannerManager> scannerLogger)
+    {
+        _scannerLogger = scannerLogger;
+    }
+
     public async Task<string> RunAllScannersAsync(string target, CancellationToken cancellationToken)
     {
-        var scannerManager = new ScannerManager();
+        var scannerManager = new ScannerManager(_scannerLogger);
         var result = await scannerManager.RunAllAsync(target, cancellationToken);
         return result.ToString();
     }

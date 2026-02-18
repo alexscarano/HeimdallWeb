@@ -9,6 +9,12 @@ namespace HeimdallWeb.Application.Services.Scanners
 {
     public class PortScanner : IScanner
     {
+        public ScannerMetadata Metadata => new(
+            Key: "Port",
+            DisplayName: "Port Scanner",
+            Category: "Port",
+            DefaultTimeout: TimeSpan.FromSeconds(15));
+
         /// <summary>
         /// Timeout de tentativa de conexão
         /// </summary>

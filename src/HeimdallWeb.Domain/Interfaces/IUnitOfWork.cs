@@ -17,6 +17,7 @@ public interface IUnitOfWork : IDisposable
     IAuditLogRepository AuditLogs { get; }
     IUserUsageRepository UserUsages { get; }
     IUserStatisticsViewRepository UserStatisticsViews { get; }
+    IRiskWeightRepository RiskWeights { get; }
     
     // Raw query support for SQL VIEWs
     /// <summary>

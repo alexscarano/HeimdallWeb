@@ -1,6 +1,14 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build:*)",
+      "Bash(dotnet clean:*)",
+      "Bash(dotnet ef migrations add:*)",
+      "Bash(dotnet publish:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "puppeteer"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

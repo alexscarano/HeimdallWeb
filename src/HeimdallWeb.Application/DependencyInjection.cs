@@ -51,6 +51,11 @@ public static class DependencyInjection
     {
         var assembly = Assembly.GetExecutingAssembly();
 
+        // ===== Memory Cache =====
+        // Required by ScoreCalculatorService for caching RiskWeights (10-min TTL).
+        // AddMemoryCache is idempotent — safe to call even if already registered.
+        services.AddMemoryCache();
+
         // ===== FluentValidation =====
         // Automatically discovers and registers all IValidator<T> implementations
         // from this assembly (9 validators for commands)
@@ -61,6 +66,7 @@ public static class DependencyInjection
         services.AddScoped<IScannerService, ScannerService>();
         services.AddScoped<IGeminiService, GeminiService>();
         services.AddScoped<IPdfService, PdfService>();
+        services.AddScoped<IScoreCalculatorService, ScoreCalculatorService>();
         // TokenService is static - no registration needed
 
         // ===== Command Handlers (9 total) =====

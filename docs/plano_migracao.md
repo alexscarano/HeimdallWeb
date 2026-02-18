@@ -681,6 +681,22 @@ npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
 - [x] Build frontend: 0 errors, 11 routes ✅
 - [x] Documentação: `docs/security/IDOR_FIX_SUMMARY.md` criado
 
+### Implementation Plan — Sprint 1: Core Engine Refactoring & Scoring ✅ COMPLETO (2026-02-18)
+- [x] `RiskWeight` entity criada (`tb_risk_weights`) — Category, Weight, IsActive
+- [x] `IRiskWeightRepository` interface + implementação
+- [x] `IUnitOfWork` atualizado com `RiskWeights` repository
+- [x] `ScanHistory` entity: adicionados `Score` (int?) e `Grade` (string?)
+- [x] `ScannerMetadata` record criado (Key, DisplayName, Category, DefaultTimeout)
+- [x] `IScanner` atualizado com propriedade `Metadata`
+- [x] Todos os 6 scanners implementam `Metadata` com timeouts individuais
+- [x] `ScannerManager` refatorado para `Task.WhenAll` (paralelismo real) + timeouts individuais por scanner
+- [x] `ScoreCalculatorService` criado — score 0-100, grade A-F, cache 10min, pesos por categoria
+- [x] `ExecuteScanResponse` atualizado com `Score` e `Grade`
+- [x] `ExecuteScanCommandHandler` calcula e persiste score após scan
+- [x] Migration `Sprint1_RiskWeights_ScanScore` criada
+- [x] Seed de 7 risk weights padrão (SSL=1.5, Headers=1.2, Port=1.3, Sensitive=1.4, Redirect=0.9, Robots=0.8, General=1.0)
+- [x] Build: 0 erros em todos os projetos C#
+
 ### Sprint 6.2 — E2E Manual + Validação Final (4-5h)
 - [ ] Fluxo completo: register → login → executar scan → ver resultado → exportar PDF
 - [ ] Dashboard admin com dados reais do PostgreSQL
