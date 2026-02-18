@@ -20,18 +20,23 @@ public interface IAuditLogRepository
     /// <summary>
     /// Gets paginated audit logs with optional filters.
     /// </summary>
-    /// <param name="page">Page number (1-based)</param>
-    /// <param name="pageSize">Items per page</param>
-    /// <param name="level">Filter by log level (optional)</param>
-    /// <param name="startDate">Filter by start date (optional)</param>
-    /// <param name="endDate">Filter by end date (optional)</param>
-    /// <param name="ct">Cancellation token</param>
-    /// <returns>Tuple with logs list and total count</returns>
     Task<(IEnumerable<AuditLog> Logs, int TotalCount)> GetPaginatedAsync(
         int page,
         int pageSize,
         string? level = null,
         DateTime? startDate = null,
         DateTime? endDate = null,
+        string? source = null,
+        string? username = null,
         CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets all distinct Source values for filter dropdown.
+    /// </summary>
+    Task<List<string>> GetDistinctSourcesAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets all distinct Message values for filter dropdown.
+    /// </summary>
+    Task<List<string>> GetDistinctMessagesAsync(CancellationToken ct = default);
 }

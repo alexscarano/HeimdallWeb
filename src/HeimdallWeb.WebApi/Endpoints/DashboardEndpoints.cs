@@ -39,6 +39,8 @@ public static class DashboardEndpoints
         [FromQuery] string? logLevel,
         [FromQuery] DateTime? logStartDate,
         [FromQuery] DateTime? logEndDate,
+        [FromQuery] string? logSource,
+        [FromQuery] string? logUsername,
         IQueryHandler<GetAdminDashboardQuery, AdminDashboardResponse> handler,
         HttpContext context)
     {
@@ -54,7 +56,9 @@ public static class DashboardEndpoints
             logPageSize,
             logLevel,
             logStartDate,
-            logEndDate
+            logEndDate,
+            logSource,
+            logUsername
         );
 
         var result = await handler.Handle(query);

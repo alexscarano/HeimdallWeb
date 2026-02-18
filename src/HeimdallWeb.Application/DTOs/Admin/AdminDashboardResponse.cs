@@ -10,7 +10,9 @@ public record AdminDashboardResponse(
     PaginatedLogsSection Logs,
     List<RecentActivityItem> RecentActivity,
     List<TrendItem> ScanTrend,
-    List<TrendItem> UserRegistrationTrend
+    List<TrendItem> UserRegistrationTrend,
+    List<string> LogSources,
+    List<string> LogMessages
 );
 
 /// <summary>

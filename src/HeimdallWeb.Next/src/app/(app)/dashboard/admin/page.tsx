@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useTheme } from "next-themes";
 import { format } from "date-fns";
 import {
@@ -10,6 +10,7 @@ import {
   AlertTriangle,
   TrendingUp,
   BarChart3,
+  Search,
 } from "lucide-react";
 import { AdminGuard } from "@/components/layout/admin-guard";
 import { useAdminDashboard } from "@/lib/hooks/use-admin";
@@ -34,6 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   AreaChart,
   Area,
@@ -63,15 +65,33 @@ export default function AdminDashboardPage() {
 function AdminDashboardContent() {
   const [logPage, setLogPage] = useState(1);
   const [logLevel, setLogLevel] = useState<string>("all");
+  const [logSource, setLogSource] = useState<string>("all");
+  const [logStartDate, setLogStartDate] = useState<string>("");
+  const [logEndDate, setLogEndDate] = useState<string>("");
+  const [logUsername, setLogUsername] = useState<string>("");
+  const [debouncedUsername, setDebouncedUsername] = useState<string>("");
   const scrollPosRef = useRef<number>(0);
   const { resolvedTheme } = useTheme();
   const chartColor = resolvedTheme === "dark" ? "#6366f1" : "#059669";
   const tickColor = resolvedTheme === "dark" ? "#cbd5e1" : "#64748b";
 
+  // Debounce username filter
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedUsername(logUsername);
+      setLogPage(1);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [logUsername]);
+
   const { data, isLoading } = useAdminDashboard({
     logPage,
     logPageSize: 10,
     logLevel: logLevel === "all" ? undefined : logLevel,
+    logSource: logSource === "all" ? undefined : logSource,
+    logStartDate: logStartDate || undefined,
+    logEndDate: logEndDate || undefined,
+    logUsername: debouncedUsername || undefined,
   });
 
   // Restore scroll position after log page change
@@ -322,24 +342,86 @@ function AdminDashboardContent() {
       <Card className="p-6">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-semibold">Logs de Auditoria</h3>
-          <Select
-            value={logLevel}
-            onValueChange={(val) => {
-              setLogLevel(val);
-              setLogPage(1);
-            }}
-          >
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Nível" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="Info">Info</SelectItem>
-              <SelectItem value="Warning">Warning</SelectItem>
-              <SelectItem value="Error">Error</SelectItem>
-              <SelectItem value="Critical">Critical</SelectItem>
-            </SelectContent>
-          </Select>
+        </div>
+
+        {/* Filters */}
+        <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {/* Date Start */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">Data Início</label>
+            <input
+              type="date"
+              value={logStartDate}
+              onChange={(e) => { setLogStartDate(e.target.value); setLogPage(1); }}
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            />
+          </div>
+          {/* Date End */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">Data Fim</label>
+            <input
+              type="date"
+              value={logEndDate}
+              onChange={(e) => { setLogEndDate(e.target.value); setLogPage(1); }}
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            />
+          </div>
+          {/* Nível */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">Nível</label>
+            <Select
+              value={logLevel}
+              onValueChange={(val) => {
+                setLogLevel(val);
+                setLogPage(1);
+              }}
+            >
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="Nível" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="Info">Info</SelectItem>
+                <SelectItem value="Warning">Warning</SelectItem>
+                <SelectItem value="Error">Error</SelectItem>
+                <SelectItem value="Critical">Critical</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {/* Origem */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">Origem</label>
+            <Select
+              value={logSource}
+              onValueChange={(val) => {
+                setLogSource(val);
+                setLogPage(1);
+              }}
+            >
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="Origem" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas</SelectItem>
+                {(data?.logSources ?? []).map((s) => (
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {/* Usuário */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">Usuário</label>
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={logUsername}
+                onChange={(e) => setLogUsername(e.target.value)}
+                placeholder="Buscar..."
+                className="h-9 pl-8"
+              />
+            </div>
+          </div>
         </div>
         <div className="rounded-lg border">
           <Table>

@@ -9,6 +9,10 @@ export function useAdminDashboard(params?: {
   logPage?: number;
   logPageSize?: number;
   logLevel?: string;
+  logStartDate?: string;
+  logEndDate?: string;
+  logSource?: string;
+  logUsername?: string;
 }) {
   const { user } = useAuth();
 

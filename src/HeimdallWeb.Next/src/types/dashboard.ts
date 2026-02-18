@@ -5,6 +5,8 @@ export interface AdminDashboardResponse {
   recentActivity: RecentActivityItem[];
   scanTrend: TrendItem[];
   userRegistrationTrend: TrendItem[];
+  logSources: string[];
+  logMessages: string[];
 }
 
 export interface UserStatsSection {

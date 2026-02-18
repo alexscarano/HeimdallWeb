@@ -14,6 +14,8 @@ export async function getAdminDashboard(params?: {
   logLevel?: string;
   logStartDate?: string;
   logEndDate?: string;
+  logSource?: string;
+  logUsername?: string;
 }): Promise<AdminDashboardResponse> {
   const response = await apiClient.get<AdminDashboardResponse>(endpoints.dashboard.admin, {
     params,

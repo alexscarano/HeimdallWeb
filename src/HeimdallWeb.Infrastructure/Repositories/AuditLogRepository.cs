@@ -44,6 +44,8 @@ public class AuditLogRepository : IAuditLogRepository
         string? level = null,
         DateTime? startDate = null,
         DateTime? endDate = null,
+        string? source = null,
+        string? username = null,
         CancellationToken ct = default)
     {
         var query = _context.AuditLogs
@@ -67,6 +69,16 @@ public class AuditLogRepository : IAuditLogRepository
             query = query.Where(l => l.Timestamp <= endDate.Value);
         }
 
+        if (!string.IsNullOrWhiteSpace(source))
+        {
+            query = query.Where(l => l.Source == source);
+        }
+
+        if (!string.IsNullOrWhiteSpace(username))
+        {
+            query = query.Where(l => l.User != null && EF.Functions.ILike(l.User.Username, $"%{username}%"));
+        }
+
         // Get total count before pagination
         var totalCount = await query.CountAsync(ct);
 
@@ -78,5 +90,26 @@ public class AuditLogRepository : IAuditLogRepository
             .ToListAsync(ct);
 
         return (logs, totalCount);
+    }
+
+    public async Task<List<string>> GetDistinctSourcesAsync(CancellationToken ct = default)
+    {
+        return await _context.AuditLogs
+            .AsNoTracking()
+            .Where(l => l.Source != null)
+            .Select(l => l.Source!)
+            .Distinct()
+            .OrderBy(s => s)
+            .ToListAsync(ct);
+    }
+
+    public async Task<List<string>> GetDistinctMessagesAsync(CancellationToken ct = default)
+    {
+        return await _context.AuditLogs
+            .AsNoTracking()
+            .Select(l => l.Message)
+            .Distinct()
+            .OrderBy(m => m)
+            .ToListAsync(ct);
     }
 }

@@ -73,7 +73,13 @@ public class GetAdminDashboardQueryHandler : IQueryHandler<GetAdminDashboardQuer
             query.LogLevel,
             query.LogStartDate,
             query.LogEndDate,
+            query.LogSource,
+            query.LogUsername,
             cancellationToken);
+
+        // Get distinct values for filter dropdowns
+        var logSources = await _unitOfWork.AuditLogs.GetDistinctSourcesAsync(cancellationToken);
+        var logMessages = await _unitOfWork.AuditLogs.GetDistinctMessagesAsync(cancellationToken);
 
         var logItems = logs.Select(l => new LogItem(
             LogId: l.LogId,
@@ -134,7 +140,9 @@ public class GetAdminDashboardQueryHandler : IQueryHandler<GetAdminDashboardQuer
             Logs: paginatedLogs,
             RecentActivity: recentActivity,
             ScanTrend: scanTrend,
-            UserRegistrationTrend: userRegistrationTrend
+            UserRegistrationTrend: userRegistrationTrend,
+            LogSources: logSources,
+            LogMessages: logMessages
         );
     }
 }
