@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using FluentValidation;
 using HeimdallWeb.Application.Common.Interfaces;
 using HeimdallWeb.Domain.Enums;
 using HeimdallWeb.Domain.Interfaces;
@@ -23,6 +24,7 @@ public class ForgotPasswordCommandHandler : ICommandHandler<ForgotPasswordComman
     private readonly IEmailService _emailService;
     private readonly IConfiguration _configuration;
     private readonly ILogger<ForgotPasswordCommandHandler> _logger;
+    private readonly IValidator<ForgotPasswordCommand> _validator;
 
     // Security: always return this message regardless of whether the email exists
     private const string NeutralMessage = "If this email is registered, a reset link was sent.";
@@ -31,16 +33,21 @@ public class ForgotPasswordCommandHandler : ICommandHandler<ForgotPasswordComman
         IUnitOfWork unitOfWork,
         IEmailService emailService,
         IConfiguration configuration,
-        ILogger<ForgotPasswordCommandHandler> logger)
+        ILogger<ForgotPasswordCommandHandler> logger,
+        IValidator<ForgotPasswordCommand> validator)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
     }
 
     public async Task<ForgotPasswordResponse> Handle(ForgotPasswordCommand command, CancellationToken ct = default)
     {
+        // Validate input format (throws ValidationException on invalid email)
+        await _validator.ValidateAndThrowAsync(command, ct);
+
         var emailInput = command.Email.Trim().ToLower();
 
         // Attempt to create a valid EmailAddress value object
