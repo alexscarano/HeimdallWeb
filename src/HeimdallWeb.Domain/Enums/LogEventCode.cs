@@ -27,5 +27,16 @@ public enum LogEventCode
     USER_STATUS_TOGGLED,
     USER_DELETED_BY_ADMIN,
     PROFILE_IMAGE_UPDATED,
-    UNHANDLED_EXCEPTION
+    UNHANDLED_EXCEPTION,
+
+    // Sprint 5: Password reset events
+    PASSWORD_RESET_REQUESTED,
+    PASSWORD_RESET_COMPLETED,
+
+    // Sprint 5: Google OAuth events
+    GOOGLE_AUTH_SUCCESS,
+    GOOGLE_AUTH_FAILED,
+
+    // Sprint 5: Support contact form
+    CONTACT_FORM_SENT
 }

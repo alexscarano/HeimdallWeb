@@ -787,15 +787,16 @@ npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
 - [x] `ExecuteScanResponse`: adicionado `bool IsCached = false`
 - [x] Build: 0 erros, 0 warnings em todos os projetos
 
-### Implementation Sprint 5 — Auth Google, Email & User Management
-- [ ] `IEmailService` interface no Domain + implementação SMTP via MailKit
-- [ ] Fluxo "Esqueci minha senha": token temporário + endpoint `POST /api/v1/auth/forgot-password`
-- [ ] Endpoint `POST /api/v1/auth/reset-password`
-- [ ] Google OAuth: `POST /api/v1/auth/google` — valida `id_token`, cria/atualiza usuário, emite JWT próprio
-- [ ] `tb_user` atualizado: colunas `auth_provider`, `external_id`, `password_reset_token`, `password_reset_expires`
-- [ ] Migration `Sprint5_GoogleAuth_PasswordReset`
-- [ ] Formulário de contato: `POST /api/v1/support/contact`
-- [ ] Build: 0 erros
+### Implementation Sprint 5 — Auth Google, Email & User Management ✅ COMPLETO (2026-02-19)
+- [x] `IEmailService` interface no Domain + implementação SMTP via MailKit
+- [x] Fluxo "Esqueci minha senha": token temporário + endpoint `POST /api/v1/auth/forgot-password`
+- [x] Endpoint `POST /api/v1/auth/reset-password`
+- [x] Google OAuth: `POST /api/v1/auth/google` — valida `id_token`, cria/atualiza usuário, emite JWT próprio
+- [x] `tb_user` atualizado: colunas `auth_provider`, `external_id`, `password_reset_token`, `password_reset_expires`
+- [x] Migration `Sprint5_GoogleAuth_PasswordReset`
+- [x] Formulário de contato: `POST /api/v1/support/contact`
+- [x] Build: 0 erros, 0 warnings
+- [x] Segurança: 6 fixes críticos/altos (Sentinel) — token leak, TLS downgrade, HTML injection, audience validation, account takeover, email enumeration
 
 ### Implementation Sprint 6 — UX & Frontend (Next.js)
 - [ ] Landing page: `/app/(public)/page.tsx` — Hero, Features, Preview

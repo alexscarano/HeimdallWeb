@@ -1,6 +1,7 @@
 using HeimdallWeb.Domain.Interfaces;
 using HeimdallWeb.Domain.Interfaces.Repositories;
 using HeimdallWeb.Infrastructure.Data;
+using HeimdallWeb.Infrastructure.External;
 using HeimdallWeb.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -57,7 +58,11 @@ public static class DependencyInjection
         services.AddScoped<IRiskSnapshotRepository, RiskSnapshotRepository>();
         services.AddScoped<IScanCacheRepository, ScanCacheRepository>();
 
-        // Note: Security Scanners and External Services (GeminiService) will be added in Phase 3
+        // External Services
+        // Sprint 5: Email service with graceful degradation when SMTP is not configured
+        services.AddScoped<IEmailService, EmailService>();
+
+        // Note: Security Scanners and external AI service (GeminiService) will be added in Phase 3
         // after refactoring them to remove legacy dependencies
 
         return services;

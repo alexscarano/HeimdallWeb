@@ -134,6 +134,18 @@ public class UserRepository : IUserRepository
         // SaveChanges will be called by UnitOfWork
     }
 
+    public async Task<User?> GetByExternalIdAsync(string externalId, CancellationToken ct = default)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.ExternalId == externalId, ct);
+    }
+
+    public async Task<User?> GetByPasswordResetTokenAsync(string tokenHash, CancellationToken ct = default)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.PasswordResetToken == tokenHash, ct);
+    }
+
     public async Task<(IEnumerable<User> Users, int TotalCount)> GetPaginatedAsync(
         int page,
         int pageSize,

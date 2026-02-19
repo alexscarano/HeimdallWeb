@@ -2,8 +2,12 @@ using System.Reflection;
 using FluentValidation;
 using HeimdallWeb.Application.Commands.Admin.DeleteUserByAdmin;
 using HeimdallWeb.Application.Commands.Admin.ToggleUserStatus;
+using HeimdallWeb.Application.Commands.Auth.ForgotPassword;
+using HeimdallWeb.Application.Commands.Auth.GoogleAuth;
 using HeimdallWeb.Application.Commands.Auth.Login;
 using HeimdallWeb.Application.Commands.Auth.Register;
+using HeimdallWeb.Application.Commands.Auth.ResetPassword;
+using HeimdallWeb.Application.Commands.Support.SendContact;
 using HeimdallWeb.Application.Commands.Monitor.CreateMonitor;
 using HeimdallWeb.Application.Commands.Monitor.DeleteMonitor;
 using HeimdallWeb.Application.Commands.Scan.DeleteScanHistory;
@@ -85,9 +89,15 @@ public static class DependencyInjection
 
         // ===== Command Handlers (9 total) =====
 
-        // Auth Commands (2)
+        // Auth Commands (5 — Sprint 5 adds ForgotPassword, ResetPassword, GoogleAuth)
         services.AddScoped<ICommandHandler<LoginCommand, LoginResponse>, LoginCommandHandler>();
         services.AddScoped<ICommandHandler<RegisterUserCommand, RegisterUserResponse>, RegisterUserCommandHandler>();
+        services.AddScoped<ICommandHandler<ForgotPasswordCommand, ForgotPasswordResponse>, ForgotPasswordCommandHandler>();
+        services.AddScoped<ICommandHandler<ResetPasswordCommand, ResetPasswordResponse>, ResetPasswordCommandHandler>();
+        services.AddScoped<ICommandHandler<GoogleAuthCommand, LoginResponse>, GoogleAuthCommandHandler>();
+
+        // Support Commands (1 — Sprint 5)
+        services.AddScoped<ICommandHandler<SendContactCommand, SendContactResponse>, SendContactCommandHandler>();
 
         // Scan Commands (2)
         services.AddScoped<ICommandHandler<ExecuteScanCommand, ExecuteScanResponse>, ExecuteScanCommandHandler>();

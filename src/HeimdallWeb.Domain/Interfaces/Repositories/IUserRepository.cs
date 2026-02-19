@@ -80,6 +80,17 @@ public interface IUserRepository
     Task DeleteAsync(int userId, CancellationToken ct = default);
 
     /// <summary>
+    /// Sprint 5: Gets a user by their Google OAuth external ID (sub claim).
+    /// </summary>
+    Task<User?> GetByExternalIdAsync(string externalId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Sprint 5: Gets a user by their password reset token hash.
+    /// Used during the reset-password flow to validate the token.
+    /// </summary>
+    Task<User?> GetByPasswordResetTokenAsync(string tokenHash, CancellationToken ct = default);
+
+    /// <summary>
     /// Gets paginated users with optional filters.
     /// </summary>
     /// <param name="page">Page number (1-based)</param>

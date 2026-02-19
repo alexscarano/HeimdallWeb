@@ -62,6 +62,9 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 HeimdallWeb/appsettings.json
+src/HeimdallWeb.WebApi/appsettings.json
+**/appsettings.Development.json
+**/appsettings.Production.json
 
 # Build outputs
 bin/

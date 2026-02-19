@@ -17,6 +17,9 @@ public static class LayerRegistration
     /// <returns>IServiceCollection para encadeamento de chamadas</returns>
     public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
     {
+        // Sprint 5: Register IHttpClientFactory for GoogleAuthCommandHandler (Google tokeninfo validation)
+        services.AddHttpClient("Google");
+
         services.AddApplication();
         return services;
     }

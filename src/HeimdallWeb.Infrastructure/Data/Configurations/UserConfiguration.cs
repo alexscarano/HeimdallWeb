@@ -74,6 +74,27 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(255)
             .IsRequired(false);
 
+        // Sprint 5: Google OAuth and password reset fields
+        builder.Property(u => u.AuthProvider)
+            .HasColumnName("auth_provider")
+            .IsRequired()
+            .HasMaxLength(20)
+            .HasDefaultValue("Local");
+
+        builder.Property(u => u.ExternalId)
+            .HasColumnName("external_id")
+            .HasMaxLength(255)
+            .IsRequired(false);
+
+        builder.Property(u => u.PasswordResetToken)
+            .HasColumnName("password_reset_token")
+            .HasMaxLength(255)
+            .IsRequired(false);
+
+        builder.Property(u => u.PasswordResetExpires)
+            .HasColumnName("password_reset_expires")
+            .IsRequired(false);
+
         // Relationships
         builder.HasMany(u => u.ScanHistories)
             .WithOne(h => h.User)
@@ -106,5 +127,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasIndex(u => u.PublicId)
             .IsUnique()
             .HasDatabaseName("ux_tb_user_public_id");
+
+        // Sprint 5: Indexes for new lookup columns
+        builder.HasIndex(u => u.ExternalId)
+            .HasDatabaseName("ix_tb_user_external_id");
+
+        builder.HasIndex(u => u.PasswordResetToken)
+            .HasDatabaseName("ix_tb_user_password_reset_token");
     }
 }

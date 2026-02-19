@@ -11,14 +11,15 @@ public static class EndpointConfiguration
     /// <summary>
     /// Registra todos os grupos de endpoints da aplicação.
     /// 
-    /// Endpoints disponíveis (6 grupos):
-    /// - Authentication: /api/v1/auth (login, register, logout)
+    /// Endpoints disponíveis (7 grupos):
+    /// - Authentication: /api/v1/auth (login, register, logout, forgot-password, reset-password, google)
     /// - Scan: /api/v1/scan (iniciar, listar, detalhes de scan)
     /// - History: /api/v1/history (histórico de scans)
     /// - User: /api/v1/user (perfil, configurações)
     /// - Dashboard: /api/v1/dashboard (estatísticas de admin)
     /// - Profiles: /api/v1/profiles (scan profiles — public)
     /// - Monitor: /api/v1/monitor (monitoramento periódico de targets — Sprint 4)
+    /// - Support: /api/v1/support (contact form — Sprint 5)
     /// </summary>
     /// <remarks>
     /// Cada endpoint group é mapeado em sua própria classe estática (Endpoints/*.cs)
@@ -35,6 +36,7 @@ public static class EndpointConfiguration
         app.MapDashboardEndpoints();
         app.MapProfileEndpoints();
         app.MapMonitorEndpoints();
+        app.MapSupportEndpoints(); // Sprint 5
 
         return app;
     }

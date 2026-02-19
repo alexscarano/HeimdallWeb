@@ -6,12 +6,14 @@ namespace HeimdallWeb.Infrastructure.Data.Configurations;
 
 /// <summary>
 /// EF Core entity configuration for ScanCache entity.
-/// Maps to tb_scan_cache with snake_case columns and JSONB storage for ResultJson.
+/// Maps to tb_scan_cache (UNLOGGED table) with snake_case columns and JSONB storage for ResultJson.
+/// UNLOGGED: Faster writes, no WAL overhead. Data is truncated on crash (acceptable for cache).
 /// </summary>
 public class ScanCacheConfiguration : IEntityTypeConfiguration<ScanCache>
 {
     public void Configure(EntityTypeBuilder<ScanCache> builder)
     {
+        // Note: Table is created as UNLOGGED in migration for performance
         builder.ToTable("tb_scan_cache");
 
         // Primary Key
