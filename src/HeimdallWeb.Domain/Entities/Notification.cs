@@ -11,12 +11,18 @@ public class Notification
     public NotificationType Type { get; private set; }
     public bool IsRead { get; private set; }
     public DateTime CreatedAt { get; private set; }
+    public DateTime? ReadAt { get; private set; }
 
     // EF Core
     private Notification() { }
 
     public Notification(int userId, string title, string body, NotificationType type)
     {
+        if (string.IsNullOrWhiteSpace(title))
+            throw new ArgumentException("Notification title cannot be empty.", nameof(title));
+        if (string.IsNullOrWhiteSpace(body))
+            throw new ArgumentException("Notification body cannot be empty.", nameof(body));
+
         UserId = userId;
         Title = title;
         Body = body;
@@ -25,5 +31,10 @@ public class Notification
         CreatedAt = DateTime.UtcNow;
     }
 
-    public void MarkAsRead() => IsRead = true;
+    public void MarkAsRead()
+    {
+        if (IsRead) return;
+        IsRead = true;
+        ReadAt = DateTime.UtcNow;
+    }
 }
