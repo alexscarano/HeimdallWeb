@@ -53,6 +53,13 @@ public class AuditLogRepository : IAuditLogRepository
             .Include(l => l.User)
             .AsQueryable();
 
+        // Ensure UTC kind for Npgsql (fix for 500 error)
+        if (startDate.HasValue && startDate.Value.Kind != DateTimeKind.Utc)
+            startDate = DateTime.SpecifyKind(startDate.Value, DateTimeKind.Utc);
+
+        if (endDate.HasValue && endDate.Value.Kind != DateTimeKind.Utc)
+            endDate = DateTime.SpecifyKind(endDate.Value, DateTimeKind.Utc);
+
         // Apply filters
         if (!string.IsNullOrWhiteSpace(level))
         {
