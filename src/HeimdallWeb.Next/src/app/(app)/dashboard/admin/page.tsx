@@ -84,6 +84,11 @@ function AdminDashboardContent() {
     return () => clearTimeout(timer);
   }, [logUsername]);
 
+  // Save scroll before any filter/data change
+  const saveScroll = () => {
+    scrollPosRef.current = document.querySelector("main")?.scrollTop ?? 0;
+  };
+
   const { data, isLoading } = useAdminDashboard({
     logPage,
     logPageSize: 10,
@@ -350,7 +355,7 @@ function AdminDashboardContent() {
             <input
               type="date"
               value={logStartDate}
-              onChange={(e) => { setLogStartDate(e.target.value); setLogPage(1); }}
+              onChange={(e) => { saveScroll(); setLogStartDate(e.target.value); setLogPage(1); }}
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             />
           </div>
@@ -360,7 +365,7 @@ function AdminDashboardContent() {
             <input
               type="date"
               value={logEndDate}
-              onChange={(e) => { setLogEndDate(e.target.value); setLogPage(1); }}
+              onChange={(e) => { saveScroll(); setLogEndDate(e.target.value); setLogPage(1); }}
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             />
           </div>
@@ -369,7 +374,7 @@ function AdminDashboardContent() {
             <label className="text-xs font-medium text-muted-foreground">Nível</label>
             <Select
               value={logLevel}
-              onValueChange={(val) => { setLogLevel(val); setLogPage(1); }}
+              onValueChange={(val) => { saveScroll(); setLogLevel(val); setLogPage(1); }}
             >
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Nível" />
@@ -384,11 +389,11 @@ function AdminDashboardContent() {
             </Select>
           </div>
           {/* Origem */}
-          <div className="w-[200px] space-y-1">
+          <div className="w-[160px] space-y-1">
             <label className="text-xs font-medium text-muted-foreground">Origem</label>
             <Select
               value={logSource}
-              onValueChange={(val) => { setLogSource(val); setLogPage(1); }}
+              onValueChange={(val) => { saveScroll(); setLogSource(val); setLogPage(1); }}
             >
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Origem" />
@@ -402,7 +407,7 @@ function AdminDashboardContent() {
             </Select>
           </div>
           {/* Usuário */}
-          <div className="w-[180px] space-y-1">
+          <div className="w-[160px] space-y-1">
             <label className="text-xs font-medium text-muted-foreground">Usuário</label>
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
