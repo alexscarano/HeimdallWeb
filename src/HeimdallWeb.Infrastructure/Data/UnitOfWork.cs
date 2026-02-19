@@ -29,6 +29,7 @@ public class UnitOfWork : IUnitOfWork
     private IMonitoredTargetRepository? _monitoredTargets;
     private IRiskSnapshotRepository? _riskSnapshots;
     private IScanCacheRepository? _scanCaches;
+    private INotificationRepository? _notifications;
 
     public UnitOfWork(AppDbContext context)
     {
@@ -74,6 +75,9 @@ public class UnitOfWork : IUnitOfWork
 
     public IScanCacheRepository ScanCaches =>
         _scanCaches ??= new ScanCacheRepository(_context);
+
+    public INotificationRepository Notifications =>
+        _notifications ??= new NotificationRepository(_context);
 
     // Raw query support for VIEWs
     public IQueryable<T> QueryView<T>() where T : class

@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <!-- Workaround for NETSDK1226: prune package data missing for .NET 10.0 RC/preview SDK builds -->
+    <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
+    <!-- Workaround for Arch Linux RID: .NET SDK detects OS as "arch-x64" but NuGet only ships "linux-x64" host packages.
+         This overrides the download RID so restore resolves to the standard linux-x64 runtime packages. -->
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+  </PropertyGroup>
+</Project>

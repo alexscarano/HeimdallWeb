@@ -57,6 +57,7 @@ public static class DependencyInjection
         services.AddScoped<IMonitoredTargetRepository, MonitoredTargetRepository>();
         services.AddScoped<IRiskSnapshotRepository, RiskSnapshotRepository>();
         services.AddScoped<IScanCacheRepository, ScanCacheRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
 
         // External Services
         // Sprint 5: Email service with graceful degradation when SMTP is not configured

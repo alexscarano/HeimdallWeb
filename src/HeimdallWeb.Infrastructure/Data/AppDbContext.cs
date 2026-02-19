@@ -30,6 +30,7 @@ public class AppDbContext : DbContext
     public DbSet<MonitoredTarget> MonitoredTargets { get; set; } = null!;
     public DbSet<RiskSnapshot> RiskSnapshots { get; set; } = null!;
     public DbSet<ScanCache> ScanCaches { get; set; } = null!;
+    public DbSet<Notification> Notifications { get; set; } = null!;
 
     // Read-only DbSets for SQL VIEWs (14 total)
     // Dashboard VIEWs (6)
@@ -69,6 +70,7 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new MonitoredTargetConfiguration());
         modelBuilder.ApplyConfiguration(new RiskSnapshotConfiguration());
         modelBuilder.ApplyConfiguration(new ScanCacheConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationConfiguration());
 
         // SQL VIEWs - mapped as keyless entities (read-only)
         
