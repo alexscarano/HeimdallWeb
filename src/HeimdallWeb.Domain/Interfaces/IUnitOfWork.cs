@@ -22,6 +22,7 @@ public interface IUnitOfWork : IDisposable
     IMonitoredTargetRepository MonitoredTargets { get; }
     IRiskSnapshotRepository RiskSnapshots { get; }
     IScanCacheRepository ScanCaches { get; }
+    INotificationRepository Notifications { get; }
 
     // Raw query support for SQL VIEWs
     /// <summary>
