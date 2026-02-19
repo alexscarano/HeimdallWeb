@@ -340,14 +340,12 @@ function AdminDashboardContent() {
 
       {/* Audit Logs */}
       <Card className="p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="font-semibold">Logs de Auditoria</h3>
-        </div>
+        <h3 className="mb-4 font-semibold">Logs de Auditoria</h3>
 
         {/* Filters */}
-        <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {/* Date Start */}
-          <div className="space-y-1">
+        <div className="mb-4 flex flex-wrap items-end gap-3">
+          {/* Data Início */}
+          <div className="w-[160px] space-y-1">
             <label className="text-xs font-medium text-muted-foreground">Data Início</label>
             <input
               type="date"
@@ -356,8 +354,8 @@ function AdminDashboardContent() {
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             />
           </div>
-          {/* Date End */}
-          <div className="space-y-1">
+          {/* Data Fim */}
+          <div className="w-[160px] space-y-1">
             <label className="text-xs font-medium text-muted-foreground">Data Fim</label>
             <input
               type="date"
@@ -367,14 +365,11 @@ function AdminDashboardContent() {
             />
           </div>
           {/* Nível */}
-          <div className="space-y-1">
+          <div className="w-[140px] space-y-1">
             <label className="text-xs font-medium text-muted-foreground">Nível</label>
             <Select
               value={logLevel}
-              onValueChange={(val) => {
-                setLogLevel(val);
-                setLogPage(1);
-              }}
+              onValueChange={(val) => { setLogLevel(val); setLogPage(1); }}
             >
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Nível" />
@@ -389,14 +384,11 @@ function AdminDashboardContent() {
             </Select>
           </div>
           {/* Origem */}
-          <div className="space-y-1">
+          <div className="w-[200px] space-y-1">
             <label className="text-xs font-medium text-muted-foreground">Origem</label>
             <Select
               value={logSource}
-              onValueChange={(val) => {
-                setLogSource(val);
-                setLogPage(1);
-              }}
+              onValueChange={(val) => { setLogSource(val); setLogPage(1); }}
             >
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Origem" />
@@ -410,7 +402,7 @@ function AdminDashboardContent() {
             </Select>
           </div>
           {/* Usuário */}
-          <div className="space-y-1">
+          <div className="w-[180px] space-y-1">
             <label className="text-xs font-medium text-muted-foreground">Usuário</label>
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />

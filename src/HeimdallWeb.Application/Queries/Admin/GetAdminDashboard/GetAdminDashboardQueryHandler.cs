@@ -77,9 +77,15 @@ public class GetAdminDashboardQueryHandler : IQueryHandler<GetAdminDashboardQuer
             query.LogUsername,
             cancellationToken);
 
-        // Get distinct values for filter dropdowns
-        var logSources = await _unitOfWork.AuditLogs.GetDistinctSourcesAsync(cancellationToken);
-        var logMessages = await _unitOfWork.AuditLogs.GetDistinctMessagesAsync(cancellationToken);
+        // Get distinct values for filter dropdowns (non-critical, don't fail the whole request)
+        var logSources = new List<string>();
+        var logMessages = new List<string>();
+        try
+        {
+            logSources = await _unitOfWork.AuditLogs.GetDistinctSourcesAsync(cancellationToken);
+            logMessages = await _unitOfWork.AuditLogs.GetDistinctMessagesAsync(cancellationToken);
+        }
+        catch { /* silently fallback to empty lists */ }
 
         var logItems = logs.Select(l => new LogItem(
             LogId: l.LogId,
