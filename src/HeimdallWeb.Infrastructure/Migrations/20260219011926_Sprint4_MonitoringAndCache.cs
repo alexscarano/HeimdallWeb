@@ -1,0 +1,151 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace HeimdallWeb.Infrastructure.Migrations
+{
+    /// <inheritdoc />
+    public partial class Sprint4_MonitoringAndCache : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "tb_monitored_target",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false),
+                    frequency = table.Column<int>(type: "integer", nullable: false),
+                    last_check = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    next_check = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_tb_monitored_target", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tb_monitored_target_tb_user_user_id",
+                        column: x => x.user_id,
+                        principalTable: "tb_user",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tb_scan_cache",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    cache_key = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    result_json = table.Column<string>(type: "jsonb", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_tb_scan_cache", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tb_risk_snapshot",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    monitored_target_id = table.Column<int>(type: "integer", nullable: false),
+                    scan_history_id = table.Column<int>(type: "integer", nullable: false),
+                    score = table.Column<int>(type: "integer", nullable: false),
+                    grade = table.Column<string>(type: "character varying(1)", maxLength: 1, nullable: false),
+                    findings_count = table.Column<int>(type: "integer", nullable: false),
+                    critical_count = table.Column<int>(type: "integer", nullable: false),
+                    high_count = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_tb_risk_snapshot", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tb_risk_snapshot_tb_history_scan_history_id",
+                        column: x => x.scan_history_id,
+                        principalTable: "tb_history",
+                        principalColumn: "history_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tb_risk_snapshot_tb_monitored_target_monitored_target_id",
+                        column: x => x.monitored_target_id,
+                        principalTable: "tb_monitored_target",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tb_monitored_target_next_check",
+                table: "tb_monitored_target",
+                column: "next_check");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tb_monitored_target_user_id",
+                table: "tb_monitored_target",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ux_tb_monitored_target_user_url",
+                table: "tb_monitored_target",
+                columns: new[] { "user_id", "url" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tb_risk_snapshot_created_at",
+                table: "tb_risk_snapshot",
+                column: "created_at",
+                descending: new bool[0]);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tb_risk_snapshot_monitored_target_id",
+                table: "tb_risk_snapshot",
+                column: "monitored_target_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tb_risk_snapshot_scan_history_id",
+                table: "tb_risk_snapshot",
+                column: "scan_history_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tb_scan_cache_expires_at",
+                table: "tb_scan_cache",
+                column: "expires_at");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tb_scan_cache_result_json_gin",
+                table: "tb_scan_cache",
+                column: "result_json")
+                .Annotation("Npgsql:IndexMethod", "gin");
+
+            migrationBuilder.CreateIndex(
+                name: "ux_tb_scan_cache_cache_key",
+                table: "tb_scan_cache",
+                column: "cache_key",
+                unique: true);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "tb_risk_snapshot");
+
+            migrationBuilder.DropTable(
+                name: "tb_scan_cache");
+
+            migrationBuilder.DropTable(
+                name: "tb_monitored_target");
+        }
+    }
+}

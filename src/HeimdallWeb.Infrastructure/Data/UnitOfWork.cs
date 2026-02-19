@@ -26,6 +26,9 @@ public class UnitOfWork : IUnitOfWork
     private IUserStatisticsViewRepository? _userStatisticsViews;
     private IRiskWeightRepository? _riskWeights;
     private IScanProfileRepository? _scanProfiles;
+    private IMonitoredTargetRepository? _monitoredTargets;
+    private IRiskSnapshotRepository? _riskSnapshots;
+    private IScanCacheRepository? _scanCaches;
 
     public UnitOfWork(AppDbContext context)
     {
@@ -62,6 +65,15 @@ public class UnitOfWork : IUnitOfWork
 
     public IScanProfileRepository ScanProfiles =>
         _scanProfiles ??= new ScanProfileRepository(_context);
+
+    public IMonitoredTargetRepository MonitoredTargets =>
+        _monitoredTargets ??= new MonitoredTargetRepository(_context);
+
+    public IRiskSnapshotRepository RiskSnapshots =>
+        _riskSnapshots ??= new RiskSnapshotRepository(_context);
+
+    public IScanCacheRepository ScanCaches =>
+        _scanCaches ??= new ScanCacheRepository(_context);
 
     // Raw query support for VIEWs
     public IQueryable<T> QueryView<T>() where T : class

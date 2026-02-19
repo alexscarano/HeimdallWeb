@@ -12,6 +12,7 @@ using HeimdallWeb.Domain.Enums;
 using HeimdallWeb.Domain.Interfaces;
 using HeimdallWeb.Domain.ValueObjects;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace HeimdallWeb.Application.Commands.Scan.ExecuteScan;
 
@@ -34,20 +35,28 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
     private readonly IGeminiService _geminiService;
     private readonly IScoreCalculatorService _scoreCalculatorService;
     private readonly IConfiguration _configuration;
+    private readonly IScanCacheService _scanCacheService;
+    private readonly ILogger<ExecuteScanCommandHandler> _logger;
     private readonly int _maxDailyRequests;
+
+    private static readonly TimeSpan CacheTtl = TimeSpan.FromMinutes(30);
 
     public ExecuteScanCommandHandler(
         IUnitOfWork unitOfWork,
         IScannerService scannerService,
         IGeminiService geminiService,
         IScoreCalculatorService scoreCalculatorService,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IScanCacheService scanCacheService,
+        ILogger<ExecuteScanCommandHandler> logger)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _scannerService = scannerService ?? throw new ArgumentNullException(nameof(scannerService));
         _geminiService = geminiService ?? throw new ArgumentNullException(nameof(geminiService));
         _scoreCalculatorService = scoreCalculatorService ?? throw new ArgumentNullException(nameof(scoreCalculatorService));
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _scanCacheService = scanCacheService ?? throw new ArgumentNullException(nameof(scanCacheService));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _maxDailyRequests = 5; // Default daily quota for regular users
     }
 
@@ -58,6 +67,28 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         await validator.ValidateAndThrowAsync(command, cancellationToken);
         var stopwatch = Stopwatch.StartNew();
         var normalizedTarget = NormalizeUrl(command.Target);
+
+        // Check scan cache — return immediately if a valid cached result exists
+        var cacheKey = _scanCacheService.GenerateCacheKey(normalizedTarget, command.ProfileId);
+        var cachedJson = await _scanCacheService.GetCachedResultAsync(cacheKey, cancellationToken);
+        if (cachedJson != null)
+        {
+            try
+            {
+                var cached = JsonSerializer.Deserialize<ExecuteScanResponse>(cachedJson);
+                if (cached != null)
+                {
+                    _logger.LogDebug("Scan cache hit for target {Target} (key: {Key}).", normalizedTarget, cacheKey);
+                    stopwatch.Stop();
+                    return cached with { IsCached = true, Duration = stopwatch.Elapsed };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Malformed cache entry — proceed with a live scan
+                _logger.LogWarning(ex, "Failed to deserialize cached scan result for key {Key}. Running live scan.", cacheKey);
+            }
+        }
 
         try
         {
@@ -103,13 +134,13 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 command.RemoteIp,
                 cancellationToken);
 
-            stopwatch.Stop();
-
             // Step 6: Log successful completion (need to resolve historyPublicId to internal ID for logging)
             var history = await _unitOfWork.ScanHistories.GetByPublicIdAsync(historyPublicId, cancellationToken);
             await LogScanCompletionAsync(userInternalId, history!.HistoryId, command.RemoteIp, cancellationToken);
 
-            return new ExecuteScanResponse(
+            stopwatch.Stop();
+
+            var response = new ExecuteScanResponse(
                 HistoryId: historyPublicId,
                 Target: normalizedTarget,
                 Summary: aiSummary,
@@ -118,8 +149,23 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 CreatedDate: DateTime.UtcNow,
                 Score: score,
                 Grade: grade,
-                ProfileId: command.ProfileId
+                ProfileId: command.ProfileId,
+                IsCached: false
             );
+
+            // Step 7: Cache the successful scan result for subsequent identical requests
+            try
+            {
+                var responseJson = JsonSerializer.Serialize(response);
+                await _scanCacheService.CacheResultAsync(cacheKey, responseJson, CacheTtl, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                // Cache failures are non-critical — log and continue
+                _logger.LogWarning(ex, "Failed to cache scan result for target {Target}.", normalizedTarget);
+            }
+
+            return response;
         }
         catch (OperationCanceledException ex)
         {
@@ -164,6 +210,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
             var userInternalId = user?.UserId ?? 0;
 
             // Save incomplete scan record and get its PublicId
+            // Log the full exception internally but return a sanitized message to the client
             var incompleteHistoryId = await SaveIncompleteScanAsync(
                 userInternalId,
                 normalizedTarget,
@@ -174,11 +221,11 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
 
             await LogScanErrorAsync(userInternalId, command.RemoteIp, ex.Message, CancellationToken.None);
 
-            // Return incomplete scan instead of throwing
+            // Return incomplete scan with a generic message to prevent information leakage
             return new ExecuteScanResponse(
                 HistoryId: incompleteHistoryId,
                 Target: normalizedTarget,
-                Summary: $"Error: {ex.Message}",
+                Summary: "An unexpected error occurred during the scan. Please try again later.",
                 Duration: stopwatch.Elapsed,
                 HasCompleted: false,
                 CreatedDate: DateTime.UtcNow,

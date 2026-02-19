@@ -53,6 +53,9 @@ public static class DependencyInjection
         services.AddScoped<IUserUsageRepository, UserUsageRepository>();
         services.AddScoped<IRiskWeightRepository, RiskWeightRepository>();
         services.AddScoped<IScanProfileRepository, ScanProfileRepository>();
+        services.AddScoped<IMonitoredTargetRepository, MonitoredTargetRepository>();
+        services.AddScoped<IRiskSnapshotRepository, RiskSnapshotRepository>();
+        services.AddScoped<IScanCacheRepository, ScanCacheRepository>();
 
         // Note: Security Scanners and External Services (GeminiService) will be added in Phase 3
         // after refactoring them to remove legacy dependencies

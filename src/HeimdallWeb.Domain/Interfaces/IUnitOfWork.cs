@@ -19,7 +19,10 @@ public interface IUnitOfWork : IDisposable
     IUserStatisticsViewRepository UserStatisticsViews { get; }
     IRiskWeightRepository RiskWeights { get; }
     IScanProfileRepository ScanProfiles { get; }
-    
+    IMonitoredTargetRepository MonitoredTargets { get; }
+    IRiskSnapshotRepository RiskSnapshots { get; }
+    IScanCacheRepository ScanCaches { get; }
+
     // Raw query support for SQL VIEWs
     /// <summary>
     /// Executes a raw SQL query and returns results as a list.

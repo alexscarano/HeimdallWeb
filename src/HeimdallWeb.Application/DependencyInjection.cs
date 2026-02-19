@@ -4,6 +4,8 @@ using HeimdallWeb.Application.Commands.Admin.DeleteUserByAdmin;
 using HeimdallWeb.Application.Commands.Admin.ToggleUserStatus;
 using HeimdallWeb.Application.Commands.Auth.Login;
 using HeimdallWeb.Application.Commands.Auth.Register;
+using HeimdallWeb.Application.Commands.Monitor.CreateMonitor;
+using HeimdallWeb.Application.Commands.Monitor.DeleteMonitor;
 using HeimdallWeb.Application.Commands.Scan.DeleteScanHistory;
 using HeimdallWeb.Application.Commands.Scan.ExecuteScan;
 using HeimdallWeb.Application.Commands.User.DeleteUser;
@@ -13,12 +15,15 @@ using HeimdallWeb.Application.Commands.User.UpdateUser;
 using HeimdallWeb.Application.Common.Interfaces;
 using HeimdallWeb.Application.DTOs.Admin;
 using HeimdallWeb.Application.DTOs.Auth;
+using HeimdallWeb.Application.DTOs.Monitor;
 using HeimdallWeb.Application.DTOs.Scan;
 using HeimdallWeb.Application.DTOs.User;
 using HeimdallWeb.Application.Helpers;
 using HeimdallWeb.Application.Interfaces;
 using HeimdallWeb.Application.Queries.Admin.GetAdminDashboard;
 using HeimdallWeb.Application.Queries.Admin.GetUsers;
+using HeimdallWeb.Application.Queries.Monitor.GetMonitorHistory;
+using HeimdallWeb.Application.Queries.Monitor.GetUserMonitors;
 using HeimdallWeb.Application.Queries.Scan.ExportHistoryPdf;
 using HeimdallWeb.Application.Queries.Scan.ExportSingleHistoryPdf;
 using HeimdallWeb.Application.Queries.Scan.GetAISummaryByHistoryId;
@@ -31,6 +36,7 @@ using HeimdallWeb.Application.Queries.User.GetUserProfile;
 using HeimdallWeb.Application.Queries.User.GetUserStatistics;
 using HeimdallWeb.Application.Services;
 using HeimdallWeb.Application.Services.AI;
+using HeimdallWeb.Application.Workers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HeimdallWeb.Application;
@@ -70,6 +76,13 @@ public static class DependencyInjection
         services.AddScoped<IScoreCalculatorService, ScoreCalculatorService>();
         // TokenService is static - no registration needed
 
+        // Sprint 4: Monitoring & Cache services
+        services.AddScoped<IScanCacheService, ScanCacheService>();
+        services.AddScoped<IRiskDeltaService, RiskDeltaService>();
+
+        // Sprint 4: Background service
+        services.AddHostedService<MonitoringWorker>();
+
         // ===== Command Handlers (9 total) =====
 
         // Auth Commands (2)
@@ -90,6 +103,10 @@ public static class DependencyInjection
         services.AddScoped<ICommandHandler<ToggleUserStatusCommand, ToggleUserStatusResponse>, ToggleUserStatusCommandHandler>();
         services.AddScoped<ICommandHandler<DeleteUserByAdminCommand, DeleteUserByAdminResponse>, DeleteUserByAdminCommandHandler>();
 
+        // Monitor Commands - Sprint 4 (2)
+        services.AddScoped<ICommandHandler<CreateMonitorCommand, MonitoredTargetResponse>, CreateMonitorCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteMonitorCommand, bool>, DeleteMonitorCommandHandler>();
+
         // ===== Query Handlers (10 total) =====
 
         // Scan Queries (8)
@@ -109,6 +126,10 @@ public static class DependencyInjection
         // Admin Queries (2)
         services.AddScoped<IQueryHandler<GetAdminDashboardQuery, AdminDashboardResponse>, GetAdminDashboardQueryHandler>();
         services.AddScoped<IQueryHandler<GetUsersQuery, PaginatedUsersResponse>, GetUsersQueryHandler>();
+
+        // Monitor Queries - Sprint 4 (2)
+        services.AddScoped<IQueryHandler<GetUserMonitorsQuery, IEnumerable<MonitoredTargetResponse>>, GetUserMonitorsQueryHandler>();
+        services.AddScoped<IQueryHandler<GetMonitorHistoryQuery, IEnumerable<RiskSnapshotResponse>>, GetMonitorHistoryQueryHandler>();
 
         return services;
     }

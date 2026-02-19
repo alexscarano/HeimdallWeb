@@ -27,6 +27,9 @@ public class AppDbContext : DbContext
     public DbSet<UserUsage> UserUsages { get; set; } = null!;
     public DbSet<RiskWeight> RiskWeights { get; set; } = null!;
     public DbSet<ScanProfile> ScanProfiles { get; set; } = null!;
+    public DbSet<MonitoredTarget> MonitoredTargets { get; set; } = null!;
+    public DbSet<RiskSnapshot> RiskSnapshots { get; set; } = null!;
+    public DbSet<ScanCache> ScanCaches { get; set; } = null!;
 
     // Read-only DbSets for SQL VIEWs (14 total)
     // Dashboard VIEWs (6)
@@ -63,6 +66,9 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new UserUsageConfiguration());
         modelBuilder.ApplyConfiguration(new RiskWeightConfiguration());
         modelBuilder.ApplyConfiguration(new ScanProfileConfiguration());
+        modelBuilder.ApplyConfiguration(new MonitoredTargetConfiguration());
+        modelBuilder.ApplyConfiguration(new RiskSnapshotConfiguration());
+        modelBuilder.ApplyConfiguration(new ScanCacheConfiguration());
 
         // SQL VIEWs - mapped as keyless entities (read-only)
         

@@ -774,17 +774,18 @@ npm install @headlessui/react  # Acessibilidade (modals, dropdowns)
 - [x] CDN provider mapeado como tecnologia na categoria "CDN"
 - [x] Build: 0 erros
 
-### Implementation Sprint 4 — Snapshot, Monitoramento & Cache
-- [ ] `MonitoredTarget` entity (`tb_monitored_target`): Id, UserId, Url, Frequency (enum), LastCheck, NextCheck, IsActive
-- [ ] `RiskSnapshot` entity (`tb_risk_snapshot`): snapshot resumido por ponto no tempo
-- [ ] `ScanCache` entity (`tb_scan_cache`): Id, CacheKey (hash Target+Profile), ResultJson (jsonb), ExpiresAt
-- [ ] Repositories + configurations + migrations para as 3 entidades
-- [ ] `ScanCacheService`: antes de executar scan, verifica cache válido; se hit retorna com `is_cached: true`
-- [ ] Índices GIN no JSONB de `tb_scan_cache`
-- [ ] Worker/`IHostedService` para monitoramento: `PeriodicTimer` ou Quartz.NET
-- [ ] `RiskDeltaService`: compara snapshot atual com anterior; gera evento se score caiu 10+ pontos
-- [ ] `GET /api/v1/monitor` endpoint (CRUD de alvos monitorados)
-- [ ] Build: 0 erros
+### Implementation Sprint 4 — Snapshot, Monitoramento & Cache ✅ COMPLETO (2026-02-19)
+- [x] `MonitoredTarget` entity (`tb_monitored_target`): Id, UserId, Url, Frequency (enum), LastCheck, NextCheck, IsActive
+- [x] `RiskSnapshot` entity (`tb_risk_snapshot`): snapshot resumido (Score, Grade, FindingsCount, CriticalCount, HighCount, CreatedAt)
+- [x] `ScanCache` entity (`tb_scan_cache`): Id, CacheKey (SHA-256 de target+profileId), ResultJson (jsonb), ExpiresAt, IsExpired (computed)
+- [x] Repositories + EF Core configurations + migration `Sprint4_MonitoringAndCache`
+- [x] `IScanCacheService` + `ScanCacheService`: intercepta scan em `ExecuteScanCommandHandler`, verifica cache válido; hit retorna `IsCached = true`
+- [x] Índice GIN no JSONB de `tb_scan_cache` (`Npgsql:IndexMethod = gin`)
+- [x] `MonitoringWorker` (`BackgroundService` + `PeriodicTimer` 30min): verifica `tb_monitored_target` com `NextCheck <= NOW()`, reutiliza `ExecuteScanCommandHandler`
+- [x] `IRiskDeltaService` + `RiskDeltaService`: salva `RiskSnapshot`, detecta queda de 10+ pontos, registra `Critical` no AuditLog
+- [x] Endpoints CRUD `/api/v1/monitor` (GET lista, POST criar, DELETE, GET history)
+- [x] `ExecuteScanResponse`: adicionado `bool IsCached = false`
+- [x] Build: 0 erros, 0 warnings em todos os projetos
 
 ### Implementation Sprint 5 — Auth Google, Email & User Management
 - [ ] `IEmailService` interface no Domain + implementação SMTP via MailKit
