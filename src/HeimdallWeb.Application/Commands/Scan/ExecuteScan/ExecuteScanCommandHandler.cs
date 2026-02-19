@@ -138,6 +138,15 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
             var history = await _unitOfWork.ScanHistories.GetByPublicIdAsync(historyPublicId, cancellationToken);
             await LogScanCompletionAsync(userInternalId, history!.HistoryId, command.RemoteIp, cancellationToken);
 
+            // Step 6b: Create scan-complete notification for the user
+            var scanNotification = new Notification(
+                userId: userInternalId,
+                title: $"Scan concluído: {normalizedTarget}",
+                body: $"Score: {score} ({grade})",
+                type: Domain.Enums.NotificationType.ScanComplete);
+            await _unitOfWork.Notifications.AddAsync(scanNotification, CancellationToken.None);
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
+
             stopwatch.Stop();
 
             var response = new ExecuteScanResponse(

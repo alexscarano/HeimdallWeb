@@ -73,6 +73,18 @@ public class RiskDeltaService : IRiskDeltaService
 
                 await _unitOfWork.AuditLogs.AddAsync(auditLog, ct);
 
+                // Notify the target's owner about the critical score regression
+                var monitoredTarget = await _unitOfWork.MonitoredTargets.GetByIdAsync(monitoredTargetId, ct);
+                if (monitoredTarget != null)
+                {
+                    var riskNotification = new Notification(
+                        userId: monitoredTarget.UserId,
+                        title: $"Alerta de risco: {monitoredTarget.Url}",
+                        body: $"Score caiu {scoreDelta} pontos ({previousSnapshot.Score} → {newScore})",
+                        type: NotificationType.RiskAlert);
+                    await _unitOfWork.Notifications.AddAsync(riskNotification, ct);
+                }
+
                 _logger.LogWarning(
                     "Critical score drop detected for MonitoredTarget {TargetId}: {OldScore} -> {NewScore} (delta: -{Delta})",
                     monitoredTargetId, previousSnapshot.Score, newScore, scoreDelta);

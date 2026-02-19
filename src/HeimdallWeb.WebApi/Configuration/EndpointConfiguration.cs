@@ -37,6 +37,7 @@ public static class EndpointConfiguration
         app.MapProfileEndpoints();
         app.MapMonitorEndpoints();
         app.MapSupportEndpoints(); // Sprint 5
+        app.MapNotificationEndpoints(); // G0
 
         return app;
     }
