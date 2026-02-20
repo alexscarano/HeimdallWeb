@@ -398,7 +398,7 @@ function PortScanCard({ data }: { data: unknown[] }) {
     if (!Array.isArray(data)) return <p className="text-xs text-muted-foreground">Sem dados</p>;
     const openPorts = data.filter((p: unknown) => {
         const port = p as Record<string, unknown>;
-        return port.isOpen || port.status === "Open";
+        return port.open === true || port.status === "Open";
     });
     return (
         <div className="space-y-3">

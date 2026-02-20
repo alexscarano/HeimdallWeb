@@ -38,16 +38,16 @@ public class TlsCapabilityScanner : IScanner
             var alerts = new JArray();
             if (!tls12Supported && !tls13Supported)
             {
-                alerts.Add("No supported TLS version could be negotiated on port 443");
-                if (!string.IsNullOrEmpty(tls12Error)) alerts.Add($"TLS 1.2 Error: {tls12Error}");
-                if (!string.IsNullOrEmpty(tls13Error)) alerts.Add($"TLS 1.3 Error: {tls13Error}");
+                alerts.Add("Nenhuma versão TLS suportada pôde ser negociada na porta 443");
+                if (!string.IsNullOrEmpty(tls12Error)) alerts.Add($"Erro TLS 1.2: {tls12Error}");
+                if (!string.IsNullOrEmpty(tls13Error)) alerts.Add($"Erro TLS 1.3: {tls13Error}");
             }
-            
+
             if (!tls13Supported && tls12Supported)
-                alerts.Add("TLS 1.3 is not supported — consider enabling it for improved security");
-                
+                alerts.Add("TLS 1.3 não é suportado — considere ativá-lo para maior segurança");
+
             if (weakCipherDetected)
-                alerts.Add($"Weak cipher suite detected: {negotiatedCipher}");
+                alerts.Add($"Cifra fraca detectada: {negotiatedCipher}");
 
             return new JObject
             {
@@ -88,17 +88,18 @@ public class TlsCapabilityScanner : IScanner
             cts.CancelAfter(TimeSpan.FromSeconds(10));
 
             using var tcp = new TcpClient();
-            try 
+            try
             {
                 await tcp.ConnectAsync(hostname, 443, cts.Token);
             }
             catch (Exception ex)
             {
-                return (false, null, $"Connection failed: {ex.Message}");
+                return (false, null, $"Falha de conexão: {ex.Message}");
             }
 
-            using var ssl = new SslStream(tcp.GetStream(), false,
-                (_, _, _, _) => true);
+            // Fix: Do not pass the RemoteCertificateValidationCallback here because we are
+            // already passing it in the SslClientAuthenticationOptions below.
+            using var ssl = new SslStream(tcp.GetStream(), false);
 
             var authOptions = new SslClientAuthenticationOptions
             {
@@ -115,11 +116,11 @@ public class TlsCapabilityScanner : IScanner
         }
         catch (AuthenticationException ex)
         {
-            return (false, null, $"Handshake failed: {ex.Message}");
+            return (false, null, $"Falha de handshake: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return (false, null, $"Error: {ex.Message}");
+            return (false, null, $"Erro: {ex.Message}");
         }
     }
 

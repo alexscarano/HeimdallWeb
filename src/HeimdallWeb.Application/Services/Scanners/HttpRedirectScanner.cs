@@ -25,8 +25,8 @@ namespace HeimdallWeb.Application.Services.Scanners
         /// <param name="readTimeout">Tempo máximo para ler resposta</param>
         /// <param name="maxParallel">Número máximo de verificações paralelas</param>
         public HttpRedirectScanner(
-            TimeSpan? connectTimeout = null, 
-            TimeSpan? readTimeout = null, 
+            TimeSpan? connectTimeout = null,
+            TimeSpan? readTimeout = null,
             int maxParallel = 20)
         {
             _connectTimeout = connectTimeout ?? TimeSpan.FromSeconds(3);
@@ -72,7 +72,7 @@ namespace HeimdallWeb.Application.Services.Scanners
 
                 await Task.WhenAll(probeTasks);
 
-                return JObject.FromObject(new 
+                return JObject.FromObject(new
                 {
                     target = targetRaw,
                     ips = new JArray(target.Select(i => i.ToString())),
@@ -109,68 +109,52 @@ namespace HeimdallWeb.Application.Services.Scanners
 
             try
             {
-                using var tcpClient = new TcpClient(ip.AddressFamily);
                 using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                cts.CancelAfter(_connectTimeout);
+                cts.CancelAfter(_connectTimeout + _readTimeout);
 
-                // Conecta na porta 80 (HTTP)
-                var connectTask = tcpClient.ConnectAsync(ip, 80);
-                var finished = await Task.WhenAny(connectTask, Task.Delay(Timeout.Infinite, cts.Token));
-
-                if (!tcpClient.Connected)
+                var handler = new HttpClientHandler
                 {
-                    probe["status"] = "connection_failed";
-                    probe["port_80_open"] = false;
-                    return probe;
-                }
+                    AllowAutoRedirect = false,
+                    ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+                };
 
-                probe["port_80_open"] = true;
-
-                // Envia requisição HTTP simples
-                using var stream = tcpClient.GetStream();
-                stream.ReadTimeout = (int)_readTimeout.TotalMilliseconds;
-
-                var request = $"GET / HTTP/1.1\r\nHost: {ip}\r\nConnection: close\r\n\r\n";
-                var requestBytes = Encoding.ASCII.GetBytes(request);
-                await stream.WriteAsync(requestBytes, 0, requestBytes.Length, cancellationToken);
-
-                // Lê a resposta até encontrar os headers
-                var buffer = new byte[1024];
-                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
-                var response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-
-                // Analisa o tipo de resposta
-                if (response.Contains("301") || 
-                    response.Contains("302") || 
-                    response.Contains("307") ||
-                    response.Contains("308")
-                    )
+                using var client = new HttpClient(handler)
                 {
-                    probe["redirect_detected"] = true;
+                    Timeout = _connectTimeout + _readTimeout
+                };
 
-                    if (response.Contains("301") || response.Contains("308"))
-                        probe["redirect_type"] = "permanent";
-                    else if (response.Contains("302") || response.Contains("307"))
-                        probe["redirect_type"] = "temporary";
+                // Request using the IP address directly
+                var requestUrl = $"http://{ip}/";
 
-                    // Extrai a URL de destino se possível
-                    var locationIndex = response.IndexOf("Location:");
-                    if (locationIndex != -1)
+                try
+                {
+                    var response = await client.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead, cts.Token);
+
+                    probe["port_80_open"] = true;
+                    var statusCode = (int)response.StatusCode;
+
+                    if (statusCode >= 300 && statusCode < 400)
                     {
-                        var locationEnd = response.IndexOf("\r\n", locationIndex);
-                        if (locationEnd != -1)
+                        probe["redirect_detected"] = true;
+
+                        if (statusCode == 301 || statusCode == 308)
+                            probe["redirect_type"] = "permanent";
+                        else if (statusCode == 302 || statusCode == 307)
+                            probe["redirect_type"] = "temporary";
+
+                        var location = response.Headers.Location?.ToString() ?? "";
+
+                        if (!string.IsNullOrEmpty(location))
                         {
-                            var redirectUrl = response.Substring(locationIndex + 10, locationEnd - locationIndex - 10).Trim();
-                            probe["redirect_url"] = redirectUrl;
+                            probe["redirect_url"] = location;
                             probe["status"] = "redirect_found";
-                            
-                            // Determina severidade do redirect
-                            if (redirectUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+
+                            if (location.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                             {
                                 probe["severity"] = "Informativo";
                                 probe["description"] = "Redirect HTTP → HTTPS configurado corretamente";
                             }
-                            else if (redirectUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
+                            else if (location.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
                             {
                                 probe["severity"] = "Alto";
                                 probe["description"] = "Redirect HTTP → HTTP (não seguro)";
@@ -178,29 +162,34 @@ namespace HeimdallWeb.Application.Services.Scanners
                             else
                             {
                                 probe["severity"] = "Baixo";
-                                probe["description"] = $"Redirect configurado para: {redirectUrl}";
+                                probe["description"] = $"Redirect configurado para: {location}";
                             }
-                            /*
-                                 Os primeiros 10 caracteres são "Location: "
-                                 A URL de redirecionamento começa no índice 10
-                                 O final da URL termina antes de "\r\n"
-                             */
                         }
                     }
+                    else if (statusCode == 400)
+                    {
+                        probe["status"] = "bad_request";
+                        probe["redirect_detected"] = false;
+                        probe["severity"] = "Baixo";
+                        probe["description"] = "Servidor respondeu com erro 400 (Bad Request)";
+                    }
+                    else
+                    {
+                        probe["redirect_detected"] = false;
+                        probe["status"] = "no_redirect";
+                        probe["severity"] = "Medio";
+                        probe["description"] = "HTTP habilitado sem redirect para HTTPS - considere implementar redirect";
+                    }
                 }
-                else if (response.Contains("400"))
+                catch (HttpRequestException)
                 {
-                    probe["status"] = "bad_request";
-                    probe["redirect_detected"] = false;
-                    probe["severity"] = "Baixo";
-                    probe["description"] = "Servidor respondeu com erro 400 (Bad Request)";
+                    probe["status"] = "connection_failed";
+                    probe["port_80_open"] = false;
                 }
-                else
+                catch (TaskCanceledException)
                 {
-                    probe["redirect_detected"] = false;
-                    probe["status"] = "no_redirect";
-                    probe["severity"] = "Medio";
-                    probe["description"] = "HTTP habilitado sem redirect para HTTPS - considere implementar redirect";
+                    probe["status"] = "connection_failed";
+                    probe["port_80_open"] = false;
                 }
 
                 return probe;

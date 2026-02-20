@@ -62,14 +62,15 @@ public class GeminiService : IGeminiService
                                 - Retornar respostas **curtas, objetivas e padronizadas**, para economizar tokens.
                                 - Sempre classificar o risco em: **Informativo | Baixo | Medio | Alto | Critico** (igual ao ENUM do sistema).
                                 - Use **Informativo** para observações relevantes sem risco direto (fallback global detectado, headers recomendados ausentes mas não críticos, SSL válido próximo da expiração com >30 dias, configurações de SPA/catch-all, portas abertas não-críticas, CDN detectado corretamente, security.txt presente, etc.).
-                                - **ATENÇÃO ESPECIAL para novos scanners**:
-                                  * `tls_capability`: Se `weak_cipher_detected=true`, classificar como **Alto** em SSL/TLS. Se apenas TLS 1.2 sem TLS 1.3, classificar como **Baixo**.
-                                  * `csp_analysis`: `unsafe-inline` ou `unsafe-eval` → **Medio** em CSP Analysis. CSP ausente (`csp_present=false`) → **Alto**.
-                                  * `domain_age`: Domínio com <90 dias → **Medio** em Domain Reputation (possível phishing/scam). <30 dias → **Alto**.
+                                - **ATENÇÃO ESPECIAL para novos scanners** (seja menos punitivo e mais realista):
+                                  * `tls_capability`: Se `weak_cipher_detected=true`, classificar como **Medio** (e não Alto). Se apenas TLS 1.2 sem TLS 1.3, classificar como **Informativo**.
+                                  * `csp_analysis`: `unsafe-inline` ou `unsafe-eval` → **Baixo**. CSP ausente (`csp_present=false`) → **Baixo** ou no máximo **Medio** (dependendo do contexto).
+                                  * `domain_age`: Domínio com <90 dias → **Baixo** em Domain Reputation. <30 dias → **Medio**.
                                   * `ip_resolution`: CDN detectado é **Informativo** positivo. Múltiplos IPs sem CDN pode indicar load balancing (Informativo).
-                                  * `response_behavior`: TTFB >2000ms → **Medio** em Response Behavior. `returns_proper_404=false` → **Baixo** em Configuração (soft 404/SEO issue).
-                                  * `subdomains`: Subdomínios como `admin`, `staging`, `dev` expostos → **Medio** em Exposição de Dados. Subdomínios normais (www, mail) → **Informativo**.
-                                  * `security_txt`: Ausência (`present=false`) → **Baixo** em Compliance. Presente e válido → **Informativo** positivo.
+                                  * `response_behavior`: TTFB >2000ms → **Informativo** em Response Behavior. `returns_proper_404=false` → **Informativo** em Configuração (apenas um problema de SEO ou fallback).
+                                  * `subdomains`: Subdomínios como `admin`, `staging`, `dev` expostos → **Medio** ou **Baixo** em Exposição de Dados (desde que não exponham dados óbvios). Subdomínios normais (www, mail) → **Informativo**.
+                                  * `security_txt`: Ausência (`present=false`) → **Informativo** em Compliance. Presente e válido → **Informativo** positivo.
+                                - **REGRA DE OURO DA SEVERIDADE**: Nunca classifique problemas de cabeçalhos (headers), configurações brandas, ausência de features (como TLS 1.3 ou security.txt) como **Alto** ou **Critico**. **Alto** ou **Critico** são estritamente reservados para problemas de injeção direta (SQLi, RCE), portas de banco de dados diretamente expostas pra internet, ou falhas gravíssimas comprovadas. Na dúvida, rebaixe a severidade para **Informativo** ou **Baixo**.
                                 - Se o scanner de caminhos sensíveis retornar `""status"": ""suspected-fallback""` ou `""type"": ""global-fallback""`, classificar como **Informativo** (configuração comum em SPAs).
                                 - Fornecer recomendações práticas de mitigação.
 
@@ -112,6 +113,7 @@ public class GeminiService : IGeminiService
                                 8. Não forneça de forma alguma conteúdo repetido.
                                 9. Correlacione dados entre scanners: ex, se `tls_capability` mostra cipher fraco E `resultsSslScanner` mostra certificado válido, gere um achado combinado em vez de dois separados.
                                 10. **IMPORTANTE**: GARANTIR que todo o CONTEÚDO (valores) do JSON esteja em PORTUGUÊS (PT-BR). As CHAVES do JSON devem permanecer EXATAMENTE como no exemplo acima (em português: ""alvo"", ""resumo"", ""achados"", etc.). NÃO altere a estrutura do JSON.
+                                11. **PROIBIDO ALTERAR CHAVES**: O frontend espera ESTRITAMENTE as chaves ""alvo"", ""resumo"", ""achados"" (com ""descricao"", ""categoria"", ""risco"", ""evidencia"", ""recomendacao"") e ""tecnologias"" (com ""nome_tecnologia"", ""versao"", ""categoria_tecnologia"", ""descricao_tecnologia""). Se você adicionar, remover ou renomear chaves, o sistema inteiro VAI QUEBRAR. Somente preencha os VALORES.
 
                                 ### JSON de entrada:
                                 {scanJson}

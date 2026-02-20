@@ -29,8 +29,8 @@ public class ScoreCalculatorService : IScoreCalculatorService
     // Base deduction points per severity level
     private static readonly Dictionary<SeverityLevel, int> BasePoints = new()
     {
-        [SeverityLevel.Critical] = 20,
-        [SeverityLevel.High] = 10,
+        [SeverityLevel.Critical] = 25,
+        [SeverityLevel.High] = 15,
         [SeverityLevel.Medium] = 5,
         [SeverityLevel.Low] = 2,
         [SeverityLevel.Informational] = 0,

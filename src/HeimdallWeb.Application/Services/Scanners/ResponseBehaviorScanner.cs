@@ -43,10 +43,10 @@ public class ResponseBehaviorScanner : IScanner
             var alerts = new JArray();
 
             if (ttfbMs > 2000)
-                alerts.Add($"High Time To First Byte: {ttfbMs}ms (threshold: 2000ms) — may indicate server-side performance issues");
+                alerts.Add($"Alto Tempo até o Primeiro Byte (TTFB): {ttfbMs}ms (limite: 2000ms) — pode indicar problemas de performance no servidor");
 
             if (!returnsProper404)
-                alerts.Add($"Soft 404 detected: non-existent path returned HTTP {notFoundStatus} instead of 404 — search engines and crawlers may be misled");
+                alerts.Add($"Soft 404 detectado: caminho inexistente retornou HTTP {notFoundStatus} ao invés de 404 — motores de busca podem ser enganados");
 
             return new JObject
             {

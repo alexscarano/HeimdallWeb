@@ -65,7 +65,7 @@ public class DomainAgeScanner : IScanner
                 {
                     ["domain_age"] = new JObject
                     {
-                        ["error"] = "WHOIS lookup failed: creation date not found in WHOIS response"
+                        ["error"] = "Falha na consulta WHOIS: data de criação não encontrada na resposta WHOIS"
                     }
                 };
             }
@@ -80,7 +80,7 @@ public class DomainAgeScanner : IScanner
                 {
                     ["domain_age"] = new JObject
                     {
-                        ["error"] = $"WHOIS lookup failed: could not parse creation date '{rawDate}'"
+                        ["error"] = $"Falha na consulta WHOIS: não foi possível interpretar a data de criação '{rawDate}'"
                     }
                 };
             }
@@ -89,9 +89,9 @@ public class DomainAgeScanner : IScanner
 
             var alerts = new JArray();
             if (ageDays < 90)
-                alerts.Add($"Domain is very new ({ageDays} days old) — exercise caution");
+                alerts.Add($"O domínio é muito recente ({ageDays} dias) — tenha cautela");
             else if (ageDays < 365)
-                alerts.Add($"Domain is less than 1 year old ({ageDays} days)");
+                alerts.Add($"Domínio tem menos de 1 ano de idade ({ageDays} dias)");
 
             return new JObject
             {
@@ -114,7 +114,7 @@ public class DomainAgeScanner : IScanner
             {
                 ["domain_age"] = new JObject
                 {
-                    ["error"] = $"WHOIS lookup failed: {ex.Message}"
+                    ["error"] = $"Falha na consulta WHOIS: {ex.Message}"
                 }
             };
         }
@@ -157,14 +157,16 @@ public class DomainAgeScanner : IScanner
             "yyyy-MM-ddTHH:mm:ss.fffZ",
             "yyyy-MM-ddTHH:mm:sszzz",
             "yyyy-MM-dd",
+            "yyyyMMdd", // Added this to support formats like 19980202
             "dd-MMM-yyyy",
             "dd/MM/yyyy",
             "MM/dd/yyyy",
             "yyyy.MM.dd",
         };
 
-        // Some WHOIS servers append extra info after the date — take only the date portion
-        var clean = raw.Split(' ', '\t')[0].TrimEnd('.');
+        // Some WHOIS servers append extra info after the date (like '19980202 #84697')
+        // We'll split by space or # and take only the date portion
+        var clean = raw.Split(new[] { ' ', '\t', '#' }, StringSplitOptions.RemoveEmptyEntries)[0].TrimEnd('.');
 
         if (DateTime.TryParseExact(clean, formats,
             System.Globalization.CultureInfo.InvariantCulture,
