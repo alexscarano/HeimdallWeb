@@ -13,6 +13,7 @@ import {
 } from "@/lib/api/history.api";
 import type { ScanHistorySummary, FindingResponse, TechnologyResponse, IASummaryResponse } from "@/types/scan";
 import type { PaginatedResponse } from "@/types/api";
+import { apiClient } from "@/lib/api/client";
 
 // Re-export for backward compatibility with consumers of this hook
 export type { ScanHistorySummary as ScanHistory } from "@/types/scan";
@@ -144,5 +145,18 @@ export function useExportAllPdf() {
     onError: () => {
       toast.error("Erro ao exportar PDFs");
     },
+  });
+}
+
+export function useHistoryByTarget(target: string) {
+  return useQuery<ScanHistorySummary[]>({
+    queryKey: ["history", "target", target],
+    queryFn: async () => {
+      const response = await apiClient.get<PaginatedResponse<ScanHistorySummary>>("/scans", {
+        params: { search: target, pageSize: 10, page: 1 },
+      });
+      return response.data?.items ?? [];
+    },
+    enabled: !!target,
   });
 }

@@ -15,6 +15,8 @@ import {
   useExportPdf,
 } from "@/lib/hooks/use-history";
 import { FindingsList } from "@/components/history/findings-list";
+import { RiskCards } from "@/components/history/risk-cards";
+import { ScoreTimeline } from "@/components/history/score-timeline";
 import { JsonViewer } from "@/components/history/json-viewer";
 import { TechnologiesList } from "@/components/history/technologies-list";
 import { ScoreGauge, GradeBadge } from "@/components/scan/score-gauge";
@@ -163,11 +165,11 @@ export default function HistoryDetailPage({ params }: Props) {
         <ScannerResultCards rawJson={scan.rawJsonResult} />
       )}
 
-      {/* Advanced view (or always visible tabs) */}
+      {/* Advanced view: tabs */}
       {isAdvancedView && (
         <Tabs defaultValue="findings" className="space-y-4">
           <div>
-            <TabsList className="grid w-full grid-cols-4 sm:inline-flex sm:w-auto">
+            <TabsList className="grid w-full grid-cols-5 sm:inline-flex sm:w-auto">
               <TabsTrigger value="findings" className="sm:px-6">
                 Vulnerabilidades
               </TabsTrigger>
@@ -176,6 +178,9 @@ export default function HistoryDetailPage({ params }: Props) {
               </TabsTrigger>
               <TabsTrigger value="ai" className="sm:px-6">
                 Análise de IA
+              </TabsTrigger>
+              <TabsTrigger value="timeline" className="sm:px-6">
+                Evolução
               </TabsTrigger>
               <TabsTrigger value="json" className="sm:px-6">
                 JSON
@@ -205,13 +210,17 @@ export default function HistoryDetailPage({ params }: Props) {
             </div>
           </TabsContent>
 
+          <TabsContent value="timeline">
+            <ScoreTimeline currentScanId={scanId} target={scan.target} />
+          </TabsContent>
+
           <TabsContent value="json">
             <JsonViewer json={scan.rawJsonResult ?? undefined} />
           </TabsContent>
         </Tabs>
       )}
 
-      {/* Show findings summary in simple mode too */}
+      {/* Simple view: RiskCards grouped by severity */}
       {!isAdvancedView && (
         <div className="space-y-4">
           {findingsLoading ? (
@@ -219,7 +228,7 @@ export default function HistoryDetailPage({ params }: Props) {
           ) : findings && findings.length > 0 ? (
             <div>
               <h3 className="mb-3 text-lg font-semibold">Vulnerabilidades Encontradas</h3>
-              <FindingsList findings={findings} />
+              <RiskCards findings={findings} />
             </div>
           ) : null}
         </div>
