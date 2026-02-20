@@ -6,6 +6,7 @@ import { useAuth } from "@/stores/auth-store";
 import { routes } from "@/lib/constants/routes";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/layout/notification-bell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -35,6 +36,7 @@ export function Header({ mobileMenuButton }: { mobileMenuButton?: React.ReactNod
       </div>
 
       <div className="flex items-center gap-2">
+        <NotificationBell />
         <ThemeToggle />
 
         <DropdownMenu>

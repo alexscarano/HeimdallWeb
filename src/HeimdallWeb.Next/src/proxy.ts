@@ -1,13 +1,31 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const publicPaths = ["/login", "/register", "/forgot-password", "/reset-password"];
+const publicPaths = [
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/support",
+];
+
+// The root "/" is the public landing page
+const landingPath = "/";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
+  const isLandingPath = pathname === landingPath;
   const token = request.cookies.get("authHeimdallCookie")?.value;
+
+  // Landing page: unauthenticated users see it; authenticated redirect to /scan
+  if (isLandingPath) {
+    if (token) {
+      return NextResponse.redirect(new URL("/scan", request.url));
+    }
+    return NextResponse.next();
+  }
 
   if (!isPublicPath && !token) {
     const loginUrl = new URL("/login", request.url);
@@ -19,7 +37,7 @@ export function proxy(request: NextRequest) {
     // Allow forced login (e.g., session recovery when frontend state is lost)
     const isForced = request.nextUrl.searchParams.get("force") === "1";
     if (!isForced) {
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/scan", request.url));
     }
   }
 

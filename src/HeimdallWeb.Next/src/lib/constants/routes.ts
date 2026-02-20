@@ -1,5 +1,6 @@
 export const routes = {
   home: "/",
+  scan: "/scan",
   login: "/login",
   register: "/register",
   history: "/history",
@@ -8,6 +9,8 @@ export const routes = {
   dashboardAdmin: "/dashboard/admin",
   profile: "/profile",
   adminUsers: "/admin/users",
+  monitor: "/monitor",
+  support: "/support",
 } as const;
 
 export const publicRoutes = [routes.login, routes.register] as const;

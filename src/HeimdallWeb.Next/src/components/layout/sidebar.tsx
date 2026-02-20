@@ -11,6 +11,7 @@ import {
   Users,
   ChevronLeft,
   ChevronRight,
+  Radar,
 } from "lucide-react";
 import { type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -31,8 +32,9 @@ interface NavItem {
 }
 
 const mainNavItems: NavItem[] = [
-  { href: routes.home, label: "Scanner", icon: Home },
+  { href: routes.scan, label: "Scanner", icon: Home },
   { href: routes.history, label: "Histórico", icon: History },
+  { href: routes.monitor, label: "Monitor", icon: Radar },
   { href: routes.dashboardUser, label: "Dashboard", icon: BarChart3 },
   { href: routes.profile, label: "Perfil", icon: User },
 ];
