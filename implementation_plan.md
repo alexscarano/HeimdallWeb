@@ -11,7 +11,7 @@ Este documento define o roteiro técnico detalhado para a evolução do Heimdall
 
 ---
 
-## FASE 1: Core Engine Refactoring & Scoring (Sprint 1)
+## FASE 1: Core Engine Refactoring & Scoring (Sprint 1) ✅ COMPLETO (2026-02-18)
 
 **Objetivo:** Modernizar o motor de scan para paralelismo real e implementar sistema de pontuação calibrável.
 
@@ -52,7 +52,7 @@ Refatorar `ScanService` para usar paralelismo robusto.
 
 ---
 
-## FASE 2: Advanced Scan Mode & Profiles (Sprint 2)
+## FASE 2: Advanced Scan Mode & Profiles (Sprint 2) ✅ COMPLETO (2026-02-18)
 
 **Objetivo:** Permitir scans personalizados e diferentes níveis de profundidade.
 
@@ -90,7 +90,7 @@ Refatorar `ScanService` para usar paralelismo robusto.
 
 ---
 
-## FASE 3: Novos Scanners (Sprint 3)
+## FASE 3: Novos Scanners (Sprint 3) ✅ COMPLETO (2026-02-18)
 
 **Objetivo:** Expandir a capacidade de detecção. Implementar cada um como uma implementação de `IScanner`.
 
@@ -122,7 +122,7 @@ Refatorar `ScanService` para usar paralelismo robusto.
 
 ---
 
-## FASE 4: Snapshot, Monitoramento & Cache (Sprint 4)
+## FASE 4: Snapshot, Monitoramento & Cache (Sprint 4) ✅ COMPLETO (2026-02-19)
 
 **Objetivo:** Persistência histórica e monitoramento contínuo.
 
@@ -148,7 +148,7 @@ Refatorar `ScanService` para usar paralelismo robusto.
 
 ---
 
-## FASE 5: Autenticação Google, Email & User Management (Sprint 5)
+## FASE 5: Autenticação Google, Email & User Management (Sprint 5) ✅ COMPLETO (2026-02-19)
 
 **Objetivo:** Login social, recuperação de conta e gestão de usuários.
 
@@ -179,9 +179,16 @@ Refatorar `ScanService` para usar paralelismo robusto.
 
 ---
 
-## FASE 6: UX & Frontend (Sprint 6)
+## FASE 6: UX & Frontend (Sprint 6) ✅ COMPLETO (2026-02-20)
 
 **Objetivo:** Interface moderna e responsiva integrada à API.
+
+**Entregues (2026-02-20):**
+- ✅ **G0 — Backend Notificações:** `tb_notification`, `INotificationRepository`, 4 endpoints (`GET /notifications`, `GET /notifications/unread-count`, `PATCH /{id}/read`, `PATCH /read-all`), integração em `ExecuteScanCommandHandler` (ScanComplete) e `RiskDeltaService` (RiskAlert)
+- ✅ **G1 — Auth/UX:** Página `forgot-password`, página `reset-password` (com leitura de `?token=`), botão Google OAuth + link "Esqueci minha senha" na página de login, `proxy.ts` atualizado com rotas públicas
+- ✅ **G2 — Novas Páginas:** Landing page pública em `/(public)` (Hero + Features + ScoreGauge Preview + CTA), scan form movido para `/scan`, página `/monitor` (CRUD completo + histórico por alvo em Sheet), página `/support` (formulário de contato público), `NotificationBell` no Header com polling 30s + dropdown + mark-all-read
+- ✅ **G3 — Componentes de Polimento:** `RiskCards` (modo Simples em `/history/[id]`), `ScoreTimeline` (tab "Evolução" com Recharts), coluna Score/Grade na tabela de histórico
+- ✅ **Build:** 0 erros TypeScript em todos os projetos
 
 ### 6.0. Agentes e Skills Mandatórios
 
