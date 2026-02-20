@@ -1,5 +1,25 @@
 import { z } from "zod/v4";
 
+export const forgotPasswordSchema = z.object({
+  email: z.email("Email inválido"),
+});
+
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(8, "Mínimo de 8 caracteres"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmPassword"],
+  });
+
+export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
+
 export const loginSchema = z.object({
   emailOrLogin: z
     .string()
