@@ -82,6 +82,12 @@ public interface IScanHistoryRepository
     Task<int> CountByUserIdAsync(int userId, CancellationToken ct = default);
 
     /// <summary>
+    /// Gets all distinct scan target URLs for a specific user, ordered alphabetically.
+    /// Used for autocomplete suggestions in the monitor page.
+    /// </summary>
+    Task<IEnumerable<string>> GetDistinctTargetsAsync(int userId, CancellationToken ct = default);
+
+    /// <summary>
     /// Gets recent scan activities (for admin dashboard).
     /// </summary>
     /// <param name="count">Number of recent scans to retrieve</param>

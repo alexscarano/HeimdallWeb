@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using HeimdallWeb.Application.Commands.Scan.ExecuteScan;
+using HeimdallWeb.Application.Queries.Scan.GetDistinctTargets;
 using HeimdallWeb.Application.Queries.Scan.GetUserScanHistories;
 using HeimdallWeb.Application.DTOs.Scan;
 using HeimdallWeb.Application.Common.Interfaces;
@@ -20,6 +21,8 @@ public static class ScanEndpoints
 
         group.MapGet("", GetUserScans);
 
+        group.MapGet("/distinct-targets", GetDistinctTargets);
+
         return group;
     }
 
@@ -37,6 +40,16 @@ public static class ScanEndpoints
 
         // Return 201 Created with location header
         return Results.Created($"/api/v1/scan-histories/{result.HistoryId}", result);
+    }
+
+    private static async Task<IResult> GetDistinctTargets(
+        IQueryHandler<GetDistinctTargetsQuery, IEnumerable<string>> handler,
+        HttpContext context)
+    {
+        var userId = Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+        var query = new GetDistinctTargetsQuery(userId);
+        var result = await handler.Handle(query);
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> GetUserScans(

@@ -35,7 +35,11 @@ using HeimdallWeb.Application.Queries.Scan.GetFindingsByHistoryId;
 using HeimdallWeb.Application.Queries.Scan.GetScanHistoryById;
 using HeimdallWeb.Application.Queries.Scan.GetTechnologiesByHistoryId;
 using HeimdallWeb.Application.Queries.Scan.GetScanProfiles;
+using HeimdallWeb.Application.Queries.Scan.GetDistinctTargets;
 using HeimdallWeb.Application.Queries.Scan.GetUserScanHistories;
+using HeimdallWeb.Application.Notifications.Commands;
+using HeimdallWeb.Application.Notifications.DTOs;
+using HeimdallWeb.Application.Notifications.Queries;
 using HeimdallWeb.Application.Queries.User.GetUserProfile;
 using HeimdallWeb.Application.Queries.User.GetUserStatistics;
 using HeimdallWeb.Application.Services;
@@ -128,6 +132,7 @@ public static class DependencyInjection
         services.AddScoped<IQueryHandler<GetAISummaryByHistoryIdQuery, IASummaryResponse?>, GetAISummaryByHistoryIdQueryHandler>();
         services.AddScoped<IQueryHandler<ExportHistoryPdfQuery, PdfExportResponse>, ExportHistoryPdfQueryHandler>();
         services.AddScoped<IQueryHandler<ExportSingleHistoryPdfQuery, PdfExportResponse>, ExportSingleHistoryPdfQueryHandler>();
+        services.AddScoped<IQueryHandler<GetDistinctTargetsQuery, IEnumerable<string>>, GetDistinctTargetsQueryHandler>();
 
         // User Queries (2)
         services.AddScoped<IQueryHandler<GetUserProfileQuery, UserProfileResponse>, GetUserProfileQueryHandler>();
@@ -140,6 +145,14 @@ public static class DependencyInjection
         // Monitor Queries - Sprint 4 (2)
         services.AddScoped<IQueryHandler<GetUserMonitorsQuery, IEnumerable<MonitoredTargetResponse>>, GetUserMonitorsQueryHandler>();
         services.AddScoped<IQueryHandler<GetMonitorHistoryQuery, IEnumerable<RiskSnapshotResponse>>, GetMonitorHistoryQueryHandler>();
+
+        // Notification Queries (2)
+        services.AddScoped<IQueryHandler<GetNotificationsQuery, IEnumerable<NotificationResponse>>, GetNotificationsQueryHandler>();
+        services.AddScoped<IQueryHandler<GetUnreadCountQuery, int>, GetUnreadCountQueryHandler>();
+
+        // Notification Commands (2)
+        services.AddScoped<ICommandHandler<MarkNotificationReadCommand, bool>, MarkNotificationReadCommandHandler>();
+        services.AddScoped<ICommandHandler<MarkAllReadCommand, bool>, MarkAllReadCommandHandler>();
 
         return services;
     }

@@ -63,7 +63,10 @@ public class MonitoredTarget
         UserId = userId;
         Url = url.Trim();
         Frequency = frequency;
-        NextCheck = DateTime.UtcNow;
+
+        // Se a NextCheck in the past so the background worker picks it up immediately
+        NextCheck = DateTime.UtcNow.AddMinutes(-1);
+
         IsActive = true;
         CreatedAt = DateTime.UtcNow;
     }

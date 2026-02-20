@@ -20,7 +20,7 @@ public class MonitoringWorker : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<MonitoringWorker> _logger;
-    private static readonly TimeSpan CheckInterval = TimeSpan.FromMinutes(30);
+    private static readonly TimeSpan CheckInterval = TimeSpan.FromMinutes(1);
 
     public MonitoringWorker(IServiceProvider serviceProvider, ILogger<MonitoringWorker> logger)
     {

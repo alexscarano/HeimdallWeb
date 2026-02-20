@@ -122,10 +122,11 @@ public class ScanHistoryRepository : IScanHistoryRepository
         // IMPORTANT: h.Target is a Value Object mapped with HasConversion(). EF Core cannot
         // translate the member access h.Target.Value into SQL inside a Where() predicate
         // because the expression tree contains a conversion step that the SQL translator
-        // cannot decompose. EF.Property<string> bypasses the converter and references the
-        // raw "target" column directly, generating the correct SQL: WHERE target ILIKE '%x%'.
-        if (!string.IsNullOrWhiteSpace(search))
-            query = query.Where(h => EF.Functions.ILike(EF.Property<string>(h, "target"), $"%{search}%"));
+        // string. EF Core fails to translate EF.Property<string>(h, "target") because Target is not
+        // a string. We can use Cast to string within the query if it's evaluated, but often EF 
+        // Postgres translates generic ToString() or an explicit cast if needed. 
+        // In modern EF Core, sometimes explicit casting the entity property to string works for ILike:
+        query = query.Where(h => EF.Functions.ILike((string)(object)h.Target, $"%{search}%"));
 
         // Server-side status filter applied before COUNT and Skip/Take
         if (status == "completed")
@@ -192,5 +193,18 @@ public class ScanHistoryRepository : IScanHistoryRepository
             .OrderByDescending(h => h.CreatedDate)
             .Take(count)
             .ToListAsync(ct);
+    }
+
+    public async Task<IEnumerable<string>> GetDistinctTargetsAsync(int userId, CancellationToken ct = default)
+    {
+        var targets = await _context.ScanHistories
+            .AsNoTracking()
+            .Where(h => h.UserId == userId)
+            .Select(h => h.Target)
+            .Distinct()
+            .Take(100)
+            .ToListAsync(ct);
+
+        return targets.Select(t => t.Value).OrderBy(v => v);
     }
 }
