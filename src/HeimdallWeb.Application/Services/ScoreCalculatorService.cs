@@ -29,10 +29,10 @@ public class ScoreCalculatorService : IScoreCalculatorService
     // Base deduction points per severity level
     private static readonly Dictionary<SeverityLevel, int> BasePoints = new()
     {
-        [SeverityLevel.Critical]      = 20,
-        [SeverityLevel.High]          = 10,
-        [SeverityLevel.Medium]        = 5,
-        [SeverityLevel.Low]           = 2,
+        [SeverityLevel.Critical] = 20,
+        [SeverityLevel.High] = 10,
+        [SeverityLevel.Medium] = 5,
+        [SeverityLevel.Low] = 2,
         [SeverityLevel.Informational] = 0,
     };
 
@@ -50,7 +50,13 @@ public class ScoreCalculatorService : IScoreCalculatorService
 
         decimal totalDeduction = 0;
 
-        foreach (var finding in findings)
+        // Group findings by unique Type to avoid dropping the score to zero
+        // just because the exact same issue is found on 100 different pages.
+        var distinctFindings = findings
+            .GroupBy(f => f.Type)
+            .Select(g => g.First());
+
+        foreach (var finding in distinctFindings)
         {
             var basePoints = BasePoints.TryGetValue(finding.Severity, out var pts) ? pts : 0;
             if (basePoints == 0) continue;
@@ -104,10 +110,10 @@ public class ScoreCalculatorService : IScoreCalculatorService
 
     private static string ToGrade(int score) => score switch
     {
-        >= 90 => "A",
-        >= 80 => "B",
-        >= 70 => "C",
-        >= 60 => "D",
-        _     => "F"
+        >= 80 => "A",
+        >= 60 => "B",
+        >= 40 => "C",
+        >= 20 => "E",
+        _ => "F"
     };
 }
