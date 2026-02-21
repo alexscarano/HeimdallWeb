@@ -13,5 +13,6 @@ public record ExecuteScanCommand(
     Guid UserId,
     string RemoteIp,
     int? ProfileId = null,
-    IEnumerable<string>? EnabledScanners = null
+    IEnumerable<string>? EnabledScanners = null,
+    bool ForceRefresh = false
 );

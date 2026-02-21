@@ -38,4 +38,12 @@ public interface IScanCacheService
     /// </summary>
     /// <param name="ct">Cancellation token.</param>
     Task CleanupExpiredCacheAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// Deletes cache entries for a given target URL.
+    /// Useful when a scan history implies that the cached results need manual invalidation.
+    /// </summary>
+    /// <param name="target">The target URL</param>
+    /// <param name="ct">Cancellation token.</param>
+    Task ClearCacheForTargetAsync(string target, CancellationToken ct = default);
 }

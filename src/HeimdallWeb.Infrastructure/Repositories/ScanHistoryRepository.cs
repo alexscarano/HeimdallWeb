@@ -195,6 +195,16 @@ public class ScanHistoryRepository : IScanHistoryRepository
             .ToListAsync(ct);
     }
 
+    public async Task<ScanHistory?> GetLatestCompletedByTargetAsync(string target, CancellationToken ct = default)
+    {
+        return await _context.ScanHistories
+            .AsNoTracking()
+            .Where(h => h.HasCompleted && h.SourceHistoryId == null && h.RawJsonResult != "{\"cached\": true}")
+            .Where(h => (string)(object)h.Target == target)
+            .OrderByDescending(h => h.CreatedDate)
+            .FirstOrDefaultAsync(ct);
+    }
+
     public async Task<IEnumerable<string>> GetDistinctTargetsAsync(int userId, CancellationToken ct = default)
     {
         var targets = await _context.ScanHistories

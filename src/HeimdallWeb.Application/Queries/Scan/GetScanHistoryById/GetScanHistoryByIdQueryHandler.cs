@@ -40,10 +40,25 @@ public class GetScanHistoryByIdQueryHandler : IQueryHandler<GetScanHistoryByIdQu
         if (user.UserType != UserType.Admin && scanHistory.UserId != user.UserId)
             throw new NotFoundException("Scan history", query.HistoryId);
 
-        // Get related entities using internal HistoryId
-        var findings = await _unitOfWork.Findings.GetByHistoryIdAsync(scanHistory.HistoryId, cancellationToken);
-        var technologies = await _unitOfWork.Technologies.GetByHistoryIdAsync(scanHistory.HistoryId, cancellationToken);
-        var iaSummary = await _unitOfWork.IASummaries.GetByHistoryIdAsync(scanHistory.HistoryId, cancellationToken);
+        // If this is a cache-hit record, resolve findings/technologies/rawJson from the source scan
+        int dataSourceId = scanHistory.HistoryId;
+        string rawJsonResult = scanHistory.RawJsonResult;
+
+        if (scanHistory.SourceHistoryId.HasValue)
+        {
+            var sourceHistory = await _unitOfWork.ScanHistories.GetByIdAsync(
+                scanHistory.SourceHistoryId.Value, cancellationToken);
+            if (sourceHistory != null)
+            {
+                dataSourceId = sourceHistory.HistoryId;
+                rawJsonResult = sourceHistory.RawJsonResult;
+            }
+        }
+
+        // Get related entities — from source scan when this is a cache hit
+        var findings = await _unitOfWork.Findings.GetByHistoryIdAsync(dataSourceId, cancellationToken);
+        var technologies = await _unitOfWork.Technologies.GetByHistoryIdAsync(dataSourceId, cancellationToken);
+        var iaSummary = await _unitOfWork.IASummaries.GetByHistoryIdAsync(dataSourceId, cancellationToken);
 
         // Map to response DTOs
         var findingResponses = findings.Select(f => new FindingResponse(
@@ -96,7 +111,7 @@ public class GetScanHistoryByIdQueryHandler : IQueryHandler<GetScanHistoryByIdQu
         return new ScanHistoryDetailResponse(
             HistoryId: scanHistory.PublicId,
             Target: scanHistory.Target.Value,
-            RawJsonResult: scanHistory.RawJsonResult,
+            RawJsonResult: rawJsonResult,
             CreatedDate: scanHistory.CreatedDate,
             UserId: scanHistory.User?.PublicId ?? Guid.Empty,
             Duration: durationString,

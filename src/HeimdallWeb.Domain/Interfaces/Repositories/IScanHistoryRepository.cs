@@ -93,4 +93,10 @@ public interface IScanHistoryRepository
     /// <param name="count">Number of recent scans to retrieve</param>
     /// <param name="ct">Cancellation token</param>
     Task<IEnumerable<ScanHistory>> GetRecentAsync(int count, CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets the most recent completed original scan (non-cache-hit) for a given target.
+    /// Used to link new cache-hit history records to their source scan.
+    /// </summary>
+    Task<ScanHistory?> GetLatestCompletedByTargetAsync(string target, CancellationToken ct = default);
 }

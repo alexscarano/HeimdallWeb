@@ -51,10 +51,36 @@ public class ScanCacheRepository : IScanCacheRepository
     }
 
     /// <inheritdoc/>
-    public async Task<ScanCache?> GetByCacheKeyAsync(string cacheKey, CancellationToken ct = default)
+    public async Task DeleteByTargetAsync(string target, CancellationToken ct = default)
     {
-        return await _context.ScanCaches
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.CacheKey == cacheKey, ct);
+        if (string.IsNullOrWhiteSpace(target))
+            return;
+
+        // The cache JSON stores the normalized URL (e.g. "https://google.com") but the caller
+        // may pass the protocol-stripped value from ScanTarget.Value (e.g. "google.com").
+        // Cover all three variants so the cascade delete always hits the cache entry.
+        var sql = """
+            DELETE FROM tb_scan_cache
+            WHERE (result_json::jsonb ->> 'Target') IN (
+                {0},
+                'https://' || {0},
+                'http://' || {0},
+                'https://www.' || {0},
+                'http://www.' || {0}
+            )
+            """;
+
+        await _context.Database.ExecuteSqlRawAsync(sql, new object[] { target }, ct);
+    }
+
+    /// <inheritdoc/>
+    public async Task DeleteByCacheKeyAsync(string cacheKey, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(cacheKey))
+            return;
+
+        await _context.ScanCaches
+            .Where(c => c.CacheKey == cacheKey)
+            .ExecuteDeleteAsync(ct);
     }
 }

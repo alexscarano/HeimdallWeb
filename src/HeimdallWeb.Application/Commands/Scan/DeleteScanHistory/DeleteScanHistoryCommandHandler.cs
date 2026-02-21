@@ -1,6 +1,7 @@
 using HeimdallWeb.Application.Common.Exceptions;
 using HeimdallWeb.Application.Common.Interfaces;
 using HeimdallWeb.Application.DTOs.Scan;
+using HeimdallWeb.Application.Interfaces;
 using HeimdallWeb.Domain.Enums;
 using HeimdallWeb.Domain.Interfaces;
 
@@ -13,10 +14,12 @@ namespace HeimdallWeb.Application.Commands.Scan.DeleteScanHistory;
 public class DeleteScanHistoryCommandHandler : ICommandHandler<DeleteScanHistoryCommand, DeleteScanHistoryResponse>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IScanCacheService _scanCacheService;
 
-    public DeleteScanHistoryCommandHandler(IUnitOfWork unitOfWork)
+    public DeleteScanHistoryCommandHandler(IUnitOfWork unitOfWork, IScanCacheService scanCacheService)
     {
         _unitOfWork = unitOfWork;
+        _scanCacheService = scanCacheService;
     }
 
     public async Task<DeleteScanHistoryResponse> Handle(DeleteScanHistoryCommand request, CancellationToken ct = default)
@@ -69,6 +72,9 @@ public class DeleteScanHistoryCommandHandler : ICommandHandler<DeleteScanHistory
 
         // Log deletion
         await LogScanHistoryDeletionAsync(historyInternalId, requestingUserInternalId, target, ct);
+
+        // Cascade delete any cache hits for this target URL
+        await _scanCacheService.ClearCacheForTargetAsync(target.Value, ct);
 
         return new DeleteScanHistoryResponse(
             Success: true,

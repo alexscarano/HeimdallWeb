@@ -36,7 +36,10 @@
       "Bash(docker exec:*)",
       "Bash(docker restart:*)",
       "Bash(chmod:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(docker stop:*)",
+      "Bash(dotnet restore:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

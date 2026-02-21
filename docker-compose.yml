@@ -75,6 +75,19 @@ services:
       - heimdall_nuget_cache:/root/.nuget/packages
       # Cache de build do .NET
       - heimdall_dotnet_cache:/root/.dotnet
+      # Named volumes para bin/ e obj/ — artifacts de build ficam isolados no
+      # container e nunca sobrescrevem o host com arquivos owned por root.
+      # Mesmo padrão de heimdall_node_modules/heimdall_next_build no frontend.
+      - heimdall_bin_webapi:/workspace/src/HeimdallWeb.WebApi/bin
+      - heimdall_obj_webapi:/workspace/src/HeimdallWeb.WebApi/obj
+      - heimdall_bin_infrastructure:/workspace/src/HeimdallWeb.Infrastructure/bin
+      - heimdall_obj_infrastructure:/workspace/src/HeimdallWeb.Infrastructure/obj
+      - heimdall_bin_application:/workspace/src/HeimdallWeb.Application/bin
+      - heimdall_obj_application:/workspace/src/HeimdallWeb.Application/obj
+      - heimdall_bin_contracts:/workspace/src/HeimdallWeb.Contracts/bin
+      - heimdall_obj_contracts:/workspace/src/HeimdallWeb.Contracts/obj
+      - heimdall_bin_domain:/workspace/src/HeimdallWeb.Domain/bin
+      - heimdall_obj_domain:/workspace/src/HeimdallWeb.Domain/obj
     networks:
       - heimdall_net
     depends_on:
@@ -137,4 +150,25 @@ volumes:
   heimdall_node_modules:
     driver: local
   heimdall_next_build:
+    driver: local
+  # Artifacts de build isolados por projeto — evita root-owned files no host
+  heimdall_bin_webapi:
+    driver: local
+  heimdall_obj_webapi:
+    driver: local
+  heimdall_bin_infrastructure:
+    driver: local
+  heimdall_obj_infrastructure:
+    driver: local
+  heimdall_bin_application:
+    driver: local
+  heimdall_obj_application:
+    driver: local
+  heimdall_bin_contracts:
+    driver: local
+  heimdall_obj_contracts:
+    driver: local
+  heimdall_bin_domain:
+    driver: local
+  heimdall_obj_domain:
     driver: local

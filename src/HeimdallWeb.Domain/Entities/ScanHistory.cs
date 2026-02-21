@@ -32,8 +32,17 @@ public class ScanHistory
     public ICollection<IASummary> IASummaries { get; private set; } = new List<IASummary>();
     public ICollection<AuditLog> AuditLogs { get; private set; } = new List<AuditLog>();
 
+    /// <summary>
+    /// When set, indicates this record is a cache hit referencing an original scan.
+    /// Data displayed on the detail page is resolved from the source history.
+    /// </summary>
+    public int? SourceHistoryId { get; private set; }
+
     // Navigation property (parent)
     public User? User { get; private set; }
+
+    // Self-referencing navigation for cache hit → source scan
+    public ScanHistory? SourceHistory { get; private set; }
 
     // Parameterless constructor for EF Core
     private ScanHistory() { }
@@ -96,6 +105,14 @@ public class ScanHistory
             throw new ValidationException("Raw JSON result cannot be empty.");
 
         RawJsonResult = rawJsonResult;
+    }
+
+    /// <summary>
+    /// Links this cache-hit record to the original scan it was derived from.
+    /// </summary>
+    public void SetSourceHistory(int sourceHistoryId)
+    {
+        SourceHistoryId = sourceHistoryId;
     }
 
     /// <summary>

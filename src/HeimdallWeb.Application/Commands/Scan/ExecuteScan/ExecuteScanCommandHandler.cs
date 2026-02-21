@@ -68,25 +68,64 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         var stopwatch = Stopwatch.StartNew();
         var normalizedTarget = NormalizeUrl(command.Target);
 
-        // Check scan cache — return immediately if a valid cached result exists
+        // Check scan cache — return immediately if a valid cached result exists (unless force refresh is requested)
         var cacheKey = _scanCacheService.GenerateCacheKey(normalizedTarget, command.ProfileId);
-        var cachedJson = await _scanCacheService.GetCachedResultAsync(cacheKey, cancellationToken);
-        if (cachedJson != null)
+
+        if (!command.ForceRefresh)
         {
-            try
+            var cachedJson = await _scanCacheService.GetCachedResultAsync(cacheKey, cancellationToken);
+            if (cachedJson != null)
             {
-                var cached = JsonSerializer.Deserialize<ExecuteScanResponse>(cachedJson);
+                ExecuteScanResponse? cached = null;
+                try
+                {
+                    cached = JsonSerializer.Deserialize<ExecuteScanResponse>(cachedJson);
+                }
+                catch (JsonException ex)
+                {
+                    // Malformed cache entry — proceed with a live scan
+                    _logger.LogWarning(ex, "Malformed cache entry for key {Key}. Running live scan.", cacheKey);
+                }
+
                 if (cached != null)
                 {
                     _logger.LogDebug("Scan cache hit for target {Target} (key: {Key}).", normalizedTarget, cacheKey);
                     stopwatch.Stop();
-                    return cached with { IsCached = true, Duration = stopwatch.Elapsed };
+
+                    // These throw business exceptions (NotFoundException, ApplicationException) — must propagate
+                    await ValidateUserAsync(command.UserId, cancellationToken);
+                    await CheckRateLimitAsync(command.UserId, cancellationToken);
+
+                    var user = await _unitOfWork.Users.GetByPublicIdAsync(command.UserId, cancellationToken);
+                    var userInternalId = user!.UserId;
+
+                    // History creation is non-critical — failure must not abort cache hit
+                    Guid historyId;
+                    try
+                    {
+                        historyId = await CreateCachedScanHistoryAsync(
+                            userInternalId,
+                            normalizedTarget,
+                            cached.Summary,
+                            cached.Score,
+                            cached.Grade,
+                            stopwatch.Elapsed,
+                            command.RemoteIp,
+                            cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Failed to create history for cache hit. Returning cached data without persisting history.");
+                        historyId = Guid.Empty;
+                    }
+
+                    return cached with
+                    {
+                        IsCached = true,
+                        Duration = stopwatch.Elapsed,
+                        HistoryId = historyId
+                    };
                 }
-            }
-            catch (Exception ex)
-            {
-                // Malformed cache entry — proceed with a live scan
-                _logger.LogWarning(ex, "Failed to deserialize cached scan result for key {Key}. Running live scan.", cacheKey);
             }
         }
 
@@ -252,7 +291,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
     private async Task ValidateUserAsync(Guid userPublicId, CancellationToken ct)
     {
         var user = await _unitOfWork.Users.GetByPublicIdAsync(userPublicId, ct);
-        
+
         if (user == null)
             throw new NotFoundException("User", userPublicId);
 
@@ -392,15 +431,80 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
     }
 
     /// <summary>
+    /// Creates a ScanHistory record for a cache hit, reusing the cached summary and score.
+    /// Returns the PublicId of the newly created history.
+    /// </summary>
+    private async Task<Guid> CreateCachedScanHistoryAsync(
+        int userId,
+        string target,
+        string summary,
+        int? score,
+        string? grade,
+        TimeSpan duration,
+        string remoteIp,
+        CancellationToken ct)
+    {
+        try
+        {
+            return await _unitOfWork.ExecuteInTransactionAsync(async (cancellationToken) =>
+            {
+                var scanTarget = ScanTarget.Create(target);
+                var scanHistory = new ScanHistory(scanTarget, userId);
+
+                // Use the actual elapsed duration (cache lookup time) so ScanDuration validation passes.
+                // The actual detailed results come from the cache JSON returned to the client.
+                scanHistory.CompleteScan(duration, "{\"cached\": true}", summary);
+
+                // Link to the original scan so the detail page can resolve findings/rawJson from it
+                var sourceHistory = await _unitOfWork.ScanHistories.GetLatestCompletedByTargetAsync(
+                    scanTarget.Value, cancellationToken);
+                if (sourceHistory != null)
+                    scanHistory.SetSourceHistory(sourceHistory.HistoryId);
+
+                if (score.HasValue && !string.IsNullOrEmpty(grade))
+                {
+                    scanHistory.SetScore(score.Value, grade);
+                }
+
+                var createdHistory = await _unitOfWork.ScanHistories.AddAsync(scanHistory, cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                // Update UserUsage (increment request count)
+                await UpdateUserUsageAsync(userId, cancellationToken);
+
+                // Log success for cache hit
+                await _unitOfWork.AuditLogs.AddAsync(new AuditLog(
+                    code: LogEventCode.DB_SAVE_OK,
+                    level: "Info",
+                    message: "Scan history created from cache hit",
+                    source: "ExecuteScanCommandHandler",
+                    userId: userId,
+                    historyId: createdHistory.HistoryId,
+                    remoteIp: remoteIp
+                ), cancellationToken);
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                return createdHistory.PublicId;
+            }, ct);
+        }
+        catch (Exception ex)
+        {
+            await LogDatabaseErrorAsync(userId, remoteIp, ex.Message, CancellationToken.None);
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Saves an incomplete scan record (due to timeout or error).
     /// Returns the PublicId of the created history, or Guid.Empty if save failed.
     /// </summary>
     private async Task<Guid> SaveIncompleteScanAsync(
-        int userId, 
-        string target, 
-        TimeSpan duration, 
-        string remoteIp, 
-        string summary, 
+        int userId,
+        string target,
+        TimeSpan duration,
+        string remoteIp,
+        string summary,
         CancellationToken ct)
     {
         try
@@ -411,7 +515,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
 
             var createdHistory = await _unitOfWork.ScanHistories.AddAsync(scanHistory, ct);
             await _unitOfWork.SaveChangesAsync(ct);
-            
+
             return createdHistory.PublicId;
         }
         catch
@@ -449,14 +553,14 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         try
         {
             using var doc = JsonDocument.Parse(aiResponseJson);
-            
+
             // Check if "achados" property exists
             if (!doc.RootElement.TryGetProperty("achados", out var achadosElement))
             {
                 // Log warning: AI response doesn't contain findings array
                 await LogParsingWarningAsync(
-                    historyId, 
-                    "AI response missing 'achados' property - findings not saved", 
+                    historyId,
+                    "AI response missing 'achados' property - findings not saved",
                     ct);
                 return;
             }
@@ -485,11 +589,11 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
             if (findings.Any())
             {
                 await _unitOfWork.Findings.AddRangeAsync(findings, ct);
-                
+
                 // Log success
                 await LogParsingSuccessAsync(
-                    historyId, 
-                    $"Successfully parsed and saved {findings.Count} findings", 
+                    historyId,
+                    $"Successfully parsed and saved {findings.Count} findings",
                     ct);
             }
         }
@@ -920,7 +1024,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         for (int i = 1; i <= 31; i++)
         {
             if (i == 9 || i == 10 || i == 13) continue; // Skip \t \n \r
-            
+
             // Remove both real control chars and JSON escape sequences
             var escapeSeq = $"\\u{i:x4}";
             jsonString = jsonString.Replace(escapeSeq, "");

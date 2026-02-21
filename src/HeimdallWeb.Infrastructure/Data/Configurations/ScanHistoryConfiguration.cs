@@ -83,6 +83,11 @@ public class ScanHistoryConfiguration : IEntityTypeConfiguration<ScanHistory>
             .HasMaxLength(1)
             .IsRequired(false);
 
+        // Source history FK (nullable — set only for cache-hit records)
+        builder.Property(h => h.SourceHistoryId)
+            .HasColumnName("source_history_id")
+            .IsRequired(false);
+
         // Relationships
         builder.HasOne(h => h.User)
             .WithMany(u => u.ScanHistories)
@@ -112,6 +117,14 @@ public class ScanHistoryConfiguration : IEntityTypeConfiguration<ScanHistory>
             .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);
 
+        // Self-referencing: cache hit → source scan
+        // SetNull so deleting the source doesn't cascade-delete all cache-hit records
+        builder.HasOne(h => h.SourceHistory)
+            .WithMany()
+            .HasForeignKey(h => h.SourceHistoryId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
+
         // Indexes
         builder.HasIndex(h => h.UserId)
             .HasDatabaseName("ix_tb_history_user_id");
@@ -133,5 +146,8 @@ public class ScanHistoryConfiguration : IEntityTypeConfiguration<ScanHistory>
         builder.HasIndex(h => h.PublicId)
             .IsUnique()
             .HasDatabaseName("ux_tb_history_public_id");
+
+        builder.HasIndex(h => h.SourceHistoryId)
+            .HasDatabaseName("ix_tb_history_source_history_id");
     }
 }

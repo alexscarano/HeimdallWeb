@@ -38,27 +38,26 @@ public class ScanCacheService : IScanCacheService
     /// <inheritdoc/>
     public async Task CacheResultAsync(string cacheKey, string resultJson, TimeSpan expiration, CancellationToken ct = default)
     {
-        // If an entry exists for this key, remove it so the new one replaces it with a fresh TTL
-        var existing = await _unitOfWork.ScanCaches.GetByCacheKeyAsync(cacheKey, ct);
-        if (existing != null)
-        {
-            // Re-fetch as tracked entity for deletion
-            var tracked = await _unitOfWork.ScanCaches.GetByCacheKeyAsync(cacheKey, ct);
-            if (tracked != null)
-            {
-                // Delete expired entries as a bonus cleanup before inserting the new one
-                await _unitOfWork.ScanCaches.DeleteExpiredAsync(ct);
-            }
-        }
+        // Delete-then-insert upsert: removes any existing entry (expired or not) before inserting
+        // the new one so the unique constraint on cache_key is never violated.
+        await _unitOfWork.ScanCaches.DeleteByCacheKeyAsync(cacheKey, ct);
 
         var cache = new ScanCache(cacheKey, resultJson, DateTime.UtcNow.Add(expiration));
         await _unitOfWork.ScanCaches.AddAsync(cache, ct);
         await _unitOfWork.SaveChangesAsync(ct);
     }
 
-    /// <inheritdoc/>
     public async Task CleanupExpiredCacheAsync(CancellationToken ct = default)
     {
         await _unitOfWork.ScanCaches.DeleteExpiredAsync(ct);
+    }
+
+    /// <inheritdoc/>
+    public async Task ClearCacheForTargetAsync(string target, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(target))
+            return;
+
+        await _unitOfWork.ScanCaches.DeleteByTargetAsync(target, ct);
     }
 }

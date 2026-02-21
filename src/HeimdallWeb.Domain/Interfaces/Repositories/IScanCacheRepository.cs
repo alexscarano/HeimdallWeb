@@ -23,8 +23,15 @@ public interface IScanCacheRepository
     Task DeleteExpiredAsync(CancellationToken ct = default);
 
     /// <summary>
-    /// Returns a cache entry by its key regardless of expiry state,
-    /// or null if no entry exists. Used to check for an existing entry before upsert.
+    /// Deletes all cache entries where the JSON result's Target matches the provided URL.
+    /// Used for cascade deletion when a user deletes their scan history.
     /// </summary>
-    Task<ScanCache?> GetByCacheKeyAsync(string cacheKey, CancellationToken ct = default);
+    Task DeleteByTargetAsync(string target, CancellationToken ct = default);
+
+    /// <summary>
+    /// Deletes the cache entry with the given key, regardless of expiry state.
+    /// Used for upsert logic: delete-then-insert to refresh an existing entry's TTL.
+    /// No-op if no entry exists for the key.
+    /// </summary>
+    Task DeleteByCacheKeyAsync(string cacheKey, CancellationToken ct = default);
 }
