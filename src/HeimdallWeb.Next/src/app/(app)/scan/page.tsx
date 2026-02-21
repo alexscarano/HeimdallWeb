@@ -1,6 +1,6 @@
 "use client";
 
-import { Shield, ShieldCheck, Radar, FileSearch, Lock, Globe, Network } from "lucide-react";
+import { Shield, ShieldCheck, Radar, FileSearch, Lock, Globe, Network, Zap, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ScanForm } from "@/components/scan/scan-form";
@@ -9,39 +9,48 @@ import { ScanResultSummary } from "@/components/scan/scan-result-summary";
 import { ParticleBackground } from "@/components/ui/particle-background";
 import { useScan } from "@/lib/hooks/use-scan";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
-const features = [
+const scanProfilesDetail = [
   {
-    icon: ShieldCheck,
-    title: "Headers de Segurança",
-    description: "HSTS, CSP, X-Frame-Options e mais.",
+    icon: Zap,
+    title: "Rápido",
+    description: "Verificações essenciais de segurança. Ideal para monitoramento contínuo.",
+    estimatedTime: "~15s",
+    scans: [
+      { name: "Headers de Segurança", speed: "fast" },
+      { name: "Redirecionamento HTTPS", speed: "fast" },
+      { name: "Certificado SSL", speed: "fast" },
+    ],
   },
   {
-    icon: Lock,
-    title: "SSL & TLS",
-    description: "Certificados, protocolos e ciphers.",
+    icon: Shield,
+    title: "Padrão",
+    description: "Scan balanceado com as vulnerabilidades mais comuns e relevantes.",
+    estimatedTime: "~45s",
+    scans: [
+      { name: "Todos do perfil Rápido", speed: "fast" },
+      { name: "Robots.txt & Sitemap", speed: "medium" },
+      { name: "Scanner de Portas", speed: "slow" },
+    ],
   },
   {
-    icon: Radar,
-    title: "Análise de Portas",
-    description: "Portas abertas e serviços expostos.",
-  },
-  {
-    icon: FileSearch,
-    title: "Caminhos Sensíveis",
-    description: "Arquivos e diretórios expostos.",
-  },
-  {
-    icon: Globe,
-    title: "DNS & Domínio",
-    description: "Resolução IP, CDN e idade do domínio.",
-  },
-  {
-    icon: Network,
-    title: "Subdomínios",
-    description: "Descoberta automática de subdomínios.",
+    icon: Search,
+    title: "Profundo",
+    description: "Análise completa e agressiva de segurança na infraestrutura.",
+    estimatedTime: "~1m30s",
+    scans: [
+      { name: "Todos do perfil Padrão", speed: "fast" },
+      { name: "Caminhos Sensíveis", speed: "slow" },
+    ],
   },
 ];
+
+const SPEED_COLORS: Record<string, string> = {
+  fast: "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]",
+  medium: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]",
+  slow: "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]",
+};
 
 export default function ScanPage() {
   const scan = useScan();
@@ -58,7 +67,7 @@ export default function ScanPage() {
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4">
         {/* Hero section */}
-        <div className="flex flex-col items-center gap-6 text-center">
+        <div className="flex flex-col items-center gap-6 text-center mt-12 mb-8">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary-subtle">
             <Shield className="h-8 w-8 text-accent-primary" />
           </div>
@@ -74,17 +83,19 @@ export default function ScanPage() {
         </div>
 
         {/* Scan form / loading / result */}
-        <div className="mt-8 flex w-full justify-center">
-          {scan.result ? (
-            <ScanResultSummary result={scan.result} onNewScan={scan.reset} />
-          ) : scan.isScanning ? (
-            <ScanLoading
-              elapsedSeconds={scan.elapsedSeconds}
-              timeoutSeconds={scan.timeoutSeconds}
-            />
-          ) : (
-            <ScanForm onSubmit={handleSubmit} isScanning={scan.isScanning} />
-          )}
+        <div className="flex w-full justify-center">
+          <div className="w-full max-w-5xl">
+            {scan.result ? (
+              <ScanResultSummary result={scan.result} onNewScan={scan.reset} />
+            ) : scan.isScanning ? (
+              <ScanLoading
+                elapsedSeconds={scan.elapsedSeconds}
+                timeoutSeconds={scan.timeoutSeconds}
+              />
+            ) : (
+              <ScanForm onSubmit={handleSubmit} isScanning={scan.isScanning} />
+            )}
+          </div>
         </div>
 
         {/* Error toast is handled by useScan + sonner, but show inline too */}
@@ -92,50 +103,69 @@ export default function ScanPage() {
           <p className="mt-4 text-sm text-destructive">{scan.error}</p>
         )}
 
-        {/* Features grid — only visible when not scanning */}
+        {/* Detailed Scan Profiles Section */}
         {!scan.isScanning && !scan.result && (
-          <div className="mt-12 w-full max-w-2xl space-y-6">
-
+          <div className="mt-16 mb-20 w-full max-w-5xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
             <div className="flex items-center gap-4">
               <Separator className="flex-1 opacity-20" />
               <h2 className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                Scans nos quais trabalhamos
+                Perfis de Scan e Desempenho
               </h2>
               <Separator className="flex-1 opacity-20" />
             </div>
 
-            {/* Row 1 */}
-            <div className="grid grid-cols-3 gap-4">
-              {features.slice(0, 3).map((feature) => (
-                <Card key={feature.title} className="border bg-background/80 backdrop-blur-sm transition-colors hover:border-accent-primary-border">
-                  <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent-primary-subtle">
-                      <feature.icon className="h-5 w-5 text-accent-primary" />
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {scanProfilesDetail.map((profile) => (
+                <Card key={profile.title} className="flex flex-col justify-between border bg-background/80 backdrop-blur-sm transition-colors hover:border-accent-primary-border overflow-hidden">
+                  <div className="p-6">
+                    <div className="flex flex-col items-center justify-center gap-2 mb-4">
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-primary-subtle">
+                          <profile.icon className="h-5 w-5 text-accent-primary" />
+                        </div>
+                        <h3 className="font-bold text-lg">{profile.title}</h3>
+                      </div>
+                      <span className="text-xs font-semibold px-2 py-1 bg-muted rounded-md text-muted-foreground w-fit">
+                        {profile.estimatedTime}
+                      </span>
                     </div>
-                    <h3 className="text-sm font-semibold leading-tight">{feature.title}</h3>
-                    <p className="text-xs leading-relaxed text-muted-foreground">
-                      {feature.description}
+
+                    <p className="text-sm text-center text-muted-foreground mb-8 min-h-[60px]">
+                      {profile.description}
                     </p>
-                  </CardContent>
+
+                    <div className="space-y-3 flex flex-col items-center">
+                      <h4 className="text-xs font-semibold uppercase text-center text-muted-foreground/70 tracking-wider mb-2">Scanners Inclusos</h4>
+                      <ul className="space-y-2.5 inline-block text-left">
+                        {profile.scans.map((subscan, idx) => (
+                          <li key={idx} className="flex items-center gap-2.5 text-sm w-fit">
+                            <span
+                              className={cn(
+                                "block h-2 w-2 shrink-0 rounded-full",
+                                SPEED_COLORS[subscan.speed]
+                              )}
+                              title={subscan.speed === 'fast' ? "Rápido" : subscan.speed === 'medium' ? "Tempo Médio" : "Demorado"}
+                            />
+                            <span className="text-foreground/90 font-medium">{subscan.name}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </Card>
               ))}
             </div>
 
-            {/* Row 2 */}
-            <div className="grid grid-cols-3 gap-4">
-              {features.slice(3, 6).map((feature) => (
-                <Card key={feature.title} className="border bg-background/80 backdrop-blur-sm transition-colors hover:border-accent-primary-border">
-                  <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent-primary-subtle">
-                      <feature.icon className="h-5 w-5 text-accent-primary" />
-                    </div>
-                    <h3 className="text-sm font-semibold leading-tight">{feature.title}</h3>
-                    <p className="text-xs leading-relaxed text-muted-foreground">
-                      {feature.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
+            <div className="flex items-center justify-center gap-6 mt-4 opacity-70">
+              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                <div className="h-2 w-2 rounded-full bg-emerald-500" /> Rápido
+              </div>
+              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                <div className="h-2 w-2 rounded-full bg-amber-500" /> Tempo Médio
+              </div>
+              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                <div className="h-2 w-2 rounded-full bg-rose-500" /> Demorado
+              </div>
             </div>
           </div>
         )}

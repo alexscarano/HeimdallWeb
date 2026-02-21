@@ -115,7 +115,7 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
   }
 
   return (
-    <div className="w-full max-w-3xl space-y-8">
+    <div className="w-full space-y-8">
       {/* URL Form */}
       <Form {...form}>
         <form
@@ -166,14 +166,14 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
       </Form>
 
       {/* Profile selector */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-4 w-full">
         {isLoadingProfiles ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="flex h-[200px] flex-col items-center gap-4 rounded-2xl border-2 border-muted bg-card/50 p-6">
-              <div className="h-14 w-14 animate-pulse rounded-2xl bg-muted" />
-              <div className="space-y-2 w-full flex flex-col items-center">
-                <div className="h-6 w-24 animate-pulse rounded bg-muted" />
-                <div className="h-12 w-full animate-pulse rounded bg-muted/50" />
+            <div key={i} className="flex h-[220px] flex-col items-center gap-5 rounded-2xl border-2 border-muted bg-card/50 p-8">
+              <div className="h-16 w-16 animate-pulse rounded-2xl bg-muted" />
+              <div className="space-y-3 w-full flex flex-col items-center">
+                <div className="h-7 w-28 animate-pulse rounded bg-muted" />
+                <div className="h-14 w-full animate-pulse rounded bg-muted/50" />
               </div>
             </div>
           ))
@@ -192,7 +192,7 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
                   disabled={isScanning}
                   onClick={() => handleSelectProfile(profile.id)}
                   className={cn(
-                    "group relative flex flex-col items-center gap-4 rounded-2xl border-2 p-6 text-center transition-all duration-300",
+                    "group relative flex flex-col items-center gap-5 rounded-2xl border-2 p-8 text-center transition-all duration-300",
                     "hover:border-accent-primary/50 hover:bg-accent-primary-subtle/30 hover:-translate-y-1 hover:shadow-lg",
                     isSelected
                       ? "border-accent-primary bg-accent-primary-subtle/40 shadow-md ring-1 ring-accent-primary/20"
@@ -201,23 +201,23 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
                 >
                   <div
                     className={cn(
-                      "flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-300 shadow-sm",
+                      "flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-300 shadow-sm",
                       isSelected
                         ? "bg-accent-primary text-accent-primary-foreground scale-110"
                         : "bg-muted text-foreground/70 group-hover:bg-accent-primary/20 group-hover:text-accent-primary group-hover:scale-110"
                     )}
                   >
-                    <IconComponent className="h-7 w-7" />
+                    <IconComponent className="h-8 w-8" />
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-2.5">
                     <h4 className={cn(
-                      "text-lg font-bold tracking-tight transition-colors",
+                      "text-xl font-bold tracking-tight transition-colors",
                       isSelected ? "text-accent-primary" : "text-foreground"
                     )}>
                       {profile.name}
                     </h4>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
+                    <p className="text-base leading-relaxed text-muted-foreground">
                       {description}
                     </p>
                   </div>
@@ -235,7 +235,7 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
               disabled={isScanning}
               onClick={handleSelectCustom}
               className={cn(
-                "group relative flex flex-col items-center gap-4 rounded-2xl border-2 p-6 text-center transition-all duration-300",
+                "group relative flex flex-col items-center gap-5 rounded-2xl border-2 p-8 text-center transition-all duration-300",
                 "hover:border-accent-primary/50 hover:bg-accent-primary-subtle/30 hover:-translate-y-1 hover:shadow-lg",
                 isCustom
                   ? "border-accent-primary bg-accent-primary-subtle/40 shadow-md ring-1 ring-accent-primary/20"
@@ -244,23 +244,23 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
             >
               <div
                 className={cn(
-                  "flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-300 shadow-sm",
+                  "flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-300 shadow-sm",
                   isCustom
                     ? "bg-accent-primary text-accent-primary-foreground scale-110"
                     : "bg-muted text-foreground/70 group-hover:bg-accent-primary/20 group-hover:text-accent-primary group-hover:scale-110"
                 )}
               >
-                <Settings2 className="h-7 w-7" />
+                <Settings2 className="h-8 w-8" />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 <h4 className={cn(
-                  "text-lg font-bold tracking-tight transition-colors",
+                  "text-xl font-bold tracking-tight transition-colors",
                   isCustom ? "text-accent-primary" : "text-foreground"
                 )}>
                   Custom
                 </h4>
-                <p className="text-sm leading-relaxed text-muted-foreground">
+                <p className="text-base leading-relaxed text-muted-foreground">
                   {isCustom
                     ? `${customScanners.length} scanner${customScanners.length !== 1 ? "s" : ""} selecionado${customScanners.length !== 1 ? "s" : ""}`
                     : "Selecione manualmente quais scanners executar."
