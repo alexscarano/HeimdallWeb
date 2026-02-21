@@ -27,7 +27,7 @@ export function ScanLoading({ elapsedSeconds, timeoutSeconds }: ScanLoadingProps
   };
 
   return (
-    <Card className="w-full max-w-lg border shadow-lg">
+    <Card className="mx-auto w-full max-w-lg border shadow-lg">
       <CardContent className="flex flex-col items-center gap-6 py-10">
         <div className="relative flex h-20 w-20 items-center justify-center">
           <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-accent-primary" />

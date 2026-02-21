@@ -24,7 +24,7 @@ export function ScanResultSummary({ result, onNewScan }: ScanResultSummaryProps)
   const isCompleted = result.hasCompleted;
 
   return (
-    <Card className="w-full max-w-lg border shadow-lg">
+    <Card className="mx-auto w-full max-w-lg border shadow-lg">
       <CardContent className="flex flex-col items-center gap-5 pt-8 pb-4">
         {/* Score gauge — only shown when scan completed and score is available */}
         {isCompleted && result.score != null ? (

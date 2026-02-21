@@ -37,10 +37,10 @@ const scanProfilesDetail = [
   {
     icon: Search,
     title: "Profundo",
-    description: "Análise completa e agressiva de segurança na infraestrutura.",
+    description: "Análise com todos os scanners de segurança na infraestrutura.",
     estimatedTime: "~1m30s",
     scans: [
-      { name: "Todos do perfil Padrão", speed: "fast" },
+      { name: "Todos do perfil Padrão", speed: "medium" },
       { name: "Caminhos Sensíveis", speed: "slow" },
     ],
   },
