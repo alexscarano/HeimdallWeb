@@ -29,6 +29,11 @@ export function Header({ mobileMenuButton }: { mobileMenuButton?: React.ReactNod
     ? user.username.slice(0, 2).toUpperCase()
     : "??";
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110";
+  const avatarUrl = user?.profileImage?.startsWith("http")
+    ? user.profileImage
+    : `${apiUrl}/${user?.profileImage}`;
+
   return (
     <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:px-6 transition-all duration-200">
       <div className="flex items-center gap-2">
@@ -45,7 +50,7 @@ export function Header({ mobileMenuButton }: { mobileMenuButton?: React.ReactNod
               <Avatar className="h-8 w-8">
                 {user?.profileImage && (
                   <AvatarImage
-                    src={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110"}/${user.profileImage}`}
+                    src={avatarUrl}
                     alt={user.username}
                   />
                 )}

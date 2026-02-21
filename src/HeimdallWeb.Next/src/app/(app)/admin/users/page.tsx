@@ -177,7 +177,11 @@ function AdminUsersContent() {
                         <Avatar className="h-8 w-8">
                           {u.profileImage && (
                             <AvatarImage
-                              src={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110"}/${u.profileImage}`}
+                              src={
+                                u.profileImage.startsWith("http")
+                                  ? u.profileImage
+                                  : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110"}/${u.profileImage}`
+                              }
                               alt={u.username}
                             />
                           )}

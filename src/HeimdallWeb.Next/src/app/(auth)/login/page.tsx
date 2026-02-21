@@ -120,6 +120,7 @@ function LoginForm() {
           }
         },
       });
+      // Trigger the prompt without callback arguments since it's breaking TS
       window.google.accounts.id.prompt();
     } catch {
       toast.error("Erro ao inicializar Google Login");

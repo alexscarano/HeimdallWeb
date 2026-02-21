@@ -234,6 +234,12 @@
   }
 }
 
+/* Fix Google One Tap iframe background in dark mode */
+.dark div[id^="credential_picker_container"] {
+  color-scheme: dark !important;
+  background-color: transparent !important;
+}
+
 /* Hero gradient backgrounds */
 .bg-hero-gradient {
   background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.08), transparent);

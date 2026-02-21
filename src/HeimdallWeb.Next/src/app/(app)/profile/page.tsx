@@ -137,9 +137,11 @@ function ProfileHeaderCard() {
 
   const initials = user.username.slice(0, 2).toUpperCase();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110";
-  const imageUrl = user.profileImage
-    ? `${apiUrl}/${user.profileImage}?t=${new Date().getTime()}`
-    : undefined;
+  const imageUrl = user.profileImage?.startsWith("http")
+    ? user.profileImage
+    : user.profileImage
+      ? `${apiUrl}/${user.profileImage}?t=${new Date().getTime()}`
+      : undefined;
 
   return (
     <Card className="p-6">
@@ -351,9 +353,11 @@ function ProfilePhotoSection() {
 
   const initials = user.username.slice(0, 2).toUpperCase();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110";
-  const imageUrl = user.profileImage
-    ? `${apiUrl}/${user.profileImage}?t=${new Date().getTime()}`
-    : undefined;
+  const imageUrl = user.profileImage?.startsWith("http")
+    ? user.profileImage
+    : user.profileImage
+      ? `${apiUrl}/${user.profileImage}?t=${new Date().getTime()}`
+      : undefined;
 
   return (
     <>
