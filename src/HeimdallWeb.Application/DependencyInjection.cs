@@ -150,9 +150,10 @@ public static class DependencyInjection
         services.AddScoped<IQueryHandler<GetNotificationsQuery, IEnumerable<NotificationResponse>>, GetNotificationsQueryHandler>();
         services.AddScoped<IQueryHandler<GetUnreadCountQuery, int>, GetUnreadCountQueryHandler>();
 
-        // Notification Commands (2)
+        // Notification Commands (3)
         services.AddScoped<ICommandHandler<MarkNotificationReadCommand, bool>, MarkNotificationReadCommandHandler>();
         services.AddScoped<ICommandHandler<MarkAllReadCommand, bool>, MarkAllReadCommandHandler>();
+        services.AddScoped<ICommandHandler<ClearAllNotificationsCommand, bool>, ClearAllNotificationsCommandHandler>();
 
         return services;
     }

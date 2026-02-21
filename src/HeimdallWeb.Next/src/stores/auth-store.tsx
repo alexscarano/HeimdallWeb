@@ -31,6 +31,7 @@ interface AuthState {
   isAdmin: boolean;
   login: (data: LoginRequest) => Promise<void>;
   register: (data: RegisterRequest) => Promise<void>;
+  loginWithGoogle: (idToken: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -112,10 +113,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (data: LoginRequest) => {
     const response = await authApi.login(data);
-    
+
     // Fetch full profile including profileImage
     const profile = await userApi.getUserProfile(response.userId);
-    
+
     setUser(profile);
     localStorage.setItem("heimdall_user", JSON.stringify(profile));
     setUidCookie(profile.userId);
@@ -123,10 +124,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = useCallback(async (data: RegisterRequest) => {
     const response = await authApi.register(data);
-    
+
     // Fetch full profile including profileImage
     const profile = await userApi.getUserProfile(response.userId);
-    
+
+    setUser(profile);
+    localStorage.setItem("heimdall_user", JSON.stringify(profile));
+    setUidCookie(profile.userId);
+  }, []);
+
+  const loginWithGoogle = useCallback(async (idToken: string) => {
+    const response = await authApi.loginWithGoogle(idToken);
+
+    // Fetch full profile including profileImage
+    const profile = await userApi.getUserProfile(response.userId);
+
     setUser(profile);
     localStorage.setItem("heimdall_user", JSON.stringify(profile));
     setUidCookie(profile.userId);
@@ -152,10 +164,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isAdmin: user?.userType === UserType.Admin,
       login,
       register,
+      loginWithGoogle,
       logout,
       refreshUser,
     }),
-    [user, isLoading, login, register, logout, refreshUser]
+    [user, isLoading, login, register, loginWithGoogle, logout, refreshUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -9,7 +9,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/stores/auth-store";
-import { loginWithGoogle } from "@/lib/api/auth.api";
 import { loginSchema, type LoginFormData } from "@/lib/validations/auth";
 import { routes } from "@/lib/constants/routes";
 import { Button } from "@/components/ui/button";
@@ -71,7 +70,7 @@ const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 

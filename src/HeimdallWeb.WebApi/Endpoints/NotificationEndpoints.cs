@@ -34,6 +34,9 @@ public static class NotificationEndpoints
         group.MapPatch("/read-all", MarkAllRead)
             .WithSummary("Mark all notifications for the authenticated user as read.");
 
+        group.MapDelete("/clear-all", ClearAll)
+            .WithSummary("Clear (delete) all notifications for the authenticated user.");
+
         return group;
     }
 
@@ -96,6 +99,20 @@ public static class NotificationEndpoints
             return Results.Unauthorized();
 
         await handler.Handle(new MarkAllReadCommand(userInternalId.Value));
+
+        return Results.NoContent();
+    }
+
+    private static async Task<IResult> ClearAll(
+        ICommandHandler<ClearAllNotificationsCommand, bool> handler,
+        IUnitOfWork unitOfWork,
+        HttpContext context)
+    {
+        var userInternalId = await ResolveUserInternalIdAsync(context, unitOfWork);
+        if (userInternalId == null)
+            return Results.Unauthorized();
+
+        await handler.Handle(new ClearAllNotificationsCommand(userInternalId.Value));
 
         return Results.NoContent();
     }

@@ -58,6 +58,7 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-icon.png",
   },
+  referrer: "strict-origin-when-cross-origin",
 };
 
 export default function RootLayout({

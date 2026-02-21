@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { executeScan } from "@/lib/api/scan.api";
 import type { ExecuteScanResponse } from "@/types/scan";
 
@@ -41,6 +41,8 @@ export function useScan(): UseScanReturn {
     return () => stopTimer();
   }, [stopTimer]);
 
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: ({ target, profileId, enabledScanners }: { target: string; profileId?: number | null; enabledScanners?: string[] | null }) =>
       executeScan({ target, profileId, enabledScanners }),
@@ -50,6 +52,9 @@ export function useScan(): UseScanReturn {
     },
     onSuccess: () => {
       stopTimer();
+      // Force fetching new notifications immediately after a scan finishes
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications", "unread"] });
     },
     onError: (err: unknown) => {
       stopTimer();

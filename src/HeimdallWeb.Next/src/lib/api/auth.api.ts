@@ -24,7 +24,7 @@ export async function resetPassword(token: string, newPassword: string): Promise
   await apiClient.post("/auth/reset-password", { token, newPassword });
 }
 
-export async function loginWithGoogle(idToken: string): Promise<{ token: string }> {
-  const { data } = await apiClient.post<{ token: string }>("/auth/google", { idToken });
+export async function loginWithGoogle(idToken: string): Promise<LoginResponse> {
+  const { data } = await apiClient.post<LoginResponse>("/auth/google", { idToken });
   return data;
 }

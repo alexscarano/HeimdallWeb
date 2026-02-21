@@ -33,4 +33,7 @@ export const notificationsApi = {
   markAllAsRead: async (): Promise<void> => {
     await apiClient.patch("/notifications/read-all");
   },
+  clearAll: async (): Promise<void> => {
+    await apiClient.delete("/notifications/clear-all");
+  },
 };

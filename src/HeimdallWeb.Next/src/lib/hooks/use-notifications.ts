@@ -15,6 +15,7 @@ export function useNotifications() {
   return useQuery({
     queryKey: ["notifications"],
     queryFn: () => notificationsApi.getAll(),
+    refetchInterval: 30000,
   });
 }
 
@@ -24,6 +25,7 @@ export function useMarkAsRead() {
     mutationFn: (id: number) => notificationsApi.markAsRead(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications", "unread"] });
     },
   });
 }
@@ -34,6 +36,18 @@ export function useMarkAllAsRead() {
     mutationFn: notificationsApi.markAllAsRead,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications", "unread"] });
+    },
+  });
+}
+
+export function useClearAllNotifications() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: notificationsApi.clearAll,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications", "unread"] });
     },
   });
 }

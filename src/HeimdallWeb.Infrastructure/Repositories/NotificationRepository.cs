@@ -50,4 +50,9 @@ public class NotificationRepository : INotificationRepository
             .ExecuteUpdateAsync(s => s
                 .SetProperty(n => n.IsRead, true)
                 .SetProperty(n => n.ReadAt, DateTime.UtcNow), ct);
+
+    public async Task DeleteAllAsync(int userId, CancellationToken ct = default)
+        => await _context.Notifications
+            .Where(n => n.UserId == userId)
+            .ExecuteDeleteAsync(ct);
 }

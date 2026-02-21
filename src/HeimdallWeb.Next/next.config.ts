@@ -10,6 +10,24 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
 
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin-allow-popups",
+          },
+        ],
+      },
+    ];
+  },
+
   async rewrites() {
     return [
       {

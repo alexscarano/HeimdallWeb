@@ -15,6 +15,7 @@ import {
   useNotifications,
   useMarkAsRead,
   useMarkAllAsRead,
+  useClearAllNotifications,
 } from "@/lib/hooks/use-notifications";
 import type { NotificationItem } from "@/lib/api/notifications.api";
 
@@ -37,6 +38,7 @@ export function NotificationBell() {
 
   const markAsRead = useMarkAsRead();
   const markAllAsRead = useMarkAllAsRead();
+  const clearAll = useClearAllNotifications();
 
   function handleNotificationClick(notification: NotificationItem) {
     if (!notification.isRead) {
@@ -47,6 +49,10 @@ export function NotificationBell() {
 
   function handleMarkAllAsRead() {
     markAllAsRead.mutate();
+  }
+
+  function handleClearAll() {
+    clearAll.mutate();
   }
 
   const displayCount = unreadCount > 9 ? "9+" : unreadCount > 0 ? String(unreadCount) : null;
@@ -75,19 +81,34 @@ export function NotificationBell() {
         sideOffset={8}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border px-4 py-3">
-          <h3 className="text-sm font-semibold">Notificações</h3>
-          {unreadCount > 0 && (
-            <Button
-              variant="ghost"
-              size="xs"
-              onClick={handleMarkAllAsRead}
-              disabled={markAllAsRead.isPending}
-              className="text-xs"
-            >
-              Marcar tudo como lido
-            </Button>
-          )}
+        <div className="flex flex-col border-b border-border px-4 py-3 gap-2">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold">Notificações</h3>
+            <div className="flex gap-2">
+              {unreadCount > 0 && (
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  onClick={handleMarkAllAsRead}
+                  disabled={markAllAsRead.isPending}
+                  className="text-[10px] h-6 px-2"
+                >
+                  Marcar como lido
+                </Button>
+              )}
+              {notifications && notifications.length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  onClick={handleClearAll}
+                  disabled={clearAll.isPending}
+                  className="text-[10px] h-6 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  Limpar
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* List */}

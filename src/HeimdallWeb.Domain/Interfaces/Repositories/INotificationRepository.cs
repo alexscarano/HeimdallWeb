@@ -9,4 +9,5 @@ public interface INotificationRepository
     Task<Notification?> GetByIdAsync(int id, CancellationToken ct = default);
     Task<Notification> AddAsync(Notification notification, CancellationToken ct = default);
     Task MarkAllAsReadAsync(int userId, CancellationToken ct = default);
+    Task DeleteAllAsync(int userId, CancellationToken ct = default);
 }
