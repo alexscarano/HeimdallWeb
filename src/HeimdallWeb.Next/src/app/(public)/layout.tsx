@@ -1,8 +1,14 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { cookies } from "next/headers";
+import { LayoutDashboard } from "lucide-react";
 
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+export default async function PublicLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("heimdall_uid")?.value;
+  const isAuthenticated = !!token;
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
@@ -13,12 +19,23 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             </Link>
             <div className="flex items-center gap-3">
               <ThemeToggle />
-              <Link href="/login">
-                <Button variant="ghost" size="sm">Entrar</Button>
-              </Link>
-              <Link href="/register">
-                <Button size="sm">Começar grátis</Button>
-              </Link>
+              {isAuthenticated ? (
+                <Link href="/monitor">
+                  <Button size="sm" className="gap-2">
+                    <LayoutDashboard className="h-4 w-4" />
+                    Meu Painel
+                  </Button>
+                </Link>
+              ) : (
+                <>
+                  <Link href="/login">
+                    <Button variant="ghost" size="sm">Entrar</Button>
+                  </Link>
+                  <Link href="/register">
+                    <Button size="sm">Começar grátis</Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

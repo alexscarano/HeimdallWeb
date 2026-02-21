@@ -63,14 +63,16 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
     >
       {/* Logo */}
       <div className="flex h-14 items-center gap-3 border-b border-border px-4">
-        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-accent-primary-subtle">
-          <Shield className="h-4 w-4 text-accent-primary" />
-        </div>
-        {!collapsed && (
-          <span className="text-base font-semibold tracking-tight text-foreground">
-            Heimdall
-          </span>
-        )}
+        <Link href={routes.home} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-accent-primary-subtle">
+            <Shield className="h-4 w-4 text-accent-primary" />
+          </div>
+          {!collapsed && (
+            <span className="text-base font-semibold tracking-tight text-foreground">
+              Heimdall
+            </span>
+          )}
+        </Link>
       </div>
 
       {/* Navigation */}

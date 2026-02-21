@@ -113,7 +113,7 @@ public class ScoreCalculatorService : IScoreCalculatorService
         >= 80 => "A",
         >= 60 => "B",
         >= 40 => "C",
-        >= 20 => "E",
-        _ => "F"
+        >= 20 => "D",
+        _ => "E"
     };
 }

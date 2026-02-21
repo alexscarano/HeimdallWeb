@@ -23,11 +23,8 @@ export function proxy(request: NextRequest) {
   const isLandingPath = pathname === landingPath;
   const token = request.cookies.get("authHeimdallCookie")?.value;
 
-  // Landing page: unauthenticated users see it; authenticated redirect to /scan
+  // Landing page: available to everyone
   if (isLandingPath) {
-    if (token) {
-      return NextResponse.redirect(new URL("/scan", request.url));
-    }
     return NextResponse.next();
   }
 

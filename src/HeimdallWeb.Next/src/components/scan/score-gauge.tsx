@@ -10,17 +10,17 @@ const GRADE_COLORS: Record<string, { stroke: string; bg: string; text: string }>
     B: { stroke: "#84cc16", bg: "rgba(132,204,22,0.10)", text: "#84cc16" },
     C: { stroke: "#eab308", bg: "rgba(234,179,8,0.10)", text: "#eab308" },
     D: { stroke: "#f97316", bg: "rgba(249,115,22,0.10)", text: "#f97316" },
-    F: { stroke: "#ef4444", bg: "rgba(239,68,68,0.10)", text: "#ef4444" },
+    E: { stroke: "#ef4444", bg: "rgba(239,68,68,0.10)", text: "#ef4444" },
 };
 
 function getGradeColor(grade: string | null | undefined) {
-    return GRADE_COLORS[grade ?? "F"] ?? GRADE_COLORS["F"];
+    return GRADE_COLORS[grade ?? "E"] ?? GRADE_COLORS["E"];
 }
 
 interface ScoreGaugeProps {
     /** Score 0–100 */
     score: number | null | undefined;
-    /** Grade letter (A–F) */
+    /** Grade letter (A–E) */
     grade: string | null | undefined;
     /** Size in px */
     size?: number;
@@ -41,7 +41,7 @@ export function ScoreGauge({
     showLabel = true,
 }: ScoreGaugeProps) {
     const displayScore = score ?? 0;
-    const displayGrade = grade ?? "F";
+    const displayGrade = grade ?? "E";
     const colors = getGradeColor(displayGrade);
 
     // Animation: animate from 0 to displayScore

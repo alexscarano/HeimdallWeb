@@ -12,37 +12,38 @@ import {
   FileText,
   Zap,
 } from "lucide-react";
+import { FaqSection } from "@/components/layout/faq-section";
 
 const features = [
   {
     icon: Shield,
     title: "SSL & TLS",
-    description: "Valida certificados e protocolos TLS 1.2/1.3",
+    description: "Valida a autenticidade e validade dos certificados, além de garantir a utilização de protocolos modernos como TLS 1.2/1.3, protegendo contra interceptações indesejadas na rede.",
   },
   {
     icon: Lock,
     title: "Security Headers",
-    description: "Detecta headers ausentes (CSP, HSTS, X-Frame-Options)",
+    description: "Detecta preventivamente a ausência de cabeçalhos cruciais como CSP, HSTS e X-Frame-Options, evitando ataques comuns como Cross-Site Scripting (XSS) e Clickjacking em seus domínios.",
   },
   {
     icon: Search,
     title: "Port Scanner",
-    description: "Identifica portas abertas e serviços expostos",
+    description: "Varrimento minucioso para identificar portas abertas e serviços não documentados ou expostos acidentalmente, reduzindo a superfície de ataque e o risco de intrusão externa.",
   },
   {
     icon: Globe,
     title: "Domain Age",
-    description: "Verifica reputação e idade do domínio via WHOIS",
+    description: "Busca informações de registro via WHOIS para determinar a idade do domínio, ajudando a traçar reputação em verificações e auxiliando a descobrir pontos suspeitos na infraestrutura.",
   },
   {
     icon: FileText,
     title: "Robots & Paths",
-    description: "Analisa robots.txt e caminhos sensíveis expostos",
+    description: "Analisa arquivos base de governança (robots.txt, sitemap.xml) em busca de diretórios sensíveis ou caminhos administrativos que não deveriam estar expostos publicamente.",
   },
   {
     icon: Zap,
     title: "IA Risk Analysis",
-    description: "Gemini AI classifica e prioriza as vulnerabilidades",
+    description: "Nosso motor com IA consolida centenas de pontos de dados de todos os scanners, interpretando o contexto e gerando um nível de risco real com instruções de mitigação fáceis de aplicar.",
   },
 ];
 
@@ -58,7 +59,7 @@ const gradeDescriptions = [
     description: "Algumas melhorias recomendadas para maior proteção.",
   },
   {
-    grade: "D / F",
+    grade: "D / E",
     label: "Crítico",
     description: "Vulnerabilidades severas que precisam de atenção imediata.",
   },
@@ -121,7 +122,7 @@ export default function LandingPage() {
                 key={feature.title}
                 className="bg-card border border-border rounded-xl"
               >
-                <CardContent className="flex flex-col gap-4 p-6">
+                <CardContent className="flex flex-col items-center text-center gap-4 p-6">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-600/10 dark:bg-indigo-400/10">
                     <feature.icon className="h-5 w-5 text-emerald-600 dark:text-indigo-400" />
                   </div>
@@ -143,7 +144,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-start lg:gap-20">
             <div className="flex flex-col items-center gap-6 lg:w-64">
-              <ScoreGauge score={87} grade="B" size={160} animate={false} />
+              <ScoreGauge score={87} grade="A" size={160} animate={false} />
               <p className="text-center text-sm text-muted-foreground">
                 Score calculado em tempo real após cada scan.
               </p>
@@ -153,7 +154,7 @@ export default function LandingPage() {
                 Score de segurança em tempo real
               </h2>
               <p className="mt-3 text-muted-foreground">
-                Cada scan gera um score de 0 a 100 e uma grade de A a F,
+                Cada scan gera um score de 0 a 100 e uma grade de A a E,
                 baseado na quantidade e severidade das vulnerabilidades encontradas.
               </p>
               <ul className="mt-8 space-y-4">
@@ -171,6 +172,13 @@ export default function LandingPage() {
               </ul>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="border-t border-border bg-muted/50">
+        <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
+          <FaqSection />
         </div>
       </section>
 

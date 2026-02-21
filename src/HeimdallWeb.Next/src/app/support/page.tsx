@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { apiClient } from "@/lib/api/client";
+import { FaqSection } from "@/components/layout/faq-section";
 
 // ─── Zod schema ───────────────────────────────────────────────────────────────
 
@@ -78,86 +79,96 @@ export default function SupportPage() {
       </header>
 
       {/* Content */}
-      <main className="mx-auto max-w-lg px-4 py-16 sm:px-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Fale conosco</CardTitle>
-            <CardDescription>
-              Tem alguma dúvida ou sugestão? Estamos aqui para ajudar.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* Name */}
-              <div className="space-y-1.5">
-                <Label htmlFor="support-name">Nome</Label>
-                <Input
-                  id="support-name"
-                  placeholder="Seu nome"
-                  {...register("name")}
-                />
-                {errors.name && (
-                  <p className="text-xs text-destructive">{errors.name.message}</p>
-                )}
-              </div>
+      <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16">
+          {/* FAQ Column */}
+          <div className="order-2 lg:order-1">
+            <FaqSection />
+          </div>
 
-              {/* Email */}
-              <div className="space-y-1.5">
-                <Label htmlFor="support-email">E-mail</Label>
-                <Input
-                  id="support-email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <p className="text-xs text-destructive">{errors.email.message}</p>
-                )}
-              </div>
+          {/* Form Column */}
+          <div className="order-1 lg:order-2">
+            <Card className="sticky top-24">
+              <CardHeader>
+                <CardTitle>Ainda precisa de ajuda?</CardTitle>
+                <CardDescription>
+                  Se não encontrou a resposta ao lado, envie-nos uma mensagem e responderemos em breve.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                  {/* Name */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="support-name">Nome</Label>
+                    <Input
+                      id="support-name"
+                      placeholder="Seu nome"
+                      {...register("name")}
+                    />
+                    {errors.name && (
+                      <p className="text-xs text-destructive">{errors.name.message}</p>
+                    )}
+                  </div>
 
-              {/* Subject */}
-              <div className="space-y-1.5">
-                <Label htmlFor="support-subject">Assunto</Label>
-                <Select
-                  onValueChange={(val) =>
-                    setValue("subject", val as SupportForm["subject"])
-                  }
-                >
-                  <SelectTrigger id="support-subject" className="w-full">
-                    <SelectValue placeholder="Selecione o assunto" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Dúvida técnica">Dúvida técnica</SelectItem>
-                    <SelectItem value="Bug / Problema">Bug / Problema</SelectItem>
-                    <SelectItem value="Sugestão">Sugestão</SelectItem>
-                    <SelectItem value="Outro">Outro</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.subject && (
-                  <p className="text-xs text-destructive">{errors.subject.message}</p>
-                )}
-              </div>
+                  {/* Email */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="support-email">E-mail</Label>
+                    <Input
+                      id="support-email"
+                      type="email"
+                      placeholder="seu@email.com"
+                      {...register("email")}
+                    />
+                    {errors.email && (
+                      <p className="text-xs text-destructive">{errors.email.message}</p>
+                    )}
+                  </div>
 
-              {/* Message */}
-              <div className="space-y-1.5">
-                <Label htmlFor="support-message">Mensagem</Label>
-                <Textarea
-                  id="support-message"
-                  placeholder="Descreva sua dúvida ou sugestão..."
-                  rows={5}
-                  {...register("message")}
-                />
-                {errors.message && (
-                  <p className="text-xs text-destructive">{errors.message.message}</p>
-                )}
-              </div>
+                  {/* Subject */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="support-subject">Assunto</Label>
+                    <Select
+                      onValueChange={(val) =>
+                        setValue("subject", val as SupportForm["subject"])
+                      }
+                    >
+                      <SelectTrigger id="support-subject" className="w-full">
+                        <SelectValue placeholder="Selecione o assunto" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Dúvida técnica">Dúvida técnica</SelectItem>
+                        <SelectItem value="Bug / Problema">Bug / Problema</SelectItem>
+                        <SelectItem value="Sugestão">Sugestão</SelectItem>
+                        <SelectItem value="Outro">Outro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.subject && (
+                      <p className="text-xs text-destructive">{errors.subject.message}</p>
+                    )}
+                  </div>
 
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Enviando..." : "Enviar mensagem"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                  {/* Message */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="support-message">Mensagem</Label>
+                    <Textarea
+                      id="support-message"
+                      placeholder="Descreva sua dúvida ou sugestão..."
+                      rows={5}
+                      {...register("message")}
+                    />
+                    {errors.message && (
+                      <p className="text-xs text-destructive">{errors.message.message}</p>
+                    )}
+                  </div>
+
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting ? "Enviando..." : "Enviar mensagem"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </main>
     </div>
   );
