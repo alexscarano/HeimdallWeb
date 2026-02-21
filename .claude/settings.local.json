@@ -35,7 +35,8 @@
       "Bash(docker ps:*)",
       "Bash(docker exec:*)",
       "Bash(docker restart:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(grep:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

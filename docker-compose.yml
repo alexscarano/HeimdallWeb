@@ -19,7 +19,7 @@ services:
     networks:
       - heimdall_net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -55,6 +55,17 @@ services:
       Jwt__RequireHttpsMetadata: "false"
       # Gemini AI
       GEMINI_API_KEY: ${GEMINI_API_KEY}
+      # Email
+      Email__ResendApiKey: ${EMAIL_RESEND_API_KEY:-}
+      Email__SmtpHost: ${EMAIL_SMTP_HOST:-smtp.gmail.com}
+      Email__SmtpPort: ${EMAIL_SMTP_PORT:-587}
+      Email__Username: ${EMAIL_USERNAME:-}
+      Email__Password: ${EMAIL_PASSWORD:-}
+      Email__FromAddress: ${EMAIL_FROM_ADDRESS:-noreply@heimdall.app}
+      Email__FromName: ${EMAIL_FROM_NAME:-HeimdallWeb}
+      Email__ContactEmail: ${EMAIL_CONTACT_EMAIL:-suporte@heimdall.app}
+      # Google OAuth (opcional — deixe em branco para desativar login com Google)
+      Google__ClientId: ${GOOGLE_CLIENT_ID:-}
     volumes:
       # Bind mount do código-fonte para hot reload funcionar
       - ./src:/workspace/src:delegated
@@ -83,13 +94,15 @@ services:
       target: dev
     container_name: heimdall_frontend
     restart: unless-stopped
-    user: root  # dev only — evita conflito de permissão no volume .next
+    user: root # dev only — evita conflito de permissão no volume .next
     environment:
       NODE_ENV: development
       # URL interna usada pelo servidor Next.js para reescritas (server-side)
       NEXT_BACKEND_URL: http://api:5110
       # URL pública acessível pelo browser (client-side)
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5110}
+      # Google OAuth (opcional — deixe em branco para desativar login com Google)
+      NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-}
       # Habilita turbopack (opcional, remova se causar problemas)
       # TURBOPACK: "1"
     volumes:

@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const publicPaths = [
+const guestOnlyPaths = [
   "/login",
   "/register",
   "/forgot-password",
   "/reset-password",
+];
+
+const mixedPaths = [
   "/support",
 ];
 
@@ -15,7 +18,8 @@ const landingPath = "/";
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
+  const isGuestOnlyPath = guestOnlyPaths.some((path) => pathname.startsWith(path));
+  const isMixedPath = mixedPaths.some((path) => pathname.startsWith(path));
   const isLandingPath = pathname === landingPath;
   const token = request.cookies.get("authHeimdallCookie")?.value;
 
@@ -27,18 +31,18 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (!isPublicPath && !token) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  if (isPublicPath && token) {
+  if (isGuestOnlyPath && token) {
     // Allow forced login (e.g., session recovery when frontend state is lost)
     const isForced = request.nextUrl.searchParams.get("force") === "1";
     if (!isForced) {
       return NextResponse.redirect(new URL("/scan", request.url));
     }
+  }
+
+  if (!isGuestOnlyPath && !isMixedPath && !token) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();

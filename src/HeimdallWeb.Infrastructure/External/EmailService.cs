@@ -162,22 +162,22 @@ public class EmailService : IEmailService
 
         return $"""
                 <!DOCTYPE html>
-                <html lang="en">
-                <head><meta charset="utf-8"><title>Password Reset</title></head>
+                <html lang="pt-BR">
+                <head><meta charset="utf-8"><title>Redefinição de Senha</title></head>
                 <body style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px;">
                   <div style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 32px;">
-                    <h2 style="color: #1a1a2e;">HeimdallWeb — Password Reset</h2>
-                    <p>Hello, <strong>{safeName}</strong></p>
-                    <p>We received a request to reset the password for your HeimdallWeb account. Click the button below to set a new password.</p>
+                    <h2 style="color: #1a1a2e;">HeimdallWeb — Redefinição de Senha</h2>
+                    <p>Olá, <strong>{safeName}</strong></p>
+                    <p>Recebemos uma solicitação para redefinir a senha da sua conta no HeimdallWeb. Clique no botão abaixo para criar uma nova senha.</p>
                     <p style="text-align: center; margin: 32px 0;">
                       <a href="{safeLink}"
                          style="background: #4f46e5; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">
-                        Reset Password
+                        Redefinir Senha
                       </a>
                     </p>
-                    <p style="color: #666; font-size: 14px;">This link expires in <strong>1 hour</strong>. If you did not request a password reset, you can safely ignore this email.</p>
+                    <p style="color: #666; font-size: 14px;">Este link expira em <strong>1 hora</strong>. Se você não solicitou a redefinição de senha, pode ignorar este e-mail com segurança.</p>
                     <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
-                    <p style="color: #aaa; font-size: 12px;">HeimdallWeb Security Scanner &mdash; Do not reply to this email.</p>
+                    <p style="color: #aaa; font-size: 12px;">HeimdallWeb Security Scanner &mdash; Por favor, não responda a este e-mail.</p>
                   </div>
                 </body>
                 </html>
@@ -187,16 +187,16 @@ public class EmailService : IEmailService
     private static string BuildPasswordResetText(string toName, string resetLink)
     {
         return $"""
-                HeimdallWeb — Password Reset
+                HeimdallWeb — Redefinição de Senha
 
-                Hello, {toName}
+                Olá, {toName}
 
-                We received a request to reset the password for your HeimdallWeb account.
-                Click the link below to set a new password (link expires in 1 hour):
+                Recebemos uma solicitação para redefinir a senha da sua conta no HeimdallWeb. 
+                Clique no link abaixo para criar uma nova senha (o link expira em 1 hora):
 
                 {resetLink}
 
-                If you did not request a password reset, you can safely ignore this email.
+                Se você não solicitou a redefinição de senha, pode ignorar este e-mail com segurança.
 
                 HeimdallWeb Security Scanner
                 """;
@@ -212,20 +212,20 @@ public class EmailService : IEmailService
 
         return $"""
                 <!DOCTYPE html>
-                <html lang="en">
-                <head><meta charset="utf-8"><title>Contact Form</title></head>
+                <html lang="pt-BR">
+                <head><meta charset="utf-8"><title>Formulário de Contato</title></head>
                 <body style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px;">
                   <div style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 32px;">
-                    <h2 style="color: #1a1a2e;">New Contact Form Submission</h2>
+                    <h2 style="color: #1a1a2e;">Novo Envio do Formulário de Contato</h2>
                     <table style="width: 100%; border-collapse: collapse;">
-                      <tr><td style="padding: 8px; font-weight: bold; width: 120px;">From:</td><td style="padding: 8px;">{safeName} ({safeEmail})</td></tr>
-                      <tr><td style="padding: 8px; font-weight: bold;">Subject:</td><td style="padding: 8px;">{safeSubject}</td></tr>
+                      <tr><td style="padding: 8px; font-weight: bold; width: 120px;">De:</td><td style="padding: 8px;">{safeName} ({safeEmail})</td></tr>
+                      <tr><td style="padding: 8px; font-weight: bold;">Assunto:</td><td style="padding: 8px;">{safeSubject}</td></tr>
                     </table>
                     <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;">
-                    <h3 style="color: #333;">Message:</h3>
+                    <h3 style="color: #333;">Mensagem:</h3>
                     <p style="white-space: pre-line; color: #444;">{safeMessage}</p>
                     <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
-                    <p style="color: #aaa; font-size: 12px;">Reply directly to this email to respond to the user.</p>
+                    <p style="color: #aaa; font-size: 12px;">Responda diretamente a este e-mail para contatar o remetente.</p>
                   </div>
                 </body>
                 </html>
@@ -235,16 +235,16 @@ public class EmailService : IEmailService
     private static string BuildContactEmailText(string fromName, string fromEmail, string subject, string message)
     {
         return $"""
-                New Contact Form Submission — HeimdallWeb
+                Novo Envio do Formulário de Contato — HeimdallWeb
 
-                From: {fromName} ({fromEmail})
-                Subject: {subject}
+                De: {fromName} ({fromEmail})
+                Assunto: {subject}
 
-                Message:
+                Mensagem:
                 {message}
 
                 --
-                Reply directly to this email to respond to the user.
+                Responda diretamente a este e-mail para contatar o remetente.
                 """;
     }
 }

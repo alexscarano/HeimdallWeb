@@ -61,7 +61,15 @@ public static class DependencyInjection
 
         // External Services
         // Sprint 5: Email service with graceful degradation when SMTP is not configured
-        services.AddScoped<IEmailService, EmailService>();
+        // Uses Resend API if API Key is configured, falls back to SMTP MailKit otherwise
+        if (!string.IsNullOrWhiteSpace(configuration["Email:ResendApiKey"]))
+        {
+            services.AddScoped<IEmailService, ResendEmailService>();
+        }
+        else
+        {
+            services.AddScoped<IEmailService, EmailService>();
+        }
 
         // Note: Security Scanners and external AI service (GeminiService) will be added in Phase 3
         // after refactoring them to remove legacy dependencies

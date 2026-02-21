@@ -12,6 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Radar,
+  HelpCircle,
 } from "lucide-react";
 import { type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -88,6 +89,15 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           </>
         )}
       </nav>
+
+      {/* Support link */}
+      <div className="border-t border-border px-2 py-2">
+        <NavSection
+          items={[{ href: routes.support, label: "Suporte", icon: HelpCircle }]}
+          pathname={pathname}
+          collapsed={collapsed}
+        />
+      </div>
 
       {/* Collapse toggle */}
       <div className="border-t border-border p-2">
