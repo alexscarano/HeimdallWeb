@@ -199,7 +199,7 @@ Refatorar `ScanService` para usar paralelismo robusto.
     -   *Responsabilidade:* Garantir qualidade visual e consistência com shadcn/ui.
 -   **Skill:** `api-integration` (Geral).
     -   *Responsabilidade:* Criar camada de serviço no frontend (`services/api.ts`) para consumir o backend.
-    -   *Padrão:* Usar `fetch` com tipagem forte (Zod + TypeScript) para validar respostas da API.
+    -   *Padrão:* Usar `axios` ou `fetch` (conforme o padrão do projeto) com tipagem forte (Zod + TypeScript) para validar respostas da API.
 
 ### 6.1. Next.js App Router Structure
 

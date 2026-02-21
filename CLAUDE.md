@@ -146,7 +146,8 @@ Não tente corrigir erros no escuro. A skill guia o processo de investigação a
 ### Frontend
 1. **Consulte `designer`** antes de qualquer componente novo ou mudança visual
 2. **Use `nexus-next-js`** para implementar
-3. **Teste com Playwright MCP** após qualquer mudança frontend:
+3. **Use shadcn MCP** para buscar componentes, ver exemplos e gerar comandos de instalação
+4. **Teste com Playwright MCP** após qualquer mudança frontend:
    - Screenshot desktop + mobile (375px)
    - Verificar console de erros
    - Testar interações (forms, navegação)
