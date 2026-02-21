@@ -133,3 +133,4 @@ publish/
 /HeimdallWeb/wwwroot/uploads
 bin/*
 src/HeimdallWeb.WebApi/bin\\Debug/
+.env*
