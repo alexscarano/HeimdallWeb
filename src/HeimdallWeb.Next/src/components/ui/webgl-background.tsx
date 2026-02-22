@@ -10,7 +10,7 @@ const COLORS = {
 };
 
 const OPACITY = {
-  light: { nodes: 0.18, lines: 0.06 },
+  light: { nodes: 0.25, lines: 0.09 },
   dark: { nodes: 0.22, lines: 0.09 },
 };
 

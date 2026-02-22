@@ -111,7 +111,7 @@ export default function LandingPage() {
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              "radial-gradient(ellipse 60% 40% at 50% 100%, rgba(5,150,105,0.04) 0%, transparent 60%)",
+              "radial-gradient(ellipse 60% 40% at 50% 100%, rgba(5,150,105,0.10) 0%, transparent 60%)",
           }}
         />
         <div

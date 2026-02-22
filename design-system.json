@@ -1,11 +1,12 @@
 {
   "meta": {
     "name": "Heimdall Design System",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "concept": "Minimal Intelligence",
     "stack": ["Next.js 15", "React 19", "Tailwind CSS", "shadcn/ui"],
     "description": "Clean, elegant, and professional design system for a security scanning platform. Inspired by Linear, Vercel, and Stripe Dashboard. Conveys trust through clarity, not aggression. v2.0 adds Indigo accent identity, depth through elevation, and richer interactive states — without breaking the minimal foundation. v2.1 adds Emerald as a complementary color for success, health, and positive states. v2.2 introduces dual-accent theming: Emerald replaces Indigo as the primary interactive accent in light mode, while Indigo remains the primary interactive accent in dark mode.",
     "changelog": {
+      "2.3.0": "Light mode surface hierarchy: background changed from #FFFFFF to #F0F0F4 (cool gray base), sidebar from #FAFAFA to #F8F8FA (middle layer), cards remain #FFFFFF (elevated). Secondary/muted/accent adjusted to #E8E8EF, borders to #D4D4DB for stronger contrast. Emerald hero gradient opacity 0.04→0.10, features grid 0.04→0.06. WebGL particle opacity nodes 0.18→0.25, lines 0.06→0.09 in light mode. Added card elevation shadow for light mode only.",
       "2.2.0": "Dual-accent theming: light mode accent = emerald-600 (#059669), dark mode accent = indigo-400 (#818CF8). Added accent-primary-* tokens to both light and dark color sets. Updated all components that hardcoded indigo in light mode to reference accent tokens or provide explicit light/dark variants. Renamed button.indigo to button.accent and badge.indigo to badge.accent with theme-split values. Added focus-ring.accent. Added emerald-md shadow. Updated guidelines with accent-theme-split rationale.",
       "2.1.0": "Added emerald palette as complementary color for success/positive states. Updated success tokens (light: emerald-600, dark: emerald-400). Added emerald-sm and emerald-glow shadows. Updated badge.success, states.success-inline, card.success variant, scan-results status-completed badge, and landing scan-states.success with emerald tokens.",
       "2.0.0": "Added indigo accent palette, elevation tokens, glow effects, refined all interactive states, per-page visual enhancements, scanner card patterns, sidebar active indicator"
@@ -15,7 +16,7 @@
   "tokens": {
     "colors": {
       "light": {
-        "background": "#FFFFFF",
+        "background": "#F0F0F4",
         "foreground": "#0A0A0B",
         "card": "#FFFFFF",
         "card-foreground": "#0A0A0B",
@@ -23,11 +24,11 @@
         "popover-foreground": "#0A0A0B",
         "primary": "#18181B",
         "primary-foreground": "#FAFAFA",
-        "secondary": "#F4F4F5",
+        "secondary": "#E8E8EF",
         "secondary-foreground": "#18181B",
-        "muted": "#F4F4F5",
+        "muted": "#E8E8EF",
         "muted-foreground": "#71717A",
-        "accent": "#F4F4F5",
+        "accent": "#E8E8EF",
         "accent-foreground": "#18181B",
         "destructive": "#EF4444",
         "destructive-foreground": "#FAFAFA",
@@ -37,12 +38,12 @@
         "warning-foreground": "#FFFFFF",
         "info": "#6366F1",
         "info-foreground": "#FFFFFF",
-        "border": "#E4E4E7",
-        "input": "#E4E4E7",
+        "border": "#D4D4DB",
+        "input": "#D4D4DB",
         "ring": "#18181B",
-        "sidebar-background": "#FAFAFA",
+        "sidebar-background": "#F8F8FA",
         "sidebar-foreground": "#3F3F46",
-        "sidebar-border": "#E4E4E7",
+        "sidebar-border": "#D4D4DB",
         "sidebar-accent": "#F4F4F5",
         "sidebar-accent-foreground": "#18181B",
         "chart-1": "#059669",

@@ -93,7 +93,7 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #FFFFFF;
+  --background: #F0F0F4;
   --foreground: #0A0A0B;
   --card: #FFFFFF;
   --card-foreground: #0A0A0B;
@@ -101,28 +101,28 @@
   --popover-foreground: #0A0A0B;
   --primary: #18181B;
   --primary-foreground: #FAFAFA;
-  --secondary: #F4F4F5;
+  --secondary: #E8E8EF;
   --secondary-foreground: #18181B;
-  --muted: #F4F4F5;
+  --muted: #E8E8EF;
   --muted-foreground: #71717A;
-  --accent: #F4F4F5;
+  --accent: #E8E8EF;
   --accent-foreground: #18181B;
   --destructive: #EF4444;
-  --border: #E4E4E7;
-  --input: #E4E4E7;
+  --border: #D4D4DB;
+  --input: #D4D4DB;
   --ring: #18181B;
   --chart-1: #059669;
   --chart-2: #8B5CF6;
   --chart-3: #EC4899;
   --chart-4: #F59E0B;
   --chart-5: #10B981;
-  --sidebar: #FAFAFA;
+  --sidebar: #F8F8FA;
   --sidebar-foreground: #3F3F46;
   --sidebar-primary: #18181B;
   --sidebar-primary-foreground: #FAFAFA;
-  --sidebar-accent: #F4F4F5;
+  --sidebar-accent: #E8E8EF;
   --sidebar-accent-foreground: #18181B;
-  --sidebar-border: #E4E4E7;
+  --sidebar-border: #D4D4DB;
   --sidebar-ring: #18181B;
 
   /* Semantic */
@@ -234,6 +234,11 @@
   }
 }
 
+/* Card elevation — light mode only */
+:root [data-slot="card"] {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
 /* Fix Google One Tap iframe background in dark mode */
 .dark div[id^="credential_picker_container"] {
   color-scheme: dark !important;
@@ -243,7 +248,7 @@
 /* Hero gradient backgrounds — origin at bottom, complementing WebGL vortex */
 .bg-hero-gradient {
   background: radial-gradient(ellipse 60% 40% at 50% 100%,
-    rgba(5, 150, 105, 0.04) 0%, transparent 60%);
+    rgba(5, 150, 105, 0.10) 0%, transparent 60%);
 }
 
 .dark .bg-hero-gradient {
@@ -254,8 +259,8 @@
 /* Features section animated grid */
 .features-grid-bg {
   background-image:
-    linear-gradient(rgba(5, 150, 105, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(5, 150, 105, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(5, 150, 105, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(5, 150, 105, 0.06) 1px, transparent 1px);
   background-size: 48px 48px;
   animation: grid-shift 20s linear infinite;
 }
