@@ -38,31 +38,31 @@ const SEVERITY_CONFIG: Record<
 > = {
   Critical: {
     label: "Crítico",
-    cardClasses: "border-l-4 border-l-red-500 bg-red-500/10",
+    cardClasses: "border-l-4 border-l-red-500 bg-red-500/15 dark:bg-red-500/10",
     badgeClasses: "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800",
     icon: AlertOctagon,
   },
   High: {
     label: "Alto",
-    cardClasses: "border-l-4 border-l-orange-500 bg-orange-500/10",
+    cardClasses: "border-l-4 border-l-orange-500 bg-orange-500/15 dark:bg-orange-500/10",
     badgeClasses: "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800",
     icon: AlertCircle,
   },
   Medium: {
     label: "Médio",
-    cardClasses: "border-l-4 border-l-yellow-500 bg-yellow-500/10",
+    cardClasses: "border-l-4 border-l-yellow-500 bg-yellow-500/15 dark:bg-yellow-500/10",
     badgeClasses: "bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800",
     icon: AlertTriangle,
   },
   Low: {
     label: "Baixo",
-    cardClasses: "border-l-4 border-l-blue-500 bg-blue-500/10",
+    cardClasses: "border-l-4 border-l-blue-500 bg-blue-500/15 dark:bg-blue-500/10",
     badgeClasses: "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800",
     icon: ShieldAlert,
   },
   Informational: {
     label: "Info",
-    cardClasses: "border-l-4 border-l-zinc-400 bg-zinc-400/5",
+    cardClasses: "border-l-4 border-l-zinc-400 bg-zinc-400/10 dark:bg-zinc-400/5",
     badgeClasses: "bg-zinc-100 text-zinc-600 border-zinc-200 dark:bg-zinc-800/50 dark:text-zinc-400 dark:border-zinc-700",
     icon: Info,
   },

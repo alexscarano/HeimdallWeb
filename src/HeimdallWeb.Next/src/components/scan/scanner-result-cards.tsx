@@ -117,7 +117,7 @@ export function ScannerResultCards({ rawJson }: ScannerResultCardsProps) {
                             {/* Category header */}
                             <div className="flex items-center gap-2.5 mb-4">
                                 <div
-                                    className="flex h-8 w-8 items-center justify-center rounded-lg"
+                                    className="icon-box flex h-8 w-8 items-center justify-center rounded-lg"
                                     style={{ backgroundColor: `${category.color}15` }}
                                 >
                                     <CategoryIcon className="h-[18px] w-[18px]" style={{ color: category.color }} />
@@ -142,7 +142,7 @@ export function ScannerResultCards({ rawJson }: ScannerResultCardsProps) {
                                         >
                                             <CardHeader className="flex flex-row items-center gap-4 pb-3 pt-5 px-5">
                                                 <div
-                                                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+                                                    className="icon-box flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
                                                     style={{ backgroundColor: `${config.color}15` }}
                                                 >
                                                     <Icon className="h-5 w-5" style={{ color: config.color }} />

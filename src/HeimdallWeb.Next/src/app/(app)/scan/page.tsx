@@ -68,7 +68,7 @@ export default function ScanPage() {
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4">
         {/* Hero section */}
         <div className="flex flex-col items-center gap-6 text-center mt-12 mb-8">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary-subtle">
+          <div className="icon-box flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary-subtle">
             <Shield className="h-8 w-8 text-accent-primary" />
           </div>
           <div className="space-y-2">
@@ -120,7 +120,7 @@ export default function ScanPage() {
                   <div className="p-6">
                     <div className="flex flex-col items-center justify-center gap-2 mb-4">
                       <div className="flex flex-col items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-primary-subtle">
+                        <div className="icon-box flex h-10 w-10 items-center justify-center rounded-lg bg-accent-primary-subtle">
                           <profile.icon className="h-5 w-5 text-accent-primary" />
                         </div>
                         <h3 className="font-bold text-lg">{profile.title}</h3>

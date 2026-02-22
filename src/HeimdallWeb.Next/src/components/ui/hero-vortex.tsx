@@ -39,7 +39,7 @@ const FRAGMENT_SHADER = `
 `;
 
 const DARK_COLOR = new THREE.Color(0x818cf8);   // indigo-400
-const LIGHT_COLOR = new THREE.Color(0x059669);  // emerald-600
+const LIGHT_COLOR = new THREE.Color(0xC2410C);  // orange-700
 
 function getParticleCount(width: number): number {
   if (width < 768) return 0;

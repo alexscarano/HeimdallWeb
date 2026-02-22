@@ -5,7 +5,7 @@ import { useTheme } from 'next-themes';
 import * as THREE from 'three';
 
 const COLORS = {
-  light: { nodes: 0x059669, lines: 0x059669 },
+  light: { nodes: 0xC2410C, lines: 0xC2410C },
   dark: { nodes: 0x818cf8, lines: 0x818cf8 },
 };
 

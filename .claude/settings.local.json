@@ -42,7 +42,8 @@
       "Bash(dotnet restore:*)",
       "Bash(head:*)",
       "Bash(tail:*)",
-      "Bash(docker compose:*)"
+      "Bash(docker compose:*)",
+      "Bash(chromium:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

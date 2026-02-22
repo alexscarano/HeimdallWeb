@@ -60,7 +60,7 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="app-grid-bg min-h-screen bg-background">
       {/* Minimal header */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

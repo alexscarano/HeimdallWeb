@@ -16,7 +16,7 @@ export function AISummaryCard({ summary }: AISummaryCardProps) {
     <div className="space-y-4">
       <Card className={`border-t-4 p-6 ${riskColor}`}>
         <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent-primary-subtle">
+          <div className="icon-box flex h-12 w-12 items-center justify-center rounded-lg bg-accent-primary-subtle">
             <Brain className="h-6 w-6 text-accent-primary" />
           </div>
           <div className="flex-1">

@@ -248,7 +248,7 @@
 /* Hero gradient backgrounds — origin at bottom, complementing WebGL vortex */
 .bg-hero-gradient {
   background: radial-gradient(ellipse 60% 40% at 50% 100%,
-    rgba(5, 150, 105, 0.10) 0%, transparent 60%);
+    rgba(194, 65, 12, 0.10) 0%, transparent 60%);
 }
 
 .dark .bg-hero-gradient {
@@ -259,8 +259,8 @@
 /* Features section animated grid */
 .features-grid-bg {
   background-image:
-    linear-gradient(rgba(5, 150, 105, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(5, 150, 105, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(194, 65, 12, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(194, 65, 12, 0.06) 1px, transparent 1px);
   background-size: 48px 48px;
   animation: grid-shift 20s linear infinite;
 }
@@ -274,6 +274,31 @@
 @keyframes grid-shift {
   from { background-position: 0 0; }
   to   { background-position: 48px 48px; }
+}
+
+/* App area static grid — applied to the root layout div */
+.app-grid-bg {
+  background-image:
+    linear-gradient(rgba(194, 65, 12, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(194, 65, 12, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.dark .app-grid-bg {
+  background-image:
+    linear-gradient(rgba(129, 140, 248, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 140, 248, 0.04) 1px, transparent 1px);
+}
+
+/* Icon container elevation */
+.icon-box {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.dark .icon-box {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.30), 0 1px 2px rgba(0, 0, 0, 0.20);
 }
 
 @media (prefers-reduced-motion: reduce) {

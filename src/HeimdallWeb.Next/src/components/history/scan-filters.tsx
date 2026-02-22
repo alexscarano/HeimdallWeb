@@ -29,13 +29,13 @@ export function ScanFilters({ search, onSearchChange, status, onStatusChange }: 
           placeholder="Buscar por URL..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-9"
+          className="pl-9 bg-card shadow-sm"
         />
       </div>
 
       <div className="flex items-center gap-2">
         <Select value={status} onValueChange={onStatusChange}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-card shadow-sm">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>

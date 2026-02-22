@@ -130,7 +130,7 @@ function AdminDashboardContent() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary-subtle">
+        <div className="icon-box flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary-subtle">
           <Shield className="h-5 w-5 text-accent-primary" />
         </div>
         <div>

@@ -31,7 +31,7 @@ export function ScanLoading({ elapsedSeconds, timeoutSeconds }: ScanLoadingProps
       <CardContent className="flex flex-col items-center gap-6 py-10">
         <div className="relative flex h-20 w-20 items-center justify-center">
           <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-accent-primary" />
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary-subtle">
+          <div className="icon-box flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary-subtle">
             <Shield className="h-8 w-8 text-accent-primary" />
           </div>
         </div>

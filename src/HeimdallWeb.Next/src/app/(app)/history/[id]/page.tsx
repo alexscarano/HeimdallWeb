@@ -72,7 +72,7 @@ export default function HistoryDetailPage({ params }: Props) {
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary-subtle">
+          <div className="icon-box flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary-subtle">
             <Shield className="h-5 w-5 text-accent-primary" />
           </div>
           <div className="min-w-0 flex-1">
