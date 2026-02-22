@@ -36,7 +36,7 @@ export default function AppLayout({
   if (!isAuthenticated) return null;
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-background">
       {/* Desktop sidebar */}
       <div className="hidden md:block">
         <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
@@ -66,7 +66,7 @@ export default function AppLayout({
             </Button>
           }
         />
-        <main className="flex-1 overflow-y-auto bg-muted/30 p-4 sm:p-6 dark:bg-muted/10">
+        <main className="flex-1 overflow-y-auto bg-background p-4 sm:p-6">
           {children}
         </main>
       </div>

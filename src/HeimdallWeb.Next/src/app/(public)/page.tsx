@@ -230,7 +230,7 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="border-t border-border bg-muted/50">
+      <section className="border-t border-border bg-muted/50 features-grid-bg">
         <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
           <FaqSection />
         </div>
