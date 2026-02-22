@@ -237,7 +237,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Final */}
-      <section className="border-t border-border bg-card">
+      <section className="border-t border-border">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center gap-6 text-center">
             <h2 className="max-w-lg text-3xl font-bold tracking-tight">

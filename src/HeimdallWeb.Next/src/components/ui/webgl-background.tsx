@@ -10,8 +10,8 @@ const COLORS = {
 };
 
 const OPACITY = {
-  light: { nodes: 0.35, lines: 0.12 },
-  dark: { nodes: 0.45, lines: 0.18 },
+  light: { nodes: 0.18, lines: 0.06 },
+  dark: { nodes: 0.22, lines: 0.09 },
 };
 
 function getParticleCount(width: number) {
