@@ -71,8 +71,14 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
       .then((data) => {
         if (!cancelled) {
           if (data.length > 0) {
-            setProfiles(data);
-            const defaultProfile = data.find((p) => p.name === "Standard") || data[0];
+            const ORDER = ["Standard", "Quick", "Deep"];
+            const sorted = [...data].sort((a, b) => {
+              const ai = ORDER.indexOf(a.name);
+              const bi = ORDER.indexOf(b.name);
+              return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+            });
+            setProfiles(sorted);
+            const defaultProfile = sorted.find((p) => p.name === "Standard") || sorted[0];
             if (defaultProfile) {
               setSelectedProfileId(defaultProfile.id);
             }
