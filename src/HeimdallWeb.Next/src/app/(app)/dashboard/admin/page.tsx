@@ -297,7 +297,7 @@ function AdminDashboardContent() {
       {data.recentActivity.length > 0 && (
         <Card className="p-6">
           <h3 className="mb-4 font-semibold">Atividade Recente</h3>
-          <div className="rounded-lg border">
+          <div className="rounded-lg border bg-card">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
@@ -432,7 +432,7 @@ function AdminDashboardContent() {
             </div>
           </div>
         </div>
-        <div className="rounded-lg border">
+        <div className="rounded-lg border bg-card">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
@@ -505,7 +505,7 @@ function AdminDashboardContent() {
 
 function StatMini({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl border p-4">
+    <div className="rounded-xl border bg-card p-4">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-0.5 text-2xl font-bold">{value}</p>
     </div>

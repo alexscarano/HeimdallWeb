@@ -388,7 +388,7 @@ export default function MonitorPage() {
 
       {/* Table */}
       {isLoading ? (
-        <div className="rounded-lg border border-border">
+        <div className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow>
@@ -414,7 +414,7 @@ export default function MonitorPage() {
           </Table>
         </div>
       ) : !targets || targets.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-border py-24 text-center">
+        <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-border bg-card py-24 text-center">
           <Radar className="h-12 w-12 text-muted-foreground" />
           <div>
             <p className="font-medium">Nenhum alvo monitorado ainda</p>
@@ -428,7 +428,7 @@ export default function MonitorPage() {
           </Button>
         </div>
       ) : (
-        <div className="rounded-lg border border-border">
+        <div className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow>

@@ -157,7 +157,7 @@ function AdminUsersContent() {
         <UsersTableSkeleton />
       ) : data && data.users.length > 0 ? (
         <Card className="p-4">
-          <div className="rounded-lg border">
+          <div className="rounded-lg border bg-card">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">

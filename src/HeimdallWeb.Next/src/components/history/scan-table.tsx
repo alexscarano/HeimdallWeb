@@ -39,7 +39,7 @@ export function ScanTable({ scans, isLoading, onDelete, onExportPdf }: ScanTable
 
   if (scans.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center">
+      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-card py-16 text-center">
         <FileText className="mb-3 h-12 w-12 text-muted-foreground/50" />
         <p className="text-base font-medium">Nenhum scan encontrado</p>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -129,7 +129,7 @@ export function ScanTable({ scans, isLoading, onDelete, onExportPdf }: ScanTable
       </div>
 
       {/* Desktop: Table */}
-      <div className="hidden rounded-lg border md:block">
+      <div className="hidden rounded-lg border bg-card md:block">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
@@ -236,7 +236,7 @@ function ScanTableSkeleton() {
       </div>
 
       {/* Desktop skeleton: Table */}
-      <div className="hidden rounded-lg border md:block">
+      <div className="hidden rounded-lg border bg-card md:block">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
