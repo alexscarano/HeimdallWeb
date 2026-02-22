@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScoreGauge } from "@/components/scan/score-gauge";
+import { HeroVortex } from "@/components/ui/hero-vortex";
 import {
   Shield,
   Lock,
@@ -11,6 +12,8 @@ import {
   Globe,
   FileText,
   Zap,
+  CheckCircle2,
+  AlertTriangle,
 } from "lucide-react";
 import { FaqSection } from "@/components/layout/faq-section";
 
@@ -65,48 +68,99 @@ const gradeDescriptions = [
   },
 ];
 
+const scanCheckItems = [
+  { label: "SSL/TLS Certificate", status: "ok" as const },
+  { label: "Security Headers", status: "ok" as const },
+  { label: "Open Ports (3 found)", status: "warn" as const },
+  { label: "TLS 1.3 Enabled", status: "ok" as const },
+];
+
+function ScanPreviewCard() {
+  return (
+    <Card className="bg-card/80 backdrop-blur border border-border rounded-2xl shadow-lg">
+      <CardContent className="flex flex-col items-center gap-4 p-6">
+        <div className="text-sm font-medium text-muted-foreground">exemplo.com</div>
+        <ScoreGauge score={87} grade="A" size={140} animate={true} />
+        <div className="w-full space-y-2">
+          {scanCheckItems.map((item) => (
+            <div key={item.label} className="flex items-center justify-between gap-3">
+              <span className="text-sm text-foreground">{item.label}</span>
+              {item.status === "ok" ? (
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-indigo-400" />
+              ) : (
+                <AlertTriangle className="h-4 w-4 shrink-0 text-amber-500" />
+              )}
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function LandingPage() {
   return (
     <main>
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        {/* Subtle radial gradient background */}
+      <section className="relative overflow-hidden min-h-[80vh]">
+        {/* WebGL Vortex effect */}
+        <HeroVortex className="absolute inset-0 z-0 w-full h-full pointer-events-none" />
+
+        {/* Subtle radial gradient complementing the vortex */}
         <div
-          className="pointer-events-none absolute inset-0 -z-10"
+          className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(5,150,105,0.12) 0%, transparent 60%)",
+              "radial-gradient(ellipse 60% 40% at 50% 100%, rgba(5,150,105,0.04) 0%, transparent 60%)",
           }}
         />
-        <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
-          <div className="flex flex-col items-center gap-8 text-center">
-            <div className="flex flex-col items-center gap-4">
-              <h1 className="max-w-3xl text-5xl font-bold tracking-tight sm:text-6xl">
-                Escaneie. Analise. Proteja.
-              </h1>
-              <p className="mx-auto max-w-xl text-lg text-muted-foreground">
-                Detecte vulnerabilidades de segurança, analise TLS, headers, portas e muito
-                mais — com análise de IA integrada.
-              </p>
+        <div
+          className="pointer-events-none absolute inset-0 z-[1] dark:block hidden"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 40% at 50% 100%, rgba(129,140,248,0.03) 0%, transparent 60%)",
+          }}
+        />
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 flex items-center min-h-[80vh]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
+            {/* Left column: headline + CTAs */}
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-4">
+                <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
+                  Escaneie. Analise. Proteja.
+                </h1>
+                <p className="max-w-xl text-lg text-muted-foreground">
+                  Detecte vulnerabilidades de segurança, analise TLS, headers, portas e muito
+                  mais — com análise de IA integrada.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Link href="/register">
+                  <Button size="lg" className="min-w-48">
+                    Começar gratuitamente
+                  </Button>
+                </Link>
+                <a href="#features">
+                  <Button variant="outline" size="lg" className="min-w-48">
+                    Ver como funciona
+                  </Button>
+                </a>
+              </div>
             </div>
-            <div className="flex flex-col items-center gap-3 sm:flex-row">
-              <Link href="/register">
-                <Button size="lg" className="min-w-48">
-                  Começar gratuitamente
-                </Button>
-              </Link>
-              <a href="#features">
-                <Button variant="outline" size="lg" className="min-w-48">
-                  Ver como funciona
-                </Button>
-              </a>
+
+            {/* Right column: Scan Preview Card */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="w-full max-w-sm">
+                <ScanPreviewCard />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section id="features" className="border-t border-border bg-muted/30">
+      <section id="features" className="border-t border-border bg-muted/30 features-grid-bg">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
             <h2 className="text-3xl font-bold tracking-tight">

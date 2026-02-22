@@ -5,7 +5,7 @@ import { QueryProvider } from "@/providers/query-provider";
 import { AuthProvider } from "@/stores/auth-store";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "sonner";
-import { ParticleBackground } from "@/components/ui/particle-background";
+import { WebGLBackground } from "@/components/ui/webgl-background";
 import "./globals.css";
 
 const inter = Inter({
@@ -73,8 +73,8 @@ export default function RootLayout({
           <QueryProvider>
             <AuthProvider>
               <TooltipProvider>
-                {/* Particle background global */}
-                <ParticleBackground />
+                {/* WebGL background global */}
+                <WebGLBackground />
                 {children}
                 <Toaster position="bottom-right" richColors />
               </TooltipProvider>

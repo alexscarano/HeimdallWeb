@@ -40,7 +40,9 @@
       "mcp__ide__getDiagnostics",
       "Bash(docker stop:*)",
       "Bash(dotnet restore:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(docker compose:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

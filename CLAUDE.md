@@ -16,6 +16,8 @@ Guia operacional do HeimdallWeb — leia antes de qualquer tarefa.
 
 **Estado atual:** Consulte `implementation_plan.md` para o sprint ativo e `docs/plano_migracao.md` para histórico de migração.
 
+**Sprint ativo:** Landing page WebGL — ver plano em `docs/plans/2026-02-22-landing-webgl-design.md`
+
 ---
 
 ## Arquitetura

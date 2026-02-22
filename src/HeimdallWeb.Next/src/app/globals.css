@@ -240,13 +240,39 @@
   background-color: transparent !important;
 }
 
-/* Hero gradient backgrounds */
+/* Hero gradient backgrounds — origin at bottom, complementing WebGL vortex */
 .bg-hero-gradient {
-  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.08), transparent);
+  background: radial-gradient(ellipse 60% 40% at 50% 100%,
+    rgba(5, 150, 105, 0.04) 0%, transparent 60%);
 }
 
 .dark .bg-hero-gradient {
-  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(129, 140, 248, 0.06), transparent);
+  background: radial-gradient(ellipse 60% 40% at 50% 100%,
+    rgba(129, 140, 248, 0.03) 0%, transparent 60%);
+}
+
+/* Features section animated grid */
+.features-grid-bg {
+  background-image:
+    linear-gradient(rgba(5, 150, 105, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(5, 150, 105, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: grid-shift 20s linear infinite;
+}
+
+.dark .features-grid-bg {
+  background-image:
+    linear-gradient(rgba(129, 140, 248, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 140, 248, 0.04) 1px, transparent 1px);
+}
+
+@keyframes grid-shift {
+  from { background-position: 0 0; }
+  to   { background-position: 48px 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .features-grid-bg { animation: none; }
 }
 
 /* Indigo focus ring for interactive elements */
