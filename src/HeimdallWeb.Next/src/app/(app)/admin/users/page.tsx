@@ -183,6 +183,7 @@ function AdminUsersContent() {
                                   : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5110"}/${u.profileImage}`
                               }
                               alt={u.username}
+                              crossOrigin={u.profileImage.startsWith("http") ? "anonymous" : undefined}
                             />
                           )}
                           <AvatarFallback className="text-xs">

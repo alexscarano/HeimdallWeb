@@ -52,6 +52,7 @@ export function Header({ mobileMenuButton }: { mobileMenuButton?: React.ReactNod
                   <AvatarImage
                     src={avatarUrl}
                     alt={user.username}
+                    crossOrigin={user.profileImage.startsWith("http") ? "anonymous" : undefined}
                   />
                 )}
                 <AvatarFallback className="text-xs font-semibold">

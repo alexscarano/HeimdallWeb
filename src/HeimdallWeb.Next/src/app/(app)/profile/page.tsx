@@ -147,7 +147,11 @@ function ProfileHeaderCard() {
     <Card className="p-6">
       <div className="flex items-center gap-6">
         <Avatar className="h-20 w-20">
-          <AvatarImage src={imageUrl} alt={user.username} />
+          <AvatarImage
+            src={imageUrl}
+            alt={user.username}
+            crossOrigin={user.profileImage?.startsWith("http") ? "anonymous" : undefined}
+          />
           <AvatarFallback className="text-xl">{initials}</AvatarFallback>
         </Avatar>
         <div className="flex-1">
@@ -371,7 +375,11 @@ function ProfilePhotoSection() {
       <div className="flex flex-col items-center gap-8 py-8">
         <div className="relative shrink-0">
           <Avatar className="h-36 w-36 border-2 border-border">
-            <AvatarImage src={imageUrl} alt={user.username} />
+            <AvatarImage
+              src={imageUrl}
+              alt={user.username}
+              crossOrigin={user.profileImage?.startsWith("http") ? "anonymous" : undefined}
+            />
             <AvatarFallback className="text-3xl">{initials}</AvatarFallback>
           </Avatar>
         </div>
