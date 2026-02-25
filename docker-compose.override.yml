@@ -1,0 +1,31 @@
+services:
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Overrides para desenvolvimento local — mapeamento de portas para acesso
+  # do host (browser, DBeaver, Postman, etc.).
+  #
+  # Este arquivo é carregado AUTOMATICAMENTE pelo Docker Compose junto com
+  # docker-compose.yml. Para ignorá-lo: docker compose -f docker-compose.yml up
+  # ─────────────────────────────────────────────────────────────────────────────
+
+  postgres:
+    ports:
+      # Porta local → porta do container
+      # Acesso: psql -h localhost -p 5432 -U postgres -d db_heimdall
+      - "5432:5432"
+
+  api:
+    ports:
+      # API acessível em http://localhost:5110
+      # Swagger: http://localhost:5110/swagger
+      - "5110:5110"
+    # Ativa logs detalhados em desenvolvimento
+    environment:
+      Logging__LogLevel__Default: Information
+      Logging__LogLevel__Microsoft_AspNetCore: Warning
+      Logging__LogLevel__Microsoft_EntityFrameworkCore_Database_Command: Information
+
+  frontend:
+    ports:
+      # Frontend acessível em http://localhost:3000
+      - "3000:3000"

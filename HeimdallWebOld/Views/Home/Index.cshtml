@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="container d-flex flex-column align-items-center gap-5">
+    <div class="d-flex flex-column align-items-center gap-5 pt-5">
+        <div class="text-center">
+            <h1 class="mb-5 title slide-down-fade" style="--animation-delay: 100ms" id="homeTitle">Descubra o quão seguro é seu site!</h1>
+            <p class="normal slide-down-fade" style="--animation-delay: 600ms" id="homeIntroduce">Basta <span class="fst-italic"> inserir a URL </span> do site em que deseja fazer uma varredura e com auxílio da IA, será gerado um relatório com os principais <span class="fst-italic">pontos fortes, pontos fracos e possíveis melhorias</span>.</p>
+        </div>
+
+        <form id="scanForm" class="shadow-lg slide-down-fade" style="--animation-delay: 1100ms" asp-controller="Home" asp-action="Scan" method="post">
+            <div class="input-group input-group-lg ">
+                <input type="text" class="form-control" name="domainInput" id="domainInput"
+                       placeholder="www.exemplo.com" required />
+                <button class="btn btn-primary" id="analyze" type="submit">
+                    <span class="d-none spinner">
+                        <i class="bi bi-hourglass-top"></i>
+                    </span>
+                    <span>Analisar</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Info boxes section -->
+    <section id="info-boxes" aria-label="Informações">
+
+        <div class="info-box slide-down-fade" style="--animation-delay: 1600ms">
+            <h5><i class="bi bi-shield-check"> Confiabilidade</i></h5>
+            <p>A análise é feita por meio de uma Inteligência Artificial previamente treinada para seguir requisitos e rodar checagens sob instruções pré-estabelecidas, assim como verificar diversos cenários, adicionando maior redundância e confiabilidade.</p>
+        </div>
+
+        <div class="info-box slide-down-fade" style="--animation-delay: 1800ms">
+            <h5><i class="bi bi-shield-lock"> Segurança</i></h5>
+            <p>Auxiliamos você a maximizar o nível de segurança de seu produto, com base em análises automatizadas, focadas e rápidas, para que as medidas sejam tomadas o quanto antes. Assim como mantemos nossas checagens em dia para que os seus dados fornecidos estejam seguros.</p>
+        </div>
+
+        <div class="info-box slide-down-fade" style="--animation-delay: 2000ms">
+            <h5><i class="bi bi-speedometer2"> Praticidade</i></h5>
+            <p>Ao usar o HeimdallWebOld na análise de segurança de seu web-site, muito tempo e esforço são poupados, uma vez que o processo de desenvolvimento não terá que sofrer interrupções para testes manuais.</p>
+        </div>
+    </section>
+</div>
+
+<script src="~/js/loading.js" asp-append-version="true"></script>

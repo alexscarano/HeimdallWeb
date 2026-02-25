@@ -1,0 +1,98 @@
+/*
+ * 
+ * Configuration is now split into extension methods organized by responsibility:
+ * 
+ * ServiceRegistration/: Registers DI services
+ *   - SwaggerConfiguration.cs: API documentation
+ *   - CorsConfiguration.cs: CORS for Next.js frontend
+ *   - AuthenticationConfiguration.cs: JWT authentication
+ *   - RateLimitingConfiguration.cs: Request throttling
+ *   - LayerRegistration.cs: Application & Infrastructure layers
+ * 
+ * Middleware/: Middleware pipeline configuration
+ *   - DevelopmentMiddleware.cs: Development-only services (Swagger)
+ *   - SecurityMiddleware.cs: Security pipeline (CORS, Auth, AuthZ, RateLimit)
+ * 
+ * Configuration/: Endpoint mapping
+ *   - EndpointConfiguration.cs: Maps all Minimal API endpoints
+ */
+
+using HeimdallWeb.Infrastructure.Data;
+using HeimdallWeb.WebApi.ServiceRegistration;
+using HeimdallWeb.WebApi.Middleware;
+using HeimdallWeb.WebApi.Configuration;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// ===== SERVICE REGISTRATION =====
+// Register all services using extension methods organized by concern
+
+// Documentation & Client UI
+builder.Services.AddSwaggerConfiguration();
+
+// Network Security & CORS
+builder.Services.AddCorsConfiguration();
+
+// Authentication & Authorization
+builder.Services.AddJwtAuthenticationConfiguration(builder.Configuration);
+builder.Services.AddAuthorizationConfiguration();
+
+// Request Throttling
+builder.Services.AddRateLimitingConfiguration();
+
+// Application Layers (DDD + Repository Pattern)
+builder.Services.AddApplicationLayer();
+builder.Services.AddInfrastructureLayer(builder.Configuration);
+
+// ===== BUILD & CONFIGURE MIDDLEWARE PIPELINE =====
+
+var app = builder.Build();
+
+// Development-only services (Swagger UI)
+app.UseSwaggerDevelopment();
+
+// Static files (profile images, uploads) — must be before auth to serve public assets
+// Explicitly configure path to match UpdateProfileImageCommandHandler
+var wwwRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+Console.WriteLine($"[Program] Configuring Static Files using path: {wwwRootPath}");
+
+if (!Directory.Exists(wwwRootPath))
+{
+    Console.WriteLine($"[Program] Creating missing wwwroot directory: {wwwRootPath}");
+    Directory.CreateDirectory(wwwRootPath);
+}
+
+// 1. Default Static Files (serves standard assets from wwwroot)
+app.UseStaticFiles();
+
+// 2. Explicit Static Files for Uploads (Runtime generated files)
+// This guarantees that files created after startup are served, bypassing potential StaticWebAssets conflicts in Dev
+var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads",
+    ServeUnknownFileTypes = true // Safety net
+});
+
+// Global exception handler (must be early in pipeline to catch all exceptions)
+app.UseGlobalExceptionHandler();
+
+// Security middleware pipeline (order is CRITICAL - DO NOT CHANGE)
+// Order: HTTPS → CORS → Authentication → Authorization → RateLimiting
+app.UseSecurityMiddlewarePipeline();
+
+// ===== DATABASE SEED =====
+// Creates the default admin user on first run (idempotent — safe on every startup).
+await DatabaseSeeder.SeedAsync(app.Services);
+
+// ===== ENDPOINT REGISTRATION =====
+// All Minimal API endpoints (grouped by domain concern)
+app.MapAllEndpoints();
+
+app.Run();

@@ -1,0 +1,154 @@
+using HeimdallWeb.Application.Common.Exceptions;
+using HeimdallWeb.Application.Common.Interfaces;
+using HeimdallWeb.Application.DTOs.Admin;
+using HeimdallWeb.Domain.Enums;
+using HeimdallWeb.Domain.Interfaces;
+using HeimdallWeb.Infrastructure.Data.Views.ViewModels;
+using Microsoft.EntityFrameworkCore;
+
+namespace HeimdallWeb.Application.Queries.Admin.GetAdminDashboard;
+
+/// <summary>
+/// Handler for GetAdminDashboardQuery.
+/// Returns comprehensive admin dashboard statistics (admin only).
+/// Source: HeimdallWebOld/Controllers/AdminController.cs lines 36-64 (Dashboard method)
+/// </summary>
+public class GetAdminDashboardQueryHandler : IQueryHandler<GetAdminDashboardQuery, AdminDashboardResponse>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public GetAdminDashboardQueryHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+    }
+
+    public async Task<AdminDashboardResponse> Handle(GetAdminDashboardQuery query, CancellationToken cancellationToken = default)
+    {
+        // Verify requesting user is admin
+        var requestingUser = await _unitOfWork.Users.GetByPublicIdAsync(query.RequestingUserId, cancellationToken);
+        if (requestingUser == null)
+            throw new NotFoundException("User", query.RequestingUserId);
+
+        if (requestingUser.UserType != UserType.Admin)
+            throw new ForbiddenException("Admin access required");
+
+        // Validate and cap page size
+        var pageSize = Math.Min(query.LogPageSize, 50);
+        if (pageSize <= 0) pageSize = 10;
+
+        // Get all users
+        var users = (await _unitOfWork.Users.GetAllAsync(cancellationToken)).ToList();
+
+        // Calculate user statistics
+        var userStats = new UserStatsSection(
+            TotalUsers: users.Count,
+            ActiveUsers: users.Count(u => u.IsActive),
+            BlockedUsers: users.Count(u => !u.IsActive),
+            AdminUsers: users.Count(u => u.UserType == UserType.Admin),
+            RegularUsers: users.Count(u => u.UserType == UserType.Default)
+        );
+
+        // Get all scan histories
+        var scanHistories = (await _unitOfWork.ScanHistories.GetAllAsync(cancellationToken)).ToList();
+
+        // Get all findings
+        var findings = (await _unitOfWork.Findings.GetAllAsync(cancellationToken)).ToList();
+
+        // Calculate scan statistics
+        var scanStats = new ScanStatsSection(
+            TotalScans: scanHistories.Count,
+            CompletedScans: scanHistories.Count(h => h.HasCompleted),
+            IncompleteScans: scanHistories.Count(h => !h.HasCompleted),
+            TotalFindings: findings.Count,
+            CriticalFindings: findings.Count(f => f.Severity == SeverityLevel.Critical),
+            HighFindings: findings.Count(f => f.Severity == SeverityLevel.High),
+            MediumFindings: findings.Count(f => f.Severity == SeverityLevel.Medium),
+            LowFindings: findings.Count(f => f.Severity == SeverityLevel.Low)
+        );
+
+        // Get paginated logs
+        var (logs, totalLogCount) = await _unitOfWork.AuditLogs.GetPaginatedAsync(
+            query.LogPage,
+            pageSize,
+            query.LogLevel,
+            query.LogStartDate,
+            query.LogEndDate,
+            query.LogSource,
+            query.LogUsername,
+            cancellationToken);
+
+        // Get distinct values for filter dropdowns (non-critical, don't fail the whole request)
+        var logSources = new List<string>();
+        var logMessages = new List<string>();
+        try
+        {
+            logSources = await _unitOfWork.AuditLogs.GetDistinctSourcesAsync(cancellationToken);
+            logMessages = await _unitOfWork.AuditLogs.GetDistinctMessagesAsync(cancellationToken);
+        }
+        catch { /* silently fallback to empty lists */ }
+
+        var logItems = logs.Select(l => new LogItem(
+            LogId: l.LogId,
+            Timestamp: l.Timestamp,
+            Level: l.Level,
+            Source: l.Source ?? string.Empty,
+            Message: l.Message,
+            UserId: l.User?.PublicId,
+            Username: l.User?.Username,
+            RemoteIp: l.RemoteIp
+        )).ToList();
+
+        var totalPages = (int)Math.Ceiling(totalLogCount / (double)pageSize);
+
+        var paginatedLogs = new PaginatedLogsSection(
+            Items: logItems,
+            Page: query.LogPage,
+            PageSize: pageSize,
+            TotalCount: totalLogCount,
+            TotalPages: totalPages
+        );
+
+        // Get recent activity (last 10 scans)
+        var recentScans = await _unitOfWork.ScanHistories.GetRecentAsync(10, cancellationToken);
+
+        var recentActivity = recentScans.Select(h => new RecentActivityItem(
+            HistoryId: h.PublicId,
+            Target: h.Target.Value,
+            CreatedDate: h.CreatedDate,
+            UserId: h.User?.PublicId ?? Guid.Empty,
+            Username: h.User?.Username ?? "Unknown",
+            HasCompleted: h.HasCompleted,
+            FindingsCount: h.Findings.Count
+        )).ToList();
+
+        // Get trends from SQL VIEWs (already filtered to last 30 days in VIEW)
+        var scanTrendData = await _unitOfWork.QueryView<DashboardScanTrendDaily>()
+            .OrderBy(t => t.ScanDate) // Ascending for chart display
+            .ToListAsync(cancellationToken);
+        
+        var scanTrend = scanTrendData.Select(t => new TrendItem(
+            Date: t.ScanDate.ToString("yyyy-MM-dd"),
+            Count: t.ScanCount
+        )).ToList();
+        
+        var userRegistrationTrendData = await _unitOfWork.QueryView<DashboardUserRegistrationTrend>()
+            .OrderBy(t => t.RegistrationDate) // Ascending for chart display
+            .ToListAsync(cancellationToken);
+        
+        var userRegistrationTrend = userRegistrationTrendData.Select(t => new TrendItem(
+            Date: t.RegistrationDate.ToString("yyyy-MM-dd"),
+            Count: t.NewUsers
+        )).ToList();
+
+        return new AdminDashboardResponse(
+            UserStats: userStats,
+            ScanStats: scanStats,
+            Logs: paginatedLogs,
+            RecentActivity: recentActivity,
+            ScanTrend: scanTrend,
+            UserRegistrationTrend: userRegistrationTrend,
+            LogSources: logSources,
+            LogMessages: logMessages
+        );
+    }
+}

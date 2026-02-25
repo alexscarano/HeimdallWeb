@@ -1,0 +1,44 @@
+# =============================================================================
+# .dockerignore — src/HeimdallWeb.Next
+# Aplica-se ao build context do Dockerfile do frontend (context: src/HeimdallWeb.Next)
+# =============================================================================
+
+# Dependências (instaladas dentro do container)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Artefatos de build Next.js
+.next/
+out/
+
+# Arquivos de ambiente com segredos
+.env
+.env.local
+.env.*.local
+
+# Cache de ferramentas
+.eslintcache
+.cache/
+
+# IDEs e editores
+.vscode/
+.idea/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testes
+coverage/
+__tests__/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# Documentação
+README.md

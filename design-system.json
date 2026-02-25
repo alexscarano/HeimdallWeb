@@ -1,0 +1,2184 @@
+{
+  "meta": {
+    "name": "Heimdall Design System",
+    "version": "2.3.0",
+    "concept": "Minimal Intelligence",
+    "stack": ["Next.js 15", "React 19", "Tailwind CSS", "shadcn/ui"],
+    "description": "Clean, elegant, and professional design system for a security scanning platform. Inspired by Linear, Vercel, and Stripe Dashboard. Conveys trust through clarity, not aggression. v2.0 adds Indigo accent identity, depth through elevation, and richer interactive states — without breaking the minimal foundation. v2.1 adds Emerald as a complementary color for success, health, and positive states. v2.2 introduces dual-accent theming: Emerald replaces Indigo as the primary interactive accent in light mode, while Indigo remains the primary interactive accent in dark mode.",
+    "changelog": {
+      "2.3.0": "Light mode surface hierarchy: background changed from #FFFFFF to #F0F0F4 (cool gray base), sidebar from #FAFAFA to #F8F8FA (middle layer), cards remain #FFFFFF (elevated). Secondary/muted/accent adjusted to #E8E8EF, borders to #D4D4DB for stronger contrast. Emerald hero gradient opacity 0.04→0.10, features grid 0.04→0.06. WebGL particle opacity nodes 0.18→0.25, lines 0.06→0.09 in light mode. Added card elevation shadow for light mode only.",
+      "2.2.0": "Dual-accent theming: light mode accent = emerald-600 (#059669), dark mode accent = indigo-400 (#818CF8). Added accent-primary-* tokens to both light and dark color sets. Updated all components that hardcoded indigo in light mode to reference accent tokens or provide explicit light/dark variants. Renamed button.indigo to button.accent and badge.indigo to badge.accent with theme-split values. Added focus-ring.accent. Added emerald-md shadow. Updated guidelines with accent-theme-split rationale.",
+      "2.1.0": "Added emerald palette as complementary color for success/positive states. Updated success tokens (light: emerald-600, dark: emerald-400). Added emerald-sm and emerald-glow shadows. Updated badge.success, states.success-inline, card.success variant, scan-results status-completed badge, and landing scan-states.success with emerald tokens.",
+      "2.0.0": "Added indigo accent palette, elevation tokens, glow effects, refined all interactive states, per-page visual enhancements, scanner card patterns, sidebar active indicator"
+    }
+  },
+
+  "tokens": {
+    "colors": {
+      "light": {
+        "background": "#F0F0F4",
+        "foreground": "#0A0A0B",
+        "card": "#FFFFFF",
+        "card-foreground": "#0A0A0B",
+        "popover": "#FFFFFF",
+        "popover-foreground": "#0A0A0B",
+        "primary": "#18181B",
+        "primary-foreground": "#FAFAFA",
+        "secondary": "#E8E8EF",
+        "secondary-foreground": "#18181B",
+        "muted": "#E8E8EF",
+        "muted-foreground": "#71717A",
+        "accent": "#E8E8EF",
+        "accent-foreground": "#18181B",
+        "destructive": "#EF4444",
+        "destructive-foreground": "#FAFAFA",
+        "success": "#059669",
+        "success-foreground": "#FFFFFF",
+        "warning": "#F59E0B",
+        "warning-foreground": "#FFFFFF",
+        "info": "#6366F1",
+        "info-foreground": "#FFFFFF",
+        "border": "#D4D4DB",
+        "input": "#D4D4DB",
+        "ring": "#18181B",
+        "sidebar-background": "#F8F8FA",
+        "sidebar-foreground": "#3F3F46",
+        "sidebar-border": "#D4D4DB",
+        "sidebar-accent": "#F4F4F5",
+        "sidebar-accent-foreground": "#18181B",
+        "chart-1": "#059669",
+        "chart-2": "#8B5CF6",
+        "chart-3": "#EC4899",
+        "chart-4": "#F59E0B",
+        "chart-5": "#10B981",
+        "accent-primary": "#059669",
+        "accent-primary-foreground": "#FFFFFF",
+        "accent-primary-hover": "#047857",
+        "accent-primary-subtle": "rgba(5, 150, 105, 0.08)",
+        "accent-primary-border": "rgba(5, 150, 105, 0.20)"
+      },
+      "dark": {
+        "background": "#09090B",
+        "foreground": "#FAFAFA",
+        "card": "#111113",
+        "card-foreground": "#FAFAFA",
+        "popover": "#111113",
+        "popover-foreground": "#FAFAFA",
+        "primary": "#FAFAFA",
+        "primary-foreground": "#18181B",
+        "secondary": "#27272A",
+        "secondary-foreground": "#FAFAFA",
+        "muted": "#27272A",
+        "muted-foreground": "#A1A1AA",
+        "accent": "#27272A",
+        "accent-foreground": "#FAFAFA",
+        "destructive": "#DC2626",
+        "destructive-foreground": "#FAFAFA",
+        "success": "#34D399",
+        "success-foreground": "#FFFFFF",
+        "warning": "#D97706",
+        "warning-foreground": "#FFFFFF",
+        "info": "#4F46E5",
+        "info-foreground": "#FFFFFF",
+        "border": "#27272A",
+        "input": "#27272A",
+        "ring": "#D4D4D8",
+        "sidebar-background": "#111113",
+        "sidebar-foreground": "#A1A1AA",
+        "sidebar-border": "#27272A",
+        "sidebar-accent": "#1C1C1F",
+        "sidebar-accent-foreground": "#FAFAFA",
+        "chart-1": "#818CF8",
+        "chart-2": "#A78BFA",
+        "chart-3": "#F472B6",
+        "chart-4": "#FBBF24",
+        "chart-5": "#34D399",
+        "accent-primary": "#818CF8",
+        "accent-primary-foreground": "#1E1B4B",
+        "accent-primary-hover": "#6366F1",
+        "accent-primary-subtle": "rgba(129, 140, 248, 0.10)",
+        "accent-primary-border": "rgba(129, 140, 248, 0.20)"
+      },
+      "severity": {
+        "critical": {
+          "bg": "#FEF2F2",
+          "bg-dark": "#450A0A",
+          "text": "#DC2626",
+          "text-dark": "#FCA5A5",
+          "border": "#FECACA",
+          "border-dark": "#7F1D1D"
+        },
+        "high": {
+          "bg": "#FFF7ED",
+          "bg-dark": "#431407",
+          "text": "#EA580C",
+          "text-dark": "#FDBA74",
+          "border": "#FED7AA",
+          "border-dark": "#7C2D12"
+        },
+        "medium": {
+          "bg": "#FFFBEB",
+          "bg-dark": "#451A03",
+          "text": "#D97706",
+          "text-dark": "#FCD34D",
+          "border": "#FDE68A",
+          "border-dark": "#78350F"
+        },
+        "low": {
+          "bg": "#EFF6FF",
+          "bg-dark": "#172554",
+          "text": "#2563EB",
+          "text-dark": "#93C5FD",
+          "border": "#BFDBFE",
+          "border-dark": "#1E3A5F"
+        },
+        "info": {
+          "bg": "#F5F5F5",
+          "bg-dark": "#1C1C1F",
+          "text": "#71717A",
+          "text-dark": "#A1A1AA",
+          "border": "#E4E4E7",
+          "border-dark": "#27272A"
+        }
+      },
+      "emerald": {
+        "50": "#ECFDF5",
+        "100": "#D1FAE5",
+        "200": "#A7F3D0",
+        "300": "#6EE7B7",
+        "400": "#34D399",
+        "500": "#10B981",
+        "600": "#059669",
+        "700": "#047857",
+        "800": "#065F46",
+        "900": "#064E3B",
+        "alpha": {
+          "05": "rgba(5, 150, 105, 0.05)",
+          "08": "rgba(5, 150, 105, 0.08)",
+          "10": "rgba(5, 150, 105, 0.10)",
+          "15": "rgba(5, 150, 105, 0.15)",
+          "20": "rgba(5, 150, 105, 0.20)",
+          "30": "rgba(5, 150, 105, 0.30)"
+        }
+      },
+      "indigo": {
+        "description": "Indigo accent palette — primary interactive accent in dark mode. In light mode, all interactive accent roles are fulfilled by emerald. Indigo still serves as the 'info' semantic color in both modes.",
+        "50": "#EEF2FF",
+        "100": "#E0E7FF",
+        "200": "#C7D2FE",
+        "300": "#A5B4FC",
+        "400": "#818CF8",
+        "500": "#6366F1",
+        "600": "#4F46E5",
+        "700": "#4338CA",
+        "800": "#3730A3",
+        "900": "#312E81",
+        "alpha": {
+          "05": "rgba(99, 102, 241, 0.05)",
+          "08": "rgba(99, 102, 241, 0.08)",
+          "10": "rgba(99, 102, 241, 0.10)",
+          "15": "rgba(99, 102, 241, 0.15)",
+          "20": "rgba(99, 102, 241, 0.20)",
+          "30": "rgba(99, 102, 241, 0.30)",
+          "50": "rgba(99, 102, 241, 0.50)"
+        },
+        "alpha-dark": {
+          "05": "rgba(129, 140, 248, 0.05)",
+          "08": "rgba(129, 140, 248, 0.08)",
+          "10": "rgba(129, 140, 248, 0.10)",
+          "15": "rgba(129, 140, 248, 0.15)",
+          "20": "rgba(129, 140, 248, 0.20)",
+          "30": "rgba(129, 140, 248, 0.30)",
+          "50": "rgba(129, 140, 248, 0.50)"
+        }
+      }
+    },
+
+    "typography": {
+      "font-family": {
+        "sans": "Inter, ui-sans-serif, system-ui, -apple-system, sans-serif",
+        "mono": "JetBrains Mono, ui-monospace, SFMono-Regular, monospace"
+      },
+      "sizes": {
+        "xs": "0.75rem",
+        "sm": "0.875rem",
+        "base": "1rem",
+        "lg": "1.125rem",
+        "xl": "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "1.875rem",
+        "4xl": "2.25rem",
+        "5xl": "3rem"
+      },
+      "weights": {
+        "normal": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      },
+      "line-heights": {
+        "tight": 1.25,
+        "normal": 1.5,
+        "relaxed": 1.625
+      },
+      "letter-spacing": {
+        "tight": "-0.025em",
+        "normal": "0em",
+        "wide": "0.025em"
+      }
+    },
+
+    "spacing": {
+      "unit": "4px",
+      "scale": {
+        "0": "0",
+        "0.5": "0.125rem",
+        "1": "0.25rem",
+        "1.5": "0.375rem",
+        "2": "0.5rem",
+        "3": "0.75rem",
+        "4": "1rem",
+        "5": "1.25rem",
+        "6": "1.5rem",
+        "8": "2rem",
+        "10": "2.5rem",
+        "12": "3rem",
+        "16": "4rem",
+        "20": "5rem",
+        "24": "6rem"
+      }
+    },
+
+    "border-radius": {
+      "none": "0",
+      "sm": "0.25rem",
+      "md": "0.375rem",
+      "lg": "0.5rem",
+      "xl": "0.75rem",
+      "2xl": "1rem",
+      "full": "9999px"
+    },
+
+    "shadows": {
+      "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+      "md": "0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05)",
+      "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04)",
+      "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04)",
+      "inner": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)",
+      "none": "none",
+      "indigo-sm": "0 0 0 3px rgba(99, 102, 241, 0.12)",
+      "indigo-md": "0 0 0 3px rgba(99, 102, 241, 0.20)",
+      "indigo-glow": "0 0 16px -2px rgba(99, 102, 241, 0.25), 0 0 0 1px rgba(99, 102, 241, 0.15)",
+      "indigo-glow-dark": "0 0 20px -2px rgba(129, 140, 248, 0.30), 0 0 0 1px rgba(129, 140, 248, 0.20)",
+      "card-hover": "0 4px 12px -2px rgba(0, 0, 0, 0.10), 0 2px 6px -2px rgba(0, 0, 0, 0.06)",
+      "card-hover-dark": "0 4px 12px -2px rgba(0, 0, 0, 0.40), 0 2px 6px -2px rgba(0, 0, 0, 0.25)",
+      "emerald-sm": "0 0 0 2px rgba(5, 150, 105, 0.15)",
+      "emerald-md": "0 0 0 3px rgba(5, 150, 105, 0.20)",
+      "emerald-glow": "0 0 0 3px rgba(5, 150, 105, 0.12), 0 0 12px rgba(5, 150, 105, 0.08)",
+      "emerald-glow-light": "0 0 16px -2px rgba(5, 150, 105, 0.25), 0 0 0 1px rgba(5, 150, 105, 0.15)"
+    },
+
+    "transitions": {
+      "fast": "150ms cubic-bezier(0.4, 0, 0.2, 1)",
+      "normal": "200ms cubic-bezier(0.4, 0, 0.2, 1)",
+      "slow": "300ms cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+
+    "breakpoints": {
+      "sm": "640px",
+      "md": "768px",
+      "lg": "1024px",
+      "xl": "1280px",
+      "2xl": "1536px"
+    },
+
+    "elevation": {
+      "description": "Elevation layers for visual depth. Applied via shadow + subtle background shifts.",
+      "0": { "shadow": "none", "background-offset": "0%" },
+      "1": { "shadow": "sm", "background-offset": "0%", "note": "Cards at rest" },
+      "2": { "shadow": "md", "background-offset": "1%", "note": "Hovered cards, dropdowns" },
+      "3": { "shadow": "lg", "background-offset": "2%", "note": "Popovers, tooltips" },
+      "4": { "shadow": "xl", "background-offset": "3%", "note": "Modals, sheets" }
+    },
+
+    "focus-ring": {
+      "default": {
+        "outline": "none",
+        "box-shadow": "0 0 0 2px var(--background), 0 0 0 4px var(--ring)"
+      },
+      "accent": {
+        "description": "Theme-aware accent focus ring. Use this instead of focus-ring.indigo for interactive elements. Light mode uses emerald, dark mode uses indigo.",
+        "light": {
+          "outline": "none",
+          "box-shadow": "0 0 0 2px var(--background), 0 0 0 4px rgba(5, 150, 105, 0.50)"
+        },
+        "dark": {
+          "outline": "none",
+          "box-shadow": "0 0 0 2px var(--background), 0 0 0 4px rgba(129, 140, 248, 0.50)"
+        }
+      },
+      "indigo": {
+        "outline": "none",
+        "box-shadow": "0 0 0 2px var(--background), 0 0 0 4px rgba(99, 102, 241, 0.50)"
+      },
+      "indigo-dark": {
+        "outline": "none",
+        "box-shadow": "0 0 0 2px var(--background), 0 0 0 4px rgba(129, 140, 248, 0.50)"
+      }
+    },
+
+    "backgrounds": {
+      "hero-gradient-light": "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(5, 150, 105, 0.06) 0%, transparent 70%)",
+      "hero-gradient-dark": "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(129, 140, 248, 0.08) 0%, transparent 70%)",
+      "section-muted-light": "rgba(244, 244, 245, 0.50)",
+      "section-muted-dark": "rgba(39, 39, 42, 0.30)",
+      "scanner-icon-bg-light": "rgba(5, 150, 105, 0.08)",
+      "scanner-icon-bg-dark": "rgba(129, 140, 248, 0.10)"
+    }
+  },
+
+  "components": {
+    "card": {
+      "description": "Container principal para agrupamento de conteúdo",
+      "variants": {
+        "default": {
+          "background": "card",
+          "border": "1px solid border",
+          "border-radius": "xl",
+          "padding": "6",
+          "shadow": "none",
+          "transition": "normal"
+        },
+        "elevated": {
+          "background": "card",
+          "border": "1px solid border",
+          "border-radius": "xl",
+          "padding": "6",
+          "shadow": "md"
+        },
+        "interactive": {
+          "background": "card",
+          "border": "1px solid border",
+          "border-radius": "xl",
+          "padding": "6",
+          "shadow": "none",
+          "transition": "normal",
+          "hover": {
+            "border-color-light": "rgba(5, 150, 105, 0.30)",
+            "border-color-dark": "rgba(129, 140, 248, 0.30)",
+            "shadow": "card-hover",
+            "transition": "normal"
+          }
+        },
+        "stat": {
+          "background": "card",
+          "border": "1px solid border",
+          "border-radius": "xl",
+          "padding": "5",
+          "shadow": "none",
+          "transition": "normal",
+          "hover": {
+            "shadow": "sm",
+            "border-color-light": "rgba(5, 150, 105, 0.20)",
+            "border-color-dark": "rgba(129, 140, 248, 0.20)"
+          },
+          "layout": {
+            "label": { "size": "sm", "color": "muted-foreground", "weight": "medium" },
+            "value": { "size": "3xl", "color": "foreground", "weight": "bold", "letter-spacing": "tight" },
+            "trend": { "size": "xs", "position": "inline-end" }
+          }
+        },
+        "metric": {
+          "description": "Stat card with colored top border for dashboard use",
+          "background": "card",
+          "border": "1px solid border",
+          "border-radius": "xl",
+          "padding": "5",
+          "shadow": "none",
+          "border-top": "3px solid <semantic-color>",
+          "note": "border-top color is determined by the metric type: accent-primary for general (emerald light / indigo dark), success for positive, warning for medium risk, destructive for critical",
+          "hover": {
+            "shadow": "sm"
+          }
+        },
+        "success": {
+          "background": "card",
+          "border": "1px solid emerald.alpha.20",
+          "border-top": "3px solid emerald.600",
+          "border-radius": "xl",
+          "padding": "6",
+          "shadow": "none",
+          "dark-border-top": "3px solid emerald.400"
+        },
+        "scanner": {
+          "description": "Card for individual scanner selection (ScannerSelector component)",
+          "background": "card",
+          "border": "1px solid border",
+          "border-radius": "xl",
+          "padding": "4",
+          "shadow": "none",
+          "transition": "normal",
+          "icon-container": {
+            "size": "2.25rem",
+            "border-radius": "lg",
+            "background-light": "emerald.alpha.08",
+            "background-dark": "indigo.alpha-dark.10",
+            "color-light": "emerald.600",
+            "color-dark": "indigo.400",
+            "transition": "normal"
+          },
+          "hover": {
+            "border-color-light": "rgba(5, 150, 105, 0.30)",
+            "border-color-dark": "rgba(129, 140, 248, 0.30)",
+            "shadow": "card-hover",
+            "icon-container-background-light": "emerald.alpha.15",
+            "icon-container-background-dark": "indigo.alpha-dark.15"
+          },
+          "active": {
+            "border-color-light": "rgba(5, 150, 105, 0.40)",
+            "border-color-dark": "rgba(129, 140, 248, 0.40)",
+            "background-light": "emerald.alpha.05",
+            "background-dark": "indigo.alpha-dark.05",
+            "shadow-light": "emerald-sm",
+            "shadow-dark": "indigo-sm",
+            "icon-container-background-light": "emerald.alpha.15",
+            "icon-container-background-dark": "indigo.alpha-dark.15"
+          }
+        }
+      }
+    },
+
+    "button": {
+      "description": "Botões de ação com variantes semânticas",
+      "base": {
+        "font-weight": "medium",
+        "font-size": "sm",
+        "border-radius": "lg",
+        "transition": "fast",
+        "cursor": "pointer",
+        "line-height": "tight",
+        "focus": "focus-ring.accent"
+      },
+      "sizes": {
+        "sm": { "height": "2rem", "padding-x": "3", "font-size": "xs" },
+        "md": { "height": "2.5rem", "padding-x": "4", "font-size": "sm" },
+        "lg": { "height": "2.75rem", "padding-x": "5", "font-size": "base" },
+        "icon": { "height": "2.5rem", "width": "2.5rem", "padding": "0" }
+      },
+      "variants": {
+        "primary": {
+          "background": "primary",
+          "color": "primary-foreground",
+          "hover": {
+            "opacity": 0.88,
+            "shadow": "sm"
+          },
+          "active": {
+            "opacity": 0.80,
+            "transform": "scale(0.99)"
+          }
+        },
+        "secondary": {
+          "background": "secondary",
+          "color": "secondary-foreground",
+          "hover": {
+            "background": "rgba(0,0,0,0.06)",
+            "shadow": "sm"
+          }
+        },
+        "outline": {
+          "background": "transparent",
+          "border": "1px solid input",
+          "color": "foreground",
+          "hover": {
+            "background": "accent",
+            "border-color-light": "rgba(5, 150, 105, 0.30)",
+            "border-color-dark": "rgba(129, 140, 248, 0.30)"
+          }
+        },
+        "ghost": {
+          "background": "transparent",
+          "color": "foreground",
+          "hover": {
+            "background": "accent",
+            "color": "foreground"
+          }
+        },
+        "destructive": {
+          "background": "destructive",
+          "color": "destructive-foreground",
+          "hover": {
+            "opacity": 0.88,
+            "shadow": "sm"
+          }
+        },
+        "link": {
+          "background": "transparent",
+          "color-light": "emerald.600",
+          "color-dark": "indigo.400",
+          "hover": {
+            "text-decoration": "underline",
+            "text-underline-offset": "4px"
+          }
+        },
+        "accent": {
+          "description": "Theme-aware accent button for primary CTAs. Light mode uses emerald, dark mode uses indigo. Replaces the former 'indigo' button variant.",
+          "background-light": "emerald.600",
+          "background-dark": "indigo.600",
+          "color": "#FFFFFF",
+          "hover": {
+            "background-light": "emerald.700",
+            "background-dark": "indigo.500",
+            "shadow-light": "emerald-sm",
+            "shadow-dark": "indigo-sm"
+          },
+          "active": {
+            "background-light": "emerald.800",
+            "background-dark": "indigo.700",
+            "transform": "scale(0.99)"
+          }
+        },
+        "indigo": {
+          "description": "Legacy alias — kept for backward compatibility. Prefer button.accent for new implementations. In dark mode this renders as indigo; in light mode prefer button.accent which uses emerald.",
+          "background": "indigo.500",
+          "background-dark": "indigo.600",
+          "color": "#FFFFFF",
+          "hover": {
+            "background": "indigo.600",
+            "background-dark": "indigo.500",
+            "shadow": "indigo-sm"
+          },
+          "active": {
+            "background": "indigo.700",
+            "transform": "scale(0.99)"
+          }
+        }
+      }
+    },
+
+    "badge": {
+      "description": "Indicadores visuais de status, severidade e categorias",
+      "base": {
+        "font-size": "xs",
+        "font-weight": "medium",
+        "border-radius": "full",
+        "padding-x": "2.5",
+        "padding-y": "0.5",
+        "line-height": "tight"
+      },
+      "variants": {
+        "default": { "background": "secondary", "color": "secondary-foreground" },
+        "outline": { "background": "transparent", "border": "1px solid border", "color": "foreground" },
+        "critical": { "background": "severity.critical.bg", "color": "severity.critical.text", "border": "1px solid severity.critical.border" },
+        "high": { "background": "severity.high.bg", "color": "severity.high.text", "border": "1px solid severity.high.border" },
+        "medium": { "background": "severity.medium.bg", "color": "severity.medium.text", "border": "1px solid severity.medium.border" },
+        "low": { "background": "severity.low.bg", "color": "severity.low.text", "border": "1px solid severity.low.border" },
+        "info": { "background": "severity.info.bg", "color": "severity.info.text", "border": "1px solid severity.info.border" },
+        "success": {
+          "background": "emerald.alpha.08",
+          "color": "emerald.600",
+          "border": "1px solid emerald.alpha.20",
+          "dark-background": "emerald.alpha.10",
+          "dark-color": "emerald.400",
+          "dark-border": "1px solid emerald.alpha.20"
+        },
+        "accent": {
+          "description": "Theme-aware accent badge for active filters, feature tags, and emphasis. Light mode uses emerald, dark mode uses indigo. Replaces the former 'indigo' badge variant.",
+          "background-light": "emerald.alpha.08",
+          "background-dark": "indigo.alpha-dark.10",
+          "color-light": "emerald.700",
+          "color-dark": "indigo.400",
+          "border-light": "1px solid rgba(5, 150, 105, 0.25)",
+          "border-dark": "1px solid rgba(129, 140, 248, 0.25)"
+        },
+        "indigo": {
+          "description": "Legacy alias — kept for backward compatibility. Prefer badge.accent for new implementations.",
+          "background": "indigo.alpha.10",
+          "background-dark": "indigo.alpha-dark.10",
+          "color": "indigo.600",
+          "color-dark": "indigo.400",
+          "border": "1px solid rgba(99, 102, 241, 0.25)"
+        }
+      }
+    },
+
+    "table": {
+      "description": "Tabela de dados com sorting, filtering e pagination",
+      "style": {
+        "border": "1px solid border",
+        "border-radius": "xl",
+        "overflow": "hidden"
+      },
+      "header": {
+        "background": "muted/50",
+        "font-size": "xs",
+        "font-weight": "medium",
+        "color": "muted-foreground",
+        "text-transform": "uppercase",
+        "letter-spacing": "wide",
+        "padding": "3 4"
+      },
+      "row": {
+        "border-bottom": "1px solid border",
+        "padding": "3 4",
+        "hover-background": "muted/30",
+        "transition": "fast"
+      },
+      "row-selected": {
+        "background-light": "emerald.alpha.05",
+        "background-dark": "indigo.alpha-dark.05",
+        "border-left-light": "2px solid emerald.600",
+        "border-left-dark": "2px solid indigo.400"
+      },
+      "cell": {
+        "font-size": "sm",
+        "color": "foreground",
+        "vertical-align": "middle"
+      },
+      "features": ["sorting", "column-visibility", "row-selection", "pagination", "filtering", "search"],
+      "sort-active": {
+        "color-light": "emerald.600",
+        "color-dark": "indigo.400"
+      },
+      "empty-state": {
+        "icon": "FileSearch",
+        "message-size": "sm",
+        "color": "muted-foreground",
+        "padding": "16"
+      }
+    },
+
+    "input": {
+      "description": "Campos de entrada de texto e busca",
+      "base": {
+        "height": "2.5rem",
+        "font-size": "sm",
+        "border": "1px solid input",
+        "border-radius": "lg",
+        "padding-x": "3",
+        "background": "transparent",
+        "transition": "fast"
+      },
+      "focus": {
+        "border-color-light": "emerald.600",
+        "border-color-dark": "indigo.400",
+        "box-shadow-light": "0 0 0 3px rgba(5, 150, 105, 0.15)",
+        "box-shadow-dark": "0 0 0 3px rgba(129, 140, 248, 0.15)",
+        "outline": "none"
+      },
+      "hover": {
+        "border-color": "rgba(0,0,0,0.25)",
+        "border-color-dark": "rgba(255,255,255,0.25)"
+      },
+      "error": {
+        "border-color": "destructive",
+        "ring": "0 0 0 3px rgba(239, 68, 68, 0.15)"
+      },
+      "variants": {
+        "search": {
+          "icon-left": "Search",
+          "placeholder-color": "muted-foreground"
+        },
+        "url-input": {
+          "icon-left": "Globe",
+          "font-family": "mono",
+          "font-size": "sm",
+          "height": "3rem",
+          "border-radius": "xl",
+          "font-size-note": "Slightly larger for the main scanner input",
+          "focus": {
+            "border-color-light": "emerald.600",
+            "border-color-dark": "indigo.400",
+            "box-shadow-light": "emerald-glow-light",
+            "box-shadow-dark": "indigo-glow-dark"
+          }
+        }
+      }
+    },
+
+    "modal": {
+      "description": "Dialog centrado para ações e confirmações. Sheet lateral para conteúdo denso.",
+      "dialog": {
+        "overlay-background": "background/80 backdrop-blur-sm",
+        "background": "card",
+        "border": "1px solid border",
+        "border-radius": "2xl",
+        "shadow": "xl",
+        "padding": "6",
+        "max-width": "32rem",
+        "animation": "fade-in + scale-up"
+      },
+      "sheet": {
+        "overlay-background": "background/80 backdrop-blur-sm",
+        "background": "card",
+        "border-left": "1px solid border",
+        "width": "28rem",
+        "max-width": "90vw",
+        "padding": "6",
+        "animation": "slide-in-from-right"
+      }
+    },
+
+    "navbar": {
+      "description": "Barra de navegação superior fixa",
+      "style": {
+        "height": "3.5rem",
+        "background": "background/80 backdrop-blur-md",
+        "border-bottom": "1px solid border",
+        "position": "sticky top-0",
+        "z-index": 50,
+        "padding-x": "4"
+      },
+      "layout": {
+        "left": "logo + brand-name",
+        "center": "navigation-links (desktop only)",
+        "right": "theme-toggle + user-avatar-dropdown"
+      },
+      "nav-link": {
+        "font-size": "sm",
+        "font-weight": "medium",
+        "color": "muted-foreground",
+        "hover-color": "foreground",
+        "transition": "fast",
+        "active": {
+          "color-light": "emerald.700",
+          "color-dark": "indigo.400"
+        }
+      }
+    },
+
+    "sidebar": {
+      "description": "Navegação lateral para área autenticada (dashboard/admin)",
+      "style": {
+        "width": "16rem",
+        "width-collapsed": "4rem",
+        "background": "sidebar-background",
+        "border-right": "1px solid sidebar-border",
+        "padding-y": "4"
+      },
+      "nav-item": {
+        "height": "2.25rem",
+        "padding-x": "3",
+        "border-radius": "lg",
+        "font-size": "sm",
+        "font-weight": "medium",
+        "color": "sidebar-foreground",
+        "transition": "fast",
+        "hover": {
+          "background": "rgba(0, 0, 0, 0.04)",
+          "background-dark": "rgba(255, 255, 255, 0.05)",
+          "color": "foreground"
+        },
+        "active": {
+          "background-light": "emerald.alpha.10",
+          "background-dark": "indigo.alpha-dark.10",
+          "color-light": "emerald.800",
+          "color-dark": "indigo.300",
+          "font-weight": "semibold",
+          "indicator": {
+            "description": "Thin vertical bar on the left edge of the active item",
+            "width": "2px",
+            "height": "60%",
+            "background-light": "emerald.600",
+            "background-dark": "indigo.400",
+            "border-radius": "full",
+            "position": "absolute left-0"
+          }
+        },
+        "icon-size": "1rem",
+        "icon-active-color-light": "emerald.600",
+        "icon-active-color-dark": "indigo.400",
+        "gap": "3"
+      },
+      "section-label": {
+        "font-size": "xs",
+        "font-weight": "semibold",
+        "color": "muted-foreground",
+        "text-transform": "uppercase",
+        "letter-spacing": "wide",
+        "padding-x": "3",
+        "margin-top": "6",
+        "margin-bottom": "2"
+      },
+      "section-separator": {
+        "description": "Visual divider between main navigation and admin navigation sections",
+        "border-top": "1px solid sidebar-border",
+        "margin-y": "4",
+        "opacity": 0.6
+      }
+    },
+
+    "avatar": {
+      "description": "Imagem de perfil do usuário",
+      "sizes": {
+        "sm": "2rem",
+        "md": "2.5rem",
+        "lg": "4rem",
+        "xl": "6rem"
+      },
+      "style": {
+        "border-radius": "full",
+        "border": "2px solid border",
+        "fallback-background": "muted",
+        "fallback-color": "muted-foreground",
+        "fallback-font-weight": "semibold"
+      },
+      "ring-on-hover": {
+        "box-shadow-light": "0 0 0 2px background, 0 0 0 4px rgba(5, 150, 105, 0.30)",
+        "box-shadow-dark": "0 0 0 2px background, 0 0 0 4px rgba(129, 140, 248, 0.30)"
+      }
+    },
+
+    "tabs": {
+      "description": "Navegação por abas dentro de conteúdo",
+      "style": {
+        "border-bottom": "1px solid border"
+      },
+      "trigger": {
+        "font-size": "sm",
+        "font-weight": "medium",
+        "color": "muted-foreground",
+        "padding-y": "2.5",
+        "padding-x": "1",
+        "transition": "fast",
+        "hover": {
+          "color": "foreground"
+        },
+        "active": {
+          "color": "foreground",
+          "border-bottom-light": "2px solid emerald.600",
+          "border-bottom-dark": "2px solid indigo.400"
+        }
+      },
+      "badge-count": {
+        "description": "Small badge inside tab showing item count. Uses accent variant (emerald light / indigo dark).",
+        "background-light": "emerald.alpha.08",
+        "background-dark": "indigo.alpha-dark.10",
+        "color-light": "emerald.700",
+        "color-dark": "indigo.400",
+        "font-size": "xs",
+        "border-radius": "full",
+        "padding-x": "1.5",
+        "padding-y": "0.25",
+        "margin-left": "1.5"
+      }
+    },
+
+    "accordion": {
+      "description": "Conteúdo colapsável para findings e detalhes técnicos",
+      "style": {
+        "border": "1px solid border",
+        "border-radius": "xl",
+        "overflow": "hidden"
+      },
+      "item": {
+        "border-bottom": "1px solid border",
+        "padding": "4"
+      },
+      "trigger": {
+        "font-size": "sm",
+        "font-weight": "medium",
+        "transition": "fast",
+        "hover": {
+          "background": "muted/30",
+          "color": "foreground"
+        }
+      },
+      "content": {
+        "padding": "4",
+        "padding-top": "0",
+        "font-size": "sm",
+        "color": "muted-foreground"
+      }
+    },
+
+    "chart": {
+      "description": "Container e paleta para visualização de dados (Recharts)",
+      "container": {
+        "background": "card",
+        "border": "1px solid border",
+        "border-radius": "xl",
+        "padding": "6"
+      },
+      "title": {
+        "font-size": "sm",
+        "font-weight": "semibold",
+        "color": "foreground"
+      },
+      "subtitle": {
+        "font-size": "xs",
+        "color": "muted-foreground"
+      },
+      "palette": {
+        "primary-light": ["#059669", "#8B5CF6", "#EC4899", "#F59E0B", "#10B981", "#06B6D4"],
+        "primary-dark": ["#818CF8", "#A78BFA", "#F472B6", "#FBBF24", "#34D399", "#22D3EE"],
+        "severity": {
+          "critical": "#EF4444",
+          "high": "#F97316",
+          "medium": "#EAB308",
+          "low": "#3B82F6",
+          "info": "#9CA3AF"
+        }
+      },
+      "axis": {
+        "font-size": "xs",
+        "color": "muted-foreground",
+        "grid-color": "border"
+      },
+      "tooltip": {
+        "background": "popover",
+        "border": "1px solid border",
+        "border-radius": "lg",
+        "shadow": "lg",
+        "font-size": "sm"
+      },
+      "active-dot": {
+        "fill-light": "emerald.600",
+        "fill-dark": "indigo.400",
+        "stroke": "background",
+        "stroke-width": "2px"
+      }
+    },
+
+    "toast": {
+      "description": "Notificações temporárias",
+      "style": {
+        "border-radius": "xl",
+        "padding": "4",
+        "shadow": "lg",
+        "border": "1px solid border",
+        "background": "card",
+        "max-width": "24rem"
+      },
+      "variants": {
+        "default": { "border-left": "none" },
+        "success": { "border-left": "4px solid success" },
+        "error": { "border-left": "4px solid destructive" },
+        "warning": { "border-left": "4px solid warning" },
+        "info": { "border-left": "4px solid info" }
+      }
+    },
+
+    "states": {
+      "loading": {
+        "skeleton": {
+          "background": "muted",
+          "animation": "pulse 2s infinite",
+          "border-radius": "lg"
+        },
+        "spinner": {
+          "color-light": "emerald.600",
+          "color-dark": "indigo.400",
+          "size": "1.25rem",
+          "border-width": "2px",
+          "note": "Light mode uses emerald spinner; dark mode uses indigo spinner. For secondary/non-CTA actions, use muted-foreground in both modes."
+        },
+        "progress-bar": {
+          "background-light": "emerald.alpha.10",
+          "background-dark": "indigo.alpha-dark.15",
+          "fill-light": "emerald.600",
+          "fill-dark": "indigo.400",
+          "border-radius": "full",
+          "height": "2px"
+        }
+      },
+      "empty": {
+        "icon-size": "3rem",
+        "icon-color": "muted-foreground/50",
+        "title-size": "base",
+        "title-weight": "medium",
+        "title-color": "foreground",
+        "description-size": "sm",
+        "description-color": "muted-foreground",
+        "padding": "16",
+        "text-align": "center"
+      },
+      "error": {
+        "icon": "AlertCircle",
+        "icon-color": "destructive",
+        "background": "destructive/5",
+        "border": "1px solid destructive/20",
+        "border-radius": "xl",
+        "padding": "6"
+      },
+      "success-inline": {
+        "description": "Inline success state for scan completion or form success",
+        "icon": "CheckCircle2",
+        "icon-color": "emerald.600",
+        "background": "emerald.alpha.05",
+        "border": "1px solid emerald.alpha.20",
+        "border-radius": "xl",
+        "padding": "4",
+        "text-color": "emerald.700",
+        "dark-icon-color": "emerald.400",
+        "dark-text-color": "emerald.300"
+      }
+    },
+
+    "code-block": {
+      "description": "Blocos de código para dados técnicos (headers, JSON, etc.)",
+      "style": {
+        "font-family": "mono",
+        "font-size": "xs",
+        "background": "muted",
+        "border": "1px solid border",
+        "border-radius": "lg",
+        "padding": "4",
+        "overflow-x": "auto",
+        "line-height": "relaxed"
+      }
+    },
+
+    "progress-indicator": {
+      "description": "Linear progress bar for scan progress and loading states",
+      "style": {
+        "height": "3px",
+        "border-radius": "full",
+        "background-light": "emerald.alpha.10",
+        "background-dark": "indigo.alpha-dark.15",
+        "fill-light": "emerald.600",
+        "fill-dark": "indigo.400",
+        "animation": "indeterminate 1.5s ease infinite"
+      },
+      "determinate": {
+        "transition": "width 300ms cubic-bezier(0.4, 0, 0.2, 1)"
+      }
+    },
+
+    "separator": {
+      "description": "Subtle visual dividers between content sections",
+      "horizontal": {
+        "height": "1px",
+        "background": "border",
+        "margin-y": "4"
+      },
+      "section": {
+        "height": "1px",
+        "background": "linear-gradient(to right, transparent, border, transparent)",
+        "margin-y": "6",
+        "note": "Fade-out separator for softer section breaks"
+      }
+    }
+  },
+
+  "layouts": {
+    "public": {
+      "description": "Layout para páginas públicas (landing, login, register)",
+      "structure": "navbar-top + centered-content",
+      "navbar": true,
+      "sidebar": false,
+      "max-width": "80rem",
+      "padding-x": "4"
+    },
+    "authenticated": {
+      "description": "Layout para área logada com sidebar",
+      "structure": "sidebar-left + navbar-top + main-content",
+      "navbar": true,
+      "sidebar": true,
+      "main-content": {
+        "max-width": "none",
+        "padding": "6 8",
+        "background": "section-muted-light",
+        "background-dark": "section-muted-dark",
+        "note": "Very subtle muted tint on main area creates depth vs the white sidebar"
+      }
+    },
+    "focus": {
+      "description": "Layout para páginas de foco único (scan em andamento)",
+      "structure": "navbar-top + centered-narrow-content",
+      "navbar": true,
+      "sidebar": false,
+      "max-width": "48rem",
+      "padding-x": "4"
+    }
+  },
+
+  "pages": {
+    "landing": {
+      "name": "Landing Page / Scanner",
+      "description": "Página principal com campo de URL para iniciar scan de segurança",
+      "layout": "public",
+      "priority": "alta",
+      "components": [
+        "navbar",
+        "input:url-input",
+        "button:accent (lg)",
+        "card:stat (recent scans summary)",
+        "card:scanner (ScannerSelector)"
+      ],
+      "visual-details": {
+        "hero-background": {
+          "type": "radial-gradient",
+          "value": "backgrounds.hero-gradient-light",
+          "dark": "backgrounds.hero-gradient-dark",
+          "note": "Light mode: very subtle emerald tint emanating from the top center. Dark mode: very subtle indigo tint. Almost invisible — purely atmospheric."
+        },
+        "headline": {
+          "size": "4xl",
+          "weight": "bold",
+          "letter-spacing": "tight",
+          "color": "foreground"
+        },
+        "subheadline": {
+          "size": "lg",
+          "color": "muted-foreground",
+          "margin-top": "3"
+        },
+        "url-input-wrapper": {
+          "max-width": "36rem",
+          "margin": "auto",
+          "margin-top": "8"
+        },
+        "scan-button": {
+          "variant": "accent",
+          "size": "lg",
+          "width": "full",
+          "margin-top": "3",
+          "note": "Full-width below input on mobile, right-aligned or below on desktop"
+        },
+        "scanner-selector": {
+          "layout": "grid-3-cols",
+          "gap": "3",
+          "margin-top": "6",
+          "card-variant": "card:scanner"
+        }
+      },
+      "sections": [
+        {
+          "name": "hero",
+          "content": "Headline + subtítulo + campo URL centralizado",
+          "notes": "Fundo com radial gradient emerald muito sutil no light mode (backgrounds.hero-gradient-light). Headline em 4xl/bold. Input de URL em destaque com ícone Globe. Botão Scan accent grande. Focus no input dispara glow emerald no light, indigo no dark."
+        },
+        {
+          "name": "scanner-selector",
+          "content": "Grid de cards para selecionar quais scanners ativar",
+          "notes": "Usar card variant 'scanner'. Ícones com fundo circular emerald/08 no light, indigo/10 no dark. Hover: border emerald/30 (light) ou indigo/30 (dark) + shadow elevado. Active: background emerald/05 (light) ou indigo/05 (dark)."
+        },
+        {
+          "name": "features",
+          "content": "3 cards com ícones mostrando capacidades do scanner",
+          "notes": "Opcional. Cards com ícone + título + descrição curta. Layout em grid 3 colunas. Background muted/30 na seção para separação sutil."
+        }
+      ],
+      "scan-states": {
+        "idle": "Input limpo, botão Scan habilitado",
+        "loading": {
+          "button": "Desabilitado com spinner emerald (light) / indigo (dark)",
+          "progress": "Progress bar emerald (light) / indigo (dark) indeterminate abaixo do input",
+          "note": "Manter o input visível para indicar o target"
+        },
+        "success": {
+          "redirect": "Redirecionar para /results/:id",
+          "transition": "Fade out + navigate",
+          "icon": "CheckCircle2",
+          "icon-color": "emerald.600",
+          "background": "emerald.alpha.05",
+          "border": "emerald.alpha.20",
+          "text-color": "emerald.700"
+        },
+        "error": {
+          "display": "states.error inline abaixo do input",
+          "animation": "Subtle shake animation (100ms, 4px offset)"
+        }
+      }
+    },
+
+    "login": {
+      "name": "Login",
+      "description": "Autenticação do usuário com email e senha",
+      "layout": "public",
+      "priority": "alta",
+      "components": [
+        "card:elevated",
+        "input (email, password)",
+        "button:primary",
+        "button:link"
+      ],
+      "visual-details": {
+        "page-background": "backgrounds.hero-gradient-light",
+        "card": {
+          "max-width": "24rem",
+          "shadow": "md",
+          "border": "1px solid border"
+        },
+        "inputs": {
+          "focus": "input.focus (emerald border + glow in light, indigo in dark)"
+        },
+        "submit-button": {
+          "variant": "primary",
+          "width": "full"
+        },
+        "links": {
+          "color-light": "emerald.700",
+          "color-dark": "indigo.400"
+        }
+      },
+      "sections": [
+        {
+          "name": "form-card",
+          "content": "Card centralizado com max-width 24rem. Logo/título no topo. Campos email + senha com focus emerald (light) / indigo (dark). Botão login full-width. Link para registro abaixo.",
+          "notes": "Fundo page com gradient radial sutil. Card com shadow-md. Sem split-screen layout — manter simples e centrado."
+        }
+      ]
+    },
+
+    "register": {
+      "name": "Registro",
+      "description": "Criação de nova conta com username, email e senha",
+      "layout": "public",
+      "priority": "alta",
+      "components": [
+        "card:elevated",
+        "input (username, email, password, confirm-password)",
+        "button:primary",
+        "button:link"
+      ],
+      "visual-details": {
+        "page-background": "backgrounds.hero-gradient-light",
+        "password-strength": {
+          "description": "Inline password strength indicator below the password field",
+          "bar-height": "2px",
+          "bar-radius": "full",
+          "levels": {
+            "weak": { "width": "33%", "color": "destructive" },
+            "medium": { "width": "66%", "color": "warning" },
+            "strong": { "width": "100%", "color": "success" }
+          }
+        }
+      },
+      "sections": [
+        {
+          "name": "form-card",
+          "content": "Card centralizado, mesmo estilo do login. Campos agrupados logicamente. Link para login existente abaixo.",
+          "notes": "Manter consistência visual com login. Adicionar indicadores de força de senha inline com barra de progresso colorida."
+        }
+      ]
+    },
+
+    "profile": {
+      "name": "Perfil do Usuário",
+      "description": "Informações do perfil, estatísticas de uso e histórico recente",
+      "layout": "authenticated",
+      "priority": "média",
+      "components": [
+        "avatar:xl",
+        "card:metric (grid 2x2 ou 4 colunas)",
+        "table (recent scans)",
+        "badge"
+      ],
+      "visual-details": {
+        "profile-header-background": {
+          "type": "subtle section",
+          "background": "section-muted-light",
+          "border-bottom": "1px solid border",
+          "padding": "6 8"
+        },
+        "stat-cards": {
+          "border-top-colors": {
+            "total-scans": "accent-primary (emerald.600 light / indigo.400 dark)",
+            "scans-month": "chart-2",
+            "vulnerabilities": "warning",
+            "risk-score": "destructive"
+          }
+        }
+      },
+      "sections": [
+        {
+          "name": "profile-header",
+          "content": "Avatar + nome + email + badge de tipo de usuário. Botão editar perfil.",
+          "notes": "Layout horizontal. Avatar xl à esquerda, info à direita. Background muted sutil como separador."
+        },
+        {
+          "name": "stats-grid",
+          "content": "4 stat cards: Total Scans, Scans este mês, Vulnerabilidades encontradas, Risk score médio",
+          "notes": "Grid responsivo: 4 cols desktop, 2 cols tablet, 1 col mobile. Usar card variant 'metric' com borda superior colorida por tipo."
+        },
+        {
+          "name": "recent-scans",
+          "content": "Tabela com últimos 5-10 scans do usuário",
+          "notes": "Tabela simplificada sem todos os filtros. Link para ver histórico completo em cor accent-primary (emerald light / indigo dark)."
+        }
+      ]
+    },
+
+    "scan-results": {
+      "name": "Resultados do Scan",
+      "description": "Página completa de resultados após um scan, com abas por categoria",
+      "layout": "authenticated",
+      "priority": "alta",
+      "components": [
+        "tabs",
+        "card",
+        "badge:severity",
+        "accordion",
+        "code-block",
+        "chart:radar ou bar (severity overview)"
+      ],
+      "visual-details": {
+        "scan-header": {
+          "background": "section-muted-light",
+          "background-dark": "section-muted-dark",
+          "border-bottom": "1px solid border",
+          "padding": "6 8",
+          "status-completed": {
+            "badge-background": "emerald.alpha.08",
+            "badge-color": "emerald.600",
+            "badge-border": "1px solid emerald.alpha.20",
+            "dark-badge-background": "emerald.alpha.10",
+            "dark-badge-color": "emerald.400",
+            "dark-badge-border": "1px solid emerald.alpha.20"
+          }
+        },
+        "severity-cards": {
+          "border-top": "3px solid <severity-color>",
+          "note": "Each severity stat card gets the color of its severity as a top border"
+        },
+        "tabs": {
+          "active-indicator-light": "2px solid emerald.600",
+          "active-indicator-dark": "2px solid indigo.400",
+          "badge-count-variant": "badge:accent"
+        },
+        "finding-item": {
+          "severity-indicator": "3px left border using severity color",
+          "hover": "background: muted/20"
+        }
+      },
+      "sections": [
+        {
+          "name": "scan-header",
+          "content": "URL alvo + data/hora + duração + status badge. Botão re-scan e exportar PDF.",
+          "notes": "Background muted sutil. URL em font mono. Status badge (completed/failed). Botões à direita do header."
+        },
+        {
+          "name": "severity-summary",
+          "content": "4-5 stat cards mostrando contagem por severidade (Critical, High, Medium, Low, Info)",
+          "notes": "Grid horizontal. Cada card usa borda superior com a cor da severidade. Destaque visual no mais crítico."
+        },
+        {
+          "name": "findings-tabs",
+          "content": "Abas: Overview | Headers | SSL | Ports | Redirects | Robots | Sensitive Paths | Technologies",
+          "notes": "Cada aba com badge de contagem (variant accent). Active tab com underline emerald (light) / indigo (dark). Conteúdo em accordions com severity indicator lateral."
+        },
+        {
+          "name": "finding-item",
+          "content": "Accordion com: severity badge + título + description. Expandido: evidence em code-block + recommendation.",
+          "notes": "Visual limpo com hierarquia clara. Severity badge à esquerda, sempre visível. Borda esquerda colorida pela severidade."
+        }
+      ]
+    },
+
+    "ai-analysis": {
+      "name": "Análise IA",
+      "description": "Resultados da análise de vulnerabilidades feita pela IA (Gemini)",
+      "layout": "authenticated",
+      "priority": "alta",
+      "components": [
+        "card",
+        "badge:severity",
+        "accordion",
+        "chart (risk distribution)"
+      ],
+      "visual-details": {
+        "summary-card": {
+          "border-left": "4px solid <overall-risk-color>",
+          "background": "rgba(<overall-risk-color-alpha>, 0.03)",
+          "note": "The summary card gets a strong left accent border based on the overall risk level"
+        },
+        "overall-risk-badge": {
+          "size": "lg",
+          "padding-x": "4",
+          "padding-y": "1.5",
+          "font-size": "sm",
+          "font-weight": "semibold"
+        }
+      },
+      "sections": [
+        {
+          "name": "ai-summary",
+          "content": "Card de resumo: overall risk badge (Critical/High/Medium/Low) + texto resumido da IA + contagem de findings por severidade.",
+          "notes": "Card com borda esquerda colorida pelo overall risk. Risk badge grande e proeminente. Texto da IA em tamanho base com boa legibilidade."
+        },
+        {
+          "name": "ai-findings-list",
+          "content": "Lista de findings da IA em accordions. Cada finding com: severidade + categoria + título + descrição + recomendação.",
+          "notes": "Agrupar por severidade (Critical primeiro). Accordion para manter densidade gerenciável. Severity badge sempre visível no trigger."
+        }
+      ]
+    },
+
+    "dashboard": {
+      "name": "Dashboard",
+      "description": "Visão geral com gráficos e métricas do sistema (admin/user)",
+      "layout": "authenticated",
+      "priority": "alta",
+      "components": [
+        "card:metric",
+        "chart (bar, pie/donut, line/area)",
+        "table (recent activity)"
+      ],
+      "visual-details": {
+        "kpi-cards": {
+          "border-top-colors": {
+            "total-users": "accent-primary (emerald.600 light / indigo.400 dark)",
+            "total-scans": "chart-2",
+            "scans-today": "success",
+            "avg-risk": "warning"
+          }
+        },
+        "charts": {
+          "primary-color-light": "emerald.600",
+          "primary-color-dark": "indigo.400",
+          "area-fill-light": "emerald.alpha.10",
+          "area-fill-dark": "indigo.alpha-dark.10"
+        },
+        "recent-activity-table": {
+          "row-hover": "muted/30",
+          "action-link-color-light": "emerald.700",
+          "action-link-color-dark": "indigo.400"
+        }
+      },
+      "sections": [
+        {
+          "name": "kpi-row",
+          "content": "4 stat cards: Total Users, Total Scans, Scans Hoje, Avg Risk Score",
+          "notes": "Grid 4 colunas. Usar card variant 'metric' com borda superior por tipo. Trend indicators com setas e porcentagem de variação."
+        },
+        {
+          "name": "charts-grid",
+          "content": "Grid 2x2: Severity Distribution (donut), Scan Trends (area), Category Breakdown (bar horizontal), User Registration Trend (area)",
+          "notes": "Usar paleta de charts do design system com accent-primary como cor primária (emerald light, indigo dark). Gráficos com títulos e subtítulos dentro do card container. Tooltips estilizados. Area charts com fill accent/10."
+        },
+        {
+          "name": "recent-activity",
+          "content": "Tabela com últimas ações do sistema (scans, registros, etc.)",
+          "notes": "Tabela compacta sem paginação, últimos 10 itens. Link 'Ver todos' em accent-primary."
+        }
+      ]
+    },
+
+    "scan-history": {
+      "name": "Histórico de Scans",
+      "description": "Tabela paginada e filtrável com todos os scans realizados",
+      "layout": "authenticated",
+      "priority": "alta",
+      "components": [
+        "table (full-featured)",
+        "input:search",
+        "badge",
+        "button:outline (actions)",
+        "modal:dialog (confirm delete)"
+      ],
+      "visual-details": {
+        "search-input": {
+          "focus": "input.focus (emerald light / indigo dark)"
+        },
+        "active-filters": {
+          "badge-variant": "badge:accent"
+        },
+        "pagination": {
+          "active-page": {
+            "background-light": "emerald.600",
+            "background-dark": "indigo.500",
+            "color": "#FFFFFF",
+            "border-radius": "md"
+          }
+        },
+        "row-actions": {
+          "view-link-color-light": "emerald.700",
+          "view-link-color-dark": "indigo.400"
+        }
+      },
+      "sections": [
+        {
+          "name": "header",
+          "content": "Título da página + campo de busca + filtros (status, data, severidade)",
+          "notes": "Layout flex com título à esquerda e controles à direita. Filtros ativos mostrados como badges accent."
+        },
+        {
+          "name": "data-table",
+          "content": "Colunas: Target URL, Date, Status, Duration, Risk Level, Actions (view, export, delete). Paginação inferior.",
+          "notes": "Usar DataTable do shadcn com sorting e column visibility. Coluna ativa de sort em accent-primary. Pagination com active page accent-primary. Action menu como dropdown. Status como badge colorido. URL em mono font."
+        }
+      ]
+    },
+
+    "technologies-panel": {
+      "name": "Painel de Tecnologias",
+      "description": "Sheet lateral mostrando tecnologias detectadas no scan",
+      "layout": "overlay (sheet right)",
+      "priority": "média",
+      "components": [
+        "modal:sheet",
+        "table (simple)",
+        "badge"
+      ],
+      "visual-details": {
+        "category-header": {
+          "font-size": "xs",
+          "font-weight": "semibold",
+          "color": "muted-foreground",
+          "text-transform": "uppercase",
+          "letter-spacing": "wide",
+          "padding-bottom": "2",
+          "border-bottom": "1px solid border",
+          "margin-bottom": "2"
+        },
+        "tech-badge": {
+          "variant": "badge:accent",
+          "note": "Category badge uses accent variant for visual consistency (emerald light / indigo dark)"
+        }
+      },
+      "sections": [
+        {
+          "name": "tech-list",
+          "content": "Tecnologias agrupadas por categoria (Server, Framework, CMS, JS Library, etc.). Cada grupo com header e items abaixo.",
+          "notes": "Sheet slide-in pela direita. Agrupar por categoria com section labels. Cada item: nome + versão + badge de categoria em accent."
+        }
+      ]
+    }
+  },
+
+  "scannerResultsScreen": {
+    "_meta": {
+      "page": "/history/[id] — Scanner Results Detail",
+      "version": "1.0.0",
+      "description": "Design specification for the refactored scanner results screen. Extends the v2.2 base design system without overriding any existing tokens. Aesthetic target: Linear app, Vercel Dashboard, Stripe Dashboard — enterprise-grade, visually calm, data-hierarchy-first.",
+      "problems_solved": [
+        "Particle background too distracting (100 stars at 0.30 opacity)",
+        "All 13 scanner cards had equal visual weight — no grouping or hierarchy",
+        "Excessive bg-destructive/text-destructive usage throughout cards",
+        "No dominant global score block above the fold",
+        "AlertBadge used heavy destructive color regardless of severity",
+        "Flat 3-column grid with no categorical separation"
+      ]
+    },
+
+    "particleBackground": {
+      "_component": "ParticleBackground (src/components/ui/particle-background.tsx)",
+      "_change": "Modify existing values only — no structural change to component",
+      "dark": {
+        "particleCount": 40,
+        "particleColor": "#3730a3",
+        "particleSpeed": 0.3,
+        "particleOpacity": 0.05,
+        "particleShadowBlur": 4,
+        "particleSizeExpression": "Math.random() * 2 + 1"
+      },
+      "light": {
+        "particleCount": 30,
+        "particleColor": "#059669",
+        "particleSpeed": 0.3,
+        "particleOpacity": 0.04,
+        "particleShadowBlur": 4,
+        "particleSizeExpression": "Math.random() * 1 + 1"
+      },
+      "_was": {
+        "particleCount": "100 dark / 80 light",
+        "particleSpeed": "0.7",
+        "particleOpacity": "0.30 dark / 0.15 light",
+        "particleShadowBlur": "10 dark / 8 light",
+        "particleSizeExpression": "Math.random() * (isDark ? 6 : 5) + 1"
+      }
+    },
+
+    "pageLayout": {
+      "root": {
+        "class": "space-y-6",
+        "description": "Single vertical column. Each major section is a direct child. No grid at the top level."
+      },
+      "sections": [
+        "headerBar",
+        "heroScoreBlock",
+        "scannerCategoryGroups (simple view)",
+        "advancedTabs (advanced view)",
+        "findingsList (simple view)"
+      ]
+    },
+
+    "headerBar": {
+      "class": "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between",
+      "leftSlot": {
+        "class": "flex items-center gap-3",
+        "parts": [
+          {
+            "element": "BackButton",
+            "component": "Button variant=ghost size=icon",
+            "icon": "ArrowLeft h-5 w-5"
+          },
+          {
+            "element": "ShieldIcon",
+            "class": "flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary-subtle",
+            "icon": "Shield h-5 w-5 text-accent-primary"
+          },
+          {
+            "element": "TitleBlock",
+            "class": "min-w-0 flex-1",
+            "title": "text-xl font-semibold tracking-tight sm:text-2xl truncate",
+            "meta": "text-xs text-muted-foreground sm:text-sm"
+          },
+          {
+            "element": "GradeBadge",
+            "component": "GradeBadge (existing, no changes)"
+          }
+        ]
+      },
+      "rightSlot": {
+        "class": "flex items-center gap-2",
+        "parts": [
+          {
+            "element": "ViewToggle",
+            "component": "Button variant=outline size=sm",
+            "class": "gap-2",
+            "iconSimple": "ToggleLeft h-4 w-4",
+            "iconAdvanced": "ToggleRight h-4 w-4",
+            "labelSimple": "Simples",
+            "labelAdvanced": "Avançado"
+          },
+          {
+            "element": "ExportPDF",
+            "component": "Button variant=outline size=sm",
+            "icon": "FileDown mr-2 h-4 w-4"
+          }
+        ]
+      }
+    },
+
+    "heroScoreBlock": {
+      "_description": "The dominant visual above the fold. Replaces the previous side-by-side gauge + flat severity cards layout.",
+      "container": {
+        "class": "rounded-2xl border border-border bg-card shadow-sm p-6 bg-hero-gradient",
+        "note": "bg-hero-gradient is already defined in globals.css as a subtle radial gradient"
+      },
+      "innerLayout": {
+        "class": "flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-10",
+        "gaugeSlot": {
+          "class": "shrink-0",
+          "component": "ScoreGauge",
+          "props": {
+            "size": 160,
+            "strokeWidth": 10,
+            "animate": true,
+            "showLabel": true
+          }
+        },
+        "infoSlot": {
+          "class": "flex-1 space-y-4 text-center lg:text-left",
+          "parts": [
+            {
+              "element": "RiskLevelPill",
+              "description": "Prominent colored pill indicating overall risk. Derived from scan grade.",
+              "gradeToRisk": {
+                "A": "Low",
+                "B": "Low",
+                "C": "Medium",
+                "D": "High",
+                "F": "Critical"
+              },
+              "variants": {
+                "Low": "inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-800/30 dark:bg-emerald-950/20 dark:text-emerald-400",
+                "Medium": "inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-800/30 dark:bg-amber-950/20 dark:text-amber-400",
+                "High": "inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700 dark:border-orange-800/30 dark:bg-orange-950/20 dark:text-orange-400",
+                "Critical": "inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 dark:border-red-800/30 dark:bg-red-950/20 dark:text-red-400"
+              }
+            },
+            {
+              "element": "TopProblemAreas",
+              "description": "3 most important problem areas derived from findings. Shown as a compact list with severity dots.",
+              "wrapperClass": "space-y-1",
+              "itemClass": "flex items-start gap-2 text-xs text-muted-foreground justify-center lg:justify-start",
+              "dotClass": "h-1.5 w-1.5 rounded-full shrink-0 mt-1.5",
+              "dotColors": {
+                "Critical": "bg-red-500",
+                "High": "bg-orange-500",
+                "Medium": "bg-amber-500",
+                "Low": "bg-emerald-500",
+                "Info": "bg-blue-500"
+              },
+              "derivationLogic": "Sort findings by severity (Critical > High > Medium > Low > Info), take the top 3 unique finding types"
+            },
+            {
+              "element": "SeverityCountRow",
+              "description": "Compact 5-cell grid showing count per severity level. Moved inside the hero block.",
+              "wrapperClass": "grid grid-cols-5 gap-2 pt-1",
+              "cellClass": "flex flex-col items-center gap-0.5 rounded-xl border border-border bg-background/60 px-2 py-2 border-t-[3px]",
+              "labelClass": "text-[10px] font-medium text-muted-foreground uppercase tracking-wide leading-none",
+              "countClass": "text-lg font-bold text-foreground leading-none mt-0.5",
+              "borderTopColors": {
+                "Critical": "border-t-red-500",
+                "High": "border-t-orange-500",
+                "Medium": "border-t-amber-500",
+                "Low": "border-t-emerald-500",
+                "Info": "border-t-blue-500"
+              }
+            }
+          ]
+        }
+      }
+    },
+
+    "scannerCategoryGroups": {
+      "_description": "Replaces the previous flat grid. Groups all 13 scanners into 5 logical categories. Each category renders as a visually distinct section.",
+      "outerClass": "space-y-6",
+
+      "categories": [
+        {
+          "key": "segurancaHttp",
+          "label": "Segurança HTTP",
+          "icon": "Shield",
+          "scannerKeys": ["securityHeaders", "csp_analysis", "security_txt"]
+        },
+        {
+          "key": "tlsCertificado",
+          "label": "TLS & Certificado",
+          "icon": "Lock",
+          "scannerKeys": ["tls_capability", "resultsSslScanner"]
+        },
+        {
+          "key": "infraestrutura",
+          "label": "Infraestrutura",
+          "icon": "Server",
+          "scannerKeys": ["ip_resolution", "subdomains", "domain_age", "resultsHttpRedirectScanner"]
+        },
+        {
+          "key": "escaneamento",
+          "label": "Escaneamento",
+          "icon": "Search",
+          "scannerKeys": ["resultsPortScanner", "sensitivePathScanner", "robots"]
+        },
+        {
+          "key": "performance",
+          "label": "Performance",
+          "icon": "Zap",
+          "scannerKeys": ["response_behavior"]
+        }
+      ],
+
+      "categoryGroupContainer": {
+        "class": "space-y-3 rounded-2xl border border-border/60 bg-muted/20 p-4",
+        "note": "bg-muted/20 resolves to approx. rgba(244,244,245,0.20) in light and rgba(39,39,42,0.20) in dark — barely visible but enough to group cards"
+      },
+
+      "categoryHeader": {
+        "class": "flex items-center gap-2.5 px-1",
+        "iconWrapper": {
+          "class": "flex h-7 w-7 items-center justify-center rounded-lg bg-muted/60"
+        },
+        "icon": {
+          "class": "h-4 w-4 text-muted-foreground"
+        },
+        "label": {
+          "class": "text-sm font-semibold text-foreground"
+        },
+        "optionalRiskBadge": {
+          "_note": "Only shown when the category has Critical or High findings. Provides instant category-level risk signal.",
+          "placement": "ml-auto",
+          "Critical": "rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-medium text-red-600 dark:bg-red-950/30 dark:text-red-400",
+          "High": "rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-medium text-orange-600 dark:bg-orange-950/30 dark:text-orange-400",
+          "ok": "rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400"
+        }
+      },
+
+      "cardGrid": {
+        "class": "grid gap-4 grid-cols-1 sm:grid-cols-2"
+      }
+    },
+
+    "scannerCard": {
+      "_description": "Individual scanner result card. No visual changes to card structure — only color system changes inside bodies.",
+      "class": "overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md",
+      "header": {
+        "class": "flex flex-row items-center gap-3 px-4 pb-3 pt-4",
+        "iconWrapper": {
+          "class": "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+          "style": "backgroundColor: `${config.color}15` — scanner accent color at 15% alpha"
+        },
+        "iconStyle": "h-[18px] w-[18px], color: config.color",
+        "title": "text-sm font-semibold leading-tight text-foreground"
+      },
+      "body": {
+        "class": "px-4 pb-4 pt-0",
+        "rowClass": "flex items-start justify-between gap-3"
+      }
+    },
+
+    "alertBlock": {
+      "_replaces": "AlertBadge component (old: border-destructive/20 bg-destructive/5 — removed)",
+      "_description": "Three semantic variants for inline alert/recommendation blocks. Choose based on alert severity, NOT a fixed destructive color for all.",
+
+      "selectionLogic": {
+        "critical": "Keywords in alert text: expired, invalid, critical, detected, vulnerability, unsafe, forbidden",
+        "warning": "Keywords: weak, missing, outdated, fallback, slow, deprecated, no-sniff absent",
+        "info": "All other alerts — default fallback"
+      },
+
+      "critical": {
+        "class": "flex items-start gap-1.5 rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 dark:border-red-800/30 dark:bg-red-950/20",
+        "icon": "AlertTriangle",
+        "iconClass": "mt-0.5 h-3 w-3 shrink-0 text-red-500",
+        "textClass": "text-xs text-red-700 dark:text-red-400 leading-relaxed break-all"
+      },
+      "warning": {
+        "class": "flex items-start gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1.5 dark:border-amber-800/30 dark:bg-amber-950/20",
+        "icon": "AlertTriangle",
+        "iconClass": "mt-0.5 h-3 w-3 shrink-0 text-amber-500",
+        "textClass": "text-xs text-amber-700 dark:text-amber-400 leading-relaxed break-all"
+      },
+      "info": {
+        "class": "flex items-start gap-1.5 rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1.5 dark:border-blue-800/30 dark:bg-blue-950/20",
+        "icon": "Info",
+        "iconClass": "mt-0.5 h-3 w-3 shrink-0 text-blue-500",
+        "textClass": "text-xs text-blue-700 dark:text-blue-400 leading-relaxed break-all"
+      }
+    },
+
+    "statusIndicator": {
+      "_description": "Replaces text-success / text-destructive with direct tonal classes for precise control.",
+      "ok": {
+        "icon": "CheckCircle",
+        "iconClass": "h-3.5 w-3.5 text-emerald-500",
+        "labelClass": "text-sm font-medium text-emerald-600 dark:text-emerald-400",
+        "wrapperClass": "inline-flex items-center gap-1.5"
+      },
+      "fail": {
+        "icon": "XCircle",
+        "iconClass": "h-3.5 w-3.5 text-red-500",
+        "labelClass": "text-sm font-medium text-red-600 dark:text-red-400",
+        "wrapperClass": "inline-flex items-center gap-1.5"
+      }
+    },
+
+    "inlineBadges": {
+      "_description": "Per-scanner inline badges replacing variant=destructive throughout card bodies.",
+
+      "portOpen": {
+        "_usage": "Open ports in PortScanCard",
+        "class": "rounded-md border border-red-200 bg-red-50 px-2 py-0.5 font-mono text-[11px] text-red-600 dark:border-red-800/30 dark:bg-red-950/20 dark:text-red-400"
+      },
+      "sensitivePath": {
+        "_usage": "Found sensitive paths in SensitivePathCard",
+        "class": "rounded-md border border-orange-200 bg-orange-50 px-2 py-0.5 font-mono text-[11px] text-orange-600 dark:border-orange-800/30 dark:bg-orange-950/20 dark:text-orange-400"
+      },
+      "ttfbSlow": {
+        "_usage": "ResponseBehaviorCard when TTFB > 800ms",
+        "class": "h-4 rounded border border-red-200 bg-red-50 px-1.5 py-0 text-[10px] text-red-600 dark:border-red-800/30 dark:bg-red-950/20 dark:text-red-400"
+      },
+      "ttfbMedium": {
+        "_usage": "ResponseBehaviorCard when TTFB 400-800ms",
+        "class": "h-4 rounded border border-amber-200 bg-amber-50 px-1.5 py-0 text-[10px] text-amber-600 dark:border-amber-800/30 dark:bg-amber-950/20 dark:text-amber-400"
+      },
+      "ttfbFast": {
+        "_usage": "ResponseBehaviorCard when TTFB < 400ms",
+        "class": "h-4 rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0 text-[10px] text-emerald-600 dark:border-emerald-800/30 dark:bg-emerald-950/20 dark:text-emerald-400"
+      },
+      "sslExpiryWarning": {
+        "_usage": "SslCard when daysToExpire < 30",
+        "class": "h-4 rounded border border-amber-200 bg-amber-50 px-1.5 py-0 text-[10px] text-amber-600 dark:border-amber-800/30 dark:bg-amber-950/20 dark:text-amber-400"
+      },
+      "subdomain": {
+        "_usage": "SubdomainCard subdomain name badges",
+        "class": "rounded bg-muted px-2 py-0.5 font-mono text-[11px] text-muted-foreground border border-border"
+      },
+      "overflow": {
+        "_usage": "+N more items across all cards",
+        "class": "rounded border border-border px-2 py-0.5 text-[11px] text-muted-foreground"
+      }
+    },
+
+    "textColorReplacements": {
+      "_description": "Precise find-and-replace map for removing destructive/success CSS vars from card internals.",
+      "securityHeadersMissingCount": {
+        "before": "text-destructive font-medium",
+        "after": "text-red-600 dark:text-red-400 font-medium"
+      },
+      "portScannerOpenCount": {
+        "before": "text-destructive font-medium",
+        "after": "text-red-600 dark:text-red-400 font-medium"
+      },
+      "sensitivePathCount": {
+        "before": "text-destructive font-medium",
+        "after": "text-red-600 dark:text-red-400 font-medium"
+      },
+      "scannerCardErrorMessage": {
+        "before": "text-sm text-destructive",
+        "after": "text-sm text-red-600 dark:text-red-400"
+      }
+    },
+
+    "typography": {
+      "pageTitle": "text-xl font-semibold tracking-tight sm:text-2xl",
+      "pageMeta": "text-xs text-muted-foreground sm:text-sm",
+      "sectionTitle": "text-sm font-semibold text-foreground",
+      "cardTitle": "text-sm font-semibold leading-tight text-foreground",
+      "rowLabel": "text-sm text-muted-foreground shrink-0",
+      "rowValue": "text-right text-sm",
+      "monoSmall": "font-mono text-xs",
+      "heroScoreLabel": "text-xs font-medium text-muted-foreground",
+      "overflowLabel": "text-xs text-muted-foreground",
+      "severityCellLabel": "text-[10px] font-medium text-muted-foreground uppercase tracking-wide leading-none",
+      "severityCellCount": "text-lg font-bold text-foreground leading-none mt-0.5"
+    },
+
+    "spacing": {
+      "pageSections": "space-y-6",
+      "categoryGroupGap": "space-y-6",
+      "withinCategoryGroup": "space-y-3",
+      "cardGrid": "gap-4",
+      "cardHeaderPadding": "px-4 pb-3 pt-4",
+      "cardBodyPadding": "px-4 pb-4 pt-0",
+      "cardRowSpacing": "space-y-2",
+      "alertBlockPadding": "px-2.5 py-1.5",
+      "alertListSpacing": "mt-1.5 space-y-1",
+      "badgeWrap": "flex flex-wrap gap-1.5 mt-1",
+      "heroContainerPadding": "p-6",
+      "heroInnerGap": "gap-6 lg:gap-10",
+      "severityGridGap": "gap-2"
+    },
+
+    "borders": {
+      "scannerCard": "border border-border rounded-2xl",
+      "categoryGroup": "border border-border/60 rounded-2xl",
+      "heroBlock": "border border-border rounded-2xl",
+      "severityCell": "border border-border rounded-xl border-t-[3px]",
+      "alertBlock": "border rounded-md (color per variant)",
+      "findingAccordion": "border border-border rounded-lg",
+      "_prohibited": [
+        "border-destructive on scanner cards",
+        "border-destructive/20 on alert blocks",
+        "ring-* glow on cards",
+        "drop-shadow with color"
+      ]
+    },
+
+    "shadows": {
+      "scannerCard": "shadow-sm hover:shadow-md transition-shadow duration-200",
+      "heroBlock": "shadow-sm",
+      "categoryGroup": "none (border only)",
+      "_prohibited": [
+        "shadow-xl or larger on data cards",
+        "Colored drop-shadow / neon glow on any scanner card"
+      ]
+    },
+
+    "pageStructureOutline": {
+      "_note": "JSX hierarchy for the refactored page. Describes nesting, classes, and component placement.",
+      "jsx": [
+        "<div className='space-y-6'>",
+        "",
+        "  {/* 1. Header bar */}",
+        "  <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>",
+        "    <div className='flex items-center gap-3'>",
+        "      <BackButton />",
+        "      <ShieldIconWrapper />",
+        "      <TitleBlock>",
+        "        <h1>{scan.target}</h1>",
+        "        <GradeBadge />",
+        "        <p>{date} • {duration}</p>",
+        "      </TitleBlock>",
+        "    </div>",
+        "    <div className='flex items-center gap-2'>",
+        "      <ViewToggleButton />",
+        "      <ExportPdfButton />",
+        "    </div>",
+        "  </div>",
+        "",
+        "  {/* 2. Hero score block */}",
+        "  <div className='rounded-2xl border border-border bg-card shadow-sm p-6 bg-hero-gradient'>",
+        "    <div className='flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-10'>",
+        "      <div className='shrink-0'>",
+        "        <ScoreGauge score={scan.score} grade={scan.grade} size={160} strokeWidth={10} />",
+        "      </div>",
+        "      <div className='flex-1 space-y-4 text-center lg:text-left'>",
+        "        <RiskLevelPill grade={scan.grade} />",
+        "        <TopProblemAreasList findings={findings} maxItems={3} />",
+        "        <SeverityCountRow severityCounts={severityCounts} />",
+        "      </div>",
+        "    </div>",
+        "  </div>",
+        "",
+        "  {/* 3. Simple view: categorized scanner cards */}",
+        "  {!isAdvancedView && scan.rawJsonResult && (",
+        "    <ScannerResultCards rawJson={scan.rawJsonResult} />",
+        "  )}",
+        "  {/* ScannerResultCards renders 5 CategoryGroup blocks internally */}",
+        "  {/* CategoryGroup structure: */}",
+        "  {/* <div className='space-y-3 rounded-2xl border border-border/60 bg-muted/20 p-4'> */}",
+        "  {/*   <CategoryHeader icon label optionalRiskBadge /> */}",
+        "  {/*   <div className='grid gap-4 grid-cols-1 sm:grid-cols-2'> */}",
+        "  {/*     {scannerKeys.map(key => <ScannerCard key={key} ... />)} */}",
+        "  {/*   </div> */}",
+        "  {/* </div> */}",
+        "",
+        "  {/* 4. Advanced view: tabs */}",
+        "  {isAdvancedView && (",
+        "    <Tabs defaultValue='findings' className='space-y-4'>",
+        "      <TabsList className='grid w-full grid-cols-4 sm:inline-flex sm:w-auto'>",
+        "        <TabsTrigger value='findings'>Vulnerabilidades</TabsTrigger>",
+        "        <TabsTrigger value='technologies'>Tecnologias</TabsTrigger>",
+        "        <TabsTrigger value='ai'>Análise de IA</TabsTrigger>",
+        "        <TabsTrigger value='json'>JSON</TabsTrigger>",
+        "      </TabsList>",
+        "      <TabsContent value='findings'><FindingsList findings={findings} /></TabsContent>",
+        "      <TabsContent value='technologies'><TechnologiesList technologies={technologies} /></TabsContent>",
+        "      <TabsContent value='ai'>...</TabsContent>",
+        "      <TabsContent value='json'><JsonViewer json={scan.rawJsonResult} /></TabsContent>",
+        "    </Tabs>",
+        "  )}",
+        "",
+        "  {/* 5. Findings summary (always in simple view) */}",
+        "  {!isAdvancedView && findings?.length > 0 && (",
+        "    <div className='space-y-4'>",
+        "      <h3 className='text-lg font-semibold'>Vulnerabilidades Encontradas</h3>",
+        "      <FindingsList findings={findings} />",
+        "    </div>",
+        "  )}",
+        "",
+        "</div>"
+      ]
+    }
+  },
+
+  "guidelines": {
+    "mode": {
+      "default": "light",
+      "support": ["light", "dark"],
+      "toggle": "Botão no navbar com ícone Sun/Moon. Respeitar prefers-color-scheme do sistema como valor inicial. Persistir preferência em localStorage."
+    },
+    "density": {
+      "level": "comfortable",
+      "description": "Interface respirável com espaçamento generoso. Priorizar legibilidade sobre densidade de informação. Usar whitespace como elemento de design."
+    },
+    "hierarchy": {
+      "rules": [
+        "Títulos de página em 2xl/semibold ou 3xl/bold",
+        "Subtítulos de seção em lg/semibold",
+        "Labels de cards/campos em sm/medium com cor muted-foreground",
+        "Valores/dados em base ou lg, cor foreground",
+        "Texto auxiliar em sm/normal, cor muted-foreground",
+        "Máximo 3 níveis de hierarquia visual por seção"
+      ]
+    },
+    "responsiveness": {
+      "approach": "Mobile-first com breakpoints Tailwind padrão",
+      "sidebar": "Colapsável em ícone-only em tablet, drawer em mobile",
+      "tables": "Scroll horizontal em mobile com colunas priorizadas",
+      "grids": "4 cols → 2 cols → 1 col conforme breakpoint"
+    },
+    "accessibility": {
+      "rules": [
+        "Contraste mínimo WCAG AA (4.5:1 texto, 3:1 UI)",
+        "Focus rings visíveis em todos os interativos — usar focus-ring.accent (emerald light / indigo dark)",
+        "Labels em todos os inputs",
+        "Alt text em todas as imagens",
+        "Keyboard navigation completa",
+        "aria-labels em ícones-only",
+        "Accent alpha values mantêm contraste adequado (verificar ratio em ambos os modos — emerald.600 sobre branco e indigo.400 sobre dark background)"
+      ]
+    },
+    "animations": {
+      "philosophy": "Sutil e funcional, nunca decorativa",
+      "rules": [
+        "Transições de 150-200ms para hover/focus",
+        "300ms para modais/sheets",
+        "Skeleton loading para conteúdo assíncrono",
+        "Respeitar prefers-reduced-motion",
+        "Glow effects devem ter transição de 200ms ease-out"
+      ]
+    },
+    "accent-theme-split": {
+      "light": "emerald-600 (#059669) — transmite segurança, confiança e precisão técnica",
+      "dark": "indigo-400 (#818CF8) — suavidade luminosa no fundo escuro",
+      "rationale": "Emerald no light mode cria contraste natural com fundos brancos e transmite a sensação de sistema seguro e confiável. Indigo no dark mode mantém sofisticação sem agredir a retina.",
+      "token": "accent-primary — único ponto de referência para implementação. Resolva para emerald.600 no light e indigo.400 no dark via CSS variables ou Tailwind theme.",
+      "implementation-hint": "No tailwind.config.ts, definir 'accent-primary' como CSS variable que muda por [data-theme='light'] e [data-theme='dark']. Exemplo: '--color-accent-primary': tema === 'light' ? '#059669' : '#818CF8'"
+    },
+    "indigo-usage": {
+      "principle": "In dark mode, Indigo is the intelligent accent — use it to draw attention to what matters. In light mode, all interactive accent roles are fulfilled by emerald. Indigo remains the semantic 'info' color in both modes.",
+      "dark-mode-use-cases": [
+        "Focus rings on all interactive elements (dark mode)",
+        "Active navigation items — sidebar + navbar (dark mode)",
+        "Active tab underline indicator (dark mode)",
+        "Primary CTA buttons when accent is needed (dark mode)",
+        "Scanner card icon backgrounds (dark mode)",
+        "Hover border color on interactive cards (dark mode)",
+        "Active/selected row in tables (dark mode)",
+        "Badge for active filters and counts (dark mode)",
+        "Chart primary line/area color (dark mode)",
+        "Links (dark mode)",
+        "Progress bars and spinners for primary actions (dark mode)",
+        "Pagination active page (dark mode)"
+      ],
+      "both-modes": [
+        "Toast info variant left border (info semantic color)",
+        "The 'info' token in tokens.colors.light and tokens.colors.dark"
+      ],
+      "avoid": [
+        "Do NOT use as interactive accent in light mode — use emerald instead",
+        "Do NOT use as a full-page or section background",
+        "Do NOT use on body text",
+        "Do NOT use on non-interactive decorative elements in light mode",
+        "Do NOT combine with other strong accent colors in the same view",
+        "Do NOT exceed indigo/30 alpha for background fills"
+      ]
+    },
+    "emerald-usage": {
+      "principle": "In light mode, Emerald is the primary interactive accent — use it for all focus, hover, active, and CTA states. In dark mode, Emerald remains the success/positive semantic color only.",
+      "light-mode-interactive-use-cases": [
+        "Focus rings on all interactive elements (light mode)",
+        "Active navigation items — sidebar + navbar (light mode)",
+        "Active tab underline indicator (light mode)",
+        "Primary CTA buttons — button.accent (light mode)",
+        "Scanner card icon backgrounds (light mode)",
+        "Hover border color on interactive cards (light mode)",
+        "Active/selected row in tables (light mode)",
+        "Badge for active filters and counts — badge.accent (light mode)",
+        "Chart primary line/area color (light mode)",
+        "Links (light mode)",
+        "Progress bars and spinners for primary actions (light mode)",
+        "Pagination active page (light mode)",
+        "Hero gradient atmospheric tint (light mode)"
+      ],
+      "both-modes-success-use-cases": [
+        "Scan completed successfully — status badge and success-inline state",
+        "Healthy/passing check indicators in scan results",
+        "Positive trend badges (e.g. risk score improved)",
+        "Password strength 'strong' indicator on register page",
+        "Toast success variant left border",
+        "Card success variant (border + border-top accent)",
+        "Success state on landing page after scan initiation"
+      ],
+      "avoid": [
+        "Do NOT use emerald for interactive accent in dark mode — that role belongs to indigo",
+        "Do NOT use as a navigation or tab indicator in dark mode",
+        "Do NOT use on neutral or ambiguous states",
+        "Do NOT mix emerald and indigo on the same interactive element",
+        "Do NOT exceed emerald/30 alpha for background fills"
+      ]
+    },
+    "elevation-usage": {
+      "principle": "Depth through shadow and background — not color. Objects closer to the user cast slightly larger shadows.",
+      "rules": [
+        "Cards at rest: no shadow (flat, rely on border)",
+        "Cards on hover: shadow-sm or card-hover",
+        "Elevated cards (featured/important): shadow-md",
+        "Dropdowns and popovers: shadow-lg",
+        "Modals and sheets: shadow-xl",
+        "Active cards: accent-primary glow (emerald-sm light / indigo-sm dark) instead of larger shadow"
+      ]
+    },
+    "implementation-notes": [
+      "Usar CSS variables do shadcn/ui para todas as cores (--background, --foreground, etc.)",
+      "Configurar tailwind.config.ts com os tokens deste design system",
+      "Instalar fonte Inter via next/font/google",
+      "Instalar JetBrains Mono para mono via next/font/google",
+      "Componentes shadcn/ui: Button, Card, Input, Table, Badge, Dialog, Sheet, Tabs, Accordion, Avatar, DropdownMenu, Toast, Skeleton, Tooltip",
+      "Charts: usar Recharts com wrapper shadcn/ui (chart component)",
+      "Ícones: Lucide React (já incluído no shadcn/ui)",
+      "Indigo e Emerald palettes podem ser adicionadas ao tailwind.config.ts como 'colors.indigo' e 'colors.emerald' usando os valores de tokens.colors.indigo e tokens.colors.emerald",
+      "Para o glow do input URL no light mode: usar class focus-within:shadow-[0_0_16px_-2px_rgba(5,150,105,0.25)] — no dark mode: focus-within:shadow-[0_0_20px_-2px_rgba(129,140,248,0.30)]",
+      "Sidebar active indicator: implementar como ::before pseudo-element ou div absoluta de 2px de largura",
+      "Accent-primary token: definir --color-accent-primary como CSS variable no :root (light: #059669) e .dark (dark: #818CF8)",
+      "Para button.accent: light mode class 'bg-emerald-600 hover:bg-emerald-700', dark mode class 'dark:bg-indigo-600 dark:hover:bg-indigo-500'",
+      "Para badge.accent: light mode class 'bg-emerald-600/8 text-emerald-700 border-emerald-600/25', dark mode class 'dark:bg-indigo-400/10 dark:text-indigo-400 dark:border-indigo-400/25'"
+    ]
+  }
+}

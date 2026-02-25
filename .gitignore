@@ -62,6 +62,9 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 HeimdallWeb/appsettings.json
+src/HeimdallWeb.WebApi/appsettings.json
+**/appsettings.Development.json
+**/appsettings.Production.json
 
 # Build outputs
 bin/
@@ -128,3 +131,6 @@ publish/
 
 # Keep secrets out of repository. Use `dotnet user-secrets` for development and environment variables / Key Vault for production.
 /HeimdallWeb/wwwroot/uploads
+bin/*
+src/HeimdallWeb.WebApi/bin\\Debug/
+.env*

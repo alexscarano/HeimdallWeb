@@ -1,0 +1,125 @@
+using HeimdallWeb.Domain.Exceptions;
+using HeimdallWeb.Domain.ValueObjects;
+
+namespace HeimdallWeb.Domain.Entities;
+
+/// <summary>
+/// ScanHistory entity representing a security scan session.
+/// </summary>
+public class ScanHistory
+{
+    public int HistoryId { get; private set; }
+    public Guid PublicId { get; private set; }
+    public ScanTarget Target { get; private set; } = null!;
+    public string RawJsonResult { get; private set; } = string.Empty;
+    public string Summary { get; private set; } = string.Empty;
+    public bool HasCompleted { get; private set; }
+    public ScanDuration? Duration { get; private set; }
+    public DateTime CreatedDate { get; private set; }
+    public int UserId { get; private set; }
+
+    /// <summary>Security score 0–100 computed by ScoreCalculatorService. Null for incomplete scans.</summary>
+    public int? Score { get; private set; }
+
+    /// <summary>Letter grade: A (90+), B (80–89), C (70–79), D (60–69), F (&lt;60). Null for incomplete scans.</summary>
+    public string? Grade { get; private set; }
+
+    // Navigation properties (collections)
+    // Note: Using ICollection instead of IReadOnlyCollection to allow EF Core materialization
+    // Domain logic should not modify these collections directly outside of aggregate methods
+    public ICollection<Finding> Findings { get; private set; } = new List<Finding>();
+    public ICollection<Technology> Technologies { get; private set; } = new List<Technology>();
+    public ICollection<IASummary> IASummaries { get; private set; } = new List<IASummary>();
+    public ICollection<AuditLog> AuditLogs { get; private set; } = new List<AuditLog>();
+
+    /// <summary>
+    /// When set, indicates this record is a cache hit referencing an original scan.
+    /// Data displayed on the detail page is resolved from the source history.
+    /// </summary>
+    public int? SourceHistoryId { get; private set; }
+
+    // Navigation property (parent)
+    public User? User { get; private set; }
+
+    // Self-referencing navigation for cache hit → source scan
+    public ScanHistory? SourceHistory { get; private set; }
+
+    // Parameterless constructor for EF Core
+    private ScanHistory() { }
+
+    /// <summary>
+    /// Creates a new ScanHistory instance.
+    /// </summary>
+    public ScanHistory(ScanTarget target, int userId)
+    {
+        PublicId = Guid.CreateVersion7();
+        Target = target ?? throw new ArgumentNullException(nameof(target));
+        UserId = userId;
+        HasCompleted = false;
+        CreatedDate = DateTime.UtcNow;
+        RawJsonResult = "{}";
+        Summary = string.Empty;
+    }
+
+    /// <summary>
+    /// Sets the computed security score and grade.
+    /// </summary>
+    public void SetScore(int score, string grade)
+    {
+        Score = score;
+        Grade = grade;
+    }
+
+    /// <summary>
+    /// Marks the scan as completed and sets the duration.
+    /// </summary>
+    public void CompleteScan(TimeSpan duration, string rawJsonResult, string summary)
+    {
+        if (HasCompleted)
+            throw new ValidationException("Scan is already marked as completed.");
+
+        if (string.IsNullOrWhiteSpace(rawJsonResult))
+            throw new ValidationException("Raw JSON result cannot be empty.");
+
+        Duration = ScanDuration.Create(duration);
+        RawJsonResult = rawJsonResult;
+        Summary = summary ?? string.Empty;
+        HasCompleted = true;
+    }
+
+    /// <summary>
+    /// Marks the scan as incomplete (e.g., due to timeout or error).
+    /// </summary>
+    public void MarkAsIncomplete(string summary = "Scan did not complete successfully.")
+    {
+        HasCompleted = false;
+        Summary = summary;
+    }
+
+    /// <summary>
+    /// Updates the raw JSON result (e.g., for partial scan updates).
+    /// </summary>
+    public void UpdateRawJsonResult(string rawJsonResult)
+    {
+        if (string.IsNullOrWhiteSpace(rawJsonResult))
+            throw new ValidationException("Raw JSON result cannot be empty.");
+
+        RawJsonResult = rawJsonResult;
+    }
+
+    /// <summary>
+    /// Links this cache-hit record to the original scan it was derived from.
+    /// </summary>
+    public void SetSourceHistory(int sourceHistoryId)
+    {
+        SourceHistoryId = sourceHistoryId;
+    }
+
+    /// <summary>
+    /// Updates the AI-generated summary.
+    /// </summary>
+    public void UpdateSummary(string summary)
+    {
+        Summary = summary ?? string.Empty;
+    }
+}

@@ -1,3 +1,9 @@
+# Projeto legado MVC — não incluir nos containers da nova arquitetura
+HeimdallWebOld/
+
+# Artefatos de build Next.js
+src/HeimdallWeb.Next/.next/
+
 # Diretórios de build e publicação
 **/bin/
 **/obj/
