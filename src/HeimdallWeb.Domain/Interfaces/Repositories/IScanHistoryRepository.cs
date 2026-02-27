@@ -99,4 +99,11 @@ public interface IScanHistoryRepository
     /// Used to link new cache-hit history records to their source scan.
     /// </summary>
     Task<ScanHistory?> GetLatestCompletedByTargetAsync(string target, CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets the last N completed scans for a given target, including their Findings.
+    /// Used to build historical context for AI analysis.
+    /// </summary>
+    Task<IEnumerable<ScanHistory>> GetLastNCompletedByTargetAsync(
+        string target, int n, CancellationToken ct = default);
 }

@@ -217,4 +217,16 @@ public class ScanHistoryRepository : IScanHistoryRepository
 
         return targets.Select(t => t.Value).OrderBy(v => v);
     }
+
+    public async Task<IEnumerable<ScanHistory>> GetLastNCompletedByTargetAsync(
+        string target, int n, CancellationToken ct = default)
+    {
+        return await _context.ScanHistories
+            .Include(h => h.Findings)
+            .Where(h => h.HasCompleted && (string)(object)h.Target == target)
+            .OrderByDescending(h => h.CreatedDate)
+            .Take(n)
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
 }

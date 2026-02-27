@@ -22,8 +22,13 @@ public class GeminiService : IGeminiService
         };
     }
 
-    public async Task<string> AnalyzeScanResultsAsync(string scanJson, CancellationToken cancellationToken = default)
+    public async Task<string> AnalyzeScanResultsAsync(
+        string scanJson,
+        HistoricalDiffContext? historicalContext = null,
+        CancellationToken cancellationToken = default)
     {
+        var historicalBlocks = BuildHistoricalPromptBlocks(historicalContext);
+
         var payload = new
         {
             contents = new[]
@@ -115,6 +120,8 @@ public class GeminiService : IGeminiService
                                 10. **IMPORTANTE**: GARANTIR que todo o CONTEÚDO (valores) do JSON esteja em PORTUGUÊS (PT-BR). As CHAVES do JSON devem permanecer EXATAMENTE como no exemplo acima (em português: ""alvo"", ""resumo"", ""achados"", etc.). NÃO altere a estrutura do JSON.
                                 11. **PROIBIDO ALTERAR CHAVES**: O frontend espera ESTRITAMENTE as chaves ""alvo"", ""resumo"", ""achados"" (com ""descricao"", ""categoria"", ""risco"", ""evidencia"", ""recomendacao"") e ""tecnologias"" (com ""nome_tecnologia"", ""versao"", ""categoria_tecnologia"", ""descricao_tecnologia""). Se você adicionar, remover ou renomear chaves, o sistema inteiro VAI QUEBRAR. Somente preencha os VALORES.
 
+                                {historicalBlocks}
+
                                 ### JSON de entrada:
                                 {scanJson}
                             "
@@ -160,6 +167,34 @@ public class GeminiService : IGeminiService
         {
             return $"{{\"alvo\": \"\", \"resumo\": \"Error communicating with Gemini AI: {ex.Message}\", \"achados\": [], \"tecnologias\": []}}";
         }
+    }
+
+    private static string BuildHistoricalPromptBlocks(HistoricalDiffContext? context)
+    {
+        if (context == null || !context.HasHistory)
+            return string.Empty;
+
+        var sb = new StringBuilder();
+
+        sb.AppendLine("=== CONTEXTO HISTÓRICO DO ALVO ===");
+        sb.AppendLine("Este alvo foi escaneado anteriormente. Use as informações abaixo");
+        sb.AppendLine("APENAS como contexto para melhorar a precisão das categorias e severidades.");
+        sb.AppendLine("NÃO invente achados que não estejam presentes nos dados atuais.");
+        sb.AppendLine();
+        sb.AppendLine("Categorias identificadas em scans anteriores:");
+        foreach (var entry in context.CategoriasAnteriores)
+            sb.AppendLine($"- \"{entry.Categoria}\" (risco: {entry.Risco}) — presente em {entry.PresenteHaScans} scan(s) anterior(es)");
+        sb.AppendLine("=================================");
+        sb.AppendLine();
+        sb.AppendLine("=== CAMPOS ADICIONAIS NOS ACHADOS ===");
+        sb.AppendLine("Para cada item em \"achados\", adicione os campos opcionais:");
+        sb.AppendLine("- \"status_historico\": \"novo\" se a categoria não aparecia nos scans anteriores,");
+        sb.AppendLine("  \"persistente\" se já aparecia. Use null se não houver histórico.");
+        sb.AppendLine("- \"presente_ha_scans\": inteiro (0=novo, 1-3=persistente). Use null se não houver histórico.");
+        sb.AppendLine("Os campos obrigatórios continuam exatamente iguais.");
+        sb.AppendLine("=====================================");
+
+        return sb.ToString();
     }
 
     /// <summary>

@@ -59,6 +59,15 @@ public class FindingConfiguration : IEntityTypeConfiguration<Finding>
             .HasColumnName("history_id")
             .IsRequired(false);
 
+        builder.Property(f => f.StatusHistorico)
+            .HasColumnName("status_historico")
+            .HasMaxLength(20)
+            .IsRequired(false);
+
+        builder.Property(f => f.PresenteHaScans)
+            .HasColumnName("presente_ha_scans")
+            .IsRequired(false);
+
         // Relationships
         builder.HasOne(f => f.History)
             .WithMany(h => h.Findings)

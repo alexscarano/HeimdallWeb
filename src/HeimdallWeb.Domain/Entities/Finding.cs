@@ -63,6 +63,15 @@ public class Finding
         Severity = newSeverity;
     }
 
+    public string? StatusHistorico { get; private set; }
+    public int? PresenteHaScans { get; private set; }
+
+    public void SetHistoricalStatus(string? status, int? presenteHaScans)
+    {
+        StatusHistorico = status;
+        PresenteHaScans = presenteHaScans;
+    }
+
     /// <summary>
     /// Updates the recommendation for the finding.
     /// </summary>
