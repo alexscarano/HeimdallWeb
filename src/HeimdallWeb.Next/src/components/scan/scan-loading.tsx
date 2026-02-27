@@ -2,6 +2,16 @@
 
 import { Shield } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+
+const MESSAGES = [
+  "Verificando segurança",
+  "Analisando TLS",
+  "Escaneando portas",
+  "Consultando histórico",
+  "Processando com IA",
+  "Quase lá",
+];
 
 interface ScanLoadingProps {
   elapsedSeconds: number;
@@ -10,6 +20,7 @@ interface ScanLoadingProps {
 
 export function ScanLoading({ elapsedSeconds, timeoutSeconds }: ScanLoadingProps) {
   const progress = Math.min((elapsedSeconds / timeoutSeconds) * 100, 100);
+  const [messageIndex, setMessageIndex] = useState(0);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -17,14 +28,12 @@ export function ScanLoading({ elapsedSeconds, timeoutSeconds }: ScanLoadingProps
     return m > 0 ? `${m}m ${s}s` : `${s}s`;
   };
 
-  const getStageLabel = () => {
-    if (elapsedSeconds < 10) return "Verificando headers de segurança...";
-    if (elapsedSeconds < 20) return "Analisando certificado SSL/TLS...";
-    if (elapsedSeconds < 35) return "Escaneando portas abertas...";
-    if (elapsedSeconds < 50) return "Verificando caminhos sensíveis...";
-    if (elapsedSeconds < 65) return "Gerando análise de IA...";
-    return "Finalizando análise...";
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMessageIndex((prev) => (prev + 1) % MESSAGES.length);
+    }, 12000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Card className="mx-auto w-full max-w-lg border shadow-lg">
@@ -37,7 +46,14 @@ export function ScanLoading({ elapsedSeconds, timeoutSeconds }: ScanLoadingProps
         </div>
 
         <div className="space-y-1 text-center">
-          <p className="text-sm font-medium">{getStageLabel()}</p>
+          <p className="text-sm font-medium flex items-center justify-center gap-1.5">
+            {MESSAGES[messageIndex]}
+            <span className="inline-flex items-center gap-0.5">
+              <span className="animate-pulse [animation-delay:0ms] text-accent-primary text-[10px]">●</span>
+              <span className="animate-pulse [animation-delay:200ms] text-accent-primary text-[10px]">●</span>
+              <span className="animate-pulse [animation-delay:400ms] text-accent-primary text-[10px]">●</span>
+            </span>
+          </p>
           <p className="text-xs text-muted-foreground">
             {formatTime(elapsedSeconds)} / {formatTime(timeoutSeconds)} máx.
           </p>

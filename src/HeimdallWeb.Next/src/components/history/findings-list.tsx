@@ -8,6 +8,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface FindingsListProps {
   findings: Finding[];
@@ -90,10 +96,21 @@ export function FindingsList({ findings }: FindingsListProps) {
 
 function PersistenceBadge({ finding }: { finding: Finding }) {
   if (finding.statusHistorico === "persistente" && finding.presenteHaScans && finding.presenteHaScans > 0) {
+    const multiplier = finding.presenteHaScans >= 2 ? "1.5x" : "1.25x";
+    const tooltipText = `Esta vulnerabilidade persiste há ${finding.presenteHaScans} scan${finding.presenteHaScans > 1 ? "s" : ""}. A penalidade no score é ${multiplier} maior do que uma nova vulnerabilidade.`;
     return (
-      <Badge className="shrink-0 bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800">
-        Persistente há {finding.presenteHaScans} scan{finding.presenteHaScans > 1 ? "s" : ""}
-      </Badge>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Badge className="shrink-0 cursor-help bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800">
+              Persistente há {finding.presenteHaScans} scan{finding.presenteHaScans > 1 ? "s" : ""}
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-xs text-sm">
+            <p>{tooltipText}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   }
   if (finding.statusHistorico === "novo") {
