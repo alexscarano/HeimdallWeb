@@ -15,7 +15,10 @@ export default function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("sidebar_collapsed") === "true";
+  });
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
@@ -39,7 +42,16 @@ export default function AppLayout({
     <div className="app-grid-bg flex h-screen overflow-hidden">
       {/* Desktop sidebar */}
       <div className="hidden md:block">
-        <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
+        <Sidebar
+          collapsed={collapsed}
+          onToggle={() => {
+            setCollapsed((prev) => {
+              const next = !prev;
+              localStorage.setItem("sidebar_collapsed", String(next));
+              return next;
+            });
+          }}
+        />
       </div>
 
       {/* Mobile sidebar */}

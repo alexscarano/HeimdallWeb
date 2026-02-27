@@ -125,7 +125,7 @@ export function ScannerResultCards({ rawJson }: ScannerResultCardsProps) {
                                 <h3 className="text-base font-semibold">{category.label}</h3>
                             </div>
                             {/* Cards grid */}
-                            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+                            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 items-stretch">
                                 {categoryKeys.map((key) => {
                                     const config = SCANNER_CONFIG[key] ?? {
                                         title: key.replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase()),
@@ -138,7 +138,7 @@ export function ScannerResultCards({ rawJson }: ScannerResultCardsProps) {
                                     return (
                                         <Card
                                             key={key}
-                                            className="overflow-hidden rounded-2xl border border-border/60 shadow-sm transition-all hover:shadow-md hover:border-border"
+                                            className="h-full overflow-hidden rounded-2xl border border-border/60 shadow-sm transition-all hover:shadow-md hover:border-border"
                                         >
                                             <CardHeader className="flex flex-row items-center gap-4 pb-3 pt-5 px-5">
                                                 <div

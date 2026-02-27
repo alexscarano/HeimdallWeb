@@ -14,6 +14,7 @@ import {
   Zap,
   CheckCircle2,
   AlertTriangle,
+  Info,
 } from "lucide-react";
 import { FaqSection } from "@/components/layout/faq-section";
 
@@ -254,6 +255,18 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Disclaimer */}
+      <div className="border-t border-border bg-muted/30">
+        <div className="mx-auto max-w-4xl px-4 py-6 text-center">
+          <div className="flex items-start justify-center gap-2">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Os resultados dos scans são estimativas baseadas em verificações técnicas automatizadas e não constituem uma auditoria de segurança completa. A análise de IA pode conter imprecisões. Scores e grades podem variar entre scans do mesmo alvo em razão de condições de rede, cache e estado do servidor remoto. Utilize os resultados como referência complementar, não como fonte definitiva de segurança.
+            </p>
+          </div>
+        </div>
+      </div>
     </main>
   );
 }

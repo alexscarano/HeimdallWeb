@@ -1,0 +1,17 @@
+** Task 1 ** 
+Melhorar responsividade dos cards no modo simples, atualmente se uma for muito para baixo por questão de texto a outra do lado puxa
+para baixo deixando o card do lado com um grande espaço vazio
+imagem de referencia do problema: @exemplo_card.png
+
+** Task 2 ** 
+Quero que vc use o askUserTool para me perguntar como podemos melhorar o card de aguardo de scan,
+por enquanto ele só fica com uma badge de escudo com um ngc rodando em volta, e ele também não
+apresenta o status atual correto, acho que não precisa disso, eu estava pensando em algumas 
+mensagens estilo claude code enquanto vc está pensando sabe ? 
+
+** Task 3 **
+Temos um sistema de punição caso a vulnerabilidade continue em um site, após o 2 ou 3 scan (não lembro, verique o código),
+ele abaixa a nota, temos que explicar isso em algum lugar, talvez um tooltip em cima de algum lugar da página de scan, use
+a ferramenta de askUserTool para vermos aonde pode ficar melhor.
+
+** ORDENE DO MAIS DIFICIL PARA MAIS FÁCIL EM SUA CONCEPÇÃO PARA A EXECUÇÃO ** 

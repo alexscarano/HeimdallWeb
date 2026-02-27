@@ -31,6 +31,10 @@ const faqData: { question: string; answer: string }[] = [
         question: "Minhas informações de scan ficam públicas ou são sigilosas?",
         answer: "Todas as suas informações e históricos de scan ficam restritos à sua conta (via tenant/ID) e protegidos por autenticação JWT. Eles não figuram em buscadores públicos e não podem ser vistos por outros usuários da plataforma HeimdallWeb.",
     },
+    {
+        question: "Por que meu scan retornou instantaneamente?",
+        answer: "O HeimdallWeb utiliza um cache compartilhado de 30 minutos por alvo. Se qualquer usuário já escaneou o mesmo domínio nos últimos 30 minutos, os resultados armazenados são retornados imediatamente — sem executar um novo scan completo. Isso garante respostas rápidas e reduz a carga nos servidores alvo. Após 30 minutos, um novo scan completo é realizado automaticamente.",
+    },
 ];
 
 export function FaqSection() {

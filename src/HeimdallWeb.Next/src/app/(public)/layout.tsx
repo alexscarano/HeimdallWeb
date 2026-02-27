@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cookies } from "next/headers";
 import { LayoutDashboard } from "lucide-react";
+import { routes } from "@/lib/constants/routes";
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -20,7 +21,7 @@ export default async function PublicLayout({ children }: { children: React.React
             <div className="flex items-center gap-3">
               <ThemeToggle />
               {isAuthenticated ? (
-                <Link href="/monitor">
+                <Link href={routes.scan}>
                   <Button size="sm" className="gap-2">
                     <LayoutDashboard className="h-4 w-4" />
                     Meu Painel

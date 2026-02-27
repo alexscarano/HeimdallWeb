@@ -141,7 +141,7 @@ export function ScoreTimeline({ currentScanId, target }: ScoreTimelineProps) {
     );
   }
 
-  const chartData: ChartDataPoint[] = validScans.map((scan) => ({
+  const rawChartData: ChartDataPoint[] = validScans.map((scan) => ({
     date: format(new Date(scan.createdDate), "dd/MM", { locale: ptBR }),
     fullDate: format(new Date(scan.createdDate), "dd/MM/yyyy, HH:mm", {
       locale: ptBR,
@@ -150,6 +150,19 @@ export function ScoreTimeline({ currentScanId, target }: ScoreTimelineProps) {
     grade: scan.grade,
     id: scan.historyId,
   }));
+
+  const hasSameDayDuplicates = rawChartData.some(
+    (p, i) => rawChartData.findIndex((q) => q.date === p.date) !== i
+  );
+
+  const chartData: ChartDataPoint[] = hasSameDayDuplicates
+    ? rawChartData.map((p, i) => ({
+        ...p,
+        date: format(new Date(validScans[i].createdDate), "dd/MM HH:mm", {
+          locale: ptBR,
+        }),
+      }))
+    : rawChartData;
 
   const handleDotClick = (id: string) => {
     router.push(`${routes.history}/${id}`);
@@ -173,6 +186,9 @@ export function ScoreTimeline({ currentScanId, target }: ScoreTimelineProps) {
             className="text-muted-foreground"
             tickLine={false}
             axisLine={false}
+            {...(hasSameDayDuplicates
+              ? { angle: -35, textAnchor: "end", height: 50 }
+              : {})}
           />
           <YAxis
             domain={[0, 100]}

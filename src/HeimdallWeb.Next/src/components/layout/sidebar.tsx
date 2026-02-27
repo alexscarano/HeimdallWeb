@@ -57,7 +57,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "relative z-10 flex h-screen flex-col border-r border-border bg-sidebar transition-all duration-200",
+        "relative z-10 flex h-screen flex-col border-r border-border bg-sidebar overflow-hidden transition-[width] duration-300 ease-in-out",
         collapsed ? "w-16" : "w-64"
       )}
     >
@@ -68,7 +68,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             <Shield className="h-4 w-4 text-accent-primary" />
           </div>
           {!collapsed && (
-            <span className="text-base font-semibold tracking-tight text-foreground">
+            <span className="whitespace-nowrap text-base font-semibold tracking-tight text-foreground">
               Heimdall
             </span>
           )}
@@ -81,7 +81,11 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
         {isAdmin && (
           <>
-            <Separator className="my-4" />
+            {collapsed ? (
+              <div className="mx-auto my-4 w-6 border-t border-border" />
+            ) : (
+              <Separator className="my-4" />
+            )}
             {!collapsed && (
               <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Admin
@@ -106,7 +110,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="w-full"
+          className="mx-auto w-fit"
           onClick={onToggle}
           aria-label={collapsed ? "Expandir sidebar" : "Recolher sidebar"}
         >
@@ -139,17 +143,18 @@ function NavSection({
             key={item.href}
             href={item.href}
             className={cn(
-              "relative flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors",
+              "relative flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors duration-150",
+              collapsed ? "justify-center px-0" : "",
               isActive
                 ? "bg-accent-primary-subtle font-semibold text-accent-primary"
-                : "text-sidebar-foreground hover:bg-black/[0.04] hover:text-foreground dark:hover:bg-white/[0.05]"
+                : "text-sidebar-foreground hover:bg-accent/50 hover:text-foreground"
             )}
           >
             {isActive && (
               <span className="absolute left-0 top-1/2 h-[60%] w-0.5 -translate-y-1/2 rounded-full bg-accent-primary" />
             )}
             <item.icon className={cn("h-4 w-4 shrink-0", isActive && "text-accent-primary")} />
-            {!collapsed && <span>{item.label}</span>}
+            {!collapsed && <span className="whitespace-nowrap">{item.label}</span>}
           </Link>
         );
 

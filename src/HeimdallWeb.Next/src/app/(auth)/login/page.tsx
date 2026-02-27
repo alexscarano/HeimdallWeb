@@ -74,7 +74,7 @@ function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-  const redirect = searchParams.get("redirect") ?? routes.home;
+  const redirect = searchParams.get("redirect") ?? routes.scan;
 
   const {
     register,
