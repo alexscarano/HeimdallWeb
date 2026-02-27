@@ -134,3 +134,6 @@ publish/
 bin/*
 src/HeimdallWeb.WebApi/bin\\Debug/
 .env*
+
+# Git worktrees
+.worktrees/
