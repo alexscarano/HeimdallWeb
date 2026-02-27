@@ -148,7 +148,8 @@ public class ScanHistoryRepository : IScanHistoryRepository
                 h.Findings.Count(),
                 h.Technologies.Count(),
                 h.Score,
-                h.Grade
+                h.Grade,
+                h.SourceHistoryId != null
             ))
             .Skip((page - 1) * pageSize)
             .Take(pageSize)

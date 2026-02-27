@@ -17,5 +17,6 @@ public record ScanHistoryDetailResponse(
     string? Grade,
     IEnumerable<FindingResponse> Findings,
     IEnumerable<TechnologyResponse> Technologies,
-    IASummaryResponse? IASummary
+    IASummaryResponse? IASummary,
+    bool IsCached = false
 );

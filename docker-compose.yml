@@ -88,6 +88,9 @@ services:
       - heimdall_obj_contracts:/workspace/src/HeimdallWeb.Contracts/obj
       - heimdall_bin_domain:/workspace/src/HeimdallWeb.Domain/bin
       - heimdall_obj_domain:/workspace/src/HeimdallWeb.Domain/obj
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     networks:
       - heimdall_net
     depends_on:
@@ -125,6 +128,9 @@ services:
       - heimdall_node_modules:/app/node_modules
       # .next inteiro como volume nomeado — evita conflito de permissão root/nextjs
       - heimdall_next_build:/app/.next
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     networks:
       - heimdall_net
     depends_on:

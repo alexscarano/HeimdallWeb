@@ -14,5 +14,6 @@ public record ScanHistorySummaryResponse(
     int FindingsCount,
     int TechnologiesCount,
     int? Score,
-    string? Grade
+    string? Grade,
+    bool IsCached = false
 );

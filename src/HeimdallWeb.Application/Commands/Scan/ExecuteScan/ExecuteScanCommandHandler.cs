@@ -404,6 +404,11 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                 // This ensures scoring even if the AI misses some vulnerabilities
                 await ExtractFindingsFromRawScanAsync(historyId, scanResultJson, cancellationToken);
 
+                // Flush all pending findings (raw scanner) to DB before score calculation.
+                // GetByHistoryIdAsync uses AsNoTracking (direct DB query), so unsaved
+                // change-tracker entries would be invisible, causing score = 100.
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
                 // Calculate security score from ALL persisted findings (AI + raw scanner)
                 var findings = await _unitOfWork.Findings.GetByHistoryIdAsync(historyId, cancellationToken);
                 var (score, grade) = await _scoreCalculatorService.CalculateAsync(findings, cancellationToken);

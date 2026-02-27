@@ -123,7 +123,8 @@ public class GetScanHistoryByIdQueryHandler : IQueryHandler<GetScanHistoryByIdQu
             Grade: scanHistory.Grade,
             Findings: findingResponses,
             Technologies: technologyResponses,
-            IASummary: iaSummaryResponse
+            IASummary: iaSummaryResponse,
+            IsCached: scanHistory.SourceHistoryId.HasValue
         );
     }
 }

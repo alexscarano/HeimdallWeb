@@ -2,10 +2,11 @@
 
 import { use, useState } from "react";
 import { format } from "date-fns";
-import { ArrowLeft, FileDown, Shield, ToggleLeft, ToggleRight } from "lucide-react";
+import { ArrowLeft, FileDown, Shield, ToggleLeft, ToggleRight, Zap } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -82,8 +83,17 @@ export default function HistoryDetailPage({ params }: Props) {
               </h1>
               {scan.grade && <GradeBadge grade={scan.grade} score={scan.score} />}
             </div>
-            <p className="text-xs text-muted-foreground sm:text-sm">
-              {format(new Date(scan.createdDate), "dd/MM/yyyy, HH:mm")} • {scan.duration}
+            <p className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm flex-wrap">
+              <span>{format(new Date(scan.createdDate), "dd/MM/yyyy, HH:mm")}</span>
+              <span>•</span>
+              {scan.isCached ? (
+                <Badge className="gap-1 bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800">
+                  <Zap className="h-3 w-3" />
+                  Resultado em cache
+                </Badge>
+              ) : (
+                <span>{scan.duration}</span>
+              )}
             </p>
           </div>
         </div>

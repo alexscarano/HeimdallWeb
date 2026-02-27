@@ -9,6 +9,7 @@ export interface ScanHistorySummary {
   technologiesCount: number;
   score: number | null;
   grade: string | null;
+  isCached: boolean;
 }
 
 export interface ScanHistoryDetail {
@@ -25,6 +26,7 @@ export interface ScanHistoryDetail {
   findings: FindingResponse[];
   technologies: TechnologyResponse[];
   iaSummary: IASummaryResponse | null;
+  isCached: boolean;
 }
 
 export interface FindingResponse {
@@ -80,6 +82,7 @@ export interface ExecuteScanResponse {
   createdDate: string;
   score: number | null;
   grade: string | null;
+  isCached: boolean;
 }
 
 export interface DeleteScanHistoryResponse {

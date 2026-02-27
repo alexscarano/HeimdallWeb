@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { MoreVertical, Eye, FileDown, Trash2, FileText, Clock, Calendar } from "lucide-react";
+import { MoreVertical, Eye, FileDown, Trash2, FileText, Clock, Calendar, Zap } from "lucide-react";
 import Link from "next/link";
 import { ScanHistory } from "@/lib/hooks/use-history";
 import {
@@ -71,10 +71,17 @@ export function ScanTable({ scans, isLoading, onDelete, onExportPdf }: ScanTable
                     <Calendar className="h-3 w-3" />
                     <span>{format(new Date(scan.createdDate), "dd/MM/yyyy, HH:mm")}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    <span>{scan.duration}</span>
-                  </div>
+                  {scan.isCached ? (
+                    <Badge className="gap-1 bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800">
+                      <Zap className="h-3 w-3" />
+                      Cache
+                    </Badge>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      <span>{scan.duration}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Score + Status badges */}
@@ -155,7 +162,16 @@ export function ScanTable({ scans, isLoading, onDelete, onExportPdf }: ScanTable
                 <TableCell className="text-sm text-muted-foreground">
                   {format(new Date(scan.createdDate), "dd/MM/yyyy, HH:mm")}
                 </TableCell>
-                <TableCell className="text-sm">{scan.duration}</TableCell>
+                <TableCell className="text-sm">
+                  {scan.isCached ? (
+                    <Badge className="gap-1 bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800">
+                      <Zap className="h-3 w-3" />
+                      Cache
+                    </Badge>
+                  ) : (
+                    scan.duration
+                  )}
+                </TableCell>
                 <TableCell>
                   {scan.grade ? (
                     <GradeBadge grade={scan.grade} score={scan.score} />

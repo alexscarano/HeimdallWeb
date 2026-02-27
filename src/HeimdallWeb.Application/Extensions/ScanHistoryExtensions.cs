@@ -30,7 +30,8 @@ public static class ScanHistoryExtensions
             Grade: scanHistory.Grade,
             Findings: scanHistory.Findings.Select(f => f.ToDto()).ToList(),
             Technologies: scanHistory.Technologies.Select(t => t.ToDto()).ToList(),
-            IASummary: scanHistory.IASummaries.FirstOrDefault()?.ToDto()
+            IASummary: scanHistory.IASummaries.FirstOrDefault()?.ToDto(),
+            IsCached: scanHistory.SourceHistoryId.HasValue
         );
     }
 
@@ -72,7 +73,8 @@ public static class ScanHistoryExtensions
             FindingsCount: scanHistory.Findings.Count,
             TechnologiesCount: scanHistory.Technologies.Count,
             Score: scanHistory.Score,
-            Grade: scanHistory.Grade
+            Grade: scanHistory.Grade,
+            IsCached: scanHistory.SourceHistoryId.HasValue
         );
     }
 }

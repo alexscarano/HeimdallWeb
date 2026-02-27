@@ -6,6 +6,7 @@ import {
   ExternalLink,
   Clock,
   RotateCcw,
+  Zap,
 } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -56,12 +57,17 @@ export function ScanResultSummary({ result, onNewScan }: ScanResultSummaryProps)
             <ExternalLink className="h-3 w-3" />
             {result.target}
           </Badge>
-          {result.duration && (
+          {result.isCached ? (
+            <Badge className="gap-1.5 text-xs bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800">
+              <Zap className="h-3 w-3" />
+              Resultado em cache
+            </Badge>
+          ) : result.duration ? (
             <Badge variant="secondary" className="gap-1.5 text-xs">
               <Clock className="h-3 w-3" />
               {result.duration}
             </Badge>
-          )}
+          ) : null}
           <Badge variant={isCompleted ? "default" : "destructive"} className="text-xs">
             {isCompleted ? "Completo" : "Falhou"}
           </Badge>
