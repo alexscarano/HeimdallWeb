@@ -1,4 +1,5 @@
 using HeimdallWeb.Domain.Interfaces.Repositories;
+using HeimdallWeb.Domain.ValueObjects;
 
 namespace HeimdallWeb.Application.Services.AI;
 
@@ -14,8 +15,13 @@ public class ScanContextService : IScanContextService
     public async Task<HistoricalDiffContext?> BuildHistoricalDiffAsync(
         string target, CancellationToken ct = default)
     {
+        // normalizedTarget from handler includes protocol (e.g. "https://exemplo.com"),
+        // but ScanTarget.Value stored in DB is domain-only (e.g. "exemplo.com").
+        // Use ScanTarget.Create to apply the same normalization used at write time.
+        var storedTarget = ScanTarget.Create(target).Value;
+
         var histories = await _scanHistoryRepo
-            .GetLastNCompletedByTargetAsync(target, n: 3, ct);
+            .GetLastNCompletedByTargetAsync(storedTarget, n: 3, ct);
 
         if (!histories.Any()) return null;
 
