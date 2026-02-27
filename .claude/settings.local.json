@@ -43,11 +43,16 @@
       "Bash(head:*)",
       "Bash(tail:*)",
       "Bash(docker compose:*)",
-      "Bash(chromium:*)"
+      "Bash(chromium:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(git worktree:*)",
+      "Bash(dotnet test:*)",
+      "Bash(cd:*)",
+      "Bash(cat:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "puppeteer"
+    "shadcn"
   ]
 }

@@ -52,9 +52,13 @@ public class ScoreCalculatorService : IScoreCalculatorService
 
         // Group findings by unique Type to avoid dropping the score to zero
         // just because the exact same issue is found on 100 different pages.
+        // Pick the most persistent finding per type so it gets the correct multiplier.
         var distinctFindings = findings
             .GroupBy(f => f.Type)
-            .Select(g => g.First());
+            .Select(g => g
+                .OrderByDescending(f => f.PresenteHaScans ?? -1)
+                .ThenByDescending(f => (int)f.Severity)
+                .First());
 
         foreach (var finding in distinctFindings)
         {
@@ -65,7 +69,8 @@ public class ScoreCalculatorService : IScoreCalculatorService
             var category = finding.Type;
             var weight = FindWeight(weights, category);
 
-            totalDeduction += basePoints * weight;
+            var multiplier = GetPersistenceMultiplier(finding);
+            totalDeduction += basePoints * weight * multiplier;
         }
 
         var score = (int)Math.Max(0m, 100m - totalDeduction);
@@ -89,6 +94,17 @@ public class ScoreCalculatorService : IScoreCalculatorService
 
         _cache.Set(CacheKey, dict, CacheDuration);
         return dict;
+    }
+
+    private static decimal GetPersistenceMultiplier(Finding finding)
+    {
+        if (finding.StatusHistorico is null || finding.PresenteHaScans is null)
+            return 1.0m;
+        if (finding.StatusHistorico == "novo" || finding.PresenteHaScans == 0)
+            return 1.0m;
+        if (finding.PresenteHaScans == 1)
+            return 1.25m;
+        return 1.5m; // PresenteHaScans >= 2
     }
 
     private static decimal FindWeight(Dictionary<string, decimal> weights, string category)

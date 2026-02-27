@@ -56,7 +56,9 @@ public class GetFindingsByHistoryIdQueryHandler : IQueryHandler<GetFindingsByHis
             Evidence: f.Evidence,
             Recommendation: f.Recommendation,
             HistoryId: f.HistoryId,
-            CreatedAt: f.CreatedAt
+            CreatedAt: f.CreatedAt,
+            StatusHistorico: f.StatusHistorico,
+            PresenteHaScans: f.PresenteHaScans
         ));
     }
 }

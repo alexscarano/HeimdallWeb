@@ -47,6 +47,7 @@ export function FindingsList({ findings }: FindingsListProps) {
                       {SEVERITY_TRANSLATION[finding.severity] || finding.severity}
                     </Badge>
                     <span className="truncate font-medium">{finding.type}</span>
+                    <PersistenceBadge finding={finding} />
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4">
@@ -86,6 +87,24 @@ export function FindingsList({ findings }: FindingsListProps) {
   );
 }
 
+
+function PersistenceBadge({ finding }: { finding: Finding }) {
+  if (finding.statusHistorico === "persistente" && finding.presenteHaScans && finding.presenteHaScans > 0) {
+    return (
+      <Badge className="shrink-0 bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800">
+        Persistente há {finding.presenteHaScans} scan{finding.presenteHaScans > 1 ? "s" : ""}
+      </Badge>
+    );
+  }
+  if (finding.statusHistorico === "novo") {
+    return (
+      <Badge className="shrink-0 bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800">
+        Novo
+      </Badge>
+    );
+  }
+  return null;
+}
 
 function severityBadgeClass(severity: string): string {
   switch (severity) {

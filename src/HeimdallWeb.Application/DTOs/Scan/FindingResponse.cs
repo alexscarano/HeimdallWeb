@@ -12,5 +12,7 @@ public record FindingResponse(
     string? Evidence,
     string? Recommendation,
     int? HistoryId,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    string? StatusHistorico,
+    int? PresenteHaScans
 );

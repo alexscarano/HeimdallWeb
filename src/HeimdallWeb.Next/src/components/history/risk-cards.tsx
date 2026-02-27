@@ -84,7 +84,19 @@ function FindingItem({ finding }: FindingItemProps) {
         aria-expanded={expanded}
       >
         <div className="min-w-0 flex-1">
-          <p className="font-medium text-sm leading-snug">{finding.type}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="font-medium text-sm leading-snug">{finding.type}</p>
+            {finding.statusHistorico === "persistente" && finding.presenteHaScans && finding.presenteHaScans > 0 && (
+              <Badge variant="outline" className="text-xs bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800">
+                Persistente há {finding.presenteHaScans} scan{finding.presenteHaScans > 1 ? "s" : ""}
+              </Badge>
+            )}
+            {finding.statusHistorico === "novo" && (
+              <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800">
+                Novo
+              </Badge>
+            )}
+          </div>
           {!expanded && finding.recommendation && (
             <p className="mt-0.5 text-xs text-muted-foreground line-clamp-2">
               {finding.recommendation}

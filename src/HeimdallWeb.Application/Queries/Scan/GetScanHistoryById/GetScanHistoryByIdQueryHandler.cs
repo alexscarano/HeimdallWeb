@@ -69,7 +69,9 @@ public class GetScanHistoryByIdQueryHandler : IQueryHandler<GetScanHistoryByIdQu
             Evidence: f.Evidence,
             Recommendation: f.Recommendation,
             HistoryId: f.HistoryId,
-            CreatedAt: f.CreatedAt
+            CreatedAt: f.CreatedAt,
+            StatusHistorico: f.StatusHistorico,
+            PresenteHaScans: f.PresenteHaScans
         ));
 
         var technologyResponses = technologies.Select(t => new TechnologyResponse(

@@ -23,7 +23,9 @@ public static class FindingExtensions
             Evidence: finding.Evidence,
             Recommendation: finding.Recommendation,
             HistoryId: finding.HistoryId,
-            CreatedAt: finding.CreatedAt
+            CreatedAt: finding.CreatedAt,
+            StatusHistorico: finding.StatusHistorico,
+            PresenteHaScans: finding.PresenteHaScans
         );
     }
 }

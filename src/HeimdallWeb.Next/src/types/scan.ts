@@ -36,6 +36,8 @@ export interface FindingResponse {
   recommendation: string | null;
   historyId: string | null;
   createdAt: string;
+  statusHistorico: string | null;
+  presenteHaScans: number | null;
 }
 
 export interface TechnologyResponse {
