@@ -38,9 +38,14 @@ export function ScanLoading({ elapsedSeconds, timeoutSeconds }: ScanLoadingProps
   return (
     <Card className="mx-auto w-full max-w-lg border shadow-lg">
       <CardContent className="flex flex-col items-center gap-6 py-10">
-        <div className="relative flex h-20 w-20 items-center justify-center">
-          <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-accent-primary" />
-          <div className="icon-box flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary-subtle">
+        <div className="relative flex h-28 w-28 items-center justify-center">
+          {/* Anéis pulsantes com delay escalonado */}
+          <span className="absolute h-24 w-24 rounded-full border border-accent-primary/50 animate-ping [animation-duration:2s] [animation-delay:0ms]" />
+          <span className="absolute h-24 w-24 rounded-full border border-accent-primary/35 animate-ping [animation-duration:2s] [animation-delay:667ms]" />
+          <span className="absolute h-24 w-24 rounded-full border border-accent-primary/20 animate-ping [animation-duration:2s] [animation-delay:1334ms]" />
+
+          {/* Shield com breathing suave */}
+          <div className="icon-box flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary-subtle animate-pulse [animation-duration:3s]">
             <Shield className="h-8 w-8 text-accent-primary" />
           </div>
         </div>
