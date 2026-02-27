@@ -87,6 +87,7 @@ public static class DependencyInjection
         // Sprint 4: Monitoring & Cache services
         services.AddScoped<IScanCacheService, ScanCacheService>();
         services.AddScoped<IRiskDeltaService, RiskDeltaService>();
+        services.AddScoped<IScanContextService, ScanContextService>();
 
         // Sprint 4: Background service
         services.AddHostedService<MonitoringWorker>();

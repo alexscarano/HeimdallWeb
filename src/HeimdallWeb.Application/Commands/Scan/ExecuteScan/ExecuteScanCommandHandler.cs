@@ -36,6 +36,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
     private readonly IScoreCalculatorService _scoreCalculatorService;
     private readonly IConfiguration _configuration;
     private readonly IScanCacheService _scanCacheService;
+    private readonly IScanContextService _scanContextService;
     private readonly ILogger<ExecuteScanCommandHandler> _logger;
     private readonly int _maxDailyRequests;
 
@@ -48,6 +49,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         IScoreCalculatorService scoreCalculatorService,
         IConfiguration configuration,
         IScanCacheService scanCacheService,
+        IScanContextService scanContextService,
         ILogger<ExecuteScanCommandHandler> logger)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -56,6 +58,7 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         _scoreCalculatorService = scoreCalculatorService ?? throw new ArgumentNullException(nameof(scoreCalculatorService));
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _scanCacheService = scanCacheService ?? throw new ArgumentNullException(nameof(scanCacheService));
+        _scanContextService = scanContextService ?? throw new ArgumentNullException(nameof(scanContextService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _maxDailyRequests = 5; // Default daily quota for regular users
     }
@@ -341,8 +344,12 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
         // Log AI request
         await LogAIRequestAsync(userId, remoteIp, CancellationToken.None);
 
+        // Buscar contexto histórico do alvo para enriquecer a análise do Gemini
+        var historicalContext = await _scanContextService
+            .BuildHistoricalDiffAsync(target, linkedCts.Token);
+
         // Call Gemini AI for vulnerability analysis
-        var aiResponse = await _geminiService.AnalyzeScanResultsAsync(scanResultJson, linkedCts.Token);
+        var aiResponse = await _geminiService.AnalyzeScanResultsAsync(scanResultJson, historicalContext, linkedCts.Token);
 
         // Sanitize AI response (may contain quotes/escapes from scan data)
         PreProcessScanResults(ref aiResponse);
@@ -582,6 +589,14 @@ public class ExecuteScanCommandHandler : ICommandHandler<ExecuteScanCommand, Exe
                     recommendation: recomendacao,
                     historyId: historyId
                 );
+
+                var statusHistorico = achado.TryGetProperty("status_historico", out var shProp) && shProp.ValueKind != JsonValueKind.Null
+                    ? shProp.GetString()
+                    : null;
+                var presenteHaScans = achado.TryGetProperty("presente_ha_scans", out var phProp) && phProp.ValueKind != JsonValueKind.Null
+                    ? phProp.GetInt32()
+                    : (int?)null;
+                finding.SetHistoricalStatus(statusHistorico, presenteHaScans);
 
                 findings.Add(finding);
             }

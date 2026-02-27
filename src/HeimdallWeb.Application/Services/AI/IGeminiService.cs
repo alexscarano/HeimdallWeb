@@ -9,7 +9,11 @@ public interface IGeminiService
     /// Analyzes scan results using Gemini AI and returns structured vulnerability findings.
     /// </summary>
     /// <param name="scanJson">JSON string containing scan results from all scanners</param>
+    /// <param name="historicalContext">Optional historical context from previous scans of the same target</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>JSON string with AI analysis including findings and technologies</returns>
-    Task<string> AnalyzeScanResultsAsync(string scanJson, CancellationToken cancellationToken = default);
+    Task<string> AnalyzeScanResultsAsync(
+        string scanJson,
+        HistoricalDiffContext? historicalContext = null,
+        CancellationToken cancellationToken = default);
 }
