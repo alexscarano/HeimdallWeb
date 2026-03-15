@@ -54,7 +54,10 @@
       "mcp__shadcn__list_items_in_registries",
       "mcp__shadcn__get_project_registries",
       "WebFetch(domain:magicui.design)",
-      "Bash(/home/floppydisk/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.2/skills/brainstorming/scripts/start-server.sh --project-dir /home/floppydisk/Documents/Projects/HeimdallWeb)"
+      "Bash(/home/floppydisk/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.2/skills/brainstorming/scripts/start-server.sh --project-dir /home/floppydisk/Documents/Projects/HeimdallWeb)",
+      "WebFetch(domain:ui.aceternity.com)",
+      "mcp__shadcn__search_items_in_registries",
+      "Bash(npm info:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
