@@ -1,116 +1,47 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { useTheme } from 'next-themes';
-import dynamic from 'next/dynamic';
+import WorldMap from './world-map';
 
-// Adjust this import path if the installed file has a different name
-const World = dynamic(
-  () => import('./globe').then((m) => m.World),
-  { ssr: false }
-);
+// ── Connection pairs (same cities as the former arc data) ─────────────────────
 
-// ── Types ────────────────────────────────────────────────────────────────────
+const DOTS = [
+  { start: { lat: -23.55, lng: -46.63 }, end: { lat:  40.71, lng: -74.01 } }, // São Paulo → New York
+  { start: { lat:  40.71, lng: -74.01 }, end: { lat:  51.51, lng:  -0.13 } }, // New York → London
+  { start: { lat:  51.51, lng:  -0.13 }, end: { lat:  50.11, lng:   8.68 } }, // London → Frankfurt
+  { start: { lat:  50.11, lng:   8.68 }, end: { lat:   1.35, lng: 103.82 } }, // Frankfurt → Singapore
+  { start: { lat:   1.35, lng: 103.82 }, end: { lat:  35.68, lng: 139.69 } }, // Singapore → Tokyo
+  { start: { lat:  35.68, lng: 139.69 }, end: { lat:  37.77, lng:-122.42 } }, // Tokyo → San Francisco
+  { start: { lat:  37.77, lng:-122.42 }, end: { lat: -23.55, lng: -46.63 } }, // San Francisco → São Paulo
+  { start: { lat:  51.51, lng:  -0.13 }, end: { lat:   6.52, lng:   3.38 } }, // London → Lagos
+  { start: { lat:   1.35, lng: 103.82 }, end: { lat: -33.87, lng: 151.21 } }, // Singapore → Sydney
+  { start: { lat:  40.71, lng: -74.01 }, end: { lat:  43.65, lng: -79.38 } }, // New York → Toronto
+  { start: { lat:  50.11, lng:   8.68 }, end: { lat:  52.37, lng:   4.90 } }, // Frankfurt → Amsterdam
+  { start: { lat:  52.37, lng:   4.90 }, end: { lat:  19.08, lng:  72.88 } }, // Amsterdam → Mumbai
+  { start: { lat:  19.08, lng:  72.88 }, end: { lat:   1.35, lng: 103.82 } }, // Mumbai → Singapore
+  { start: { lat:  35.68, lng: 139.69 }, end: { lat:  37.57, lng: 126.98 } }, // Tokyo → Seoul
+  { start: { lat:  37.57, lng: 126.98 }, end: { lat:  22.32, lng: 114.17 } }, // Seoul → Hong Kong
+  { start: { lat:  22.32, lng: 114.17 }, end: { lat: -33.87, lng: 151.21 } }, // Hong Kong → Sydney
+  { start: { lat: -23.55, lng: -46.63 }, end: { lat: -34.60, lng: -58.38 } }, // São Paulo → Buenos Aires
+  { start: { lat: -34.60, lng: -58.38 }, end: { lat:  51.51, lng:  -0.13 } }, // Buenos Aires → London
+  { start: { lat:  37.77, lng:-122.42 }, end: { lat:  35.68, lng: 139.69 } }, // San Francisco → Tokyo
+  { start: { lat:  51.51, lng:  -0.13 }, end: { lat:  55.75, lng:  37.62 } }, // London → Moscow
+  { start: { lat:  55.75, lng:  37.62 }, end: { lat:  19.08, lng:  72.88 } }, // Moscow → Mumbai
+  { start: { lat:  40.71, lng: -74.01 }, end: { lat:  25.77, lng: -80.19 } }, // New York → Miami
+  { start: { lat:  25.77, lng: -80.19 }, end: { lat: -23.55, lng: -46.63 } }, // Miami → São Paulo
+  { start: { lat:  50.11, lng:   8.68 }, end: { lat:  25.20, lng:  55.27 } }, // Frankfurt → Dubai
+  { start: { lat:  25.20, lng:  55.27 }, end: { lat:   1.35, lng: 103.82 } }, // Dubai → Singapore
+  { start: { lat:   6.52, lng:   3.38 }, end: { lat: -26.20, lng:  28.04 } }, // Lagos → Johannesburg
+  { start: { lat: -26.20, lng:  28.04 }, end: { lat:  19.08, lng:  72.88 } }, // Johannesburg → Mumbai
+  { start: { lat:  47.61, lng:-122.33 }, end: { lat:  35.68, lng: 139.69 } }, // Seattle → Tokyo
+  { start: { lat:  48.86, lng:   2.35 }, end: { lat:  40.71, lng: -74.01 } }, // Paris → New York
+  { start: { lat:  41.88, lng: -87.63 }, end: { lat:  51.51, lng:  -0.13 } }, // Chicago → London
+];
 
-interface Position {
-  order: number;
-  startLat: number;
-  startLng: number;
-  endLat: number;
-  endLng: number;
-  arcAlt: number;
-  color: string;
-}
+// ── CSS mask (fade top and bottom edges) ──────────────────────────────────────
 
-// ── Arc data ─────────────────────────────────────────────────────────────────
-
-function buildArcs(isDark: boolean): Position[] {
-  const c1 = isDark ? '#818cf8' : '#C2410C';
-  const c2 = isDark ? '#6366f1' : '#ea580c';
-
-  const pairs: Array<[number, number, number, number, number]> = [
-    // [startLat, startLng, endLat, endLng, arcAlt]
-    [-23.55, -46.63,  40.71, -74.01, 0.30], // São Paulo → New York
-    [ 40.71, -74.01,  51.51,  -0.13, 0.40], // New York → London
-    [ 51.51,  -0.13,  50.11,   8.68, 0.10], // London → Frankfurt
-    [ 50.11,   8.68,   1.35, 103.82, 0.40], // Frankfurt → Singapore
-    [  1.35, 103.82,  35.68, 139.69, 0.20], // Singapore → Tokyo
-    [ 35.68, 139.69,  37.77,-122.42, 0.40], // Tokyo → San Francisco
-    [ 37.77,-122.42, -23.55, -46.63, 0.30], // San Francisco → São Paulo
-    [ 51.51,  -0.13,   6.52,   3.38, 0.30], // London → Lagos
-    [  1.35, 103.82, -33.87, 151.21, 0.20], // Singapore → Sydney
-    [ 40.71, -74.01,  43.65, -79.38, 0.10], // New York → Toronto
-    [ 50.11,   8.68,  52.37,   4.90, 0.10], // Frankfurt → Amsterdam
-    [ 52.37,   4.90,  19.08,  72.88, 0.35], // Amsterdam → Mumbai
-    [ 19.08,  72.88,   1.35, 103.82, 0.20], // Mumbai → Singapore
-    [ 35.68, 139.69,  37.57, 126.98, 0.10], // Tokyo → Seoul
-    [ 37.57, 126.98,  22.32, 114.17, 0.10], // Seoul → Hong Kong
-    [ 22.32, 114.17, -33.87, 151.21, 0.30], // Hong Kong → Sydney
-    [-23.55, -46.63, -34.60, -58.38, 0.10], // São Paulo → Buenos Aires
-    [-34.60, -58.38,  51.51,  -0.13, 0.40], // Buenos Aires → London
-    [ 37.77,-122.42,  35.68, 139.69, 0.40], // San Francisco → Tokyo
-    [ 51.51,  -0.13,  55.75,  37.62, 0.15], // London → Moscow
-    [ 55.75,  37.62,  19.08,  72.88, 0.25], // Moscow → Mumbai
-    [ 40.71, -74.01,  25.77, -80.19, 0.10], // New York → Miami
-    [ 25.77, -80.19, -23.55, -46.63, 0.20], // Miami → São Paulo
-    [ 50.11,   8.68,  25.20,  55.27, 0.25], // Frankfurt → Dubai
-    [ 25.20,  55.27,   1.35, 103.82, 0.30], // Dubai → Singapore
-    [  6.52,   3.38, -26.20,  28.04, 0.15], // Lagos → Johannesburg
-    [-26.20,  28.04,  19.08,  72.88, 0.35], // Johannesburg → Mumbai
-    [ 47.61,-122.33,  35.68, 139.69, 0.40], // Seattle → Tokyo
-    [ 48.86,   2.35,  40.71, -74.01, 0.35], // Paris → New York
-    [ 41.88, -87.63,  51.51,  -0.13, 0.30], // Chicago → London
-  ];
-
-  return pairs.map(([startLat, startLng, endLat, endLng, arcAlt], i) => ({
-    order: i + 1,
-    startLat,
-    startLng,
-    endLat,
-    endLng,
-    arcAlt,
-    color: i % 2 === 0 ? c1 : c2,
-  }));
-}
-
-// ── Globe configs ─────────────────────────────────────────────────────────────
-
-const DARK_CONFIG = {
-  pointSize: 2,
-  globeColor: '#1a1a2e',
-  showAtmosphere: true,
-  atmosphereColor: '#818cf8',
-  atmosphereAltitude: 0.1,
-  emissive: '#2d2d5e',
-  emissiveIntensity: 0.1,
-  shininess: 0.9,
-  polygonColor: '#818cf8',
-  ambientLight: '#38bdf8',
-  directionalLeftLight: '#ffffff',
-  directionalTopLight: '#ffffff',
-  pointLight: '#818cf8',
-  arcTime: 1000,
-  arcLength: 0.9,
-  rings: 3,
-  maxRings: 3,
-  autoRotate: true,
-  autoRotateSpeed: 0.5,
-};
-
-const LIGHT_CONFIG = {
-  ...DARK_CONFIG,
-  globeColor: '#f0ebe4',
-  showAtmosphere: true,
-  atmosphereColor: '#fb923c',
-  emissive: '#fff3ed',
-  polygonColor: '#C2410C',
-  ambientLight: '#fed7aa',
-  pointLight: '#C2410C',
-};
-
-// ── CSS mask ──────────────────────────────────────────────────────────────────
-
-const maskStyle: React.CSSProperties = {
+const maskStyle: CSSProperties = {
   maskImage:
     'linear-gradient(to bottom, transparent 0%, black 10%, black 85%, transparent 100%)',
   WebkitMaskImage:
@@ -127,27 +58,21 @@ export function GlobeHeimdall() {
   useEffect(() => {
     setMounted(true);
     setReducedMotion(
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
     );
   }, []);
 
   if (!mounted || reducedMotion) return null;
 
-  // resolvedTheme is undefined on first render → default to dark
   const isDark = resolvedTheme !== 'light';
-  const globeConfig = isDark ? DARK_CONFIG : LIGHT_CONFIG;
-  const arcs = buildArcs(isDark);
+  const lineColor = isDark ? '#818cf8' : '#C2410C';
 
   return (
     <div
       className="hidden lg:block absolute inset-0 z-0 pointer-events-none w-full h-full"
       style={maskStyle}
     >
-      <World
-        key={resolvedTheme ?? 'dark'}
-        globeConfig={globeConfig}
-        data={arcs}
-      />
+      <WorldMap dots={DOTS} lineColor={lineColor} />
     </div>
   );
 }
