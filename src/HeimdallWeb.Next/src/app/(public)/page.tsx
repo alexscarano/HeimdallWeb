@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScoreGauge } from "@/components/scan/score-gauge";
-import { HeroVortex } from "@/components/ui/hero-vortex";
+import { GlobeHeimdall } from "@/components/ui/globe-heimdall";
 import {
   Shield,
   Lock,
@@ -109,8 +109,8 @@ export default function LandingPage() {
     <main>
       {/* Hero */}
       <section className="relative overflow-hidden min-h-[80vh]">
-        {/* WebGL Vortex effect */}
-        <HeroVortex className="absolute inset-0 z-0 w-full h-full pointer-events-none" />
+        {/* GitHub Globe background */}
+        <GlobeHeimdall />
 
         {/* Subtle radial gradient complementing the vortex */}
         <div
