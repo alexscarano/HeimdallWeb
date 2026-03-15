@@ -131,24 +131,24 @@ export default function LandingPage() {
         <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 flex items-center min-h-[80vh]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
             {/* Left column: headline + CTAs */}
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-8 items-center lg:items-start">
               <div className="flex flex-col gap-4">
-                <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
+                <h1 className="text-5xl font-bold tracking-tight sm:text-6xl text-center lg:text-left">
                   <BlurText text="Escaneie. Analise. Proteja." delay={0.08} duration={0.5} />
                 </h1>
-                <p className="max-w-xl text-lg text-muted-foreground">
+                <p className="max-w-xl text-lg text-muted-foreground text-center lg:text-left">
                   Detecte vulnerabilidades de segurança, analise TLS, headers, portas e muito
                   mais — com análise de IA integrada.
                 </p>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Link href="/register">
-                  <ShimmerButton className="min-w-48 text-sm font-medium">
+              <div className="flex flex-col gap-3 sm:flex-row items-center sm:items-start w-full sm:w-auto">
+                <Link href="/register" className="w-full sm:w-auto">
+                  <ShimmerButton className="w-full sm:min-w-48 text-sm font-medium">
                     Começar gratuitamente
                   </ShimmerButton>
                 </Link>
-                <a href="#features">
-                  <Button variant="outline" size="lg" className="min-w-48">
+                <a href="#features" className="w-full sm:w-auto">
+                  <Button variant="outline" size="lg" className="w-full sm:min-w-48">
                     Ver como funciona
                   </Button>
                 </a>
@@ -211,7 +211,7 @@ export default function LandingPage() {
                   Score calculado em tempo real após cada scan.
                 </p>
               </div>
-              <div className="flex-1">
+              <div className="flex-1 text-center lg:text-left">
                 <h2 className="text-3xl font-bold tracking-tight">
                   Score de segurança em tempo real
                 </h2>
@@ -221,7 +221,7 @@ export default function LandingPage() {
                 </p>
                 <ul className="mt-8 space-y-4">
                   {gradeDescriptions.map((item) => (
-                    <li key={item.grade} className="flex gap-4">
+                    <li key={item.grade} className="flex gap-4 justify-center lg:justify-start">
                       <span className="flex h-8 w-12 shrink-0 items-center justify-center rounded-md bg-emerald-600/10 text-sm font-bold text-emerald-600 dark:bg-indigo-400/10 dark:text-indigo-400">
                         {item.grade}
                       </span>

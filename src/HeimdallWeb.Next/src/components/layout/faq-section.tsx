@@ -41,7 +41,7 @@ export function FaqSection() {
     return (
         <div className="w-full space-y-6">
             <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-600/10 dark:bg-indigo-400/10">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-600/10 dark:bg-indigo-400/10">
                     <HelpCircle className="h-5 w-5 text-emerald-600 dark:text-indigo-400" />
                 </div>
                 <h2 className="text-2xl font-bold tracking-tight">

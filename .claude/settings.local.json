@@ -53,7 +53,8 @@
       "WebFetch(domain:reactbits.dev)",
       "mcp__shadcn__list_items_in_registries",
       "mcp__shadcn__get_project_registries",
-      "WebFetch(domain:magicui.design)"
+      "WebFetch(domain:magicui.design)",
+      "Bash(/home/floppydisk/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.2/skills/brainstorming/scripts/start-server.sh --project-dir /home/floppydisk/Documents/Projects/HeimdallWeb)"
     ]
   },
   "enableAllProjectMcpServers": true,

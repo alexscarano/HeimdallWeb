@@ -58,7 +58,7 @@ public static class MonitorEndpoints
         var userId = GetUserId(context);
 
         if (!Enum.TryParse<MonitorFrequency>(request.Frequency, ignoreCase: true, out var frequency))
-            return Results.BadRequest(new { error = "Invalid frequency. Use 'Daily' or 'Weekly'." });
+            return Results.BadRequest(new { error = "Invalid frequency. Use 'Daily', 'Weekly', or 'Monthly'." });
 
         var command = new CreateMonitorCommand(userId, request.Url, frequency);
         var result = await handler.Handle(command);

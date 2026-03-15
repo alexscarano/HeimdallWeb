@@ -373,46 +373,66 @@ export default function MonitorPage() {
   return (
     <div className="space-y-6">
       {/* Page header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Alvos Monitorados</h1>
           <p className="text-sm text-muted-foreground">
             Gerencie os sites que serão escaneados automaticamente.
           </p>
         </div>
-        <Button onClick={() => setAddOpen(true)}>
-          <Plus className="h-4 w-4" />
+        <Button onClick={() => setAddOpen(true)} className="w-full sm:w-auto">
+          <Plus className="mr-2 h-4 w-4" />
           Adicionar alvo
         </Button>
       </div>
 
-      {/* Table */}
+      {/* Table & Cards Skeleton */}
       {isLoading ? (
-        <div className="rounded-lg border border-border bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>URL</TableHead>
-                <TableHead>Frequência</TableHead>
-                <TableHead>Último Check</TableHead>
-                <TableHead>Próximo Check</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={i}>
-                  {Array.from({ length: 6 }).map((__, j) => (
-                    <TableCell key={j}>
-                      <Skeleton className="h-5 w-full" />
-                    </TableCell>
-                  ))}
+        <>
+          {/* Desktop Skeleton */}
+          <div className="hidden md:block rounded-xl border border-border bg-card overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>URL</TableHead>
+                  <TableHead>Frequência</TableHead>
+                  <TableHead>Último Check</TableHead>
+                  <TableHead>Próximo Check</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead />
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    {Array.from({ length: 6 }).map((__, j) => (
+                      <TableCell key={j}>
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          {/* Mobile Skeleton */}
+          <div className="grid grid-cols-1 gap-4 md:hidden">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex flex-col gap-3 rounded-xl border bg-card p-4 shadow-sm">
+                <div className="flex items-start justify-between gap-2">
+                  <Skeleton className="h-5 w-3/4" />
+                  <Skeleton className="h-8 w-8 rounded-md shrink-0" />
+                </div>
+                <div className="grid grid-cols-2 gap-y-3 gap-x-4 mt-1">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       ) : !targets || targets.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-border bg-card py-24 text-center">
           <Radar className="h-12 w-12 text-muted-foreground" />
@@ -428,59 +448,108 @@ export default function MonitorPage() {
           </Button>
         </div>
       ) : (
-        <div className="rounded-lg border border-border bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>URL</TableHead>
-                <TableHead>Frequência</TableHead>
-                <TableHead>Último Check</TableHead>
-                <TableHead>Próximo Check</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="w-10" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {targets.map((target) => (
-                <TableRow key={target.id}>
-                  <TableCell className="font-medium">{target.url}</TableCell>
-                  <TableCell>
-                    <FrequencyBadge frequency={target.frequency} />
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {target.lastCheck ? formatRelative(target.lastCheck) : "Nunca"}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {formatRelative(target.nextCheck)}
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge isActive={target.isActive} />
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" aria-label="Ações">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleOpenHistory(target)}>
-                          Ver histórico
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-destructive focus:text-destructive"
-                          onClick={() => handleOpenDelete(target)}
-                        >
-                          Excluir
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+        <>
+          {/* Desktop Table View */}
+          <div className="hidden md:block rounded-xl border border-border bg-card overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>URL</TableHead>
+                  <TableHead>Frequência</TableHead>
+                  <TableHead>Último Check</TableHead>
+                  <TableHead>Próximo Check</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="w-10" />
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {targets.map((target) => (
+                  <TableRow key={target.id}>
+                    <TableCell className="font-medium">{target.url}</TableCell>
+                    <TableCell>
+                      <FrequencyBadge frequency={target.frequency} />
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {target.lastCheck ? formatRelative(target.lastCheck) : "Nunca"}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {formatRelative(target.nextCheck)}
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge isActive={target.isActive} />
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" aria-label="Ações">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleOpenHistory(target)}>
+                            Ver histórico
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => handleOpenDelete(target)}
+                          >
+                            Excluir
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          {/* Mobile Card View */}
+          <div className="grid grid-cols-1 gap-4 md:hidden">
+            {targets.map((target) => (
+              <div key={target.id} className="flex flex-col gap-3 rounded-xl border bg-card p-4 shadow-sm">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="font-medium break-all">{target.url}</div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => handleOpenHistory(target)}>
+                        Ver histórico
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-destructive focus:text-destructive"
+                        onClick={() => handleOpenDelete(target)}
+                      >
+                        Excluir
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-sm mt-1">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Status</p>
+                    <StatusBadge isActive={target.isActive} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Frequência</p>
+                    <FrequencyBadge frequency={target.frequency} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Último Check</p>
+                    <span className="text-muted-foreground">{target.lastCheck ? formatRelative(target.lastCheck) : "Nunca"}</span>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Próximo</p>
+                    <span className="text-muted-foreground">{formatRelative(target.nextCheck)}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {/* Add Dialog */}

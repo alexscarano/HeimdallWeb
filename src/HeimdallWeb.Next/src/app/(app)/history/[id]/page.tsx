@@ -181,21 +181,21 @@ export default function HistoryDetailPage({ params }: Props) {
       {/* Advanced view: tabs */}
       {isAdvancedView && (
         <Tabs defaultValue="findings" className="space-y-4">
-          <div>
-            <TabsList className="grid w-full grid-cols-5 sm:inline-flex sm:w-auto">
-              <TabsTrigger value="findings" className="sm:px-6">
+          <div className="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <TabsList className="inline-flex w-max min-w-full justify-start sm:w-auto sm:min-w-0 sm:justify-center">
+              <TabsTrigger value="findings" className="px-4 sm:px-6">
                 Vulnerabilidades
               </TabsTrigger>
-              <TabsTrigger value="technologies" className="sm:px-6">
+              <TabsTrigger value="technologies" className="px-4 sm:px-6">
                 Tecnologias
               </TabsTrigger>
-              <TabsTrigger value="ai" className="sm:px-6">
+              <TabsTrigger value="ai" className="px-4 sm:px-6">
                 Análise de IA
               </TabsTrigger>
-              <TabsTrigger value="timeline" className="sm:px-6">
+              <TabsTrigger value="timeline" className="px-4 sm:px-6">
                 Evolução
               </TabsTrigger>
-              <TabsTrigger value="json" className="sm:px-6">
+              <TabsTrigger value="json" className="px-4 sm:px-6">
                 JSON
               </TabsTrigger>
             </TabsList>

@@ -9,5 +9,8 @@ public enum MonitorFrequency
     Daily = 1,
 
     /// <summary>Scan runs once per week.</summary>
-    Weekly = 7
+    Weekly = 7,
+
+    /// <summary>Scan runs once per month.</summary>
+    Monthly = 30
 }
