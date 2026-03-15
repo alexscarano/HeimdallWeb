@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Shield,
   Home,
   History,
   BarChart3,
@@ -25,6 +24,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { LogoMark } from "@/components/ui/logo-mark";
 
 interface NavItem {
   href: string;
@@ -65,7 +65,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <div className="flex h-14 items-center gap-3 border-b border-border px-4">
         <Link href={routes.home} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-accent-primary-subtle">
-            <Shield className="h-4 w-4 text-accent-primary" />
+            <LogoMark size={16} />
           </div>
           {!collapsed && (
             <span className="whitespace-nowrap text-base font-semibold tracking-tight text-foreground">
@@ -114,11 +114,12 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           onClick={onToggle}
           aria-label={collapsed ? "Expandir sidebar" : "Recolher sidebar"}
         >
-          {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <ChevronLeft className="h-4 w-4" />
-          )}
+          <ChevronLeft
+            className={cn(
+              "h-4 w-4 transition-transform duration-200",
+              collapsed && "rotate-180"
+            )}
+          />
         </Button>
       </div>
     </aside>
@@ -143,15 +144,15 @@ function NavSection({
             key={item.href}
             href={item.href}
             className={cn(
-              "relative flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors duration-150",
-              collapsed ? "justify-center px-0" : "",
+              "relative flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors duration-150 hover:translate-x-1 transition-transform duration-150",
+              collapsed ? "justify-center px-0 hover:translate-x-0" : "",
               isActive
                 ? "bg-accent-primary-subtle font-semibold text-accent-primary"
                 : "text-sidebar-foreground hover:bg-accent/50 hover:text-foreground"
             )}
           >
             {isActive && (
-              <span className="absolute left-0 top-1/2 h-[60%] w-0.5 -translate-y-1/2 rounded-full bg-accent-primary" />
+              <span className="absolute left-0 top-1/2 h-[60%] w-0.5 -translate-y-1/2 rounded-full bg-accent-primary transition-all duration-200" />
             )}
             <item.icon className={cn("h-4 w-4 shrink-0", isActive && "text-accent-primary")} />
             {!collapsed && <span className="whitespace-nowrap">{item.label}</span>}

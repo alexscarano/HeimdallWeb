@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { GradeBadge } from "@/components/scan/score-gauge";
+import { BlurFade } from "@/components/ui/blur-fade";
 
 interface ScanTableProps {
   scans: ScanHistory[];
@@ -53,8 +54,9 @@ export function ScanTable({ scans, isLoading, onDelete, onExportPdf }: ScanTable
     <>
       {/* Mobile: Cards */}
       <div className="space-y-3 md:hidden">
-        {scans.map((scan) => (
-          <Card key={scan.historyId} className="p-4">
+        {scans.map((scan, index) => (
+          <BlurFade key={scan.historyId} inView delay={index * 0.03}>
+          <Card className="p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1 space-y-2">
                 {/* Target URL */}
@@ -132,6 +134,7 @@ export function ScanTable({ scans, isLoading, onDelete, onExportPdf }: ScanTable
               </DropdownMenu>
             </div>
           </Card>
+          </BlurFade>
         ))}
       </div>
 
@@ -149,8 +152,12 @@ export function ScanTable({ scans, isLoading, onDelete, onExportPdf }: ScanTable
             </TableRow>
           </TableHeader>
           <TableBody>
-            {scans.map((scan) => (
-              <TableRow key={scan.historyId} className="hover:bg-muted/50">
+            {scans.map((scan, index) => (
+              <TableRow
+                key={scan.historyId}
+                className="hover:bg-muted/50 animate-in fade-in slide-in-from-bottom-2"
+                style={{ animationDelay: `${index * 30}ms`, animationFillMode: "both" }}
+              >
                 <TableCell className="font-medium">
                   <Link
                     href={`/history/${scan.historyId}`}

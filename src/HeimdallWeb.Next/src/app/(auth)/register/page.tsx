@@ -129,7 +129,7 @@ export default function RegisterPage() {
           strategy="afterInteractive"
         />
       )}
-      <Card className="border shadow-md">
+      <Card className="border shadow-md transition-all duration-300 hover:border-indigo-500/60 hover:shadow-[0_0_30px_rgba(99_102_241_/_0.2)]">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-xl">Criar Conta</CardTitle>
           <CardDescription>

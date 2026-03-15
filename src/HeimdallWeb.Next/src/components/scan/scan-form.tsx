@@ -13,6 +13,7 @@ import {
   Settings2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PulsatingButton } from "@/components/ui/pulsating-button";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -150,11 +151,11 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
               </FormItem>
             )}
           />
-          <Button
+          <PulsatingButton
             type="submit"
-            size="lg"
-            className="h-14 min-w-[160px] rounded-2xl px-8 text-base font-semibold shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
+            pulsate={!isScanning}
             disabled={isScanning || isLoadingProfiles}
+            className="h-14 min-w-[160px] rounded-2xl px-8 text-base font-semibold shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
           >
             {isScanning ? (
               <>
@@ -167,7 +168,7 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </>
             )}
-          </Button>
+          </PulsatingButton>
         </form>
       </Form>
 
@@ -199,7 +200,7 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
                   onClick={() => handleSelectProfile(profile.id)}
                   className={cn(
                     "group relative flex flex-col items-center gap-5 rounded-2xl border-2 p-8 text-center transition-all duration-300",
-                    "hover:border-accent-primary/50 hover:bg-accent-primary-subtle/30 hover:-translate-y-1 hover:shadow-lg",
+                    "hover:border-indigo-500/60 hover:bg-accent-primary-subtle/30 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(99_102_241_/_0.2)]",
                     isSelected
                       ? "border-accent-primary bg-accent-primary-subtle/40 shadow-md ring-1 ring-accent-primary/20"
                       : "border-muted bg-card/50"
@@ -242,7 +243,7 @@ export function ScanForm({ onSubmit, isScanning }: ScanFormProps) {
               onClick={handleSelectCustom}
               className={cn(
                 "group relative flex flex-col items-center gap-5 rounded-2xl border-2 p-8 text-center transition-all duration-300",
-                "hover:border-accent-primary/50 hover:bg-accent-primary-subtle/30 hover:-translate-y-1 hover:shadow-lg",
+                "hover:border-indigo-500/60 hover:bg-accent-primary-subtle/30 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(99_102_241_/_0.2)]",
                 isCustom
                   ? "border-accent-primary bg-accent-primary-subtle/40 shadow-md ring-1 ring-accent-primary/20"
                   : "border-dashed border-muted bg-card/50"

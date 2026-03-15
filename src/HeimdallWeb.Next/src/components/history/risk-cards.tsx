@@ -173,19 +173,23 @@ export function RiskCards({ findings }: RiskCardsProps) {
 
   return (
     <div className="space-y-4">
-      {visibleGroups.map((severity) => {
+      {visibleGroups.map((severity, groupIdx) => {
         const config = SEVERITY_CONFIG[severity];
         const Icon = config.icon;
         const items = grouped[severity];
+        const isCriticalOrHigh = severity === "Critical" || severity === "High";
 
-        return (
+        const hoverGlow = severity === "Critical"
+          ? "transition-all duration-300 hover:border-l-red-600 hover:shadow-[0_0_24px_rgba(239_68_68_/_0.2)]"
+          : "transition-all duration-300 hover:border-l-orange-600 hover:shadow-[0_0_24px_rgba(249_115_22_/_0.2)]";
+
+        return isCriticalOrHigh ? (
           <div
             key={severity}
-            className={`rounded-lg p-4 ${config.cardClasses}`}
+            className={`rounded-lg p-4 ${config.cardClasses} ${hoverGlow}`}
             role="region"
             aria-label={`Vulnerabilidades ${config.label}`}
           >
-            {/* Card header */}
             <div className="flex items-center gap-2 mb-3">
               <Icon className="h-4 w-4 shrink-0" />
               <span className="font-semibold text-sm">{config.label}</span>
@@ -196,8 +200,29 @@ export function RiskCards({ findings }: RiskCardsProps) {
                 {items.length}
               </Badge>
             </div>
-
-            {/* Findings list */}
+            <div className="divide-y divide-border/40">
+              {items.map((finding) => (
+                <FindingItem key={finding.findingId} finding={finding} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div
+            key={severity}
+            className={`rounded-lg p-4 ${config.cardClasses}`}
+            role="region"
+            aria-label={`Vulnerabilidades ${config.label}`}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <Icon className="h-4 w-4 shrink-0" />
+              <span className="font-semibold text-sm">{config.label}</span>
+              <Badge
+                className={`ml-auto text-xs ${config.badgeClasses}`}
+                variant="outline"
+              >
+                {items.length}
+              </Badge>
+            </div>
             <div className="divide-y divide-border/40">
               {items.map((finding) => (
                 <FindingItem key={finding.findingId} finding={finding} />

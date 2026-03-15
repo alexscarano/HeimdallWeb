@@ -18,6 +18,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { BlurFade } from "@/components/ui/blur-fade";
 
 // Scanner key → human-readable config
 const SCANNER_CONFIG: Record<
@@ -126,7 +127,7 @@ export function ScannerResultCards({ rawJson }: ScannerResultCardsProps) {
                             </div>
                             {/* Cards grid */}
                             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 items-start">
-                                {categoryKeys.map((key) => {
+                                {categoryKeys.map((key, cardIdx) => {
                                     const config = SCANNER_CONFIG[key] ?? {
                                         title: key.replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase()),
                                         icon: Info,
@@ -136,25 +137,26 @@ export function ScannerResultCards({ rawJson }: ScannerResultCardsProps) {
                                     const Icon = config.icon;
 
                                     return (
-                                        <Card
-                                            key={key}
-                                            className="h-full overflow-hidden rounded-2xl border border-border/60 shadow-sm transition-all hover:shadow-md hover:border-border"
-                                        >
-                                            <CardHeader className="flex flex-row items-center gap-4 pb-3 pt-5 px-5">
-                                                <div
-                                                    className="icon-box flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
-                                                    style={{ backgroundColor: `${config.color}15` }}
-                                                >
-                                                    <Icon className="h-5 w-5" style={{ color: config.color }} />
-                                                </div>
-                                                <CardTitle className="text-base font-semibold leading-tight">
-                                                    {config.title}
-                                                </CardTitle>
-                                            </CardHeader>
-                                            <CardContent className="px-5 pb-5 pt-0">
-                                                <ScannerCardBody scannerKey={key} value={value} />
-                                            </CardContent>
-                                        </Card>
+                                        <BlurFade key={key} inView delay={cardIdx * 0.06}>
+                                            <Card
+                                                className="h-full overflow-hidden rounded-2xl border border-border/60 shadow-sm transition-all hover:shadow-md hover:border-border"
+                                            >
+                                                <CardHeader className="flex flex-row items-center gap-4 pb-3 pt-5 px-5">
+                                                    <div
+                                                        className="icon-box flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+                                                        style={{ backgroundColor: `${config.color}15` }}
+                                                    >
+                                                        <Icon className="h-5 w-5" style={{ color: config.color }} />
+                                                    </div>
+                                                    <CardTitle className="text-base font-semibold leading-tight">
+                                                        {config.title}
+                                                    </CardTitle>
+                                                </CardHeader>
+                                                <CardContent className="px-5 pb-5 pt-0">
+                                                    <ScannerCardBody scannerKey={key} value={value} />
+                                                </CardContent>
+                                            </Card>
+                                        </BlurFade>
                                     );
                                 })}
                             </div>

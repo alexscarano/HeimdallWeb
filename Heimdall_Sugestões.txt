@@ -1,0 +1,11 @@
+Side Bar - Aumentar o tamanho dos icones e fonte, aumentar o espaçamento entre os elementos (SUGESTÂO colocar um detalhe de cor na setinha que minimiza a sidebar.
+
+Dashboard - Trocar o gráfico de tendência de risco par um de analises naquele dia.
+
+Histórico - Adicionar ou Subtituir nos filtros atuais a opção de filtrar por notas.
+
+Implemenar o novo icone do site.
+
+Ter opção a opção de voltar para o painel dentro da página de suporte. SUGESTÂO poder trocar de tema na página de suporte.
+
+

@@ -17,6 +17,10 @@ import {
   Info,
 } from "lucide-react";
 import { FaqSection } from "@/components/layout/faq-section";
+import { BlurText } from "@/components/ui/blur-text";
+import { BorderBeam } from "@/components/ui/border-beam";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { BlurFade } from "@/components/ui/blur-fade";
 
 const features = [
   {
@@ -78,7 +82,8 @@ const scanCheckItems = [
 
 function ScanPreviewCard() {
   return (
-    <Card className="bg-card/80 backdrop-blur border border-border rounded-2xl shadow-lg">
+    <Card className="relative bg-card/80 backdrop-blur border border-border rounded-2xl shadow-lg overflow-hidden">
+      <BorderBeam />
       <CardContent className="flex flex-col items-center gap-4 p-6">
         <div className="text-sm font-medium text-muted-foreground">exemplo.com</div>
         <ScoreGauge score={87} grade="A" size={140} animate={true} />
@@ -129,7 +134,7 @@ export default function LandingPage() {
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-4">
                 <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
-                  Escaneie. Analise. Proteja.
+                  <BlurText text="Escaneie. Analise. Proteja." delay={0.08} duration={0.5} />
                 </h1>
                 <p className="max-w-xl text-lg text-muted-foreground">
                   Detecte vulnerabilidades de segurança, analise TLS, headers, portas e muito
@@ -138,9 +143,9 @@ export default function LandingPage() {
               </div>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Link href="/register">
-                  <Button size="lg" className="min-w-48">
+                  <ShimmerButton className="min-w-48 text-sm font-medium">
                     Começar gratuitamente
-                  </Button>
+                  </ShimmerButton>
                 </Link>
                 <a href="#features">
                   <Button variant="outline" size="lg" className="min-w-48">
@@ -161,100 +166,107 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section id="features" className="border-t border-border bg-muted/30 features-grid-bg">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">
-              Tudo que você precisa para proteger seu site
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              13 scanners especializados em uma única plataforma.
-            </p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {features.map((feature) => (
-              <Card
-                key={feature.title}
-                className="bg-card border border-border rounded-xl"
-              >
-                <CardContent className="flex flex-col items-center text-center gap-4 p-6">
-                  <div className="icon-box flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-600/10 dark:bg-indigo-400/10">
-                    <feature.icon className="h-5 w-5 text-emerald-600 dark:text-indigo-400" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">{feature.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {feature.description}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Score Preview */}
-      <section id="preview" className="border-t border-border">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-start lg:gap-20">
-            <div className="flex flex-col items-center gap-6 lg:w-64">
-              <ScoreGauge score={87} grade="A" size={160} animate={false} />
-              <p className="text-center text-sm text-muted-foreground">
-                Score calculado em tempo real após cada scan.
-              </p>
-            </div>
-            <div className="flex-1">
+      <BlurFade inView delay={0.1}>
+        <section id="features" className="border-t border-border bg-muted/30 features-grid-bg">
+          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <div className="mb-12 text-center">
               <h2 className="text-3xl font-bold tracking-tight">
-                Score de segurança em tempo real
+                Tudo que você precisa para proteger seu site
               </h2>
               <p className="mt-3 text-muted-foreground">
-                Cada scan gera um score de 0 a 100 e uma grade de A a E,
-                baseado na quantidade e severidade das vulnerabilidades encontradas.
+                13 scanners especializados em uma única plataforma.
               </p>
-              <ul className="mt-8 space-y-4">
-                {gradeDescriptions.map((item) => (
-                  <li key={item.grade} className="flex gap-4">
-                    <span className="flex h-8 w-12 shrink-0 items-center justify-center rounded-md bg-emerald-600/10 text-sm font-bold text-emerald-600 dark:bg-indigo-400/10 dark:text-indigo-400">
-                      {item.grade}
-                    </span>
-                    <div>
-                      <p className="font-medium">{item.label}</p>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {features.map((feature, index) => (
+                <BlurFade key={feature.title} inView delay={0.1 + index * 0.06}>
+                  <Card className="bg-card border border-border rounded-xl h-full transition-all duration-300 hover:border-indigo-500/60 hover:shadow-[0_0_30px_rgba(99_102_241_/_0.2)]">
+                    <CardContent className="flex flex-col items-center text-center gap-4 p-6">
+                      <div className="icon-box flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-600/10 dark:bg-indigo-400/10">
+                        <feature.icon className="h-5 w-5 text-emerald-600 dark:text-indigo-400" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">{feature.title}</h3>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {feature.description}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </BlurFade>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </BlurFade>
+
+      {/* Score Preview */}
+      <BlurFade inView delay={0.1}>
+        <section id="preview" className="border-t border-border">
+          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-start lg:gap-20">
+              <div className="flex flex-col items-center gap-6 lg:w-64">
+                <ScoreGauge score={87} grade="A" size={160} animate={false} />
+                <p className="text-center text-sm text-muted-foreground">
+                  Score calculado em tempo real após cada scan.
+                </p>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-3xl font-bold tracking-tight">
+                  Score de segurança em tempo real
+                </h2>
+                <p className="mt-3 text-muted-foreground">
+                  Cada scan gera um score de 0 a 100 e uma grade de A a E,
+                  baseado na quantidade e severidade das vulnerabilidades encontradas.
+                </p>
+                <ul className="mt-8 space-y-4">
+                  {gradeDescriptions.map((item) => (
+                    <li key={item.grade} className="flex gap-4">
+                      <span className="flex h-8 w-12 shrink-0 items-center justify-center rounded-md bg-emerald-600/10 text-sm font-bold text-emerald-600 dark:bg-indigo-400/10 dark:text-indigo-400">
+                        {item.grade}
+                      </span>
+                      <div>
+                        <p className="font-medium">{item.label}</p>
+                        <p className="text-sm text-muted-foreground">{item.description}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </BlurFade>
 
       {/* FAQ Section */}
-      <section className="border-t border-border bg-muted/50 features-grid-bg">
-        <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
-          <FaqSection />
-        </div>
-      </section>
+      <BlurFade inView delay={0.1}>
+        <section className="border-t border-border bg-muted/50 features-grid-bg">
+          <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
+            <FaqSection />
+          </div>
+        </section>
+      </BlurFade>
 
       {/* CTA Final */}
-      <section className="border-t border-border">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center gap-6 text-center">
-            <h2 className="max-w-lg text-3xl font-bold tracking-tight">
-              Comece a proteger seu site hoje mesmo
-            </h2>
-            <p className="max-w-md text-muted-foreground">
-              Crie sua conta gratuitamente e execute seu primeiro scan em menos de um minuto.
-            </p>
-            <Link href="/register">
-              <Button size="lg" className="min-w-48">
-                Criar conta gratuita
-              </Button>
-            </Link>
+      <BlurFade inView delay={0.1}>
+        <section className="border-t border-border">
+          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center gap-6 text-center">
+              <h2 className="max-w-lg text-3xl font-bold tracking-tight">
+                Comece a proteger seu site hoje mesmo
+              </h2>
+              <p className="max-w-md text-muted-foreground">
+                Crie sua conta gratuitamente e execute seu primeiro scan em menos de um minuto.
+              </p>
+              <Link href="/register">
+                <ShimmerButton className="min-w-48 text-sm font-medium">
+                  Criar conta gratuita
+                </ShimmerButton>
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </BlurFade>
 
       {/* Disclaimer */}
       <div className="border-t border-border bg-muted/30">

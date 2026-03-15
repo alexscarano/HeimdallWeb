@@ -48,7 +48,12 @@
       "Bash(git worktree:*)",
       "Bash(dotnet test:*)",
       "Bash(cd:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "WebSearch",
+      "WebFetch(domain:reactbits.dev)",
+      "mcp__shadcn__list_items_in_registries",
+      "mcp__shadcn__get_project_registries",
+      "WebFetch(domain:magicui.design)"
     ]
   },
   "enableAllProjectMcpServers": true,

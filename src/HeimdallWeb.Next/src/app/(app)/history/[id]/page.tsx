@@ -22,6 +22,7 @@ import { JsonViewer } from "@/components/history/json-viewer";
 import { TechnologiesList } from "@/components/history/technologies-list";
 import { ScoreGauge, GradeBadge } from "@/components/scan/score-gauge";
 import { ScannerResultCards } from "@/components/scan/scanner-result-cards";
+import { BlurFade } from "@/components/ui/blur-fade";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -135,7 +136,9 @@ export default function HistoryDetailPage({ params }: Props) {
               {/* Score Gauge */}
               {scan.score != null && (
                 <div className="shrink-0">
-                  <ScoreGauge score={scan.score} grade={scan.grade} size={160} strokeWidth={10} />
+                  <BlurFade inView>
+                    <ScoreGauge score={scan.score} grade={scan.grade} size={160} strokeWidth={10} />
+                  </BlurFade>
                 </div>
               )}
 

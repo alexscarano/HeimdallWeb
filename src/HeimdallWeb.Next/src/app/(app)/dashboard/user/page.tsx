@@ -3,6 +3,7 @@
 import { BarChart3, TrendingUp, AlertTriangle, Activity } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MetricCard } from "@/components/dashboard/metric-card";
+import { BlurFade } from "@/components/ui/blur-fade";
 import { ChartCard } from "@/components/dashboard/chart-card";
 import { useUserDashboard } from "@/lib/hooks/use-dashboard";
 import { useTheme } from "next-themes";
@@ -55,30 +56,22 @@ export default function UserDashboardPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <MetricCard
-          title="Total de Scans"
-          value={stats.totalScans}
-          icon={Activity}
-          borderColorClass="border-t-accent-primary"
-        />
-        <MetricCard
-          title="Scans Completos"
-          value={stats.completedScans}
-          icon={TrendingUp}
-          borderColorClass="border-t-emerald-600 dark:border-t-emerald-500"
-        />
-        <MetricCard
-          title="Vulnerabilidades"
-          value={stats.totalFindings}
-          icon={AlertTriangle}
-          borderColorClass="border-t-warning"
-        />
-        <MetricCard
-          title="Duração Média"
-          value={stats.averageDuration ?? "—"}
-          icon={Activity}
-          borderColorClass="border-t-chart-2"
-        />
+        {[
+          { title: "Total de Scans", value: stats.totalScans, icon: Activity, borderColorClass: "border-t-accent-primary" },
+          { title: "Scans Completos", value: stats.completedScans, icon: TrendingUp, borderColorClass: "border-t-emerald-600 dark:border-t-emerald-500" },
+          { title: "Vulnerabilidades", value: stats.totalFindings, icon: AlertTriangle, borderColorClass: "border-t-warning" },
+          { title: "Duração Média", value: stats.averageDuration ?? "—", icon: Activity, borderColorClass: "border-t-chart-2" },
+        ].map((card, index) => (
+          <BlurFade key={card.title} inView delay={index * 0.08}>
+            <MetricCard
+              title={card.title}
+              value={card.value}
+              icon={card.icon}
+              borderColorClass={card.borderColorClass}
+              animateValue
+            />
+          </BlurFade>
+        ))}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
